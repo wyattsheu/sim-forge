@@ -1,0 +1,15 @@
+# 產出物與執行紀錄:每次重跑都會重建,不進版控
+out/
+logs/
+runs/
+*.usd
+*.usda
+*.usdc
+!sims/*/scene/*.usd
+
+# 第三方資產:用 tools/fetch_assets.sh 取得(NVIDIA 授權,不轉散布)
+sims/*/assets/
+
+__pycache__/
+*.pyc
+.DS_Store
