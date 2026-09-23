@@ -9,6 +9,8 @@ Isaac Sim 物理模擬資產的生成管線。每個模擬是 `sims/` 底下一�
 | --- | --- |
 | [`sims/wrapped_mug`](sims/wrapped_mug) | 逆物流情境:紙箱內用泡泡紙包覆的馬克杯,放進 stationary_ai 雙臂平台 |
 
+![wrapped_mug](sims/wrapped_mug/docs/img/rig.png)
+
 ## 設計原則
 
 每個模擬遵守同一套規矩,方便互相參考、也方便換件:

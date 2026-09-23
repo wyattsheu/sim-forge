@@ -14,7 +14,13 @@ CARTON = dict(
     min_inner=(0.200, 0.160, 0.095),
     board_t=0.004,          # literature  B 楞瓦楞紙板厚約 3~4 mm
     density=190.0,          # literature  瓦楞紙板約 150~250 kg/m3
-    flap_open_deg=105.0,    # assumed  交付初態:耳朵外翻(看得到內容物)
+    flap_open_deg=105.0,    # assumed  自建紙箱的耳朵外翻角
+    rig_flaps="open_kinematic",
+    #   套用在場景自帶紙箱的耳朵上:
+    #   "open_kinematic" 攤開並設成 kinematic —— 看得到內容物、也不會自己蓋回去。
+    #       場景的 crease 鉸鏈沒有 drive 也沒有 limit,自由鉸鏈在重力下一定會塌回蓋住開口。
+    #       手臂團隊要做「掀耳朵」序列時,改成 "free" 並自行補 drive。
+    #   "free"           原樣不動(會自己蓋上)
     drive_stiffness=6.0,    # assumed  N*m/rad,耳朵停得住又推得動
     drive_damping=0.35,     # assumed
     flap_limit_deg=(-5.0, 130.0),
@@ -57,8 +63,8 @@ BUBBLE = dict(
     bubble_pitch=0.010,     # literature  泡泡直徑 9.5~10.0 mm
     bubble_height=0.004,    # literature  泡高約 4 mm
     film_gauge=6.0e-5,      # literature  雙層 LDPE 60 um(僅供記錄,不當物理厚度)
-    bending_length=0.034,   # ASSUMED — 唯一需要拿尺量的數字(ASTM D1388 懸臂法)
-                            #   0.050 太挺,膜會Q彈;真實泡泡紙大約 30~40 mm
+    bending_length=0.046,   # ASSUMED — 唯一需要拿尺量的數字(ASTM D1388 懸臂法)
+                            #   太小撐不住隧道頂會塌;Q 彈是阻尼的事,不是剛度的事
     thickness=0.004,        # derived  取泡高為等效殼厚:決定二次矩的長度尺度
     youngs=5.0e4,           # assumed  僅影響面內;垂墜對它不敏感
     poisson=0.45,           # assumed
@@ -89,19 +95,17 @@ BUBBLE["surface_bend_stiffness"], BUBBLE["flexural_rigidity"] = bend_stiffness(
     BUBBLE["areal_mass"], BUBBLE["bending_length"], BUBBLE["thickness"])
 
 # ---------------------------------------------------------------- 包覆形狀
-# 十字形(plus)裁片:中央貼箱底,四隻臂分別往上折。
-# 四角不留料 —— 平面裁片折成立體時,有角料就一定產生高斯曲率衝突(會皺、會撐)。
-# 每隻臂用「曲率剖面」產生:沿弧長給定切線角再積分 -> 等距映射,不產生面內應變。
+# "tube":沿著馬克杯的實際外形捲一圈。剖面直接從杯子頂點量出徑向輪廓再外擴 gap,
+#   所以會自然鼓過把手。這是「擠出」而來的可展曲面 -> 等距,不產生面內應變。
+#   因為整片都貼在杯子上,沒有任何自立的板子,不會倒、也碰不到箱壁。
+# "cross":十字裁片四邊折起。包覆性最好,但臂是自立的,在小箱子裡會往外倒。
 WRAP = dict(
-    center_half_x=0.062,    # 中央panel 半長:馬克杯端面在 ±47.5,留 14.5 mm
-    center_half_y=0.078,    # 中央panel 半寬:把手尖端在 +72.8,留 5 mm;箱內壁 90,留 12 mm
-    # 長邊(Y 方向)兩隻臂:繞著杯身捲上去,在杯頂合攏 —— 主要的包覆
-    side=dict(corner_r=0.008, wall_rise=0.070, fold_r=0.014, fold_deg=90.0,
-              tip_len=None, target_gap=0.004),
-    # 短邊(X 方向)兩隻臂:立起來後往內壓,蓋住杯子的兩個端面 —— 封前後
-    # 折得比長邊低,讓長邊的臂壓在它上面(真實包法也是先折短邊再折長邊)
-    end=dict(corner_r=0.008, wall_rise=0.066, fold_r=0.016, fold_deg=100.0,
-             tip_len=None, target_gap=None),   # target_gap 由杯長推導
+    style="tunnel",
+    gap=0.005,              # 膜與杯面的徑向間隙
+    foot=0.026,             # 兩側平貼箱底的腳掌長度 —— 這段讓整片被自己的重量壓住
+    overhang=0.024,         # 超出杯子兩端多少(會自然垂下、聚攏)
+    floor_clear=0.0025,     # 膜最低點離箱底的高度
+    side_clear=0.010,       # 腳掌外緣離箱內壁至少留這麼多
 )
 
 # ---------------------------------------------------------------- 場景 / 求解

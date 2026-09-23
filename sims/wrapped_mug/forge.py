@@ -417,8 +417,8 @@ if src:
     rad = max(abs(q[2]) for q in P)                       # 杯身半徑(放倒後即 z 半高)
     cyl = UsdGeom.Cylinder.Define(stage, "/World/mug/col_body")
     cyl.CreateAxisAttr("X")
-    cyl.CreateRadiusAttr(rad * 0.985)
-    cyl.CreateHeightAttr(2.0 * ax_half * 0.99)
+    cyl.CreateRadiusAttr(rad * 0.998)
+    cyl.CreateHeightAttr(2.0 * ax_half * 0.998)
     UsdGeom.Imageable(cyl.GetPrim()).CreateVisibilityAttr().Set(UsdGeom.Tokens.invisible)
     UsdPhysics.CollisionAPI.Apply(cyl.GetPrim())
     _c1 = PhysxSchema.PhysxCollisionAPI.Apply(cyl.GetPrim())
@@ -557,6 +557,56 @@ if RIG:
     _br.CreateSleepThresholdAttr(0.002)
     log(f"rig carton: 補上 contact/rest offset 於 {_n_fix} 個碰撞體,耳朵加阻尼 4.0/0.8, "
         f"base kinematicEnabled 原值 = {BASE_KIN_ORIG}(會原樣還原)")
+
+    # ---- 耳朵攤開 --------------------------------------------------------
+    # 場景的 crease 鉸鏈沒有 drive 也沒有 limit,自由鉸鏈在重力下一定塌回去蓋住開口
+    # (實測 fyp/fyn 會平躺在箱口上,整個箱子被蓋死)。這裡不加 drive,改成:
+    # 把每片轉到最外翻的姿態,再設成 kinematic —— 看得到內容物、也不會自己合上。
+    if CARTON["rig_flaps"] == "open_kinematic":
+        _hinges = {
+            "fxp": (Gf.Vec3d(0.0985, 0, 0.082), Gf.Vec3d(0, -1, 0), Gf.Vec3d(1, 0, 0)),
+            "fxn": (Gf.Vec3d(-0.0985, 0, 0.082), Gf.Vec3d(0, 1, 0), Gf.Vec3d(-1, 0, 0)),
+            "fyp": (Gf.Vec3d(0, 0.0885, 0.0885), Gf.Vec3d(1, 0, 0), Gf.Vec3d(0, 1, 0)),
+            "fyn": (Gf.Vec3d(0, -0.0885, 0.0885), Gf.Vec3d(-1, 0, 0), Gf.Vec3d(0, -1, 0)),
+        }
+        _cb = UsdGeom.BBoxCache(Usd.TimeCode.Default(), ["default"])
+        _table_top = 0.020
+        for _fn, (_hp, _ax, _out) in _hinges.items():
+            _fp = stage.GetPrimAtPath(f"{CARTON_PATH}/{_fn}")
+            _xf = UsdGeom.Xformable(_fp)
+            _base_m = _xf.GetLocalTransformation()          # 原始姿態
+            _best, _best_score = 0.0, -1e9
+            for _deg in range(0, 360, 4):
+                _rot = Gf.Matrix4d().SetTranslate(-_hp) * \
+                       Gf.Matrix4d().SetRotate(Gf.Rotation(_ax, float(_deg))) * \
+                       Gf.Matrix4d().SetTranslate(_hp)
+                _xf.MakeMatrixXform().Set(_base_m * _rot)
+                _cc = UsdGeom.BBoxCache(Usd.TimeCode.Default(), ["default"])
+                _r = _cc.ComputeWorldBound(_fp).ComputeAlignedRange()
+                _mid = _r.GetMidpoint()
+                if _r.GetMin()[2] < _table_top + 0.002:      # 不能穿過桌面
+                    continue
+                # 越往外、越低越好
+                _sc = Gf.Dot(Gf.Vec3d(_mid[0], _mid[1], 0.0), _out) - 0.6 * _mid[2]
+                if _sc > _best_score:
+                    _best_score, _best = _sc, float(_deg)
+            _rot = Gf.Matrix4d().SetTranslate(-_hp) * \
+                   Gf.Matrix4d().SetRotate(Gf.Rotation(_ax, _best)) * \
+                   Gf.Matrix4d().SetTranslate(_hp)
+            _xf.MakeMatrixXform().Set(_base_m * _rot)
+            UsdPhysics.RigidBodyAPI.Apply(_fp).CreateKinematicEnabledAttr(True)
+            # 箱體本身也是 kinematic,兩端都 kinematic 的 joint PhysX 會拒收
+            # ("cannot create a joint between static bodies")。耳朵既然固定住了,
+            # 鉸鏈就停用;切回 "free" 時要記得把它打開。
+            _cj = stage.GetPrimAtPath(f"{CARTON_PATH}/crease_{_fn}")
+            if _cj and _cj.IsValid():
+                wf.set_attr(_cj, "physics:jointEnabled", False, Sdf.ValueTypeNames.Bool)
+            _cc = UsdGeom.BBoxCache(Usd.TimeCode.Default(), ["default"])
+            _r = _cc.ComputeWorldBound(_fp).ComputeAlignedRange()
+            log(f"  flap {_fn}: 開啟角 {_best:.0f} deg -> bbox "
+                f"[{_r.GetMin()[0]*1000:.0f},{_r.GetMin()[1]*1000:.0f},{_r.GetMin()[2]*1000:.0f}] .. "
+                f"[{_r.GetMax()[0]*1000:.0f},{_r.GetMax()[1]*1000:.0f},{_r.GetMax()[2]*1000:.0f}] mm")
+        flap_prims = {}      # 已設成 kinematic,烘焙時不再動它們
     flap_prims = {n: stage.GetPrimAtPath(f"{CARTON_PATH}/{n}") for n in ("fxp", "fxn", "fyp", "fyn")}
     for _jn in ("crease_fxp", "crease_fxn", "crease_fyp", "crease_fyn"):
         _j = stage.GetPrimAtPath(f"{CARTON_PATH}/{_jn}")
@@ -575,7 +625,7 @@ else:
     Z_FLOOR = T
     CX = CY = 0.0
 
-MUG_AXIS_Z = Z_FLOOR + MUG_R + 0.006
+MUG_AXIS_Z = Z_FLOOR + MUG_R + 0.006      # 杯子直接坐在箱底,膜從上方跨過去
 mug_tr.Set(Gf.Vec3d(CX, CY - MUG_Y_C, MUG_AXIS_Z))
 log(f"mug footprint: span x {2*MUG_HALF_L*1000:.1f} y {2*MUG_HALF_W*1000:.1f} z {2*MUG_R*1000:.1f} mm, "
     f"placed at ({CX*1000:+.1f},{(CY-MUG_Y_C)*1000:+.1f},{MUG_AXIS_Z*1000:.1f}) mm")
@@ -641,149 +691,168 @@ if not RIG:
         flap_prims[name] = fx
     log(f"carton (built): inner {L*1000:.0f} x {W*1000:.0f} x {H*1000:.0f} mm, floor z={Z_FLOOR*1000:.1f} mm")
 
-# =============================================================== 泡泡紙(十字裁片)
-def _profile(segs, step=2.5e-4):
-    """沿弧長積分切線角,回傳 (s[], d[], z[], total)。d = 沿臂方向的橫移,z = 高度。"""
-    s_l, d_l, z_l = [0.0], [0.0], [0.0]
-    s = d = z = 0.0
-    for length, p0, p1 in segs:
-        n = max(int(math.ceil(length / step)), 1)
-        for i in range(n):
-            f = (i + 0.5) / n
-            phi = math.radians(p0 + (p1 - p0) * f)
-            q = length / n
-            d += math.cos(phi) * q
-            z += math.sin(phi) * q
-            s += q
-            s_l.append(s); d_l.append(d); z_l.append(z)
-    return s_l, d_l, z_l, s
+# =============================================================== 泡泡紙(捲筒式)
+# 剖面直接由馬克杯的實際頂點量出來:以杯軸為中心,每個角度取最遠的點,再往外推 gap。
+# 這樣膜會自然鼓過把手,而且保證處處貼著杯子 —— 沒有自立的板子,不會往外倒。
+# 沿杯軸擠出 = 可展曲面,所以是等距映射,把平面裁片捲成這個形狀不產生面內應變。
+MUG_AXIS_Y = CY - MUG_Y_C
+
+_col_pts = []
+for _m in ([stage.GetPrimAtPath("/World/mug/body")] if not src
+           else [pr for pr in Usd.PrimRange(stage.GetPrimAtPath("/World/mug/asset"))
+                 if pr.IsA(UsdGeom.Mesh)]):
+    if not (_m and _m.IsValid()):
+        continue
+    _lw = UsdGeom.Xformable(_m).ComputeLocalToWorldTransform(Usd.TimeCode.Default())
+    _col_pts += [_lw.Transform(Gf.Vec3d(*q)) for q in (UsdGeom.Mesh(_m).GetPointsAttr().Get() or [])]
+
+# 剖面取「投影凸包」而不是逐角度最大半徑:
+#   馬克杯是開口薄殼,網格含內壁,逐角度取樣會抓到內表面 -> 剖面鋸齒、弧長灌水。
+#   凸包同時也是泡泡紙的實際行為:膜會跨過把手與杯身之間的凹角,不會鑽進去。
+_proj = [(q[1] - MUG_AXIS_Y, q[2] - MUG_AXIS_Z) for q in _col_pts]
 
 
-def arm_profile(spec, root_offset):
-    """一隻臂的剖面。root_offset = 臂根離中心的距離,用來求解尖端要走多長。"""
-    segs = [
-        (spec["corner_r"] * math.radians(90.0), 0.0, 90.0),
-        (max(spec["wall_rise"] - spec["corner_r"], 1e-4), 90.0, 90.0),
-        (spec["fold_r"] * math.radians(spec["fold_deg"]), 90.0, 90.0 + spec["fold_deg"]),
-    ]
-    tip = spec["tip_len"]
-    if tip is None:                      # 自動求解:折到左右尖端只剩 target_gap
-        _, d_a, _, _ = _profile(segs)
-        d_a = d_a[-1] if isinstance(d_a, list) else d_a
-        phi = math.radians(90.0 + spec["fold_deg"])
-        want = spec["target_gap"] / 2.0 - root_offset
-        tip = max((want - d_a) / math.cos(phi), 0.0) if abs(math.cos(phi)) > 1e-6 else 0.0
-    segs.append((tip, 90.0 + spec["fold_deg"], 90.0 + spec["fold_deg"]))
-    return _profile(segs)
+def _hull(pts):
+    pts = sorted(set((round(x, 6), round(y, 6)) for x, y in pts))
+    if len(pts) < 3:
+        return pts
+
+    def cross(o, a_, b_):
+        return (a_[0] - o[0]) * (b_[1] - o[1]) - (a_[1] - o[1]) * (b_[0] - o[0])
+
+    lo = []
+    for q in pts:
+        while len(lo) >= 2 and cross(lo[-2], lo[-1], q) <= 0:
+            lo.pop()
+        lo.append(q)
+    up = []
+    for q in reversed(pts):
+        while len(up) >= 2 and cross(up[-2], up[-1], q) <= 0:
+            up.pop()
+        up.append(q)
+    return lo[:-1] + up[:-1]
 
 
-def sample_arm(prof, s):
-    s_l, d_l, z_l, tot = prof
-    if s <= 0:
-        return 0.0, 0.0
-    if s >= tot:
-        return d_l[-1], z_l[-1]
-    lo, hi = 0, len(s_l) - 1
+_H = _hull(_proj)
+if len(_H) < 3:
+    raise SystemExit(f"馬克杯剖面凸包算不出來(只有 {len(_H)} 點)")
+_H.sort(key=lambda q: math.atan2(q[1], q[0]))
+_HA = [math.atan2(q[1], q[0]) for q in _H]
+
+
+def _hull_r(theta):
+    """凸包邊界沿 theta 方向離杯軸的距離。"""
+    th = math.atan2(math.sin(theta), math.cos(theta))
+    n = len(_H)
+    for i in range(n):
+        a0, a1 = _HA[i], _HA[(i + 1) % n]
+        if a1 < a0:
+            a1 += 2 * math.pi
+        t = th if th >= a0 else th + 2 * math.pi
+        if a0 <= t <= a1:
+            p0, p1 = _H[i], _H[(i + 1) % n]
+            dx, dy = p1[0] - p0[0], p1[1] - p0[1]
+            cx, cy = math.cos(theta), math.sin(theta)
+            den = cx * dy - cy * dx
+            if abs(den) < 1e-12:
+                break
+            return max((p0[0] * dy - p0[1] * dx) / den, 1e-4)
+    return MUG_R
+
+
+NA = 720
+_prof_r = [_hull_r(-math.pi + 2 * math.pi * i / NA) + WRAP["gap"] for i in range(NA)]
+_rmax = max(_prof_r) - WRAP["gap"]
+log(f"mug hull profile: {len(_H)} 個凸包頂點, r {(min(_prof_r)-WRAP['gap'])*1000:.1f}~{_rmax*1000:.1f} mm "
+    f"(杯半徑 {MUG_R*1000:.1f}, 含把手最遠 {_rmax*1000:.1f}) -> 膜半徑 "
+    f"{min(_prof_r)*1000:.1f}~{max(_prof_r)*1000:.1f} mm")
+
+
+def _hull_pt(theta):
+    r = _hull_r(theta) + WRAP["gap"]
+    return MUG_AXIS_Y + r * math.cos(theta), MUG_AXIS_Z + r * math.sin(theta)
+
+
+# 隧道剖面:左腳掌(平貼箱底)-> 垂直上升 -> 順著杯子輪廓跨過頂 -> 垂直下降 -> 右腳掌。
+# 兩端都被自己的重量壓在箱底,中間每一段都有支撐 —— 不會像捲筒那樣被重力拉開。
+_Z0 = Z_FLOOR + WRAP["floor_clear"]
+_yL, _ = _hull_pt(math.pi)          # 左側赤道
+_yR, _ = _hull_pt(0.0)              # 右側赤道
+_foot = WRAP["foot"]
+_lim = W / 2.0 - WRAP["side_clear"]
+if _yL - _foot < -_lim:
+    _foot = min(_foot, _yL + _lim)
+if _yR + _foot > _lim:
+    _foot = min(_foot, _lim - _yR)
+_foot = max(_foot, 0.006)
+
+_poly = [(_yL - _foot, _Z0), (_yL, _Z0), (_yL, MUG_AXIS_Z)]
+_NARC = 240
+for i in range(_NARC + 1):                      # theta 由 180 度走到 0 度,跨過頂部
+    th = math.pi * (1.0 - i / _NARC)
+    _poly.append(_hull_pt(th))
+_poly += [(_yR, MUG_AXIS_Z), (_yR, _Z0), (_yR + _foot, _Z0)]
+
+# 去掉重複點,再依弧長重新參數化
+_clean = [_poly[0]]
+for q in _poly[1:]:
+    if math.hypot(q[0] - _clean[-1][0], q[1] - _clean[-1][1]) > 1e-6:
+        _clean.append(q)
+_poly = _clean
+_cum = [0.0]
+for i in range(1, len(_poly)):
+    _cum.append(_cum[-1] + math.hypot(_poly[i][0] - _poly[i-1][0], _poly[i][1] - _poly[i-1][1]))
+ARC = _cum[-1]
+
+
+def _sect(s_):
+    """沿剖面弧長 s_ (0..ARC) 取 (y, z)。"""
+    s_ = min(max(s_, 0.0), ARC)
+    lo, hi = 0, len(_cum) - 1
     while hi - lo > 1:
-        m = (lo + hi) // 2
-        if s_l[m] <= s:
-            lo = m
+        m_ = (lo + hi) // 2
+        if _cum[m_] <= s_:
+            lo = m_
         else:
-            hi = m
-    t = (s - s_l[lo]) / max(s_l[hi] - s_l[lo], 1e-12)
-    return d_l[lo] + (d_l[hi] - d_l[lo]) * t, z_l[lo] + (z_l[hi] - z_l[lo]) * t
+            hi = m_
+    t = (s_ - _cum[lo]) / max(_cum[hi] - _cum[lo], 1e-12)
+    return (_poly[lo][0] + (_poly[hi][0] - _poly[lo][0]) * t,
+            _poly[lo][1] + (_poly[hi][1] - _poly[lo][1]) * t)
 
 
-# 臂根的圓角會往外再走 corner_r,所以 A/B 必須讓「臂根 + 圓角」還留在內壁裡面,
-# 否則膜一開始就被箱壁擠住,整片會被推出去(實測漂移 167 mm)。
-# 臂要靠著箱壁往上爬才站得住:臂根離牆太遠會變成自立的板子,一定往外倒
-# (實測臂根離牆 51 mm 時,短邊臂倒到箱外 43 mm)。所以中央panel 直接鋪到接近內壁。
-A = max(MUG_HALF_L + 0.010, L / 2.0 - WRAP["end"]["corner_r"] - 0.006)
-B = max(MUG_HALF_W + 0.010, W / 2.0 - WRAP["side"]["corner_r"] - 0.006)
-log(f"clearance check: B+corner={((B + WRAP['side']['corner_r'])*1000):.1f} mm vs 內壁 {W/2*1000:.1f} mm | "
-    f"A+corner={((A + WRAP['end']['corner_r'])*1000):.1f} vs {L/2*1000:.1f}")
-# 臂沿箱壁爬升的高度不能超過箱壁 —— 超出的部分沒東西撐,會往外翻並把整片拖出箱外
-# (實測:爬到 104.5 mm 而箱壁只有 87 mm,結果整片滑出去,漂移 297 mm)。
-# 折進來的圓弧本身會再抬 fold_r,尖端剛好落在杯頂上,視覺上就是「蓋過去」。
-# 折進來的圓弧會再抬 fold_r,所以尖端高度 = LIFT + wall_rise + fold_r。
-# 要求尖端留在箱緣以下,否則超出的部分沒東西撐會往外翻並把整片拖出去。
-_lift_h = 0.006
-_side_cap = H - WRAP["side"]["fold_r"] - _lift_h - 0.006
-_end_cap = H - WRAP["end"]["fold_r"] - _lift_h - 0.010
-WRAP["side"]["wall_rise"] = min(2 * MUG_R + 0.012, _side_cap)
-WRAP["end"]["wall_rise"] = min(2 * MUG_R + 0.008, _end_cap)
-log(f"arm rise capped by carton: side {WRAP['side']['wall_rise']*1000:.1f} (cap {_side_cap*1000:.1f}) "
-    f"end {WRAP['end']['wall_rise']*1000:.1f} | 杯頂 {(2*MUG_R+0.010)*1000:.1f} mm above floor")
-log(f"wrap panel (derived): center half x={A*1000:.1f} y={B*1000:.1f} mm, "
-    f"side wall_rise={WRAP['side']['wall_rise']*1000:.1f} mm")
-# 短邊臂的尖端要折到蓋住杯子端面(不是固定長度,否則臂根一外移就搆不到,會站著往外倒)
-if WRAP["end"].get("target_gap") is None:
-    WRAP["end"]["target_gap"] = 2.0 * max(MUG_HALF_L - 0.012, 0.010)
-side = arm_profile(WRAP["side"], B)      # 長邊:繞杯身捲上去,杯頂合攏
-end = arm_profile(WRAP["end"], A)        # 短邊:立起來往內壓,封住前後端面
-LS, LE = side[3], end[3]
-log(f"arms: side len {LS*1000:.1f} mm tip d={side[1][-1]*1000:+.1f} z={side[2][-1]*1000:.1f} -> "
-    f"y={(B+side[1][-1])*1000:+.1f} mm | end len {LE*1000:.1f} mm tip d={end[1][-1]*1000:+.1f} "
-    f"z={end[2][-1]*1000:.1f} -> x={(A+end[1][-1])*1000:+.1f} mm")
+log(f"wrap tunnel section: 腳掌 {_foot*1000:.1f} mm, 跨距 y[{(_yL-_foot)*1000:+.1f},{(_yR+_foot)*1000:+.1f}] "
+    f"(箱內壁 ±{W/2*1000:.1f}), 展開弧長 {ARC*1000:.1f} mm")
 
+HALF_LEN = MUG_HALF_L + WRAP["overhang"]
 h = BUBBLE["cell_size"]
-NU = 2 * int(math.ceil((A + LE) / h))            # 材料空間格數(偶數,中心在格線上)
-NV = 2 * int(math.ceil((B + LS) / h))
-HU, HV = A + LE, B + LS
-LIFT = Z_FLOOR + _lift_h
-
-
-def mat_uv(i, j):
-    return -HU + 2 * HU * i / NU, -HV + 2 * HV * j / NV
-
-
-def keep(i, j):
-    u, v = mat_uv(i, j)
-    return abs(u) <= A + 1e-9 or abs(v) <= B + 1e-9    # 十字:四個角不留料
-
-
-def to3d(u, v):
-    if abs(u) <= A + 1e-9 and abs(v) <= B + 1e-9:
-        return Gf.Vec3f(CX + u, CY + v, LIFT)                          # 中央:貼箱底
-    if abs(v) > B:                                                     # 長邊臂
-        d, z = sample_arm(side, abs(v) - B)
-        return Gf.Vec3f(CX + u, CY + math.copysign(B + d, v), LIFT + z)
-    d, z = sample_arm(end, abs(u) - A)                                 # 短邊臂
-    return Gf.Vec3f(math.copysign(A + d, u), v, LIFT + z)
-
-
-idx, wrap_pts, wrap_flat, wrap_uv = {}, [], [], []
+NU = max(2 * int(math.ceil(HALF_LEN / h)), 4)
+NV = max(int(math.ceil(ARC / h)), 8)
 pitch = BUBBLE["bubble_pitch"]
+
+wrap_pts, wrap_flat, wrap_uv = [], [], []
 for j in range(NV + 1):
+    v = ARC * j / NV
+    y_, z_ = _sect(v)
     for i in range(NU + 1):
-        if not keep(i, j):
-            continue
-        u, v = mat_uv(i, j)
-        idx[(i, j)] = len(wrap_pts)
-        wrap_pts.append(to3d(u, v))
-        wrap_flat.append(Gf.Vec3f(CX + u, CY + v, LIFT))   # 攤平的材料佈局(自碰撞過濾用)
-        wrap_uv.append(Gf.Vec2f(u / pitch, v / pitch))  # 一格 UV = 一顆泡泡
+        u = -HALF_LEN + 2.0 * HALF_LEN * i / NU
+        wrap_pts.append(Gf.Vec3f(CX + u, y_, z_))
+        wrap_flat.append(Gf.Vec3f(CX + u, _yL - _foot + v, _Z0))
+        wrap_uv.append(Gf.Vec2f(u / pitch, v / pitch))
 wrap_tris = []
+row = NU + 1
 for j in range(NV):
     for i in range(NU):
-        q = [(i, j), (i + 1, j), (i + 1, j + 1), (i, j + 1)]
-        if not all(c in idx for c in q):
-            continue
-        a_, b_, c_, d_ = (idx[c] for c in q)
+        a_, b_, c_, d_ = j * row + i, j * row + i + 1, (j + 1) * row + i + 1, (j + 1) * row + i
         wrap_tris.append((a_, b_, c_))
         wrap_tris.append((a_, c_, d_))
 
-# 面積由實際三角形算,質量才對
-area = 0.0
-for t in wrap_tris:
-    p0, p1, p2 = (Gf.Vec3d(*wrap_flat[k]) for k in t)
-    area += Gf.Cross(p1 - p0, p2 - p0).GetLength() * 0.5
+area = 2.0 * HALF_LEN * ARC
 wrap_mass = BUBBLE["areal_mass"] * area
 
 wrap_mesh, wrap_ok, wrap_coll = wf.make_surface_deformable(
     stage, "/World/wrap", wrap_pts, wrap_tris, phys_film, wrap_mass,
     solver_iter=SIM["bake_solver_iter"], lin_damp=BUBBLE["lin_damp"],
-    self_collision=True, contact_off=BUBBLE["contact_offset"], rest_off=BUBBLE["rest_offset"],
+    self_collision=False, contact_off=BUBBLE["contact_offset"], rest_off=BUBBLE["rest_offset"],
     collision_pair_update=SIM["bake_collision_pair_update"],
     collision_iter_mult=SIM["bake_collision_iter_mult"],
     max_depen_vel=SIM["max_depen_vel"], uvs=wrap_uv)
@@ -803,35 +872,22 @@ def mesh_normals(pts, tris):
         for i in t:
             acc[i] = acc[i] + nf
     out = []
-    for v in acc:
-        l = v.GetLength()
-        out.append(v / l if l > 1e-9 else Gf.Vec3f(0, 0, 1))
+    for v_ in acc:
+        l = v_.GetLength()
+        out.append(v_ / l if l > 1e-9 else Gf.Vec3f(0, 0, 1))
     return out
 
 
 wrap_mesh.CreateNormalsAttr().Set(Vt.Vec3fArray(mesh_normals(wrap_pts, wrap_tris)))
 wrap_mesh.SetNormalsInterpolation(UsdGeom.Tokens.vertex)
-
-# 核心:把「已經折好」的形狀直接當成靜止形狀 -> 折痕是零能量狀態,不會彈開
 wf.set_attr(wrap_prim, "omniphysics:restShapePoints", Vt.Vec3fArray(wrap_pts))
 wf.set_attr(wrap_prim, "omniphysics:restBendAnglesDefault", "restShapeDefault")
 
-# 自碰撞過濾姿態 = 攤平的材料佈局。
-# 不設的話 PhysX 會拿「當下(已經折疊重疊)」的點去做過濾,把互相蓋住的臂判成
-# 本來就重疊而排除自碰撞 -> 四隻臂會彼此穿透。
-try:
-    wrap_prim.ApplyAPI("OmniPhysicsDeformablePoseAPI", "scFilter")
-except Exception as e:
-    carb.log_warn(f"[forge] DeformablePoseAPI apply: {e}")
-wf.set_attr(wrap_prim, "deformablePose:scFilter:omniphysics:purposes",
-            Vt.TokenArray(["selfCollisionFilterPose"]), Sdf.ValueTypeNames.TokenArray)
-wf.set_attr(wrap_prim, "deformablePose:scFilter:omniphysics:points",
-            Vt.Vec3fArray(wrap_flat), Sdf.ValueTypeNames.Point3fArray)
-
-log(f"wrap: {len(wrap_pts)} verts / {len(wrap_tris)} tris, material grid {NU}x{NV} @ {h*1000:.1f} mm, "
-    f"area={area*1e4:.1f} cm2, mass={wrap_mass*1000:.2f} g (areal {BUBBLE['areal_mass']*1000:.0f} g/m2), "
-    f"bendStiffness={BUBBLE['surface_bend_stiffness']:.1f} (D={BUBBLE['flexural_rigidity']:.3e} N*m), "
-    f"selfCollision=on")
+_wy = [q[1] for q in wrap_pts]; _wz = [q[2] for q in wrap_pts]
+log(f"wrap: {len(wrap_pts)} verts / {len(wrap_tris)} tris, grid {NU}x{NV} @ {h*1000:.1f} mm, "
+    f"展開 {ARC*1000:.1f} x {2*HALF_LEN*1000:.1f} mm, 面積 {area*1e4:.1f} cm2, 質量 {wrap_mass*1000:.2f} g")
+log(f"wrap extent: y[{min(_wy)*1000:+.1f},{max(_wy)*1000:+.1f}] z[{min(_wz)*1000:.1f},{max(_wz)*1000:.1f}] mm "
+    f"| 箱內壁 y±{W/2*1000:.1f} 箱緣 z={(Z_FLOOR+H)*1000:.1f}")
 
 # =============================================================== 烘焙
 report = {
