@@ -1,0 +1,244 @@
+--- wrap_sim.py	2026-09-30 02:50:46.799950127 +0000
++++ /tmp/claude-0/-isaac-sim-test-scripts-manip-fr3-handoff-20260929/c7e55632-bf8d-46a1-89a0-934334fed54b/scratchpad/wrap_sim_foldorder.py	2026-09-30 02:52:03.423814814 +0000
+@@ -203,6 +203,20 @@
+ os.environ.setdefault("OMNI_KIT_ALLOW_ROOT", "1")
+ os.makedirs(a.out, exist_ok=True)
+ 
++# ── 折序:**唯一來源** ─────────────────────────────────────────────────
++# ★ 2026-09-30:PPT 開箱是 前後(±y)先開、左右(±x)後開;先開的一定是外層,
++#   所以包材的外層必須是 ±y ⇒ **先折 ±x、後折 ±y**(後折的疊在外面)。
++#   以前 ORD_ / WORDER / UORDER / ORDER / _ORD 五處各自寫死一份順序,改順序時漏一處
++#   就 ValueError(WORDER.index)或 y 邊沒折到(stage2 寫死抓 x 邊)。
++#   現在**只准改下面這一行**,其餘全部從它衍生;selfcheck.py C 段會驗。
++FOLD_ORDER = ["xp", "xn", "yp", "yn"]
++STAGE2_SIDES = FOLD_ORDER[2:]                 # 第二段(--stage2)折的是後兩折
++UORDER = ["yn", "yp", "xn", "xp"]             # = FOLD_ORDER 反序(--unbox/--unfold 逆向打開用)。selfcheck 用 regex 抓字面值,所以寫死、由下一行守住
++assert UORDER == list(reversed(FOLD_ORDER)), "UORDER 必須是 FOLD_ORDER 的反序"
++assert sorted(FOLD_ORDER) == ["xn", "xp", "yn", "yp"], "FOLD_ORDER 要剛好四邊各一次"
++assert FOLD_ORDER[0][0] == FOLD_ORDER[1][0] and FOLD_ORDER[2][0] == FOLD_ORDER[3][0], \
++    "FOLD_ORDER 前兩折要同一軸、後兩折要同一軸(對邊成對折)"
++
+ from isaacsim import SimulationApp
+ sim = SimulationApp({"headless": True})
+ import carb, omni.physx.bindings._physx as pxb
+@@ -301,17 +315,30 @@
+ # 第二輪:上一版實測 (161,175,190),目標 (144,163,189) ⇒ 再乘 (0.894, 0.931, 1.0)
+ MUGM = vmat("/World/mugm", (144/255./1.19*0.894, 163/255./1.11*0.931, 189/255./1.005), 1.0, .40)
+ 
+-# ── 杯子:躺平 ────────────────────────────────────────────────────────
++# ── 杯子:躺平 + 方位(杯口朝前 +y、杯耳朝右 +x)──────────────────────
+ m = trimesh.load(a.mug)
+ V = np.asarray(m.vertices, float); F = np.asarray(m.faces)
+ unit = 0.001 if V.ptp(0).max() > 1.0 else 1.0
+ V = (V - V.mean(0)) * unit
+ Ry = lambda t: np.array([[np.cos(t), 0, np.sin(t)], [0, 1, 0], [-np.sin(t), 0, np.cos(t)]])
+ Rx = lambda t: np.array([[1, 0, 0], [0, np.cos(t), -np.sin(t)], [0, np.sin(t), np.cos(t)]])
+-V = V @ Ry(-np.pi/2).T @ Rx(np.pi/2).T
++Rz = lambda t: np.array([[np.cos(t), -np.sin(t), 0], [np.sin(t), np.cos(t), 0], [0, 0, 1]])
++# ★ 2026-09-30 從 mug.stl **網格本身**量過(純 numpy:端面是「環」= 杯口/底足、「盤」= 封底;
++#   超出杯身半徑的點 = 杯耳;量法見 work/FOLDORDER_NOTES.md):原始 STL 是直立杯,杯口 +z、杯耳 +x。
++#   舊的 Ry(-90)·Rx(90) 躺平後是 **杯口 −x、杯耳 −y**(杯軸躺在 x 上!),跟 selfcheck.py 註解
++#   假設的「套 _Rm 前 = 杯口 +y / 杯耳 −x」不符 —— 在它上面直接套 _Rm 會得到 杯口 +x、杯耳 −y。
++#   所以躺平多轉一步 Rz(-90),讓「套 _Rm 前」的基準姿態真的是 杯口 +y / 杯耳 −x(selfcheck 前提成立),
++#   再由 _Rm 把杯耳從 −x 翻到 +x。三步合起來恰好 = Rx(-90)。
++V = V @ Ry(-np.pi/2).T @ Rx(np.pi/2).T @ Rz(-np.pi/2).T      # 基準姿態:杯口 +y、杯耳 −x
++# ★ 杯子方位矩陣(ORIENTATION_AND_SIZE.md §3:杯口朝前 +y、杯耳朝右 +x)。純旋轉 det=+1(不是鏡像),
++#   繞 y 轉 180°:_Rm@(0,1,0)=(0,1,0) 杯口留在 +y;_Rm@(-1,0,0)=(1,0,0) 杯耳 −x→+x。
++#   selfcheck.py C 段用 regex 抓這一行 eval 驗 det 與這兩個向量,所以矩陣寫成一行、np.array([[ 開頭、]]) 結尾。
++_Rm = np.array([[-1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, -1.0]])
++V = V @ _Rm.T
+ V -= (V.max(0) + V.min(0)) / 2.0
+ ME = V.max(0) - V.min(0); hx, hy, H2 = ME / 2.0
+-P("杯子躺平 %.0f x %.0f x %.0f mm" % tuple(ME*1e3))
++P("杯子躺平 %.0f x %.0f x %.0f mm;方位:杯口 +y(前)、杯耳 +x(右),det(_Rm)=%+.0f"
++  % (ME[0]*1e3, ME[1]*1e3, ME[2]*1e3, np.linalg.det(_Rm)))
+ 
+ # ── 幾何:照 wrap_plan.py 的公式 ──────────────────────────────────────
+ A, B, HC = ME[0] + 2*a.margin, ME[1] + 2*a.margin, ME[2] + a.margin   # 佔位塊
+@@ -533,6 +560,9 @@
+         _sh = np.array([-_c[0], -_c[1], _dz])
+         _mp0 = np.load(a.init_npz)["mug"].mean(0)   # 上一段杯子的世界位置
+         #   (杯子靜止頂點 V 已經 mean-centred ⇒ 世界頂點的平均就是它的平移量)
++        #   ★ 2026-09-30:npz 的 mug 是上一段的**世界座標**頂點(V @ Rm.T + 平移),這裡只拿它的平均
++        #     當平移量;方位由每一段各自在載入 STL 時套 _Rm 到 V 決定,所以不會被轉兩次。
++        #     但也因此 **_Rm 加進來之前產生的 npz 不能混用**(那時的布是包在 杯口 −x/杯耳 −y 的杯子外面)。
+         SP0 += _sh
+         UsdGeom.Xformable(mug).GetOrderedXformOps()[0].Set(Gf.Vec3d(*(_mp0 + _sh)))
+         P("★ 入箱:整包(布+杯子)剛性搬 (%+.1f, %+.1f, %+.1f) mm —— "
+@@ -717,6 +747,12 @@
+     import json as _json
+     FLOORE = {k: set(v) for k, v in _json.load(open(a.floor_edges)).items()}
+     P("★ 後兩折抓的邊來自實測:%s" % {k: len(v) for k, v in FLOORE.items()})
++    # ★ 2026-09-30:floor_edges.json 記的是「後兩折那條邊上還貼地的頂點」,鍵名就是後兩折的邊。
++    #   折序改成 x 先之後後兩折是 y;舊 json(鍵 xp/xn)會讓 FLOORE.get("yp", []) 全空
++    #   ⇒ 後兩折一個錨點都不建、y 邊安靜地沒折到。直接擋掉,逼人用新折序的兩折結果重量。
++    if set(FLOORE) != set(STAGE2_SIDES):
++        raise SystemExit("★ %s 的鍵 %s 不是後兩折 %s —— 這份是舊折序量的,要重量"
++                         % (a.floor_edges, sorted(FLOORE), STAGE2_SIDES))
+ 
+ PULLS = []
+ #   ★ 提杯測試不建錨點:布要完全自由,才測得出「是不是靠包覆撐住」
+@@ -729,25 +765,25 @@
+                      for j2 in range(ny+1) for i2 in range(nx+1)])
+     FOLD = np.array([[v[0], v[1], v[2]] for v in verts])
+     bnd = np.where((np.abs(FLAT[:, 0]) > WX/2 - 1e-6) | (np.abs(FLAT[:, 1]) > WY/2 - 1e-6))[0]
++    SIDEPICK = {}      # 挑點時決定的「這個頂點屬於哪一邊」(wrapsim / unbox 用;見下面 PULLS 的分邊)
+     if a.unbox:
+         # ★ 使用者 2026-09-26:「把之間的 attach 點拿回來逆向」。
+         #   開包材不是整圈一起掀:
+-        #     第一個打開的是**最後折的 x 邊** —— 當初只抓「還貼地的那一段」(floor_edges),不是整條
+-        #     第二個打開的是**先折的 y 邊** —— 當初是**整條邊**(33 點)
+-        #   所以這裡用跟折疊完全相同的分組,只是順序反過來。
++        #     先打開的是**最後折的兩邊**(FOLD_ORDER[2:],現在是 ±y)—— 當初只抓「還貼地的那一段」(floor_edges),不是整條
++        #     後打開的是**先折的兩邊**(FOLD_ORDER[:2],現在是 ±x)—— 當初是**整條邊**(不含角落)
++        #   所以這裡用跟折疊完全相同的分組,只是順序反過來(順序本身在 drive() 用 UORDER)。
+         keep2 = []
+         for vi_ in bnd:
+             fx_, fy_ = FLAT[vi_][0], FLAT[vi_][1]
+             sx_ = max(0.0, abs(fx_) - CX); sy_ = max(0.0, abs(fy_) - CY)
+             sd_ = ("yp" if fy_ > 0 else "yn") if sy_ >= sx_ else ("xp" if fx_ > 0 else "xn")
+-            if sd_ in ("yp", "yn"):
+-                if abs(abs(FLAT[vi_][1]) - WY/2) > 1e-6: continue     # y 邊:整條最外圈
+-                if abs(FLAT[vi_][0]) > WX/2 - 1e-6: continue          # 不含角落
+-                keep2.append(int(vi_))
+-            else:
+-                if abs(abs(FLAT[vi_][0]) - WX/2) > 1e-6: continue     # x 邊:最外圈
++            ax_ = 1 if sd_ in ("yp", "yn") else 0                                  # 這條邊沿哪一軸(軸語意)
++            if abs(abs(FLAT[vi_][ax_]) - (WY/2 if ax_ == 1 else WX/2)) > 1e-6: continue   # 只取該邊最外圈
++            if sd_ in FOLD_ORDER[:2]:                                              # 先折的邊:整條,不含角落
++                if abs(FLAT[vi_][1 - ax_]) > (WX/2 if ax_ == 1 else WY/2) - 1e-6: continue
++            else:                                                                  # 後折的邊:只有實測仍貼地的那段
+                 if FLOORE is not None and int(vi_) not in FLOORE.get(sd_, []): continue
+-                keep2.append(int(vi_))
++            keep2.append(int(vi_)); SIDEPICK[int(vi_)] = sd_
+         INFOLD = set(keep2)      # 當初折疊真正施力的那些;其餘只在最後「完整攤平」時才動
+         P("★ 開箱錨點:整圈外緣 %d 個;其中當初折疊用的 %d 個(逆向打開用),"
+           "其餘 %d 個只在最後完整攤平時才動"
+@@ -759,20 +795,25 @@
+                         (np.abs(FOLD[:, 0]) < hx_) & (np.abs(FOLD[:, 1]) < hy_))[0]
+         if a.no_hold:
+             hold = np.array([], dtype=int)      # --no_hold:第一段的布完全放力,靠重力與摩擦留在原地
++        # ★ 2026-09-30:「還貼地的那條邊」要抓**後兩折那一軸**的最外圈,由 STAGE2_SIDES 決定,
++        #   不再寫死 x(折序改 x 先之後,後兩折是 y;寫死抓 x 邊會讓 y 一個錨點都沒有)。
++        _s2ax = 0 if STAGE2_SIDES[0] in ("xp", "xn") else 1      # 後兩折的軸:0=x、1=y
++        _s2w = WX if _s2ax == 0 else WY
+         fl = [int(v) for v in bnd
+-              if abs(abs(FLAT[v, 0]) - WX/2) < 1e-6 and FOLD[v, 2] < Z_FLOOR]
++              if abs(abs(FLAT[v, _s2ax]) - _s2w/2) < 1e-6 and FOLD[v, 2] < Z_FLOOR]
+         SIDE2 = {}
+         for v in hold: SIDE2[int(v)] = "hold"
+-        for v in fl:   SIDE2[int(v)] = "xp" if FLAT[v, 0] > 0 else "xn"
++        for v in fl:   SIDE2[int(v)] = "xy"[_s2ax] + ("p" if FLAT[v, _s2ax] > 0 else "n")
++        assert all(s in STAGE2_SIDES for s in SIDE2.values() if s != "hold")
+         bnd = np.array(sorted(SIDE2.keys()))
+-        P("★ 第二段錨點:杯子正上方維持壓住 %d 個;還貼地(z<%.0fmm)的那條邊 %d 個;"
++        P("★ 第二段錨點:杯子正上方維持壓住 %d 個;還貼地(z<%.0fmm)的 %s 邊 %d 個;"
+           "其餘 %d 個頂點完全不施力"
+-          % (len(hold), Z_FLOOR*1e3, len(fl), len(FOLD) - len(bnd)))
++          % (len(hold), Z_FLOOR*1e3, "/".join(STAGE2_SIDES), len(fl), len(FOLD) - len(bnd)))
+     elif a.wrapsim:
+         # ★ 使用者 2026-09-25:前兩次動**整邊**,後兩次先暫停。
+         #   要折的邊 → 那條邊上的**每一個**外緣頂點都給施力點(整邊一起抬)
+         #   暫停的邊 → 完全不建錨點,布自己垂著,一點力都不施
+-        ORD_ = ["yp", "yn", "xp", "xn"][:max(1, min(4, a.wrap_n))]
++        ORD_ = FOLD_ORDER[:max(1, min(4, a.wrap_n))]
+         keep = []
+         for vi_ in bnd:
+             fx_, fy_ = FLAT[vi_][0], FLAT[vi_][1]
+@@ -791,11 +832,12 @@
+                 #   輪到它的那一刻才用「當下 z 是否還貼地」決定哪些真的施力(見 drive())。
+                 #   實測 wrap2:+x 端 455 個點裡有 165 個還貼地(z<15mm),
+                 #   我先前用攤平座標圈只圈到 9 個 —— 那是錯的。
+-                if ax_ == 1 and abs(FLAT[vi_][0]) > WX/2 - 1e-6:
+-                    continue          # y 邊不含角落(角落被兩折同時牽動,會互相拉扯)
+-                if ax_ == 0 and FLOORE is not None and int(vi_) not in FLOORE.get(sd_, []):
+-                    continue          # x 邊只留「兩折版實測仍貼地」的那條邊
+-                keep.append(int(vi_))
++                # ★ 2026-09-30:下面兩條是**折序**語意(先折/後折),不是軸語意,所以看 FOLD_ORDER。
++                if sd_ in FOLD_ORDER[:2] and abs(FLAT[vi_][1 - ax_]) > (WX/2 if ax_ == 1 else WY/2) - 1e-6:
++                    continue          # 先折的兩邊不含角落(角落被兩折同時牽動,會互相拉扯)
++                if sd_ in FOLD_ORDER[2:] and FLOORE is not None and int(vi_) not in FLOORE.get(sd_, []):
++                    continue          # 後折的兩邊只留「兩折版實測仍貼地」的那條邊
++                keep.append(int(vi_)); SIDEPICK[int(vi_)] = sd_
+             else:
+                 pass
+         if a.wrap_edge and keep:
+@@ -808,6 +850,7 @@
+                 lim_ = (WY/2 if ax_ == 1 else WX/2)*sg_
+                 cand = bnd[np.abs(FLAT[bnd, ax_] - lim_) < 1e-6]
+                 pick.append(int(cand[np.argmin(np.abs(FLAT[cand, 1 - ax_]))]))
++                SIDEPICK[pick[-1]] = sd_
+             bnd = np.array(pick)
+     elif a.anchors == 4:
+         # 四個邊的**最外側中點**各一個:該邊的極值座標 + 另一軸最接近 0
+@@ -852,8 +895,14 @@
+         # ★ SIDE2 只有上面 `elif a.stage2:` 那條分支會建。--unbox 走的是更前面的
+         #   `if a.unbox:` 分支,不會建 SIDE2 —— 所以同時給 --unbox --stage2 會 NameError。
+         #   2026-09-26 踩過一次,補上守衛。
++        # ★ 2026-09-30:wrapsim / unbox 挑點時是以「超出折線多少」分邊(角落歸折線較近的那軸),
++        #   跟下面 |x|>=|y| 的分法在**角落**會不同邊。以前角落剛好落在後折的 x 邊所以兩者一致;
++        #   杯子方位轉正(x 變長邊)+ 折序改 x 先之後,角落會被挑到後折的 y 邊、卻在這裡被改判成 x,
++        #   錨點就跟著錯的那一折走。所以挑點時記下的 SIDEPICK 優先。
+         if a.stage2 and not a.unbox:
+             _side = SIDE2[int(vi)]
++        elif int(vi) in SIDEPICK:
++            _side = SIDEPICK[int(vi)]
+         else:
+             _fx, _fy = FLAT[vi][0], FLAT[vi][1]
+             if abs(_fx) >= abs(_fy): _side = "xp" if _fx > 0 else "xn"
+@@ -1020,8 +1069,8 @@
+     _dl2.CreateIntensityAttr(2200.0); _dl2.CreateAngleAttr(4.0)
+ 
+ T_SET, T_SW, T_HOLD, T_OFF = 1.5, 3.0, 0.8, 1.2
+-WORDER = (["xp", "xn"] if a.stage2
+-          else ["yp", "yn", "xp", "xn"][:max(1, min(4, a.wrap_n))])
++WORDER = (STAGE2_SIDES if a.stage2                      # 第二段只折後兩折(= FOLD_ORDER[2:]);以前寫死 ["xp","xn"] 是因為那時後兩折是 x
++          else FOLD_ORDER[:max(1, min(4, a.wrap_n))])
+ # ★ 修:加 stage2 的時候把 T_END 從 wrap_n 改成 len(WORDER),但 WORDER 一直是 4 個,
+ #   於是 --wrap_n 2 還是跑四個階段(後兩個沒有錨點、什麼都不做),白燒 6.5 秒模擬。
+ SPAN_W = 3.5                                   # 每一邊折上去用幾秒
+@@ -1129,9 +1178,8 @@
+             p_, o_ = lid_pose(L, 180.0*u)
+             L["prim"].set_world_pose(position=p_, orientation=o_)
+         # ★ 蓋子全開之後,把包材**逆著當初折的順序**打開:
+-        #   折的順序是 yp → yn → xp → xn,所以開的順序是 xn → xp → yn → yp。
+-        #   每一組都用它當初的那批錨點(x 邊只有貼地那段、y 邊是整條),不是整圈一起。
+-        UORDER = ["xn", "xp", "yn", "yp"]
++        #   折序是 FOLD_ORDER(xp → xn → yp → yn),開序 UORDER 是它的反序(yn → yp → xn → xp),定義在檔頭。
++        #   每一組都用它當初的那批錨點(後折的邊只有貼地那段、先折的邊是整條),不是整圈一起。
+         t0 = T_SET + 2*SPANL
+         span = T_UNW/len(UORDER)
+         tF = t0 + T_UNW                       # 完整攤平開始
+@@ -1229,9 +1277,9 @@
+             if p_["c_start"] is None:
+                 # 輪到的那一刻:記下實際位置,並決定這個錨點要不要真的施力。
+                 # ★ 後兩折只驅動**還貼在地板上**的那條邊;已經被前兩折帶上去的,
+-                #   繼續跟著布走(施力 ~ 0),不去硬拽壓在下面的布。
++                #   繼續跟著布走(施力 ~ 0),不去硬拽壓在下面的布。先折的兩邊(FOLD_ORDER[:2])一律施力。
+                 p_["c_start"] = cur.copy()
+-                p_["act"] = True if (a.stage2 or FLOORE is not None or p_["side"] in ("yp", "yn")) else (cur[2] < Z_FLOOR)
++                p_["act"] = True if (a.stage2 or FLOORE is not None or p_["side"] in FOLD_ORDER[:2]) else (cur[2] < Z_FLOOR)
+                 NACT[p_["side"]] = NACT.get(p_["side"], 0) + int(p_["act"])
+                 if p_["side"] in ("xp", "xn") and NACT.get(p_["side"] + "_n", 0) == 0:
+                     pass
+@@ -1257,8 +1305,9 @@
+                                       orientation=np.array([1., 0, 0, 0]))
+         return
+     if a.unfold:
+-        # ★ 一次只攤開一邊(使用者 2026-09-24)。順序照 PPT:後 → 前 → 右 → 左
+-        ORDER = ["yp", "yn", "xp", "xn"]
++        # ★ 一次只攤開一邊(使用者 2026-09-24)。攤開 = 打開,順序照 PPT 前後先、左右後 = 折序的反序 UORDER
++        #   (舊字面值 ["yp","yn","xp","xn"] 的軸序 y→x 跟 UORDER 相同,只是同一軸內正負對調)
++        ORDER = UORDER
+         span = max(0.1, (T_END - T_SET - 3.0) / len(ORDER))
+         for p_ in PULLS:
+             k_ = ORDER.index(p_["side"])
+@@ -1436,7 +1485,7 @@
+               % (t, WORDER[_k], sum(1 for q in PULLS if q["side"] == WORDER[_k]),
+                  Z_FLOOR*1e3, NACT.get(WORDER[_k], 0)))
+     elif a.unfold:
+-        _ORD = ["yp", "yn", "xp", "xn"]
++        _ORD = UORDER                        # 字幕的階段名,與 drive() 的 --unfold 順序同源
+         _sp = max(0.1, (T_END - T_SET - 3.0)/4)
+         _k = int(max(0, min(3, (t - T_SET)//_sp)))
+         ph_ = "settle" if t < T_SET else ("unfold " + _ORD[_k] if t < T_SET + 4*_sp else "done")

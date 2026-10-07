@@ -1,0 +1,24 @@
+{
+ "_說明": "good = 整體必須 PASS 或 WARN;bad = expect_fail 每項都要 FAIL(有 expect_fail 時整體必須 FAIL)、expect_warn 每項都要 WARN。路徑相對於 tests/golden/(symlink → runs/ 或 ../vol/)。kind 自動判斷(有 wrap_vol.log = vol)。",
+ "good": {
+  "fincam_c1":      {"why": "DEMO_new 第 1 段(新折序 c1)"},
+  "fincam_c2":      {"why": "DEMO_new 第 2 段"},
+  "fincam_box":     {"why": "DEMO_new 第 3 段:布 0 / 杯 0 超出"},
+  "fincam_mb_open": {"why": "DEMO_new 第 4 段:搬箱 2.5mm、6 點低於箱底(陷進底板 2.4mm);層數 1.0 在 mb 段只 WARN(使用者 10-07)"},
+  "dm_box":         {"why": "DEMO_old_v2 入箱段:布 0 / 杯 0"},
+  "vol_s2":         {"why": "volume 版最佳(soft/s2):覆蓋 93%、布頂 129.0 < 130.9、穿杯/反轉 0;自互穿 8 → WARN、搬前/搬後 1 點陷進 x 牆 1.2/0.2mm → WARN"}
+ },
+ "bad": {
+  "t_c1_bad":    {"expect_fail": ["bbox_guard"],   "why": "放手時方塊掃過布,bbox z 2343"},
+  "out_bl_box":  {"expect_fail": ["meta_guard"],   "why": "缺 carton meta,蓋子沒動"},
+  "sh400_mb_yz": {"expect_fail": ["mug_orient"],   "why": "杯子方位與包裹不符(舊折序包裹 + 新腳本)"},
+  "fin_box":     {"expect_fail": ["box_contain"],  "why": "24 點穿 y 牆(超出 15.7mm > 板厚 3mm)+ 1 點高過口"},
+  "v1_c3":       {"expect_fail": ["self_pen_rel"], "why": "cont 2 / rest 0.2 互穿,S1 2403 = c3 基準 512 ×4.7"},
+  "vol_s6":      {"expect_warn": ["edge_max", "cover"], "expect_fail": ["inversion"],
+                  "why": "E 1e3 太軟:邊長比最大 2.448(WARN)、覆蓋 82%(WARN)、反轉 1(FAIL)"},
+  "vol_s5":      {"expect_fail": ["inversion", "cover", "top_z"],
+                  "why": "面密度 0.2:反轉 4、覆蓋 65%(<70)、開蓋後布頂 141.7 > 130.9(杯身露出)"},
+  "vol_r3":      {"expect_fail": ["cover"],        "why": "rect 板:覆蓋 40%(布頂 131.2 也剛好超過箱口)"},
+  "vol_out_v500_restfold": {"expect_fail": ["bbox_guard"], "why": "rest shape = 折好的 npz,t=0 炸開 bbox 661 > 板 500 ×1.2"}
+ }
+}

@@ -1,0 +1,57 @@
+--- wrap_sim.py (md5 8b8dfa3e5da80b7eb46bebe3fce158a9)
++++ wrap_sim_crease.py	2026-10-02 05:47:45.043050802 +0000
+@@ -131,6 +131,11 @@
+                      "solver 來不及解接觸就讓布穿出去。放慢是唯一不改物理的旋鈕。")
+ ap.add_argument("--press_hold", type=float, default=3.0, help="壓到位之後壓住幾秒")
+ ap.add_argument("--press_off",  type=float, default=3.0, help="抬走之後再看幾秒(量回彈)")
++ap.add_argument("--crease_at", default="", choices=["", "before", "held"],
++                help="壓實段(press6)做一次摺痕定型:讀 sim mesh 當下頂點寫進 omniphysics:restShapePoints、"
++                     "restBendAnglesDefault 改 restShapeDefault,再 release_physics_objects()+"
++                     "force_load_physics_from_usd() 強迫重載(probe_crease.py mode 5)。"
++                     "before = T_SET(壓板下來前);held = 壓住結束前 0.5s。預設關。")
+ ap.add_argument("--init_npz", default="",
+                 help="★ 第二段模擬:布**直接以第一段跑完的頂點位置出生**(wrap.npz 的 sheet)。"
+                      "2026-09-25 實測:attachmentEnabled / stiffness 在跑的途中改**完全無效**"
+@@ -1350,6 +1355,30 @@
+     if (not S["free"]) and t >= T_FREE and not a.hold_mug:
+         kin.Set(False); S["free"] = True; P("  [t=%.2f] 放開杯子,自然落到布上" % t)
+     drive(t)
++    if a.crease_at and P6 is not None and not S.get("creased"):
++        _tc = T_SET if a.crease_at == "before" else (T_SET + T_DOWN + a.press_hold - 0.5)
++        if t >= _tc:
++            S["creased"] = True
++            _pa = UsdGeom.Mesh(sp).GetPointsAttr()
++            _cur = np.array(_pa.Get())
++            _m0 = np.array(mugx.get_world_pose()[0], float)
++            sa(sp, "omniphysics:restShapePoints",
++               Vt.Vec3fArray([Gf.Vec3f(*[float(x) for x in p]) for p in _cur]), Sdf.ValueTypeNames.Point3fArray)
++            sp.GetAttribute("omniphysics:restBendAnglesDefault").Set("restShapeDefault")
++            import omni.physx as _opx
++            _px = _opx.get_physx_interface()
++            _px.release_physics_objects(); _px.force_load_physics_from_usd()
++            drive(t)                                    # 重載後重設 kinematic 板位置
++            _cur2 = np.array(_pa.Get())
++            _m1 = np.array(mugx.get_world_pose()[0], float)
++            P("  [t=%.2f] 摺痕定型(crease_at=%s):%d 點,重載物理" % (t, a.crease_at, len(_cur)))
++            P("     重載前 bbox %.1f x %.1f x %.1f mm(zmin %.1f)| 重載後 bbox %.1f x %.1f x %.1f mm(zmin %.1f)| 頂點最大差 %.2f mm"
++              % (*((_cur.max(0)-_cur.min(0))*1e3), _cur[:, 2].min()*1e3,
++                 *((_cur2.max(0)-_cur2.min(0))*1e3), _cur2[:, 2].min()*1e3,
++                 np.linalg.norm(_cur2 - _cur, axis=1).max()*1e3))
++            P("     杯心 重載前 (%.1f, %.1f, %.1f) → 重載後 (%.1f, %.1f, %.1f) mm"
++              % (*(_m0*1e3), *(_m1*1e3)))
++            S["crease_chk"] = 3
+     for _ in range(4):
+         if CREASE is not None:
+             import torch
+@@ -1383,6 +1412,11 @@
+             LIDVIEW.apply_forces_and_torques_at_pos(torques=_tau, is_global=True)
+         world.step(render=False)
+     world.step(render=True)
++    if S.get("crease_chk", 0) > 0:
++        S["crease_chk"] -= 1
++        _c3 = np.array(UsdGeom.Mesh(sp).GetPointsAttr().Get())
++        P("     重載後 t=%.2f 布 bbox %.1f x %.1f x %.1f mm;杯心 (%.1f, %.1f, %.1f) mm"
++          % (t, *((_c3.max(0)-_c3.min(0))*1e3), *(np.array(mugx.get_world_pose()[0], float)*1e3)))
+     if a.unbox:
+         ph_ = ("packed" if t < T_SET else
+                "open upper flaps" if t < T_SET + a.lid_span else
