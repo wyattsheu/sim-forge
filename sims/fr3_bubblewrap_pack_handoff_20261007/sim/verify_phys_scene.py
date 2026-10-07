@@ -10,6 +10,8 @@ B  carry: carton base servoed (velocity set every physics step, body stays dynam
 Bm carry by PhysX mouse interaction (update_interaction MOUSE_DRAG_*), ray from the side onto
    the carton wall, ray origin moved by --move over 3 s, hold 2 s (forceGrab=1, pickingForce 100)
 C  lid-vs-wrap: 3 N downward force on the free half of lower lid fxn for 3 s, then release 2 s
+S  shake: carton base servoed (as B) on a horizontal figure-8, --shake_amp at --shake_hz for 3 s, hold 2 s
+   (violent hand / mouse motion; checks wrap escaping through the walls)
 """
 import argparse, os, sys, math
 ap = argparse.ArgumentParser()
@@ -23,6 +25,8 @@ ap.add_argument("--move", default="0.10,0,0.10", help="B/Bm: carry vector x,y,z 
 ap.add_argument("--force_grab", type=int, default=1, help="Bm: 1 = /physics/forceGrab=True (the setting that actually drags; joint mode moves ~1 cm)")
 ap.add_argument("--picking_force", type=float, default=70.0, help="Bm: /physics/pickingForce (launcher default 70; 100 flips the carton when lifting by a wall)")
 ap.add_argument("--grab_z", type=float, default=0.06, help="Bm: grab height above the carton floor (m) on the +x wall")
+ap.add_argument("--shake_amp", type=float, default=0.05, help="S: amplitude (m)")
+ap.add_argument("--shake_hz", type=float, default=2.0, help="S: frequency (Hz); default peak speed ~0.6 m/s")
 ap.add_argument("--base_damping", default="", help="override carton base linear,angular damping before Play, e.g. 2,2")
 a = ap.parse_args()
 os.environ.setdefault("OMNI_KIT_ALLOW_ROOT", "1")
@@ -30,12 +34,15 @@ from isaacsim import SimulationApp
 sim = SimulationApp({"headless": True, "extra_args": ["--/persistent/physics/enableDeformableBeta=true"]})
 import carb, omni.physx.bindings._physx as pxb
 _s = carb.settings.get_settings()
-_s.set(pxb.SETTING_ENABLE_DEFORMABLE_BETA, True)
+if hasattr(pxb, "SETTING_ENABLE_DEFORMABLE_BETA"):   # 5.x; in 6.x these deformables are the default
+    _s.set(pxb.SETTING_ENABLE_DEFORMABLE_BETA, True)
 _s.set_bool("/physics/updateToUsd", True)
 _s.set_bool("/physics/updateVelocitiesToUsd", True)
 import numpy as np, omni.usd, omni.timeline
 from pxr import Usd, UsdGeom, UsdPhysics, PhysxSchema, Gf
 from omni.physx import get_physx_interface
+import omni.kit.app
+omni.kit.app.get_app().get_extension_manager().set_extension_enabled_immediate("omni.physx.tensors", True)   # 6.x: tensor backend not loaded headless
 import omni.physics.tensors as tensors
 
 LOGP = a.log or os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs",
@@ -89,10 +96,11 @@ if a.base_damping:
     P("base damping override: linear %.2f angular %.2f" % (ld, ad))
 tl = omni.timeline.get_timeline_interface()
 tl.play(); sim.update()
-sv = tensors.create_simulation_view("numpy"); sv.set_subspace_roots("/")
+sv = tensors.create_simulation_view("numpy", stage_id=ctx.get_stage_id()); sv.set_subspace_roots("/")   # 6.x needs stage_id
 RV = sv.create_rigid_body_view(paths)
 P("rigid view count", RV.count, RV.prim_paths if hasattr(RV, "prim_paths") else "")
 IDX = np.arange(RV.count, dtype=np.int32)
+P("rigid masses (kg): " + " ".join("%s=%.4f" % (p_.split("/")[-1], m_) for p_, m_ in zip(paths, np.array(RV.get_masses(), float).reshape(len(paths), -1)[:, 0])))
 
 def qmat(q):  # xyzw
     x, y, z, w = q
@@ -121,6 +129,11 @@ CAV = dict(x=0.132, y=0.112, zlo=0.003, zhi=0.134)
 def outside(pb, tol):
     return int(np.sum((np.abs(pb[:, 0]) > CAV["x"] + tol) | (np.abs(pb[:, 1]) > CAV["y"] + tol) |
                       (pb[:, 2] < CAV["zlo"] - tol) | (pb[:, 2] > CAV["zhi"] + tol)))
+def through_wall(pb, wall=0.004):
+    """verts beyond the OUTER face of a side wall (3 mm cardboard + 1 mm), below the rim: wrap visibly poking out"""
+    lat = (np.abs(pb[:, 0]) > CAV["x"] + wall) | (np.abs(pb[:, 1]) > CAV["y"] + wall)
+    return int(np.sum(lat & (pb[:, 2] < CAV["zhi"])))
+P("start: wrap through side walls %d" % through_wall(W0b))
 P("start: wrap outside cavity (tol 0/1/2 mm): %d/%d/%d of %d ; mug(1/8 verts) %d/%d/%d of %d"
   % (outside(W0b, 0), outside(W0b, .001), outside(W0b, .002), len(W0b), outside(M0b, 0), outside(M0b, .001), outside(M0b, .002), len(M0b)))
 P("start: base world pos (mm)", np.round(TB0[:3, 3]*1e3, 2), " wrap z range (base frame) %.1f..%.1f mm" % (W0b[:, 2].min()*1e3, W0b[:, 2].max()*1e3))
@@ -146,13 +159,18 @@ MOVE = np.array([float(v) for v in a.move.split(",")]); TMOVE = 3.0; THOLD = 2.0
 def on_step(dt):
     state["t"] += dt
     t = state["t"]
-    if a.test == "B" and t >= a.warm:
+    if a.test in ("B", "S") and t >= a.warm:
         u = (t - a.warm) / TMOVE
-        s = smooth(u)
-        ds = (6*u*(1-u))/TMOVE if 0 <= u <= 1 else 0.0
+        if a.test == "B":
+            s = smooth(u)
+            ds = (6*u*(1-u))/TMOVE if 0 <= u <= 1 else 0.0
+            pd = TB0[:3, 3] + MOVE*s; vd = MOVE*ds
+        else:                                               # figure-8, stops at u = 1 (whole periods)
+            w_ = 2*math.pi*a.shake_hz; tt = min(t - a.warm, TMOVE); on = 1.0 if u < 1 else 0.0
+            pd = TB0[:3, 3] + a.shake_amp*np.array([math.sin(w_*tt), 0.5*math.sin(2*w_*tt), 0.0])
+            vd = on*a.shake_amp*w_*np.array([math.cos(w_*tt), math.cos(2*w_*tt), 0.0])
         tr = np.array(RV.get_transforms(), float)
         p = tr[0, :3]; q = tr[0, 3:7]
-        pd = TB0[:3, 3] + MOVE*s; vd = MOVE*ds
         v = vd + 20.0*(pd - p)
         # rotation error q * q0^-1 -> axis angle
         Rerr = qmat(q) @ TB0[:3, :3].T
@@ -183,7 +201,8 @@ if a.test == "Bm":
     # ray from +x side onto the carton wall facing +x (world x = 95 mm), 40 mm below the rim
     O0 = np.array([0.6, TB0[1, 3], TB0[2, 3] + a.grab_z]); DIR = carb.Float3(-1.0, 0.0, 0.0)
 
-total = a.secs if a.test == "A" else (a.warm + TMOVE + THOLD if a.test in ("B", "Bm") else a.warm + 5.0)
+total = a.secs if a.test == "A" else (a.warm + TMOVE + THOLD if a.test in ("B", "Bm", "S") else a.warm + 5.0)
+mx_tw = 0
 mxlid = np.zeros(4); mx_dz = 0.0; nan_seen = False; k = 0; last_print = -1
 lid_c = []
 while state["t"] < total:
@@ -203,7 +222,7 @@ while state["t"] < total:
     if a.test == "C": lid_c.append((state["t"], L_[1]))
     if int(state["t"]*2) != last_print or state["t"] >= total:
         last_print = int(state["t"]*2)
-        Wb = apply(inv(TB), Ww); Mb = apply(inv(TB), Mw)
+        Wb = apply(inv(TB), Ww); Mb = apply(inv(TB), Mw); mx_tw = max(mx_tw, through_wall(Wb))
         dw = np.linalg.norm(Wb - W0b, axis=1); dm = np.linalg.norm(Mb - M0b, axis=1)
         P("t=%5.2f base d(%+6.1f,%+6.1f,%+6.1f)mm | rel-to-carton: wrap max %6.1f mean %5.1f cen(%+5.1f,%+5.1f,%+5.1f) mug mean %5.1f mm | out(1mm) wrap %4d mug %4d | lids %s | nan %s"
           % (state["t"], *((TB[:3, 3]-TB0[:3, 3])*1e3), dw.max()*1e3, dw.mean()*1e3, *((Wb.mean(0)-W0b.mean(0))*1e3),
@@ -220,6 +239,7 @@ P("wrap rel. carton: max %.2f mean %.2f mm, centroid shift (%.2f, %.2f, %.2f) mm
 P("mug  rel. carton: mean vertex disp %.2f mm, centroid shift (%.2f, %.2f, %.2f) mm" % (dm.mean()*1e3, *((Mb.mean(0)-M0b.mean(0))*1e3)))
 P("outside cavity (tol 0/1/2 mm): wrap %d/%d/%d of %d ; mug %d/%d/%d of %d" % (outside(Wb, 0), outside(Wb, .001), outside(Wb, .002), len(Wb),
   outside(Mb, 0), outside(Mb, .001), outside(Mb, .002), len(Mb)))
+P("wrap through side walls: now %d, max during run %d" % (through_wall(Wb), mx_tw))
 P("wrap z range (carton frame) %.1f..%.1f mm; NaN seen %s" % (Wb[:, 2].min()*1e3, Wb[:, 2].max()*1e3, nan_seen))
 P("lid angles now %s ; max |angle| %s" % (" ".join("%s=%+.2f" % (n, v) for n, v in zip(LIDN, lid_angles(T))),
   " ".join("%s=%.2f" % (n, v) for n, v in zip(LIDN, mxlid))))

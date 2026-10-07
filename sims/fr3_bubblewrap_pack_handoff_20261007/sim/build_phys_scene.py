@@ -51,6 +51,12 @@ ap.add_argument("--mug_rest", type=float, default=0.0)
 ap.add_argument("--pad", type=float, default=0.02, help="m; 0 = no pad")
 # carton feel in the UI (2026-10-07): weaker lid spring so a mouse can open lids (+ lid_latch.py keeps them open),
 # damped base so force-mode mouse grab doesn't overshoot when lifting
+# wall / lid pads (2026-10-07): thick invisible colliders on the OUTSIDE of the 3 mm walls and lids so wrap vertices
+# can't step through the cardboard in one physics step during violent motion. They collide ONLY with the wrap
+# (collision group), have ~zero mass, and are guide purpose: arm / gripper / table / mug / mouse pick are unaffected.
+ap.add_argument("--wall_pad", type=float, default=0.02, help="m, thickness outside each wall; 0 = none")
+ap.add_argument("--lid_pad", type=float, default=0.02, help="m, thickness on the outer face of the lids in --lid_pad_lids; 0 = none")
+ap.add_argument("--lid_pad_lids", default="fyp,fyn", help="only the OUTER (upper) flaps: a pad on fxp/fxn overlaps fyp/fyn and pops all lids open")
 ap.add_argument("--lid_stiff", type=float, default=0.012, help="N*m/deg; scene_final_ui.usd has 0.056 (mouse only reached 15 deg)")
 ap.add_argument("--lid_damp", type=float, default=0.003)
 ap.add_argument("--base_damp", default="2,2", help="carton base linear,angular damping; '' = keep")
@@ -62,7 +68,8 @@ from isaacsim import SimulationApp
 sim = SimulationApp({"headless": True, "extra_args": ["--/persistent/physics/enableDeformableBeta=true"]})
 import carb, omni.physx.bindings._physx as pxb
 _s = carb.settings.get_settings()
-_s.set(pxb.SETTING_ENABLE_DEFORMABLE_BETA, True)          # exactly as wrap_sim.py
+if hasattr(pxb, "SETTING_ENABLE_DEFORMABLE_BETA"):   # 5.x; in 6.x these deformables are the default
+    _s.set(pxb.SETTING_ENABLE_DEFORMABLE_BETA, True)          # exactly as wrap_sim.py
 _s.set_bool("/physics/updateToUsd", True)
 _s.set_bool("/physics/updateVelocitiesToUsd", True)
 import numpy as np, trimesh, omni.usd, omni.timeline
@@ -270,6 +277,63 @@ if a.pad > 0:
     assert tgt, "pad 下面找不到任何碰撞體?桌面碰撞 mesh 應該要被找到"
     UsdPhysics.FilteredPairsAPI.Apply(pad.GetPrim()).CreateFilteredPairsRel().SetTargets(tgt)
     P("pad %.0f mm under base, filtered vs %s" % (a.pad*1e3, [str(x) for x in tgt]))
+
+# -- wall / lid pads: collide only with the wrap
+if a.wall_pad > 0 or a.lid_pad > 0:
+    rbc = UsdGeom.BBoxCache(Usd.TimeCode.Default(), ["default", "render", "guide", "proxy"])
+    def rel(prim, anc):
+        r = rbc.ComputeRelativeBound(prim, anc).ComputeAlignedRange(); return np.array(r.GetMin()), np.array(r.GetMax())
+    basep = st.GetPrimAtPath(BASE)
+    blo, bhi = rel(st.GetPrimAtPath(BASE + "/bottom"), basep)
+    cav = (blo + bhi) / 2                                    # cavity centre (base frame)
+    pads = []
+    def add_pad(parent, name, lo, hi):
+        c = UsdGeom.Cube.Define(st, parent + "/" + name); c.CreateSizeAttr(1.0)
+        c.AddTranslateOp().Set(Gf.Vec3d(*map(float, (lo + hi) / 2))); c.AddScaleOp().Set(Gf.Vec3f(*map(float, hi - lo)))
+        c.CreatePurposeAttr(UsdGeom.Tokens.guide)
+        UsdPhysics.CollisionAPI.Apply(c.GetPrim())
+        q = PhysxSchema.PhysxCollisionAPI.Apply(c.GetPrim()); q.CreateContactOffsetAttr(0.001); q.CreateRestOffsetAttr(0.0)
+        UsdPhysics.MassAPI.Apply(c.GetPrim()).CreateMassAttr(1e-6)     # don't change the carton's mass / COM
+        pads.append(c.GetPath())
+    if a.wall_pad > 0:
+        T = a.wall_pad
+        for w in ("wxp", "wxn", "wyp", "wyn"):
+            lo, hi = rel(st.GetPrimAtPath(BASE + "/" + w), basep)
+            ax = int(np.argmin((hi - lo)[:2]))                  # wall normal (x or y in base frame)
+            o = 1 - ax                                          # along-wall axis
+            out = 1.0 if (lo[ax] + hi[ax]) / 2 > cav[ax] else -1.0
+            plo, phi = lo.copy(), hi.copy()
+            if out > 0: plo[ax], phi[ax] = hi[ax], hi[ax] + T
+            else:       plo[ax], phi[ax] = lo[ax] - T, lo[ax]
+            plo[o] -= T; phi[o] += T                            # cover the corners
+            plo[2] = blo[2] - max(a.pad, 0.0)                   # down to the floor pad's bottom
+            add_pad(BASE, "pad_" + w, plo, phi)
+    if a.lid_pad > 0:
+        T = a.lid_pad
+        for n in [x for x in a.lid_pad_lids.split(",") if x]:
+            lp = st.GetPrimAtPath(PK + "/Box/" + n)
+            lo, hi = rel(st.GetPrimAtPath(PK + "/Box/" + n + "/geo"), lp)
+            ax = int(np.argmin(hi - lo))                        # plate normal in lid frame
+            Tl = np.array(UsdGeom.Xformable(lp).ComputeLocalToWorldTransform(Usd.TimeCode.Default()), float).T
+            Tb = np.array(UsdGeom.Xformable(basep).ComputeLocalToWorldTransform(Usd.TimeCode.Default()), float).T
+            cw = Tb[:3, :3] @ cav + Tb[:3, 3]
+            cl = np.linalg.inv(Tl[:3, :3]) @ (cw - Tl[:3, 3])    # cavity centre in lid frame
+            out = 1.0 if (lo[ax] + hi[ax]) / 2 > cl[ax] else -1.0
+            plo, phi = lo.copy(), hi.copy()
+            if out > 0: plo[ax], phi[ax] = hi[ax], hi[ax] + T
+            else:       plo[ax], phi[ax] = lo[ax] - T, lo[ax]
+            add_pad(PK + "/Box/" + n, "pad_outer", plo, phi)
+    # pads collide with the wrap only. invertFilteredGroups is not honoured by Isaac Sim 6.0 (pads hit the table),
+    # so filter the pads against an "everything except wrap and pads" group instead; it includes every top-level
+    # prim, so grippers / objects added to the scene later are filtered too.
+    gp = UsdPhysics.CollisionGroup.Define(st, PK + "/cg_pads")
+    gp.GetCollidersCollectionAPI().CreateIncludesRel().SetTargets(pads)
+    go = UsdPhysics.CollisionGroup.Define(st, PK + "/cg_not_wrap")
+    oc = go.GetCollidersCollectionAPI()
+    oc.CreateIncludesRel().SetTargets([q.GetPath() for q in st.GetPseudoRoot().GetChildren()])
+    oc.CreateExcludesRel().SetTargets([Sdf.Path(WRAP)] + pads)
+    gp.CreateFilteredGroupsRel().SetTargets([go.GetPath()])
+    P("pads (wrap-only collision group, mass 1e-6 each): wall %.0f mm, lid %.0f mm -> %s" % (a.wall_pad*1e3, a.lid_pad*1e3, [str(x) for x in pads]))
 
 for _n in ("fxp", "fxn", "fyp", "fyn"):
     _d = UsdPhysics.DriveAPI.Get(st.GetPrimAtPath(PK + "/Box/crease_" + _n), "angular")

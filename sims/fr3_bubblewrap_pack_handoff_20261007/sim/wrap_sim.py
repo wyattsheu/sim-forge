@@ -243,7 +243,8 @@ assert FOLD_ORDER[0][0] == FOLD_ORDER[1][0] and FOLD_ORDER[2][0] == FOLD_ORDER[3
 from isaacsim import SimulationApp
 sim = SimulationApp({"headless": True})
 import carb, omni.physx.bindings._physx as pxb
-carb.settings.get_settings().set(pxb.SETTING_ENABLE_DEFORMABLE_BETA, True)
+if hasattr(pxb, "SETTING_ENABLE_DEFORMABLE_BETA"):   # 5.x; default in 6.x
+    carb.settings.get_settings().set(pxb.SETTING_ENABLE_DEFORMABLE_BETA, True)
 from isaacsim.core.api import World
 from isaacsim.core.prims import SingleXFormPrim
 from isaacsim.sensors.camera import Camera

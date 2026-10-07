@@ -94,3 +94,13 @@ arm scene, carton, `mug.stl`, `open_in_ui.sh`, `open_in_webrtc.sh`, `crease_hold
 - `open_in_webrtc.sh`: `--check`, auto public IP, auto free port, `OMNI_KIT_ALLOW_ROOT` only when root; READY now also printed to `logs/webrtc.log`.
 - ROS 2 libs located under `exts/isaacsim.ros2.{bridge,core}`; click→ROS auto-disabled when absent.
 - Tested on this server with pip Isaac Sim 6.0.0-rc.22: reached `[handoff] READY`, port 49100 listening. WebRTC client side not tested.
+
+## wall / lid pads against wrap poke-through (build_phys_scene.py)
+- `--wall_pad 0.02` (4 side walls, outside) and `--lid_pad 0.02` on the outer flaps `fyp,fyn` only (a pad on fxp/fxn overlaps
+  fyp/fyn and pops every lid open). Invisible (guide), mass 1e-6, collision group so they touch ONLY the wrap: rigid probe
+  dropped on a pad falls through to the table; carton mass 0.352 kg unchanged; test B carry identical to no-pad build.
+- `verify_phys_scene.py`: new test `S` (figure-8 shake, `--shake_amp/--shake_hz`), rigid-mass print, "wrap through side walls" metric.
+- Measured on Isaac Sim 6.0 (pip), same build with vs without pads — wrap verts beyond the wall's outer face, max during run:
+  S 0.6 m/s 1 -> 0; S 1.5 m/s 18 -> 12; 0 for both at the end. Fewer, not zero.
+- Isaac Sim 6.0 compat: SETTING_ENABLE_DEFORMABLE_BETA guarded (default in 6.x); tensors view needs stage_id + omni.physx.tensors.
+- `scene_final_phys.usd` NOT rebuilt here: a 6.0 build settles the mug ~90 deg differently from the delivered 5.1 build.
