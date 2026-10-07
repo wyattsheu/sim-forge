@@ -203,7 +203,8 @@ WEBRTC_NO_PLAY=1 ./open_in_webrtc.sh             # load, but don't press Play
 - Wait for `[handoff] READY` in `logs/webrtc.log` (about 20 s), then connect.
 - **In this mode you don't need Shift** — a plain left-drag grabs the carton or a lid (force mode, `pickingForce` 70).
 - `click_to_ros.py` (§9) and `lid_latch.py` are loaded too (`CLICK_TO_ROS=0` / `LID_LATCH=0` to skip).
-- Defaults: IP `140.96.68.42` (this server), signalling port 49100. **On another machine, set `WEBRTC_IP`.**
+- **Where is Isaac Sim?** The launchers find it automatically (`sim/find_isaac.sh`): binary install (`/isaac-sim`, `~/isaac-sim`, `/opt/isaac-sim` …, also inside Docker) or a pip install (`isaacsim` in a venv/conda env). If it isn't found, set `ISAAC_SIM_PATH=<dir with kit/kit>` or `ISAAC_SIM_PIP_ENV=<venv with bin/isaacsim>`. `./open_in_webrtc.sh --check` prints what it detected (Isaac Sim, IP, port, GPUs) without starting anything.
+- If `WEBRTC_IP` is unset the first non-private IPv4 of this host is used; if port 49100 is busy the next free one is used (the script prints it). Note: the first start of a pip install compiles shaders / extensions and can take ~5 min before `[handoff] READY`.
 
 ### 4.2 From the UI
 
@@ -729,7 +730,8 @@ WEBRTC_NO_PLAY=1 ./open_in_webrtc.sh             # 載入但不自動 Play
 - 等 `logs/webrtc.log` 出現 `[handoff] READY`(約 20 秒)再連線。
 - **這個模式不用按 Shift**,直接左鍵拖曳就能抓紙箱或蓋子(力量式,`pickingForce` 70)。
 - 也會載入 `click_to_ros.py`(§9)和 `lid_latch.py`(`CLICK_TO_ROS=0` / `LID_LATCH=0` 可以不載)。
-- 預設 IP `140.96.68.42`(這台伺服器)、signaling port 49100。**換機器時請設定 `WEBRTC_IP`。**
+- **Isaac Sim 在哪?** 啟動腳本會自動找(`sim/find_isaac.sh`):二進位版(`/isaac-sim`、`~/isaac-sim`、`/opt/isaac-sim` …,Docker 內也行)或 pip 版(venv / conda 裡的 `isaacsim`)。找不到就指定:`ISAAC_SIM_PATH=<含 kit/kit 的目錄>` 或 `ISAAC_SIM_PIP_ENV=<含 bin/isaacsim 的 venv>`。`./open_in_webrtc.sh --check` 只印出偵測結果(Isaac Sim、IP、port、GPU),不啟動。
+- 沒設 `WEBRTC_IP` 時用本機第一個非內網 IPv4;port 49100 被佔用會自動用下一個空的(腳本會印出來)。注意:pip 版第一次啟動要編譯 shader / extension,約 5 分鐘才會出現 `[handoff] READY`。
 
 ### 4.2 從 UI 啟動
 

@@ -26,6 +26,7 @@ _st = carb.settings.get_settings()
 
 def _log(m):
     carb.log_warn("[handoff] " + m)
+    print("[handoff] " + m, flush=True)   # 也印到 stdout,open_in_webrtc.sh 的 logs/webrtc.log 才看得到 READY
 
 
 def _mouse_drag():
