@@ -1,0 +1,103 @@
+{
+  "builder_version": "make_carton_P/2026-08-17",
+  "_note": "衍生量由建造端輸出。消費端(qa_carton / shot / stair2)讀這裡,不要自己算公式",
+  "_based_on": "make_carton_B/2026-07-30(幾何與物理係數完全相同;新增 dynamic base / 外包裝)",
+  "inputs": {
+    "ajar": 0.73,
+    "ajar_in": 1.86,
+    "anchor": false,
+    "cardboard": false,
+    "clear": 0.0025,
+    "color": "0.80,0.60,0.38",
+    "config": null,
+    "density": 200.0,
+    "dynamic": true,
+    "flush_gap": 0.001,
+    "goods_kg": 0.0,
+    "half_out": -1.0,
+    "height": 0.131,
+    "hx": 0.1335,
+    "hy": 0.1135,
+    "inner_only": false,
+    "layer_gap": 0.0065,
+    "no_flaps": false,
+    "no_limit": false,
+    "out": "/isaac-sim/test_scripts/manip_fr3/m0921/out/carton_v3.usd",
+    "parcel": -1,
+    "preset": null,
+    "reach_lower": 0.115,
+    "t": 0.0015,
+    "texprefix": "../tex"
+  },
+  "derived": {
+    "board_thickness": 0.003,
+    "wall_inner_x": 0.132,
+    "wall_inner_y": 0.112,
+    "wall_top_z": 0.131,
+    "wall_top_x": 0.12,
+    "wall_top_y": 0.1265,
+    "_wall_top_note": "±x 牆頂 = 下鉸鏈 - 2t、±y 牆頂 = 上鉸鏈 - 2t。解析掃掠 0~180° 實測這樣蓋子才 0 重疊箱壁;只到鉸鏈高度還有 180/361 重疊",
+    "upper_hinge_z": 0.1295,
+    "lower_hinge_z": 0.123,
+    "layer_gap": 0.0065,
+    "flap_half_width_lower": 0.1095,
+    "flap_half_width_upper": 0.131,
+    "reach_x": 0.115,
+    "reach_y": 0.1105,
+    "lower_flap_gap": 0.034,
+    "_lower_gap_note": "兩片下蓋之間的縫隙 = 內腔 2*IN_X - 2*reach_x。使用者 2026-09-29 指定下蓋長度 115mm ⇒ 縫隙 34mm(真實 RSC 內側短翼不對接)",
+    "lever_arm": 0.0010000000000000009,
+    "_lever_note": "上層蓋側邊到下層蓋摺線的距離。壓上層蓋推下層蓋的力臂",
+    "force_cap_torque_Nm_at_30N": 3.315,
+    "_force_cap_note": "★ 力上限是「力的上限」不是力矩上限:τ_max = 30 N × 力臂。尺寸不同 → 上限不同,不可共用"
+  },
+  "mass": {
+    "mode": "density",
+    "density": 200.0,
+    "lower_flap_kg": 0.015111000000000001,
+    "upper_flap_kg": 0.0173706
+  },
+  "precamber": {
+    "ajar_in_deg": 1.86,
+    "ajar_deg": 0.73,
+    "_note": "上翹量只對這組板厚+密度+摺線軟硬+尺寸有效,任一項變動要重新校準"
+  },
+  "goods": null,
+  "anchored": false,
+  "_anchored_note": null,
+  "base_dynamic": true,
+  "_base_dynamic_note": "dynamic:S0 0.10 有鑑別力",
+  "packaging": {
+    "parcel_seed": -1,
+    "cardboard": false,
+    "texprefix": "../tex",
+    "textures": [],
+    "_note": "貼花是 visual-only(無 CollisionAPI/RigidBody),物理與無包裝版完全相同。貼圖用相對路徑 → USD 搬家要連 tex 目錄一起搬"
+  },
+  "prims": {
+    "carton_root_hint": "/Box",
+    "base": "/Box/base",
+    "walls": [
+      "wxp",
+      "wxn",
+      "wyp",
+      "wyn"
+    ],
+    "lower_flaps": [
+      "fxp",
+      "fxn"
+    ],
+    "upper_flaps": [
+      "fyp",
+      "fyn"
+    ],
+    "joints": [
+      "crease_fxp",
+      "crease_fxn",
+      "crease_fyp",
+      "crease_fyn"
+    ],
+    "geo_child": "geo",
+    "_crease_note": "joint 無 drive。彈性由 runner 每一個物理步外加,見 crease_physics.py"
+  }
+}

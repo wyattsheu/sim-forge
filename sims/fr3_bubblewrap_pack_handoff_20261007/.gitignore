@@ -1,0 +1,17 @@
+# 影片與執行輸出:用 ./make_videos.sh、sim/run_demo.sh 重新產生,不進版控
+videos/
+*.mp4
+logs/
+*.stdout
+__pycache__/
+*.pyc
+sim/c1/
+sim/c2/
+sim/box/
+sim/mb_open/
+sim/list.txt
+sim/phys*/
+sim/ui_check/
+# repo 根目錄的 .gitignore 擋掉了 *.usd,這裡放行:場景、手臂場景、紙箱都要讓人 clone 下來就能用
+!*.usd
+!**/*.usd
