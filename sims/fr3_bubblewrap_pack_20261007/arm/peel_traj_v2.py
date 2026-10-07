@@ -19,7 +19,11 @@ ap.add_argument("--lid_mode", default="lift", choices=["corner", "lift"])
 ap.add_argument("--lid_mid", type=float, default=70.0, help="兩段式:手掀到這個角度就放手,之後蓋子 kinematic 轉到 180")
 ap.add_argument("--ajar", type=float, default=12.0, help="lift 模式:蓋子先 kinematic 轉開的角度(手做不到的那一步)")
 ap.add_argument("--fx_open", type=int, default=1)
+ap.add_argument("--open_deg", type=float, default=180.0, help="(b) 前蓋/下蓋開到的角度;180 = 平躺在鉸鏈高度,>180 = 往外垂、貼外牆")
+ap.add_argument("--only", default="all", choices=["all", "a", "b"])
 ap.add_argument("--arc_R", type=float, default=60.0)
+ap.add_argument("--psi", type=float, default=0.0, help="(b) 允許開合軸繞指尖軸偏離邊法線的最大角度(°);0 = 嚴格照規格")
+ap.add_argument("--grasp", type=int, default=1, help="g3 排名第幾個抓取點(1 或 2 有方向資料)")
 ap.add_argument("--video_name", default="arm_peel_dry_v2.mp4")
 ap.add_argument("--out", default=None)
 ap.add_argument("--no_video", action="store_true")
@@ -34,7 +38,7 @@ import robot_model as RM
 from isaacsim.robot_motion.motion_generation import LulaKinematicsSolver
 import lula, trimesh
 from scipy.spatial import cKDTree
-TAG = "v2_%s_fx%d" % (a.lid_mode, a.fx_open)
+TAG = "v2_%s_fx%d_g%d_psi%d_o%d" % (a.lid_mode, a.fx_open, a.grasp, a.psi, a.open_deg)
 OUT = a.out or os.path.join(HERE, "videos", a.video_name)
 os.makedirs(os.path.join(HERE, "videos"), exist_ok=True); os.makedirs(os.path.join(HERE, "logs"), exist_ok=True)
 LOG = open(os.path.join(HERE, "logs", "peel_traj_%s.log" % TAG), "w")
@@ -234,19 +238,24 @@ def arm_world(side, q6, g):
     return W
 def arm_clear(side, q6, g, lids):
     W = arm_world(side, q6, g); allp = np.vstack(list(W.values()))
-    best = ((allp[:, 2].min() - TABLE_Z) * 1e3, "table")
+    best = ((allp[:, 2].min() - TABLE_Z) * 1e3, "table", "")
     for o in OBB:
         T = lid_T(o["body"], lids[o["body"]]) if o["body"] != "base" else np.eye(4)
-        d = sdist(allp, o, T).min() * 1e3
-        if d < best[0]: best = (d, o["name"])
+        for b, pts in W.items():
+            d = sdist(pts, o, T).min() * 1e3
+            if d < best[0]: best = (d, o["name"], b.rsplit("follower_", 1)[-1])
     return best, allp
-def ik_cf(side, pos, R, q_prev, phi_prev, g, lids, phis, other=None, maxjump=25.0, nseed=10):
+DIAG = [None]
+PSIS = [0.0]
+def ik_cf(side, pos, R, q_prev, phi_prev, g, lids, phis, other=None, maxjump=25.0, nseed=10, psis=None):
     """φ(繞開合軸)依離 phi_prev 近排序;每個候選解都做幾何碰撞檢查(紙箱/桌面;other=(points) 時再加兩臂距離)。"""
     m = ARMS[side]; rng = np.random.default_rng(5)
     tree = cKDTree(other) if other is not None else None
     away = np.array([0, 1.0, 0]) if side == "left" else np.array([0, -1.0, 0])
-    for ph in sorted(phis, key=lambda p: (abs(p - phi_prev), abs(p))):
-        Rp = rot_axis(R[:, 1], ph) @ R
+    cand = [(ph, ps) for ps in (psis or [0.0]) for ph in sorted(phis, key=lambda p: (abs(p - phi_prev), abs(p)))]
+    for ph, ps in cand:
+        R1 = rot_axis(R[:, 0], ps) @ R                     # ψ:繞指尖軸
+        Rp = rot_axis(R1[:, 1], ph) @ R1
         for flip in sorted((1, -1), key=lambda f_: -(f_ * Rp[:, 2] @ away)):
             Rf = Rp.copy()
             if flip < 0: Rf[:, 1] *= -1; Rf[:, 2] *= -1
@@ -255,23 +264,29 @@ def ik_cf(side, pos, R, q_prev, phi_prev, g, lids, phis, other=None, maxjump=25.
                 qs, ok = m["sol"].compute_inverse_kinematics("tcp", pos, quat(Rf), warm_start=np.asarray(w))
                 qs = wrap_lim(qs, m["lo"], m["hi"])
                 good, pe, oe = check(side, qs, pos, Rf)
-                if not good or (q_prev is not None and np.max(np.abs(qs - q_prev)) > math.radians(maxjump)): continue
-                (d, nm), allp = arm_clear(side, qs, g, lids)
-                if d < PLAN_TOL: continue
+                if not good or (q_prev is not None and maxjump and np.max(np.abs(qs - q_prev)) > math.radians(maxjump)): continue
+                (d, nm, bn), allp = arm_clear(side, qs, g, lids)
+                if d < PLAN_TOL:
+                    if DIAG[0] is None or d > DIAG[0][0]: DIAG[0] = (d, nm, bn, ph, ps)
+                    continue
                 if tree is not None and tree.query(allp, k=1)[0].min() * 1e3 < ARM_MIN: continue
+                LASTPSI[0] = ps
                 return qs, ph
     return None, None
-def cart_cf(side, poses, q0, phi0, g, lids_seq, phis, label, other_seq=None):
-    qs, phs = [], []; q, ph = q0, phi0
+LASTPSI = [0.0]; USEDPSI = set()
+def cart_cf(side, poses, q0, phi0, g, lids_seq, phis, label, other_seq=None, psis=None):
+    qs, phs = [], []; q, ph = q0, phi0; USEDPSI.clear()
     for i, (p_, R_) in enumerate(poses):
         lids = lids_seq[i] if isinstance(lids_seq, list) else lids_seq
         oth = other_seq[i] if isinstance(other_seq, list) else other_seq
-        qn, phn = ik_cf(side, p_, R_, q, ph, g, lids, phis, oth)
+        DIAG[0] = None
+        qn, phn = ik_cf(side, p_, R_, q, ph, g, lids, phis, oth, psis=psis); USEDPSI.add(LASTPSI[0])
         if qn is None:
-            P("  ✗ %s(%s):第 %d/%d 點找不到無碰撞 IK(tcp 世界 %s mm)" % (label, side, i, len(poses), (p_ * 1e3).round(1).tolist()))
+            P("  ✗ %s(%s):第 %d/%d 點找不到無碰撞 IK(tcp 世界 %s mm);IK 有解但最好的仍穿入 %s" % (label, side, i, len(poses), (p_ * 1e3).round(1).tolist(),
+              "%.1fmm(%s↔%s,φ%d ψ%d)" % DIAG[0] if DIAG[0] else "—(IK 本身無解)"))
             return qs, phs, i
         qs.append(qn); phs.append(phn); q, ph = qn, phn
-    P("  %s(%s):%d 點全解,φ 用到 %s" % (label, side, len(qs), sorted(set(int(p) for p in phs))))
+    P("  %s(%s):%d 點全解,φ 用到 %s、ψ 用到 %s" % (label, side, len(qs), sorted(set(int(p) for p in phs)), sorted(int(x) for x in USEDPSI)))
     return qs, phs, None
 def pts_of(side, q, g): return np.vstack(list(arm_world(side, q, g).values()))
 
@@ -285,6 +300,7 @@ def add(name, secs, qL=None, qR=None, gL=None, gR=None, lids=None, contact=None)
     n = max(2, int(round(secs * FPS)))
     def seq(v, cur):
         if v is None: return [cur.copy() if hasattr(cur, "copy") else cur] * n
+        if isinstance(v, list) and not v: return [cur.copy() if hasattr(cur, "copy") else cur] * n
         if isinstance(v, list): return v if len(v) == n else [v[min(len(v) - 1, int(k * len(v) / n))] for k in range(n)]
         return lerp_q(np.atleast_1d(cur).astype(float), np.atleast_1d(v).astype(float), n) if hasattr(v, "__len__") else \
             [cur + (v - cur) * (0.5 - 0.5 * math.cos(math.pi * k / (n - 1))) for k in range(n)]
@@ -312,155 +328,175 @@ for side, sy in (("left", 1), ("right", -1)):
     READY[side] = qr_ if qr_ is not None else HOME
 add("a0 home→READY", 1.5, qL=READY["left"], qR=READY["right"])
 
-P("\n=== (a) %s 手掀後方上蓋 %s(%s)、%s 手壓前方上蓋 %s" % (PEEL, BACK, a.lid_mode, PRESS, FRONT))
-LB = RJ["lids"][BACK]; LF = RJ["lids"][FRONT]
-hB = np.array(LB["h"]); axB = np.array(LB["ax"]); midB = np.array(LB["mid"])
-# 角落點:外緣上、離「靠 PEEL 手那個角」50mm(箱局部 x = ±(131−50))
-sgn_peel = 1.0 if (TB[:3, :3] @ np.array([1.0, 0, 0]))[1] * (1 if PEEL == "left" else -1) > 0 else -1.0
-corner_loc = midB.copy(); corner_loc[0] = sgn_peel * (meta["flap_half_width_upper"] - 0.050)
-cw0 = (TB @ np.r_[corner_loc, 1])[:3]
-en_w = TB[:3, :3] @ ((midB - hB) - axB * ((midB - hB) @ axB)); en_w[2] = 0; en_w /= np.linalg.norm(en_w)     # 鉸鏈→外緣(水平)
-ax_w = LID[BACK]["aw"]
-P("  掀蓋點(外緣、離角 50mm):箱局部 %s → 世界 %s mm" % ((corner_loc * 1e3).round(1).tolist(), (cw0 * 1e3).round(1).tolist()))
-# 壓的手:前方上蓋板面中段、靠 PRESS 手那側 90mm、離鉸鏈 55mm;指尖距板面 +0.3mm
-hF = np.array(LF["h"]); inF = (np.array(LF["mid"]) - hF); inF[2] = 0; inF /= np.linalg.norm(inF)
-sgn_press = 1.0 if (TB[:3, :3] @ np.array([1.0, 0, 0]))[1] * (1 if PRESS == "left" else -1) > 0 else -1.0
-press_loc = hF + inF * 0.055 + np.array([sgn_press * 0.09, 0, 0]); press_loc[2] = LF["mid"][2] + 0.0015 + 0.0003
-pw = (TB @ np.r_[press_loc, 1])[:3]
-Rp0 = np.column_stack([[0, 0, -1.0], [1.0, 0, 0], [0, -1.0, 0]])
-tipP = pw + np.array([0, 0, RM.TCP_BACK])
-L0 = dict(lids0)
-qPpre, phP = ik_cf(PRESS, tipP + np.array([0, 0, 0.06]), Rp0, READY[PRESS], 0, 0.0, L0, PH_ALL)
-dnP = [(tipP + np.array([0, 0, 0.06 * (1 - u)]), Rp0) for u in np.linspace(0, 1, 25)]
-qsP, phsP, fP = cart_cf(PRESS, dnP, qPpre, phP, 0.0, L0, PH_ALL, "a2 壓的手下降到 %s 板面" % FRONT) if qPpre is not None else ([], [], 0)
-P("  壓點 世界 %s mm" % ((pw * 1e3).round(1).tolist()))
-if qPpre is None or fP is not None: FAIL.append("(a) 壓的手到不了")
-qk = lambda s_: "qL" if s_ == "left" else "qR"; gk = lambda s_: "gL" if s_ == "left" else "gR"
+if a.only != "b":
+    P("\n=== (a) %s 手掀後方上蓋 %s(%s)、%s 手壓前方上蓋 %s" % (PEEL, BACK, a.lid_mode, PRESS, FRONT))
+    LB = RJ["lids"][BACK]; LF = RJ["lids"][FRONT]
+    hB = np.array(LB["h"]); axB = np.array(LB["ax"]); midB = np.array(LB["mid"])
+    # 角落點:外緣上、離「靠 PEEL 手那個角」50mm(箱局部 x = ±(131−50))
+    sgn_peel = 1.0 if (TB[:3, :3] @ np.array([1.0, 0, 0]))[1] * (1 if PEEL == "left" else -1) > 0 else -1.0
+    corner_loc = midB.copy(); corner_loc[0] = sgn_peel * (meta["flap_half_width_upper"] - 0.050)
+    cw0 = (TB @ np.r_[corner_loc, 1])[:3]
+    en_w = TB[:3, :3] @ ((midB - hB) - axB * ((midB - hB) @ axB)); en_w[2] = 0; en_w /= np.linalg.norm(en_w)     # 鉸鏈→外緣(水平)
+    ax_w = LID[BACK]["aw"]
+    P("  掀蓋點(外緣、離角 50mm):箱局部 %s → 世界 %s mm" % ((corner_loc * 1e3).round(1).tolist(), (cw0 * 1e3).round(1).tolist()))
+    # 壓的手:前方上蓋板面中段、靠 PRESS 手那側 90mm、離鉸鏈 55mm;指尖距板面 +0.3mm
+    hF = np.array(LF["h"]); inF = (np.array(LF["mid"]) - hF); inF[2] = 0; inF /= np.linalg.norm(inF)
+    sgn_press = 1.0 if (TB[:3, :3] @ np.array([1.0, 0, 0]))[1] * (1 if PRESS == "left" else -1) > 0 else -1.0
+    press_loc = hF + inF * 0.055 + np.array([sgn_press * 0.09, 0, 0]); press_loc[2] = LF["mid"][2] + 0.0015 + 0.0003
+    pw = (TB @ np.r_[press_loc, 1])[:3]
+    Rp0 = np.column_stack([[0, 0, -1.0], [1.0, 0, 0], [0, -1.0, 0]])
+    tipP = pw + np.array([0, 0, RM.TCP_BACK])
+    L0 = dict(lids0)
+    qPpre, phP = ik_cf(PRESS, tipP + np.array([0, 0, 0.06]), Rp0, READY[PRESS], 0, 0.0, L0, PH_ALL, maxjump=None)
+    dnP = [(tipP + np.array([0, 0, 0.06 * (1 - u)]), Rp0) for u in np.linspace(0, 1, 25)]
+    qsP, phsP, fP = cart_cf(PRESS, dnP, qPpre, phP, 0.0, L0, PH_ALL, "a2 壓的手下降到 %s 板面" % FRONT) if qPpre is not None else ([], [], 0)
+    P("  壓點 世界 %s mm" % ((pw * 1e3).round(1).tolist()))
+    if qPpre is None or fP is not None: FAIL.append("(a) 壓的手到不了")
+    qk = lambda s_: "qL" if s_ == "left" else "qR"; gk = lambda s_: "gL" if s_ == "left" else "gR"
 
-def lidT_loc(deg):   # 世界 4x4:後蓋從 0° 轉到 deg
-    return lid_T(BACK, deg)
-if a.lid_mode == "corner":
-    # 外緣角落「跨邊夾」:指尖朝 −z,開合軸 = 邊法線(水平),tcp 在外緣上;蓋子 0°
-    Rc = np.column_stack([[0, 0, -1.0], en_w, np.cross([0, 0, -1.0], en_w)])
-    gC = q_for_gap(10.0)
-    otherP = pts_of(PRESS, qsP[-1], 0.0) if qsP else None
-    qpre, ph0 = ik_cf(PEEL, cw0 + np.array([0, 0, 0.06]), Rc, READY[PEEL], 0, gC, L0, PH_ALL, otherP)
-    lift_ok = False
-    if qpre is None: FAIL.append("(a) corner:預備點找不到無碰撞 IK")
+    def lidT_loc(deg):   # 世界 4x4:後蓋從 0° 轉到 deg
+        return lid_T(BACK, deg)
+    if a.lid_mode == "corner":
+        # 外緣角落「跨邊夾」:指尖朝 −z,開合軸 = 邊法線(水平),tcp 在外緣上;蓋子 0°
+        Rc = np.column_stack([[0, 0, -1.0], en_w, np.cross([0, 0, -1.0], en_w)])
+        gC = q_for_gap(10.0)
+        otherP = pts_of(PRESS, qsP[-1], 0.0) if qsP else None
+        qpre, ph0 = ik_cf(PEEL, cw0 + np.array([0, 0, 0.06]), Rc, READY[PEEL], 0, gC, L0, PH_ALL, otherP, maxjump=None)
+        lift_ok = False
+        if qpre is None: FAIL.append("(a) corner:預備點找不到無碰撞 IK")
+        else:
+            dn = [(cw0 + np.array([0, 0, 0.06 * (1 - u)]), Rc) for u in np.linspace(0, 1, 30)]
+            qsD, phD, f_ = cart_cf(PEEL, dn, qpre, ph0, gC, L0, PH_ALL, "a3 corner:跨邊下降", otherP)
+            if f_ is not None: FAIL.append("(a) corner:下降到外緣角落時無碰撞解中斷於 %d/30(跨邊夾一定會壓到/插進板子)" % f_)
+            start_q, start_ph, start_deg, T_grip = (qsD[-1], phD[-1], 0.0, None) if qsD else (qpre, ph0, 0.0, None)
+            add("a1 到預備點", 2.5, **{qk(PEEL): qpre, gk(PEEL): gC, qk(PRESS): qPpre})
+            add("a2 壓的手下降 / 掀的手跨邊下降", 1.5, **{qk(PRESS): qsP, qk(PEEL): qsD if qsD else [qpre]})
+            lift_ok = f_ is None
     else:
-        dn = [(cw0 + np.array([0, 0, 0.06 * (1 - u)]), Rc) for u in np.linspace(0, 1, 30)]
-        qsD, phD, f_ = cart_cf(PEEL, dn, qpre, ph0, gC, L0, PH_ALL, "a3 corner:跨邊下降", otherP)
-        if f_ is not None: FAIL.append("(a) corner:下降到外緣角落時無碰撞解中斷於 %d/30(跨邊夾一定會壓到/插進板子)" % f_)
-        start_q, start_ph, start_deg, T_grip = (qsD[-1], phD[-1], 0.0, None) if qsD else (qpre, ph0, 0.0, None)
-        add("a1 到預備點", 2.5, **{qk(PEEL): qpre, gk(PEEL): gC, qk(PRESS): qPpre})
-        add("a2 壓的手下降 / 掀的手跨邊下降", 1.5, **{qk(PRESS): qsP, qk(PEEL): qsD if qsD else [qpre]})
-        lift_ok = f_ is None
-else:
-    # 指尖頂起:蓋子先 kinematic 轉開 ajar°(手做不到),指尖(合指)伸到外緣角落下方 → 跟著蓋子頂到 lid_mid
-    gC = 0.0
-    otherP = pts_of(PRESS, qsP[-1], 0.0) if qsP else None
-    LA = dict(lids0, **{BACK: a.ajar})
-    TA = lidT_loc(a.ajar)
-    cwA = (TA @ np.r_[cw0, 1])[:3]
-    nA = TA[:3, :3] @ np.array([0, 0, 1.0]); enA = TA[:3, :3] @ en_w     # 板面法線(向上)、鉸鏈→外緣
-    best = None
-    for gap in (0.0015 + 0.002, 0.0015 + 0.004):          # 指尖在板底下 2 / 4mm
-        for ins in (0.004, 0.008):                         # 指尖伸進外緣內 4 / 8mm
-            tip = cwA - nA * gap - enA * ins
-            for base_a in (-enA, np.array([0, 0, -1.0])):
-                Rb = np.column_stack([base_a / np.linalg.norm(base_a), ax_w, np.cross(base_a / np.linalg.norm(base_a), ax_w)])
-                tcp = tip - Rb[:, 0] * RM.TCP_BACK
-                q_, ph_ = ik_cf(PEEL, tcp, Rb, READY[PEEL], 0, gC, LA, PH_ALL, otherP)
-                if q_ is not None:
-                    best = (gap, ins, Rb, tcp, q_, ph_); break
+        # 指尖頂起:蓋子先 kinematic 轉開 ajar°(手做不到),指尖(合指)伸到外緣角落下方 → 跟著蓋子頂到 lid_mid
+        gC = 0.0
+        otherP = pts_of(PRESS, qsP[-1], 0.0) if qsP else None
+        LA = dict(lids0, **{BACK: a.ajar})
+        TA = lidT_loc(a.ajar)
+        cwA = (TA @ np.r_[cw0, 1])[:3]
+        nA = TA[:3, :3] @ np.array([0, 0, 1.0]); enA = TA[:3, :3] @ en_w     # 板面法線(向上)、鉸鏈→外緣
+        best = None; tried = 0; BESTREJ = [None]
+        def own_clear(q):
+            W = arm_world(PEEL, q, gC); o = next(o for o in OBB if o["body"] == BACK)
+            return min(sdist(W[b], o, lidT_loc(a.ajar)).min() for b in W if ("gripper_" in b or "carriage_" in b)) * 1e3
+        for gap in [0.0015 + x * 1e-3 for x in (4, 8, 12, 16, 20, 25, 30, 35)]:   # 指軸在板底下(要量真正的指面離板距離)
+            for ins in (0.004, 0.008, 0.012):                  # 指尖伸進外緣內
+                tip = cwA - nA * gap - enA * ins
+                for base_a in (-enA, np.array([0, 0, -1.0])):
+                    Rb0 = np.column_stack([base_a / np.linalg.norm(base_a), ax_w, np.cross(base_a / np.linalg.norm(base_a), ax_w)])
+                    for phs in PH_ALL:
+                        Rb = rot_axis(Rb0[:, 1], phs) @ Rb0
+                        tcp = tip - Rb[:, 0] * RM.TCP_BACK
+                        DIAG[0] = None
+                        q_, ph_ = ik_cf(PEEL, tcp, Rb, None, 0, gC, LA, [0], otherP, maxjump=None, nseed=16)
+                        if q_ is not None and own_clear(q_) > 6.0: continue          # 指頭離板底 > 6mm 就不算「頂」
+                        if q_ is None:
+                            if DIAG[0] is not None and (BESTREJ[0] is None or DIAG[0][0] > BESTREJ[0][0]): BESTREJ[0] = DIAG[0] + (phs, gap, ins)
+                            continue
+                        tried += 1
+                        # 進場:沿指尖軸反方向退 40mm 當起點,再往上 50mm 當預備點(反著走回去)
+                        appr = [(tcp - Rb[:, 0] * 0.04 * (1 - u), Rb) for u in np.linspace(0, 1, 25)]
+                        qs0, _p0 = ik_cf(PEEL, appr[0][0], Rb, q_, 0, gC, LA, [0, 10, -10, 20, -20], otherP, maxjump=None)
+                        if qs0 is None: continue
+                        qpre, ph0 = ik_cf(PEEL, appr[0][0] + np.array([0, 0, 0.05]), Rb, qs0, _p0, gC, LA, [0, 10, -10, 20, -20], otherP, maxjump=None)
+                        if qpre is None: continue
+                        upd = [(appr[0][0] + np.array([0, 0, 0.05 * (1 - u)]), Rb) for u in np.linspace(0, 1, 15)]
+                        qsU0, phU0, fU0 = cart_cf(PEEL, upd, qpre, ph0, gC, LA, [0, 10, -10, 20, -20], "a3 lift:下降到外緣外側", otherP)
+                        if fU0 is not None: continue
+                        qsD, phD, f_ = cart_cf(PEEL, appr, qsU0[-1], phU0[-1], gC, LA, [0, 10, -10, 20, -20], "a3 lift:指尖沿指軸伸進外緣下方", otherP)
+                        if f_ is None:
+                            best = (gap, ins, phs); qsD = qsU0 + qsD; break
+                    if best: break
+                if best: break
             if best: break
-        if best: break
-    lift_ok = best is not None
-    if not lift_ok:
-        FAIL.append("(a) lift:外緣角落下方找不到無碰撞的指尖姿態")
-        add("a1 到 READY", 1.0)
-    else:
-        gap, ins, Rb, tcpA, qA, phA = best
-        Rb = rot_axis(Rb[:, 1], phA) @ Rb
-        P("  lift:蓋子先 kinematic 開到 %.0f°;指尖在板底下 %.1fmm、伸入外緣 %.0fmm、φ %d" % (a.ajar, (gap - 0.0015) * 1e3, ins * 1e3, phA))
-        # 進場:從外緣外側 40mm、同高度 → 水平伸入
-        appr = [(tcpA + enA * 0.04 * (1 - u) + np.array([0, 0, 0.05]) * max(0, 1 - 2 * u), Rb) for u in np.linspace(0, 1, 30)]
-        qpre, ph0 = ik_cf(PEEL, appr[0][0], Rb, READY[PEEL], 0, gC, LA, [0], otherP)
-        if qpre is None: qpre, ph0 = ik_cf(PEEL, appr[0][0], Rb, READY[PEEL], 0, gC, LA, PH_ALL, otherP)
-        qsD, phD, f_ = cart_cf(PEEL, appr, qpre, ph0, gC, LA, [0, 10, -10, 20, -20], "a3 lift:指尖從外側伸進外緣下方", otherP) if qpre is not None else ([], [], 0)
-        if qpre is None or f_ is not None: FAIL.append("(a) lift:進場路徑中斷"); lift_ok = False
+        lift_ok = best is not None
+        if not lift_ok:
+            FAIL.append("(a) lift:外緣角落下方找不到可無碰撞進場的指尖姿態(可 IK 且無碰撞的姿態 %d 個;有 IK 解但碰撞中最好的:%s)" % (tried, BESTREJ[0])); qpre = READY[PEEL]; qsD = []
+        else:
+            P("  lift:蓋子先 kinematic 開到 %.0f°;指軸在板底下 %.1fmm、伸入外緣 %.0fmm、指軸繞邊切線 %d°;指頭離板底 %.1fmm"
+              % (a.ajar, (best[0] - 0.0015) * 1e3, best[1] * 1e3, best[2], own_clear(qsD[-1])))
         add("a1 到預備點(壓的手 / 掀的手)", 2.5, **{qk(PRESS): qPpre, qk(PEEL): qpre if qpre is not None else READY[PEEL]})
         add("a2 壓的手下降壓住 %s" % FRONT, 1.2, **{qk(PRESS): qsP})
         add("a2b 後蓋 kinematic 開到 %.0f°(非手動)" % a.ajar, 0.8, lids={BACK: a.ajar})
         add("a3 指尖伸到外緣下方", 1.5, **{qk(PEEL): qsD if qsD else [qpre]})
         start_q, start_ph, start_deg = (qsD[-1], phD[-1], a.ajar) if qsD else (None, 0, a.ajar)
-if lift_ok:
-    # 手跟著蓋子轉到 lid_mid(剛性)
-    T0w = lidT_loc(start_deg)
-    Tt0 = fk_tcp(PEEL, start_q)
-    degs = np.linspace(start_deg, a.lid_mid, 40)
-    path = []; lseq = []
-    for d in degs:
-        Tr = lidT_loc(d) @ np.linalg.inv(T0w)
-        path.append((Tr[:3, :3] @ Tt0[:3, 3] + Tr[:3, 3], Tr[:3, :3] @ Tt0[:3, :3])); lseq.append(dict(L0, **{BACK: float(d)}))
-    if a.lid_mode == "corner": add("a3 合指", 0.5, **{gk(PEEL): q_for_gap(CLOSE_GAP)}); gC = q_for_gap(CLOSE_GAP)
-    qsL, phL, fL = cart_cf(PEEL, path, start_q, start_ph, gC, lseq, [0, 5, -5, 10, -10, 15, -15, 20, -20], "a4 掀 %s %.0f→%.0f°" % (BACK, start_deg, a.lid_mid), otherP)
-    nL = len(qsL); reached = degs[nL - 1] if nL else start_deg
-    if fL is not None: FAIL.append("(a) 後蓋只掀到 %.0f°" % reached)
-    if nL:
-        add("a4 掀 %s → %.0f°(壓的手壓住 %s)" % (BACK, reached, FRONT), 3.0 * nL / len(degs), **{qk(PEEL): qsL}, lids=lseq[:nL])
-        # 放手:沿 +外緣方向退 30mm,再往上 60mm
-        Tl = fk_tcp(PEEL, qsL[-1]); Tr = lidT_loc(reached) @ np.linalg.inv(T0w); enR = Tr[:3, :3] @ enA if a.lid_mode == "lift" else Tr[:3, :3] @ en_w
-        L_r = dict(L0, **{BACK: float(reached)})
-        if a.lid_mode == "corner": add("a5 開指", 0.4, **{gk(PEEL): q_for_gap(10.0)})
-        back = [(Tl[:3, 3] + enR * 0.03 * u + np.array([0, 0, 0.06]) * max(0, 2 * u - 1), Tl[:3, :3]) for u in np.linspace(0, 1, 30)]
-        qsB, phB, fB = cart_cf(PEEL, back, qsL[-1], phL[-1], gC if a.lid_mode == "lift" else q_for_gap(10.0), L_r, PH_ALL, "a5 掀的手退開", otherP)
-        if fB is not None: FAIL.append("(a) 退開中斷")
-        if qsB: add("a5 掀的手退開(放手,兩段式)", 1.0, **{qk(PEEL): qsB})
-add("a6 兩手回 READY", 2.0, qL=READY["left"], qR=READY["right"], gL=0.0, gR=0.0)
-add("a7 後蓋 kinematic 續轉到 180°(兩段式第二段)", 1.0, lids={BACK: 180.0})
+    if lift_ok:
+        # 手跟著蓋子轉到 lid_mid(剛性)
+        T0w = lidT_loc(start_deg)
+        Tt0 = fk_tcp(PEEL, start_q)
+        degs = np.linspace(start_deg, a.lid_mid, 40)
+        path = []; lseq = []
+        for d in degs:
+            Tr = lidT_loc(d) @ np.linalg.inv(T0w)
+            path.append((Tr[:3, :3] @ Tt0[:3, 3] + Tr[:3, 3], Tr[:3, :3] @ Tt0[:3, :3])); lseq.append(dict(L0, **{BACK: float(d)}))
+        if a.lid_mode == "corner": add("a3 合指", 0.5, **{gk(PEEL): q_for_gap(CLOSE_GAP)}); gC = q_for_gap(CLOSE_GAP)
+        qsL, phL, fL = cart_cf(PEEL, path, start_q, start_ph, gC, lseq, [0, 5, -5, 10, -10, 15, -15, 20, -20], "a4 掀 %s %.0f→%.0f°" % (BACK, start_deg, a.lid_mid), otherP)
+        nL = len(qsL); reached = degs[nL - 1] if nL else start_deg
+        if fL is not None: FAIL.append("(a) 後蓋只掀到 %.0f°" % reached)
+        if nL:
+            add("a4 掀 %s → %.0f°(壓的手壓住 %s)" % (BACK, reached, FRONT), 3.0 * nL / len(degs), **{qk(PEEL): qsL}, lids=lseq[:nL])
+            # 放手:沿 +外緣方向退 30mm,再往上 60mm
+            Tl = fk_tcp(PEEL, qsL[-1]); Tr = lidT_loc(reached) @ np.linalg.inv(T0w); enR = Tr[:3, :3] @ enA if a.lid_mode == "lift" else Tr[:3, :3] @ en_w
+            L_r = dict(L0, **{BACK: float(reached)})
+            if a.lid_mode == "corner": add("a5 開指", 0.4, **{gk(PEEL): q_for_gap(10.0)})
+            back = [(Tl[:3, 3] + enR * 0.03 * u + np.array([0, 0, 0.06]) * max(0, 2 * u - 1), Tl[:3, :3]) for u in np.linspace(0, 1, 30)]
+            qsB, phB, fB = cart_cf(PEEL, back, qsL[-1], phL[-1], gC if a.lid_mode == "lift" else q_for_gap(10.0), L_r, PH_ALL, "a5 掀的手退開", otherP)
+            if fB is not None: FAIL.append("(a) 退開中斷")
+            if qsB: add("a5 掀的手退開(放手,兩段式)", 1.0, **{qk(PEEL): qsB})
+    add("a6 兩手回 READY", 2.0, qL=READY["left"], qR=READY["right"], gL=0.0, gR=0.0)
+    add("a7 後蓋 kinematic 續轉到 180°(兩段式第二段)", 1.0, lids={BACK: 180.0})
 
-P("\n=== (b) 開其餘的蓋 → 右手掀抓取點 #1(fx_open=%d)" % a.fx_open)
-add("b0 前蓋 %s 開到 180°" % FRONT, 1.0, lids={FRONT: 180.0})
-if a.fx_open: add("b0 下蓋 fx 開到 180°", 1.2, lids=dict(fxp=180.0, fxn=180.0))
-LB_ = dict(st_["lids"])
-H = "right"; otherH = pts_of("left", READY["left"], 0.0)
-g1 = RJ["grasp"]["1"]; so = np.array(g1["so"]); av = np.array(g1["a"])
-Rg_loc = np.column_stack([av, so, np.cross(av, so)]); Rg = TB[:3, :3] @ Rg_loc
-pg = (TB @ np.r_[np.array(g1["p"]) * 1e-3, 1])[:3]
-P("  #1 世界 %s mm" % ((pg * 1e3).round(1).tolist()))
-qpre, phpre = ik_cf(H, pg + np.array([0, 0, 0.06]), Rg, READY[H], 0, gOpen, LB_, PH_WRAP, otherH)
-if qpre is None: FAIL.append("(b) 預備點無碰撞 IK 失敗")
 else:
-    add("b1 右手到 #1 上方 60mm、開指 21mm", 2.5, qR=qpre, gR=gOpen)
-    dn = [(pg + np.array([0, 0, 0.06 * (1 - u)]), Rg) for u in np.linspace(0, 1, 40)]
-    qsD, phD, f4 = cart_cf(H, dn, qpre, phpre, gOpen, LB_, PH_WRAP, "b2 下降到 #1", otherH)
-    if f4 is not None: FAIL.append("(b) 下降中斷")
-    add("b2 下降到 #1", 1.5, qR=qsD)
-    add("b3 合指到 4.5mm", 0.5, gR=gClose)
-    HY, HZ = -71.5e-3, 106e-3; Rarc = a.arc_R * 1e-3
-    gp = np.array(g1["p"]) * 1e-3
-    up = [(pg + np.array([0, 0, 0.03 * u]), Rg) for u in np.linspace(0, 1, 15)]
-    qsU, phU, f5 = cart_cf(H, up, qsD[-1], phD[-1], gClose, LB_, PH_WRAP, "b4 抬 30mm", otherH)
-    add("b4 抬 30mm", 1.0, qR=qsU)
-    gl = gp + np.array([0, 0, 0.03]); th0 = math.atan2(gl[2] - HZ, gl[1] - HY); r0 = math.hypot(gl[1] - HY, gl[2] - HZ)
-    # 半徑由 r0 縮到 Rarc(沿徑向往鉸點收 → 布只會鬆不會拉),再沿 R=60 弧走到 θ_end,最後垂直抬到 z ≥ 牆頂 + 40
-    TH_END = math.radians(100.0); Z_END = meta["wall_top_y"] + 0.040 + 0.002
-    pts = []
-    for u in np.linspace(0, 1, 12)[1:]:
-        r = r0 + (Rarc - r0) * u; pts.append((np.array([gl[0], HY + r * math.cos(th0), HZ + r * math.sin(th0)]), 0.0))
-    for t in np.linspace(th0, TH_END, 50)[1:]:
-        pts.append((np.array([gl[0], HY + Rarc * math.cos(t), HZ + Rarc * math.sin(t)]), t - th0))
-    zl = pts[-1][0][2]
-    for z in np.linspace(zl, max(zl, Z_END), 8)[1:]:
-        pts.append((np.array([gl[0], pts[-1][0][1], z]), TH_END - th0))
-    arcP = [((TB @ np.r_[p_, 1])[:3], TB[:3, :3] @ rot_axis([1, 0, 0], math.degrees(dt)) @ Rg_loc) for p_, dt in pts]
-    P("  弧線:鉸點 (y %.1f, z %.1f) mm 局部;收半徑 %.0f→%.0f mm;θ %.0f→%.0f°;終點局部 %s mm(牆頂 %.1f + 40)"
-      % (HY * 1e3, HZ * 1e3, r0 * 1e3, Rarc * 1e3, math.degrees(th0), math.degrees(TH_END), (pts[-1][0] * 1e3).round(1).tolist(), meta["wall_top_y"] * 1e3))
-    qsC, phC, f6 = cart_cf(H, arcP, qsU[-1], phU[-1], gClose, LB_, PH_WRAP, "b5 收半徑 + 弧線 + 抬高", otherH)
-    if f6 is not None: FAIL.append("(b) 弧線中斷於 %d/%d" % (f6, len(arcP)))
-    if qsC: add("b5 收半徑 + 沿 R60 弧線掀 + 抬高", 4.5 * len(qsC) / len(arcP), qR=qsC)
-    add("b6 停", 0.7)
+    add("(a) 略過:上蓋直接 kinematic 開到 180°", 1.0, lids=dict(fyp=180.0, fyn=180.0))
+    FRONT = FRONT
+if a.only != "a":
+    P("\n=== (b) 開其餘的蓋 → 右手掀抓取點 #1(fx_open=%d)" % a.fx_open)
+    add("b0 前蓋 %s 開到 %.0f°" % (FRONT, a.open_deg), 1.0, lids={FRONT: a.open_deg, BACK: a.open_deg})
+    if a.fx_open: add("b0 下蓋 fx 開到 %.0f°" % a.open_deg, 1.2, lids=dict(fxp=a.open_deg, fxn=a.open_deg))
+    LB_ = dict(st_["lids"])
+    H = "right"; otherH = pts_of("left", READY["left"], 0.0)
+    g1 = RJ["grasp"][str(a.grasp)]; so = np.array(g1["so"]); av = np.array(g1["a"])
+    Rg_loc = np.column_stack([av, so, np.cross(av, so)]); Rg = TB[:3, :3] @ Rg_loc
+    pg = (TB @ np.r_[np.array(g1["p"]) * 1e-3, 1])[:3]
+    PSB = sorted(set([0.0] + [float(x) for x in np.arange(5, a.psi + 0.1, 5)] + [-float(x) for x in np.arange(5, a.psi + 0.1, 5)]), key=abs)
+    P("  #%d 世界 %s mm;ψ 允許 ±%.0f°" % (a.grasp, (pg * 1e3).round(1).tolist(), a.psi))
+    qpre, phpre = ik_cf(H, pg + np.array([0, 0, 0.06]), Rg, READY[H], 0, gOpen, LB_, PH_WRAP, otherH, maxjump=None, psis=PSB)
+    if qpre is None: FAIL.append("(b) 預備點無碰撞 IK 失敗")
+    else:
+        add("b1 右手到 #1 上方 60mm、開指 21mm", 2.5, qR=qpre, gR=gOpen)
+        dn = [(pg + np.array([0, 0, 0.06 * (1 - u)]), Rg) for u in np.linspace(0, 1, 40)]
+        qsD, phD, f4 = cart_cf(H, dn, qpre, phpre, gOpen, LB_, PH_WRAP, "b2 下降到 #1", otherH, psis=PSB)
+        if f4 is not None: FAIL.append("(b) 下降中斷")
+        add("b2 下降到 #1", 1.5, qR=qsD)
+        add("b3 合指到 4.5mm", 0.5, gR=gClose)
+        HY, HZ = -71.5e-3, 106e-3; Rarc = a.arc_R * 1e-3
+        gp = np.array(g1["p"]) * 1e-3
+        up = [(pg + np.array([0, 0, 0.03 * u]), Rg) for u in np.linspace(0, 1, 15)]
+        qsU, phU, f5 = cart_cf(H, up, qsD[-1] if qsD else qpre, phD[-1] if phD else phpre, gClose, LB_, PH_WRAP, "b4 抬 30mm", otherH, psis=PSB)
+        add("b4 抬 30mm", 1.0, qR=qsU)
+        gl = gp + np.array([0, 0, 0.03]); th0 = math.atan2(gl[2] - HZ, gl[1] - HY); r0 = math.hypot(gl[1] - HY, gl[2] - HZ)
+        # 半徑由 r0 縮到 Rarc(沿徑向往鉸點收 → 布只會鬆不會拉),再沿 R=60 弧走到 θ_end,最後垂直抬到 z ≥ 牆頂 + 40
+        TH_END = math.radians(100.0); Z_END = meta["wall_top_y"] + 0.040 + 0.002
+        pts = []
+        for u in np.linspace(0, 1, 12)[1:]:
+            r = r0 + (Rarc - r0) * u; pts.append((np.array([gl[0], HY + r * math.cos(th0), HZ + r * math.sin(th0)]), 0.0))
+        for t in np.linspace(th0, TH_END, 50)[1:]:
+            pts.append((np.array([gl[0], HY + Rarc * math.cos(t), HZ + Rarc * math.sin(t)]), t - th0))
+        zl = pts[-1][0][2]
+        for z in np.linspace(zl, max(zl, Z_END), 8)[1:]:
+            pts.append((np.array([gl[0], pts[-1][0][1], z]), TH_END - th0))
+        arcP = [((TB @ np.r_[p_, 1])[:3], TB[:3, :3] @ rot_axis([1, 0, 0], math.degrees(dt)) @ Rg_loc) for p_, dt in pts]
+        P("  弧線:鉸點 (y %.1f, z %.1f) mm 局部;收半徑 %.0f→%.0f mm;θ %.0f→%.0f°;終點局部 %s mm(牆頂 %.1f + 40)"
+          % (HY * 1e3, HZ * 1e3, r0 * 1e3, Rarc * 1e3, math.degrees(th0), math.degrees(TH_END), (pts[-1][0] * 1e3).round(1).tolist(), meta["wall_top_y"] * 1e3))
+        qsC, phC, f6 = cart_cf(H, arcP, qsU[-1] if qsU else (qsD[-1] if qsD else qpre), phU[-1] if phU else 0, gClose, LB_, PH_WRAP, "b5 收半徑 + 弧線 + 抬高", otherH, psis=PSB)
+        if f6 is not None: FAIL.append("(b) 弧線中斷於 %d/%d" % (f6, len(arcP)))
+        if qsC: add("b5 收半徑 + 沿 R60 弧線掀 + 抬高", 4.5 * len(qsC) / len(arcP), qR=qsC)
+        add("b6 停", 0.7)
 
 # ── 碰撞(幾何)────────────────────────────────────────────
 P("\n=== 碰撞檢查(幾何:手臂 collision mesh 取樣點 vs 紙箱 Cube 有號距離;兩臂點對點;桌面)")

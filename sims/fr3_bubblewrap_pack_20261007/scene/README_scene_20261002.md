@@ -1,112 +1,711 @@
-# 【交付版 handoff】雙臂工作站 + 氣泡布包裹馬克杯入箱
+# Bubble-Wrapped Mug in a Carton — Dual-Arm Workstation (Handoff)<br>氣泡布包裹馬克杯入箱 —— 雙臂工作站(交付版)
 
-> **這是交出去的 handoff:拿到就能開場景、按 Play、用滑鼠互動、重跑模擬、重新產生影片。**
-> 開發過程(實驗、122 次模擬紀錄、volume deformable、測試集)在另一個資料夾:
-> [`sims/fr3_bubblewrap_pack_20261007`](../fr3_bubblewrap_pack_20261007) —— 接手使用不需要看那邊。
+**Language / 語言:** [English](#english) · [繁體中文](#繁體中文)
+
+---
+
+# English
+
+> **This is the delivered handoff.** Clone it and you can open the scene, press Play, interact with the mouse,
+> re-run the simulation, and regenerate every video.
+> The development history (experiments, 122 logged runs, volume-deformable work, tests) lives in
+> [`sims/fr3_bubblewrap_pack_20261007`](../fr3_bubblewrap_pack_20261007). You don't need it to use this package.
 
 | | |
 |---|---|
-| 版本 | handoff_20261007(= 2026-10-02 交付的場景與模擬 + 2026-10-07 補上 UI / WebRTC 使用方式、修正 UI 按 Play 時箱子下陷) |
-| 環境 | Isaac Sim 5.1.0、RTX 5090、driver 580。docker 裡可以直接把 GUI 開到 host 的 `DISPLAY=:1` |
-| 取得 | git:`sims/fr3_bubblewrap_pack_handoff_20261007/`(不含影片,用 `./make_videos.sh` 產生)<br>tgz:`handoff_20261007.tgz`(含影片) |
+| **Version** | handoff_20261007 — scene and simulation from 2026-10-02, plus UI / WebRTC usage and a Play fix added 2026-10-07 |
+| **Tested on** | Isaac Sim 5.1.0, RTX 5090, NVIDIA driver 580 |
+| **Get it** | git: this folder (videos excluded — run `./make_videos.sh`) · tarball: `handoff_20261007.tgz` (videos included) |
+
+## Contents
+
+1. [Quick start](#1-quick-start)
+2. [Which scene file to open](#2-which-scene-file-to-open)
+3. [Using the Isaac Sim UI](#3-using-the-isaac-sim-ui)
+4. [Remote viewing over WebRTC](#4-remote-viewing-over-webrtc)
+5. [Videos](#5-videos)
+6. [Files](#6-files)
+7. [Scripts: which run where](#7-scripts-which-run-where)
+8. [Technical reference](#8-technical-reference)
+9. [Known issues](#9-known-issues)
 
 ---
 
-## 0. 三十秒上手
+## 1. Quick start
 
 ```bash
-./open_in_ui.sh            # 本機有螢幕:開 Isaac Sim 視窗並載入場景
-./open_in_webrtc.sh        # 遠端看:開 WebRTC 串流,用 Streaming Client 連進來(§5)
-./make_videos.sh           # 產生驗證影片(約 5 分鐘);加 --demo 連成果影片一起產生(再加約 10 分鐘)
+./open_in_ui.sh        # local desktop: open Isaac Sim with the scene loaded
+./open_in_webrtc.sh    # remote: stream it, connect with the WebRTC Streaming Client (§4)
+./make_videos.sh       # regenerate the verification videos; add --demo for the 62 s result video
 ```
-進到畫面後:按 ▶ **Play** → **Alt + 左鍵**拖曳旋轉視角 → **Shift + 左鍵**拖曳紙箱或蓋子。
 
-> ⚠️ 在 UI 裡要按 Play,請開 **`scene_final_ui.usd`**。原檔 `scene_final.usd` 直接 Play 時,箱子會陷進桌面 48 mm(§3)。
+Once the viewport is up:
+
+1. Press **▶ Play** (left toolbar).
+2. **Alt + left-drag** to orbit the camera.
+3. **Shift + left-drag** on the carton or a lid to pull it around.
 
 ---
 
-## 1. 內容
+## 2. Which scene file to open
 
-```
-README.md                     本文件
-scene_final.usd               ★ 主交付:雙臂工作站 + 紙箱 + 箱內的氣泡布包裹 + 馬克杯(單一檔案,14 MB)
-scene_final_ui.usd            UI 用:= scene_final.usd + 摺痕關節 drive + 調好的 PhysicsScene(§3)
-open_in_ui.sh                 開 Isaac Sim GUI 並載入場景
-open_in_webrtc.sh             開 WebRTC 串流並載入場景(--stop 停止)
-make_videos.sh                重新產生 videos/ 的所有影片
-videos/                       影片(只在 tgz 裡有;git 版用 make_videos.sh 產生,§7)
-sim/                          模擬與工具(平鋪目錄,直接在裡面跑)
-  wrap_sim.py                   模擬本體(Isaac Sim 5.1 surface deformable)
-  grip_common.py                wrap_sim.py 的共用零件
-  crease_physics.py             紙箱摺痕的彈塑性模型(降伏 + 硬化)
-  crease_hold_ui.py             UI 的 Script Editor 用:摺痕力矩 + 解算器修正(§4.4)
-  webrtc_boot.py                open_in_webrtc.sh 的開機腳本(kit --exec)
-  scene_physics_check.py        對 scene_final.usd 開物理(World 路徑)、錄影、量數字
-  ui_path_check.py              用「跟 UI 一樣」的 Play 路徑量數字(§3)
-  orbit_video.py                場景環繞影片(只算圖,不跑物理)
-  run_demo.sh                   一鍵跑四段模擬 + 串成 DEMO 影片
-  make_carton_P.py, make_definitive.sh   紙箱產生器
-  carton.usd / carton.meta.json 紙箱資產(270 x 230 x 134 mm,4 片蓋)+ 幾何參數
-  mug.stl, bubble_normal.png, floor_edges.json
-states/                       四段模擬結束時的布 + 杯子頂點(c1, c2, box, mb_open),可以從中間接著跑
-build/
-  build_full_scene.py           重組 scene_final.usd
-  stationary_ai_carton_scene_flat.usd   原始雙臂手臂場景(14 MB)
-```
-
----
-
-## 2. Python 腳本一覽 —— 哪些可以進 UI、哪些不行
-
-**會自己建 `SimulationApp` 的腳本,不能貼進 UI 的 Script Editor**(等於在已經開著的 Kit 裡再開一個 Kit,會當掉或卡死),
-只能在終端機用 `/isaac-sim/python.sh` 跑。
-
-| 檔案 | 角色 | 怎麼用 |
+| File | Use it for | What happens on Play |
 |---|---|---|
-| `sim/crease_hold_ui.py` | UI 用:摺痕 + 解算器修正 | ✅ **唯一在 UI 裡執行的**(§4.4) |
-| `sim/webrtc_boot.py` | WebRTC 開機腳本 | 由 `open_in_webrtc.sh` 用 `kit --exec` 帶起來,不用手動執行 |
-| `sim/crease_physics.py` | 彈塑性摺痕模型(函式庫) | 不用手動載入,其他腳本會 import |
-| `sim/grip_common.py` | 場景 / deformable / 夾爪共用零件(函式庫) | 不用手動載入,`wrap_sim.py` 會 import |
-| `sim/wrap_sim.py` | 主模擬:包布 → 入箱 → 搬箱 | ❌ 終端機,用 `sim/run_demo.sh` 或 `./make_videos.sh --demo` |
-| `sim/scene_physics_check.py` | 物理驗證 + 錄影 | ❌ 終端機(§6、§7) |
-| `sim/ui_path_check.py` | UI 路徑的 Play 驗證 | ❌ 終端機(§3) |
-| `sim/orbit_video.py` | 環繞影片 | ❌ 終端機(§7) |
-| `sim/make_carton_P.py` | 紙箱產生器 | ❌ 終端機,由 `make_definitive.sh` 呼叫 |
-| `build/build_full_scene.py` | 重組 scene_final.usd | ❌ 終端機(§8) |
+| **`scene_final_ui.usd`** | **Interactive use in the UI** (the default for both launch scripts) | Carton stays put (0.00 mm), lids hold (≤ 0.75°) |
+| `scene_final.usd` | The canonical deliverable; headless scripts; the elastoplastic crease (§3.4) | ⚠️ Pressed directly in the UI, **the carton sinks 48 mm into the table** |
 
-相依關係:
+**Why:** `scene_final.usd` has no PhysicsScene, so the UI creates a default one
+(60 Hz, 1 position iteration, 0 velocity iterations), which is too weak to hold the carton up.
+`scene_final_ui.usd` is the same scene with a properly tuned PhysicsScene and spring drives on the four lid creases.
+Details and measurements: [§8.2](#82-the-play-fix-in-scene_final_uiusd).
+
+---
+
+## 3. Using the Isaac Sim UI
+
+### 3.1 Open the scene
+
+**From the command line**
+
+```bash
+./open_in_ui.sh                    # opens scene_final_ui.usd
+./open_in_ui.sh scene_final.usd    # or any other USD
+```
+
+**From the UI**
+
+1. Start Isaac Sim, either way:
+   - run `/isaac-sim/isaac-sim.sh` (as root, `export OMNI_KIT_ALLOW_ROOT=1` first), or
+   - run `/isaac-sim/isaac-sim.selector.sh` → choose **Isaac Sim Full** → **START**.
+2. Open the file, either way:
+   - **File → Open** → pick `scene_final_ui.usd`, or
+   - in the **Content** panel, paste this folder's path into the address bar and **double-click** `scene_final_ui.usd`.
+     (Don't drag the USD into the viewport — that adds it as a reference instead of opening it.)
+   - Next time: **File → Open Recent**.
+3. Press **▶ Play**.
+
+### 3.2 Camera and selection
+
+| Action | Input |
+|---|---|
+| Orbit | **Alt + left-drag** |
+| Pan | **Middle-drag** |
+| Zoom | **Scroll wheel**, or **Alt + right-drag** |
+| Look around / fly | **Right-drag** (hold right button + **WASD** to fly) |
+| Select / frame selection | **Left-click** / **F** |
+| Move / rotate / scale gizmo | **W / E / R** (**Q** returns to select) |
+
+### 3.3 Interacting with physics (while playing)
+
+| Input | Effect |
+|---|---|
+| **Shift + left-drag** | Grab a rigid body and drag it |
+| **Shift + left double-click** | Push it |
+
+Grab strength is under the Physics settings → **Mouse Interaction** (Grab Force Coeff, Push Acceleration).
+
+| Object | Prim | Can you grab it? |
+|---|---|---|
+| Carton body (floor + 4 walls) | `/World/Packed/Box/base` | ✅ rigid body |
+| Four lids | `/World/Packed/Box/{fxp,fxn,fyp,fyn}` | ✅ rigid bodies, hinged to the base by crease joints |
+| Bubble wrap | `/World/Packed/Wrap` | ❌ static mesh — no collider, no rigid body (lids pass through it) |
+| Mug | `/World/Packed/Mug` | ❌ static mesh — no collider, no rigid body |
+| Arms | `/World/stationary_ai` | Drive the joints instead (§3.5) |
+
+The wrap and mug are the simulation result baked into fixed geometry ("the packed state").
+Surface-deformable state cannot be stored in USD.
+
+### 3.4 Real elastoplastic creases (lids stay where you bend them)
+
+In `scene_final_ui.usd` the creases are springs: bend a lid open and it springs back to 0°.
+To get the real behaviour — bend past the yield moment and the lid stays at its new angle —
+open **`scene_final.usd`** and run `sim/crease_hold_ui.py`:
+
+**Point-and-click**
+
+1. **Window → Script Editor**
+2. In the Script Editor: **File → Open** (Alt + O) → `sim/crease_hold_ui.py`
+3. If this package is **not** at `/isaac-sim/test_scripts/manip_fr3/handoff_20261002/`,
+   set line 16, `SIM_DIR_OVERRIDE = ""`, to the full path of your `sim/` folder.
+4. Click **Run** (Ctrl + Enter).
+
+**Or paste one line** (finds its own folder; no editing needed)
+
+```python
+p = "/your/path/sim/crease_hold_ui.py"; exec(compile(open(p).read(), p, "exec"))
+```
+
+Then press Play. The script
+
+- tunes the PhysicsScene (same values as `scene_final_ui.usd`), so the carton doesn't sink, and
+- applies `ElastoplasticCrease.step()` to all four lids on every physics step
+  (k = 3.2, My0 = 0.60, H = 0.85, c = 0.33, clip = 3.0 — same as `wrap_sim.py`), with +τ on each lid and −τ on the base.
+
+Run `crease_stop()` to detach it. Don't run it on `scene_final_ui.usd` — the spring drives and crease torques would add up.
+
+### 3.5 Moving the arms
+
+Both arms are one articulation (root `/World/stationary_ai/root_joint`). Every joint already has a drive (target 0).
+While playing:
+
+| Joint | Prim (under `/World/stationary_ai/joints/`) | Drive |
+|---|---|---|
+| 6-axis arm | `follower_{left,right}_joint_0` … `_5` | angular; stiffness 664–738 (joints 0–2), 33–62 (joints 3–5) |
+| Gripper | `follower_{left,right}_left_carriage_joint` | linear, target in metres (`right_carriage_joint` has no drive) |
+
+- One joint: select it in the Stage panel → **Property → Drive → Target Position** (degrees).
+- All joints with sliders: **Window → Physics Inspector**.
+
+---
+
+## 4. Remote viewing over WebRTC
+
+The server streams the full Isaac Sim UI; you watch and control it from another computer with the
+**Isaac Sim WebRTC Streaming Client** (desktop app from NVIDIA's Isaac Sim download page).
+Everything in §3 works the same in the stream.
+
+### 4.1 From the command line (recommended)
+
+The script opens the scene, sets the camera, enables mouse dragging, and presses Play for you.
+
+```bash
+./open_in_webrtc.sh                              # scene_final_ui.usd
+./open_in_webrtc.sh scene_final.usd --crease     # original scene + elastoplastic creases (§3.4)
+WEBRTC_IP=<public IP> WEBRTC_PORT=49110 ./open_in_webrtc.sh
+WEBRTC_NO_PLAY=1 ./open_in_webrtc.sh             # load, but don't press Play
+./open_in_webrtc.sh --stop                       # stop the stream
+```
+
+- Wait for `[handoff] READY` in `logs/webrtc.log` (about 20 s), then connect.
+- **In this mode you don't need Shift** — a plain left-drag grabs the carton or a lid.
+- Defaults: IP `140.96.68.42` (this server), signalling port 49100. **On another machine, set `WEBRTC_IP`.**
+
+### 4.2 From the UI
+
+1. On the server desktop, run `/isaac-sim/isaac-sim.selector.sh` (App Selector).
+2. Choose **Isaac Sim Full Streaming**.
+3. If the public IP isn't the default, put `--/app/livestream/publicEndpointAddress=<public IP>` in **Extra Args**.
+4. Click **START**.
+5. Connect with the Streaming Client, then **File → Open** `scene_final_ui.usd` and press Play
+   (here physics dragging needs **Shift + left-drag**).
+
+### 4.3 Connecting
+
+- Streaming Client → enter the server IP → **Connect**.
+- Firewall: open **TCP 49100** (signalling) and **UDP 47998** (media).
+
+Tested 2026-10-07: both command-line modes reached READY in about 20 s (591–592 prims loaded, port 49100 listening, physics running),
+and `--stop` shut them down cleanly. The client side was not tested — there was no client on the server.
+
+---
+
+## 5. Videos
+
+Videos are **not in git**. One command regenerates all of them into `videos/`:
+
+```bash
+./make_videos.sh                  # the first four videos below
+./make_videos.sh --demo           # plus the 62 s DEMO (needs GPU)
+VIDEO_DIR=/tmp/v ./make_videos.sh # write somewhere else
+```
+
+| Video | Shows | Make it alone (run inside `sim/`) |
+|---|---|---|
+| `scene_physics_crease_on.mp4` | 8 s of physics, lids closed, crease torques on | `python.sh scene_physics_check.py ../scene_final.usd --out phys --secs 8` |
+| `scene_physics_crease_off.mp4` | Control: no crease — the lower lids fall into the box | `python.sh scene_physics_check.py ../scene_final.usd --out phys_nc --secs 8 --no_crease` |
+| `scene_physics_open_lids.mp4` | Lids opened 170°, 10 s of physics, ends looking down into the box | `python.sh scene_physics_check.py ../scene_final.usd --out phys_open --secs 10 --open_deg 170` |
+| `scene_final_orbit.mp4` | 12 s orbit around the scene (render only, no physics) | `python.sh orbit_video.py ../scene_final.usd orbit.mp4` |
+| `DEMO_new_order_sheet400.mp4` | Result: wrap first pair of sides → second pair → into the box, lids closed → move the box, open lids (62 s) | `./run_demo.sh` (writes `sim/DEMO.mp4`) |
+
+`python.sh` means `/isaac-sim/python.sh`. Each physics video gets a matching `.log` with per-second numbers.
+
+**How long it takes:** a full `./make_videos.sh --demo` run was measured on 2026-10-07 on a GPU shared with other jobs —
+physics videos about 3 min, orbit about 25 min, DEMO about 6 min, **about 32 min in total**. Expect less on an idle GPU.
+
+---
+
+## 6. Files
+
+```
+README.md                       this document (English + 繁體中文)
+scene_final.usd                 ★ the deliverable: dual-arm workstation + carton + wrapped mug (single file, 14 MB)
+scene_final_ui.usd              same scene + tuned PhysicsScene + lid spring drives, for the UI (§2)
+open_in_ui.sh                   open in the local Isaac Sim UI
+open_in_webrtc.sh               open over WebRTC (--stop to stop)
+make_videos.sh                  regenerate videos/
+videos/                         videos (tarball only; regenerate with make_videos.sh)
+sim/                            simulation and tools — flat folder, run scripts from inside it
+  wrap_sim.py                     the simulation (Isaac Sim 5.1 surface deformable)
+  grip_common.py                  shared parts for wrap_sim.py
+  crease_physics.py               elastoplastic crease model (yield + hardening)
+  crease_hold_ui.py               for the UI Script Editor: crease torques + PhysicsScene fix (§3.4)
+  webrtc_boot.py                  boot script for open_in_webrtc.sh (kit --exec)
+  scene_physics_check.py          physics check + video, through isaacsim.core World
+  ui_path_check.py                physics check through the same Play path the UI uses (§8.2)
+  orbit_video.py                  orbit video (render only)
+  run_demo.sh                     run the four simulation stages and stitch DEMO.mp4
+  make_carton_P.py, make_definitive.sh   carton generator
+  carton.usd, carton.meta.json    carton asset (270 × 230 × 134 mm, 4 lids) and its geometry parameters
+  mug.stl, bubble_normal.png, floor_edges.json
+states/                         cloth + mug vertices at the end of each stage (c1, c2, box, mb_open); resume from any of them
+build/
+  build_full_scene.py             rebuild scene_final.usd (§8.5)
+  stationary_ai_carton_scene_flat.usd   the original dual-arm scene (14 MB)
+```
+
+---
+
+## 7. Scripts: which run where
+
+> **Never paste a script that creates its own `SimulationApp` into the Script Editor.**
+> That starts a second Kit inside the running one and hangs or crashes it. Run those from a terminal with `/isaac-sim/python.sh`.
+
+| Script | What it is | How to run it |
+|---|---|---|
+| `sim/crease_hold_ui.py` | Crease torques + PhysicsScene fix | ✅ **The only one you run inside the UI** (§3.4) |
+| `sim/webrtc_boot.py` | WebRTC boot script | Started by `open_in_webrtc.sh` via `kit --exec` |
+| `sim/crease_physics.py` | Crease model (library) | Imported by the other scripts |
+| `sim/grip_common.py` | Shared simulation parts (library) | Imported by `wrap_sim.py` |
+| `sim/wrap_sim.py` | Wrap → box → move simulation | Terminal: `sim/run_demo.sh` or `./make_videos.sh --demo` |
+| `sim/scene_physics_check.py` | Physics check + video | Terminal (§5, §8.3) |
+| `sim/ui_path_check.py` | UI-path Play check | Terminal (§8.2) |
+| `sim/orbit_video.py` | Orbit video | Terminal (§5) |
+| `sim/make_carton_P.py` | Carton generator | Terminal, called by `make_definitive.sh` |
+| `build/build_full_scene.py` | Rebuild the scene | Terminal (§8.5) |
+
+```
+wrap_sim.py ──► grip_common.py
+            └─► crease_physics.py ◄── scene_physics_check.py
+                                  ◄── crease_hold_ui.py ◄── ui_path_check.py --crease_script
+                                                        ◄── webrtc_boot.py (open_in_webrtc.sh --crease)
+```
+
+Everything sits in `sim/`; no PYTHONPATH setup is needed.
+
+---
+
+## 8. Technical reference
+
+### 8.1 Scene layout (`scene_final.usd`)
+
+| Item | Value |
+|---|---|
+| Arm scene | `build/stationary_ai_carton_scene_flat.usd`; arms and table **unchanged** |
+| Original `/World/Carton` | Removed; replaced by `/World/Packed` (Box + Wrap + Mug) |
+| Placement | Aligned with the original carton: centre (x, y) = (−20, 0) mm, carton floor z = 20 mm (= table top) |
+| Orientation | Rotated 90° about z; the 270 mm side runs along y (between the arms) |
+| Carton bounding box (world) | x −135…95, y −135…135, z 20…154 mm |
+| Clearance to grippers | 68.7 mm in y for all four gripper fingers |
+| Wrap and mug | From the end of simulation stage 3 (`states/box.npz`); every vertex checked inside the carton cavity |
+| Lids | All four closed (USD default angle = end of simulation) |
+| External dependencies | Carton flattened into the file; only the two NVIDIA cloud MDL materials the arm scene already used |
+| Units / axes | Z-up, metersPerUnit = 1 |
+
+The crease joints are passive (±185°, no drive). The elastoplastic crease (`crease_physics.py`) is a torque applied every physics step
+at run time, so it cannot live in USD. In your own code, apply `ElastoplasticCrease.step()` to
+`/World/Packed/Box/crease_{fxp,fxn,fyp,fyn}` every step — see `scene_physics_check.py` for the shortest example.
+
+### 8.2 The Play fix in `scene_final_ui.usd`
+
+| Change | Value |
+|---|---|
+| `/physicsScene` | 120 Hz, TGS, min position iterations 8, min velocity iterations 1, GPU aggregate pairs 8192 |
+| `/World/Packed/Box/crease_{fxp,fxn,fyp,fyn}` | angular drive: stiffness 0.056 N·m/deg, damping 0.006 N·m·s/deg, max force 3.0, target 0 |
+
+The drive values are the elastic part of the crease model (k = 3.2 N·m/rad, c = 0.33 N·m·s/rad), converted to the per-degree units USD angular drives use.
+
+Measured with `sim/ui_path_check.py` (opens the file and presses Play exactly like the UI does; 8 s; 2026-10-07):
+
+| Route | Max carton z drift | Max lid angle | |
+|---|---|---|---|
+| A. `scene_final_ui.usd`, Play | **0.00 mm** | 0.75° | ✅ |
+| B. `scene_final.usd` + `crease_hold_ui.py` | **0.00 mm** | 0.08° | ✅ |
+| Control: `scene_final.usd`, Play | **48.12 mm** | 2.60° | ❌ carton sinks into the table |
+
+```bash
+cd sim
+/isaac-sim/python.sh ui_path_check.py ../scene_final_ui.usd                 # A
+/isaac-sim/python.sh ui_path_check.py ../scene_final.usd --crease_script    # B
+/isaac-sim/python.sh ui_path_check.py ../scene_final.usd                    # control
+```
+
+The headless `scene_physics_check.py` never showed the sinking because `isaacsim.core.World` applies better solver defaults.
+
+### 8.3 Physics check through `World` (`scene_physics_check.py`)
+
+Re-run on 2026-10-07 with `make_videos.sh`; identical to the 2026-10-02 numbers.
+
+| Check | Lids closed + crease | Lids opened 170° + crease | Lids closed, no crease (control) |
+|---|---|---|---|
+| Carton displacement | 0.00 mm | 0.00 mm | 0.00 mm |
+| Carton floor − table top | 0.00 mm | 0.00 mm | 0.00 mm |
+| Lower lids fxp / fxn, max angle | 0.3° / 0.3° | 0.3° / 0.3° | **91.7° / 91.7° (fall into the box)** |
+| Upper lids fyp / fyn, max angle | 0.3° / 0.3° | 0.3° / 0.3° | 4.1° / 4.1° |
+| Arm joint drift, max | 0.07° | 0.07° | 0.07° |
+
+Angle = rotation about the hinge relative to the starting pose (0.3° is gravity sag). `--open_deg` changes only that run's stage, never the USD file.
+
+### 8.4 DEMO reproducibility
+
+GPU deformables are not deterministic. A re-run gives a video of the same length (62.2 s), but not bit-identical results:
+
+| Check | Delivered (`states/`) | Re-run 2026-10-02 | Re-run 2026-10-07 |
+|---|---|---|---|
+| In the box: cloth / mug vertices outside the cavity | 0 / 0 | 0 / 0 | 0 / 0 |
+| Mug position difference after boxing | — | 11.5 mm (rigid shift) | — |
+| Cloth vertex difference after boxing | — | mean 24.8 mm, max 130 mm | — |
+| After moving the box: wrap displacement relative to box | 2.5 mm | 9.1 mm | 4.3 mm |
+| After moving the box: vertices outside the cavity | 6 | 6 | 4 (cloth, slightly below the floor) |
+
+`scene_final.usd` uses the delivered `states/box.npz`, not a re-run.
+
+### 8.5 Rebuilding the scene
+
+```bash
+/isaac-sim/python.sh build/build_full_scene.py \
+    --scene build/stationary_ai_carton_scene_flat.usd \
+    --carton sim/carton.usd --wrap states/box.npz --mug sim/mug.stl \
+    --out scene_final.usd     # --place x,y,z to choose a position; default "auto" aligns with the original carton
+```
+
+The rebuilt file again has **no** PhysicsScene and no crease drives. For UI use, follow §3.4 or add the §8.2 values yourself.
+
+---
+
+## 9. Known issues
+
+| # | Issue | Impact | What to do |
+|---|---|---|---|
+| 1 | `scene_final.usd` has no PhysicsScene; the UI's default is too weak | Carton sinks 48 mm on Play in the UI | Use `scene_final_ui.usd` or `crease_hold_ui.py` (§2, §8.2) |
+| 2 | Wrap and mug are static meshes | Can't be grabbed; nothing collides with them | By design. To make them interactive: give the mug a convex-hull collider + rigid body; the cloth can only become a static triangle-mesh collider; deforming it again means going back to deformables (see the development folder) |
+| 3 | `crease_physics.py` **defaults** (k=3.5, My0=0.85, H=0.55, c=0.28, clip=3.6) differ from the values actually used (k=3.2, My0=0.60, H=0.85, c=0.33, clip=3.0) | Using the defaults won't reproduce the videos or numbers | Always pass the coefficients to `ElastoplasticCrease(...)` explicitly; keep c ≤ 0.4 (higher blows up numerically) |
+| 4 | Log on Play: `angle limit ... clamped to ±180 degrees` (crease_*) | None | USD says ±185°, PhysX D6 caps at ±180°; the lids only move a few degrees |
+| 5 | Log on Play: `PhysX error: ... foundLostAggregatePairsCapacity to 3418` | May miss contacts with default settings | `scene_final_ui.usd` and `crease_hold_ui.py` raise it to 8192; the error no longer appears |
+| 6 | `make_definitive.sh` tells you to run `carton_sweep.py`, `gap.py`, `qa_carton.py`, which are **not in this package** | Carton QA can't be re-run as instructed | The carton itself still generates. Originals: `manip_fr3/carton/{gap,qa_carton}.py`, `manip_fr3/handoff_20260929/scripts/carton_sweep.py` |
+| 7 | GPU deformables are non-deterministic | DEMO numbers vary between runs (§8.4) | Treat `states/*.npz` as the reference |
+| 8 | Run from the Script Editor's File → Open, `crease_hold_ui.py` can't see its own path | Import fails if the package isn't at the default path (with a clear error message) | Set `SIM_DIR_OVERRIDE` on line 16, or use the one-liner in §3.4 |
+| 9 | WebRTC default IP is `140.96.68.42` | Can't connect on another machine | Set `WEBRTC_IP=<public IP>` |
+
+<p align="right"><a href="#english">↑ Back to top</a> · <a href="#繁體中文">繁體中文 ↓</a></p>
+
+---
+
+# 繁體中文
+
+> **這是交出去的 handoff。** clone 下來就能開場景、按 Play、用滑鼠互動、重跑模擬、重新產生所有影片。
+> 開發過程(實驗、122 次模擬紀錄、volume deformable、測試集)在
+> [`sims/fr3_bubblewrap_pack_20261007`](../fr3_bubblewrap_pack_20261007),使用這份交付包不需要看那邊。
+
+| | |
+|---|---|
+| **版本** | handoff_20261007 —— 2026-10-02 的場景與模擬,2026-10-07 補上 UI / WebRTC 用法並修正按 Play 的問題 |
+| **測試環境** | Isaac Sim 5.1.0、RTX 5090、NVIDIA driver 580 |
+| **取得方式** | git:這個資料夾(不含影片,執行 `./make_videos.sh` 產生)· 壓縮檔:`handoff_20261007.tgz`(含影片) |
+
+## 目錄
+
+1. [快速開始](#1-快速開始)
+2. [該開哪個場景檔](#2-該開哪個場景檔)
+3. [在 Isaac Sim UI 裡使用](#3-在-isaac-sim-ui-裡使用)
+4. [用 WebRTC 遠端看](#4-用-webrtc-遠端看)
+5. [影片](#5-影片)
+6. [檔案](#6-檔案)
+7. [腳本:哪支在哪裡跑](#7-腳本哪支在哪裡跑)
+8. [技術參考](#8-技術參考)
+9. [已知問題](#9-已知問題)
+
+---
+
+## 1. 快速開始
+
+```bash
+./open_in_ui.sh        # 本機有螢幕:開 Isaac Sim 並載入場景
+./open_in_webrtc.sh    # 遠端:開串流,用 WebRTC Streaming Client 連線(§4)
+./make_videos.sh       # 重新產生驗證影片;加 --demo 會連 62 秒的成果影片一起產生
+```
+
+畫面出來後:
+
+1. 按 **▶ Play**(左側工具列)。
+2. **Alt + 左鍵拖曳**:旋轉視角。
+3. **Shift + 左鍵拖曳**:抓住紙箱或蓋子拖動。
+
+---
+
+## 2. 該開哪個場景檔
+
+| 檔案 | 用途 | 按 Play 的結果 |
+|---|---|---|
+| **`scene_final_ui.usd`** | **在 UI 裡互動**(兩支啟動腳本的預設值) | 紙箱不動(0.00 mm),蓋子撐住(≤ 0.75°) |
+| `scene_final.usd` | 正式交付檔;給 headless 腳本用;彈塑性摺痕(§3.4) | ⚠️ 在 UI 直接按 Play,**紙箱會陷進桌面 48 mm** |
+
+**原因:** `scene_final.usd` 沒有 PhysicsScene,UI 會自動補一個預設的
+(60 Hz、位置迭代 1 次、速度迭代 0 次),強度不夠,撐不住紙箱。
+`scene_final_ui.usd` 是同一個場景,只多了調好的 PhysicsScene,以及四片蓋子摺痕上的彈簧 drive。
+細節與實測數字見 [§8.2](#82-scene_final_uiusd-的修正)。
+
+---
+
+## 3. 在 Isaac Sim UI 裡使用
+
+### 3.1 開啟場景
+
+**用指令**
+
+```bash
+./open_in_ui.sh                    # 開 scene_final_ui.usd
+./open_in_ui.sh scene_final.usd    # 或指定其他 USD
+```
+
+**從 UI 開**
+
+1. 啟動 Isaac Sim,任選一種:
+   - 執行 `/isaac-sim/isaac-sim.sh`(以 root 執行時,先 `export OMNI_KIT_ALLOW_ROOT=1`),或
+   - 執行 `/isaac-sim/isaac-sim.selector.sh` → 選 **Isaac Sim Full** → **START**。
+2. 開檔,任選一種:
+   - **File → Open** → 選 `scene_final_ui.usd`,或
+   - 在下方 **Content** 面板的路徑列貼上這個資料夾的路徑,**雙擊** `scene_final_ui.usd`。
+     (不要把 USD 拖進 viewport —— 那是把它當 reference 加進目前的場景,不是開檔。)
+   - 之後可以從 **File → Open Recent** 直接開。
+3. 按 **▶ Play**。
+
+### 3.2 視角與選取
+
+| 動作 | 操作 |
+|---|---|
+| 旋轉視角 | **Alt + 左鍵拖曳** |
+| 平移 | **中鍵拖曳** |
+| 縮放 | **滾輪**,或 **Alt + 右鍵拖曳** |
+| 原地環視 / 飛行 | **右鍵拖曳**(按住右鍵 + **WASD** 飛行) |
+| 選取 / 對焦到選取物 | **左鍵** / **F** |
+| 移動 / 旋轉 / 縮放 gizmo | **W / E / R**(**Q** 回到選取) |
+
+### 3.3 跟物理互動(播放中)
+
+| 操作 | 效果 |
+|---|---|
+| **Shift + 左鍵拖曳** | 抓住剛體拖動 |
+| **Shift + 左鍵雙擊** | 推一下 |
+
+抓取力道在 Physics 設定 → **Mouse Interaction**(Grab Force Coeff、Push Acceleration)。
+
+| 物件 | Prim | 抓得到嗎 |
+|---|---|---|
+| 紙箱本體(箱底 + 四面牆) | `/World/Packed/Box/base` | ✅ 剛體 |
+| 四片蓋子 | `/World/Packed/Box/{fxp,fxn,fyp,fyn}` | ✅ 剛體,用摺痕關節接在箱體上 |
+| 氣泡布 | `/World/Packed/Wrap` | ❌ 靜態 mesh,沒有碰撞、沒有剛體(蓋子會穿過去) |
+| 馬克杯 | `/World/Packed/Mug` | ❌ 靜態 mesh,沒有碰撞、沒有剛體 |
+| 手臂 | `/World/stationary_ai` | 改用關節 drive 控制(§3.5) |
+
+包材和杯子是把模擬結果烘成固定幾何(呈現「包好的樣子」)。
+surface deformable 的狀態沒辦法存進 USD。
+
+### 3.4 真正的彈塑性摺痕(蓋子折到哪就停在哪)
+
+`scene_final_ui.usd` 裡的摺痕是彈簧:把蓋子拉開,放手後會彈回 0°。
+要真實的行為(超過降伏力矩後,蓋子停在新的角度),
+請開 **`scene_final.usd`**,再執行 `sim/crease_hold_ui.py`:
+
+**用滑鼠點選**
+
+1. **Window → Script Editor**
+2. 在 Script Editor 裡:**File → Open**(Alt + O)→ 選 `sim/crease_hold_ui.py`
+3. 如果交付包**不在** `/isaac-sim/test_scripts/manip_fr3/handoff_20261002/`,
+   把第 16 行的 `SIM_DIR_OVERRIDE = ""` 改成你的 `sim/` 完整路徑。
+4. 按 **Run**(Ctrl + Enter)。
+
+**或貼一行**(會自己找到資料夾,不用改第 16 行)
+
+```python
+p = "/你的路徑/sim/crease_hold_ui.py"; exec(compile(open(p).read(), p, "exec"))
+```
+
+接著按 Play。這支腳本會:
+
+- 調整 PhysicsScene(數值同 `scene_final_ui.usd`),紙箱不會下陷;
+- 每個物理步對四片蓋子套用 `ElastoplasticCrease.step()`
+  (k = 3.2、My0 = 0.60、H = 0.85、c = 0.33、clip = 3.0,同 `wrap_sim.py`),蓋子受 +τ、箱體受 −τ。
+
+執行 `crease_stop()` 可以停掉。不要在 `scene_final_ui.usd` 上跑這支 —— 彈簧 drive 和摺痕力矩會疊在一起。
+
+### 3.5 控制手臂
+
+兩支手臂是同一個 articulation(root:`/World/stationary_ai/root_joint`),每個關節都已經有 drive(target 0)。
+播放中:
+
+| 關節 | Prim(在 `/World/stationary_ai/joints/` 底下) | Drive |
+|---|---|---|
+| 6 軸手臂 | `follower_{left,right}_joint_0` … `_5` | angular;stiffness 664–738(關節 0–2)、33–62(關節 3–5) |
+| 夾爪 | `follower_{left,right}_left_carriage_joint` | linear,target 單位是公尺(`right_carriage_joint` 沒有 drive) |
+
+- 單一關節:在 Stage 面板選取 → **Property → Drive → Target Position**(單位:度)。
+- 所有關節的滑桿:**Window → Physics Inspector**。
+
+---
+
+## 4. 用 WebRTC 遠端看
+
+伺服器串流完整的 Isaac Sim UI,你在另一台電腦上用
+**Isaac Sim WebRTC Streaming Client**(NVIDIA Isaac Sim 下載頁的桌面程式)觀看和操作。
+§3 的所有操作在串流畫面裡都一樣能用。
+
+### 4.1 用指令(推薦)
+
+腳本會幫你開場景、調視角、打開滑鼠拖曳,並自動按 Play。
+
+```bash
+./open_in_webrtc.sh                              # scene_final_ui.usd
+./open_in_webrtc.sh scene_final.usd --crease     # 原檔 + 彈塑性摺痕(§3.4)
+WEBRTC_IP=<對外 IP> WEBRTC_PORT=49110 ./open_in_webrtc.sh
+WEBRTC_NO_PLAY=1 ./open_in_webrtc.sh             # 載入但不自動 Play
+./open_in_webrtc.sh --stop                       # 停止串流
+```
+
+- 等 `logs/webrtc.log` 出現 `[handoff] READY`(約 20 秒)再連線。
+- **這個模式不用按 Shift**,直接左鍵拖曳就能抓紙箱或蓋子。
+- 預設 IP `140.96.68.42`(這台伺服器)、signaling port 49100。**換機器時請設定 `WEBRTC_IP`。**
+
+### 4.2 從 UI 啟動
+
+1. 在伺服器桌面執行 `/isaac-sim/isaac-sim.selector.sh`(App Selector)。
+2. 選 **Isaac Sim Full Streaming**。
+3. 對外 IP 不是預設值時,在 **Extra Args** 填 `--/app/livestream/publicEndpointAddress=<對外 IP>`。
+4. 按 **START**。
+5. 用 Streaming Client 連進去,**File → Open** `scene_final_ui.usd`,按 Play
+   (這個模式下,物理拖曳要 **Shift + 左鍵拖曳**)。
+
+### 4.3 連線
+
+- Streaming Client → 輸入伺服器 IP → **Connect**。
+- 防火牆要開 **TCP 49100**(signaling)和 **UDP 47998**(影音)。
+
+2026-10-07 實測:兩種指令模式都在約 20 秒內出現 READY(載入 591–592 個 prim、port 49100 有在監聽、物理有在跑),
+`--stop` 能正常關閉。Client 端沒有測 —— 伺服器上沒有 client。
+
+---
+
+## 5. 影片
+
+影片**不進 git**。一個指令就能把全部影片重新產生到 `videos/`:
+
+```bash
+./make_videos.sh                  # 下表前四支
+./make_videos.sh --demo           # 再加 62 秒的 DEMO(需要 GPU)
+VIDEO_DIR=/tmp/v ./make_videos.sh # 輸出到別的地方
+```
+
+| 影片 | 內容 | 單獨產生(在 `sim/` 裡執行) |
+|---|---|---|
+| `scene_physics_crease_on.mp4` | 開物理 8 秒,蓋子關著,有摺痕力矩 | `python.sh scene_physics_check.py ../scene_final.usd --out phys --secs 8` |
+| `scene_physics_crease_off.mp4` | 對照組:沒有摺痕,下層蓋掉進箱子 | `python.sh scene_physics_check.py ../scene_final.usd --out phys_nc --secs 8 --no_crease` |
+| `scene_physics_open_lids.mp4` | 蓋子翻開 170°,開物理 10 秒,最後從正上方看箱內 | `python.sh scene_physics_check.py ../scene_final.usd --out phys_open --secs 10 --open_deg 170` |
+| `scene_final_orbit.mp4` | 繞場景一圈 12 秒(只算圖,不跑物理) | `python.sh orbit_video.py ../scene_final.usd orbit.mp4` |
+| `DEMO_new_order_sheet400.mp4` | 成果:包第一對邊 → 第二對邊 → 入箱關蓋 → 搬箱開蓋(62 秒) | `./run_demo.sh`(產出 `sim/DEMO.mp4`) |
+
+`python.sh` 指 `/isaac-sim/python.sh`。每支物理影片旁邊會有同名 `.log`,記錄逐秒的數字。
+
+**要跑多久:** 2026-10-07 在 GPU 被其他工作共用的情況下實測 `./make_videos.sh --demo`:
+物理影片約 3 分鐘、環繞影片約 25 分鐘、DEMO 約 6 分鐘,**總共約 32 分鐘**。GPU 空閒時會比較快。
+
+---
+
+## 6. 檔案
+
+```
+README.md                       本文件(English + 繁體中文)
+scene_final.usd                 ★ 交付檔:雙臂工作站 + 紙箱 + 包好的馬克杯(單一檔案,14 MB)
+scene_final_ui.usd              同一場景 + 調好的 PhysicsScene + 蓋子彈簧 drive,給 UI 用(§2)
+open_in_ui.sh                   在本機 Isaac Sim UI 開啟
+open_in_webrtc.sh               用 WebRTC 開啟(--stop 停止)
+make_videos.sh                  重新產生 videos/
+videos/                         影片(只在壓縮檔裡;用 make_videos.sh 產生)
+sim/                            模擬與工具 —— 平鋪資料夾,在裡面執行腳本
+  wrap_sim.py                     模擬本體(Isaac Sim 5.1 surface deformable)
+  grip_common.py                  wrap_sim.py 的共用零件
+  crease_physics.py               彈塑性摺痕模型(降伏 + 硬化)
+  crease_hold_ui.py               UI 的 Script Editor 用:摺痕力矩 + PhysicsScene 修正(§3.4)
+  webrtc_boot.py                  open_in_webrtc.sh 的開機腳本(kit --exec)
+  scene_physics_check.py          物理驗證 + 影片(走 isaacsim.core World)
+  ui_path_check.py                物理驗證(走跟 UI 一樣的 Play 路徑,§8.2)
+  orbit_video.py                  環繞影片(只算圖)
+  run_demo.sh                     跑四段模擬並串成 DEMO.mp4
+  make_carton_P.py, make_definitive.sh   紙箱產生器
+  carton.usd, carton.meta.json    紙箱資產(270 × 230 × 134 mm,4 片蓋)及幾何參數
+  mug.stl, bubble_normal.png, floor_edges.json
+states/                         每段模擬結束時布 + 杯子的頂點(c1, c2, box, mb_open),可以從任一段接著跑
+build/
+  build_full_scene.py             重組 scene_final.usd(§8.5)
+  stationary_ai_carton_scene_flat.usd   原始雙臂場景(14 MB)
+```
+
+---
+
+## 7. 腳本:哪支在哪裡跑
+
+> **會自己建 `SimulationApp` 的腳本,絕對不要貼進 Script Editor。**
+> 那會在執行中的 Kit 裡再開一個 Kit,結果是卡死或當掉。這類腳本要在終端機用 `/isaac-sim/python.sh` 執行。
+
+| 腳本 | 是什麼 | 怎麼執行 |
+|---|---|---|
+| `sim/crease_hold_ui.py` | 摺痕力矩 + PhysicsScene 修正 | ✅ **唯一在 UI 裡執行的**(§3.4) |
+| `sim/webrtc_boot.py` | WebRTC 開機腳本 | 由 `open_in_webrtc.sh` 透過 `kit --exec` 啟動 |
+| `sim/crease_physics.py` | 摺痕模型(函式庫) | 被其他腳本 import |
+| `sim/grip_common.py` | 共用模擬零件(函式庫) | 被 `wrap_sim.py` import |
+| `sim/wrap_sim.py` | 包布 → 入箱 → 搬箱模擬 | 終端機:`sim/run_demo.sh` 或 `./make_videos.sh --demo` |
+| `sim/scene_physics_check.py` | 物理驗證 + 影片 | 終端機(§5、§8.3) |
+| `sim/ui_path_check.py` | UI 路徑的 Play 驗證 | 終端機(§8.2) |
+| `sim/orbit_video.py` | 環繞影片 | 終端機(§5) |
+| `sim/make_carton_P.py` | 紙箱產生器 | 終端機,由 `make_definitive.sh` 呼叫 |
+| `build/build_full_scene.py` | 重組場景 | 終端機(§8.5) |
+
 ```
 wrap_sim.py ──► grip_common.py
             └─► crease_physics.py ◄── scene_physics_check.py
                                   ◄── crease_hold_ui.py ◄── ui_path_check.py --crease_script
                                                         ◄── webrtc_boot.py(open_in_webrtc.sh --crease)
 ```
-全部都在 `sim/` 同一層,不需要設定 PYTHONPATH。
+
+全部都在 `sim/` 裡,不需要設定 PYTHONPATH。
 
 ---
 
-## 3. 在 UI 按 Play 前一定要知道的事
+## 8. 技術參考
 
-原本的 `scene_final.usd` **沒有 PhysicsScene**。在 UI 按 Play 時,Isaac 會自動補一個預設值
-(60 Hz、TGS、**posIter=1、velIter=0**)。這個迭代次數太少,**整個紙箱會陷進桌面約 48 mm**。
-headless 的 `scene_physics_check.py` 走的是 `isaacsim.core.World`,它會套用比較好的解算器設定,所以那邊量不到這個問題。
+### 8.1 場景配置(`scene_final.usd`)
 
-`scene_final_ui.usd` 已經把下面兩項寫進檔案:
+| 項目 | 值 |
+|---|---|
+| 手臂場景 | `build/stationary_ai_carton_scene_flat.usd`;手臂與桌子**完全沒動** |
+| 原本的 `/World/Carton` | 已移除,換成 `/World/Packed`(Box + Wrap + Mug) |
+| 擺放 | 對齊原本的紙箱:中心 (x, y) = (−20, 0) mm,箱底 z = 20 mm(= 桌面) |
+| 方向 | 繞 z 轉 90°;270 mm 長邊沿 y(兩支手臂之間的方向) |
+| 紙箱世界座標 bbox | x −135…95、y −135…135、z 20…154 mm |
+| 與夾爪的距離 | 四根夾爪指在 y 方向都離紙箱 68.7 mm |
+| 包材與杯子 | 取自模擬第 3 段結束(`states/box.npz`);每個頂點都檢查過在箱內 |
+| 蓋子 | 四片都關著(USD 預設角度 = 模擬結束時的角度) |
+| 外部依賴 | 紙箱已攤平寫進檔案;只剩手臂場景原本就用的兩個 NVIDIA 雲端 MDL 材質 |
+| 單位 / 座標軸 | Z-up,metersPerUnit = 1 |
+
+摺痕關節是被動的(±185°,沒有 drive)。彈塑性摺痕(`crease_physics.py`)是執行時每個物理步額外施加的力矩,
+所以存不進 USD。在自己的程式裡,要每一步對 `/World/Packed/Box/crease_{fxp,fxn,fyp,fyn}`
+套用 `ElastoplasticCrease.step()` —— 最短的範例是 `scene_physics_check.py`。
+
+### 8.2 `scene_final_ui.usd` 的修正
 
 | 修改 | 值 |
 |---|---|
-| `/physicsScene` | 120 Hz、TGS、minPositionIteration 8、minVelocityIteration 1、GPU aggregate pairs 8192 |
-| `/World/Packed/Box/crease_{fxp,fxn,fyp,fyn}` | angular drive:stiffness 0.056 N·m/deg、damping 0.006 N·m·s/deg、maxForce 3.0、target 0 |
+| `/physicsScene` | 120 Hz、TGS、最少位置迭代 8、最少速度迭代 1、GPU aggregate pairs 8192 |
+| `/World/Packed/Box/crease_{fxp,fxn,fyp,fyn}` | angular drive:stiffness 0.056 N·m/deg、damping 0.006 N·m·s/deg、max force 3.0、target 0 |
 
-drive 的值取自摺痕模型的彈性段(k = 3.2 N·m/rad、c = 0.33 N·m·s/rad),換算成 USD angular drive 用的「每度」單位。
+drive 的值取自摺痕模型的彈性段(k = 3.2 N·m/rad、c = 0.33 N·m·s/rad),換算成 USD angular drive 使用的「每度」單位。
 
-**實測**(`sim/ui_path_check.py`,用 UI 的路徑按 Play 跑 8 s,2026-10-07):
+用 `sim/ui_path_check.py` 實測(開檔、按 Play 的方式跟 UI 完全一樣;8 秒;2026-10-07):
 
-| 路線 | 箱底 z 位移最大 | 蓋角最大 | 判定 |
+| 路線 | 紙箱 z 最大位移 | 蓋子最大角度 | |
 |---|---|---|---|
 | A. `scene_final_ui.usd` 直接 Play | **0.00 mm** | 0.75° | ✅ |
 | B. `scene_final.usd` + `crease_hold_ui.py` | **0.00 mm** | 0.08° | ✅ |
-| 對照:`scene_final.usd` 直接 Play | **48.12 mm** | 2.60° | ❌ 箱子陷進桌面 |
+| 對照:`scene_final.usd` 直接 Play | **48.12 mm** | 2.60° | ❌ 紙箱陷進桌面 |
 
 ```bash
 cd sim
@@ -115,217 +714,61 @@ cd sim
 /isaac-sim/python.sh ui_path_check.py ../scene_final.usd                    # 對照
 ```
 
----
+headless 的 `scene_physics_check.py` 從來沒量到下陷,因為 `isaacsim.core.World` 會套用比較好的解算器預設值。
 
-## 4. 在 Isaac Sim UI(本機視窗)裡使用
+### 8.3 走 `World` 的物理驗證(`scene_physics_check.py`)
 
-### 4.1 開啟場景 —— 指令或 UI 都可以
+2026-10-07 用 `make_videos.sh` 重跑,數字與 2026-10-02 完全相同。
 
-**用指令**
-```bash
-./open_in_ui.sh                       # 預設 scene_final_ui.usd
-./open_in_ui.sh scene_final.usd       # 指定別的檔
-```
-
-**從 UI 開**
-1. 啟動 Isaac Sim(任選一種):
-   - 終端機執行 `/isaac-sim/isaac-sim.sh`(root 要先 `export OMNI_KIT_ALLOW_ROOT=1`)
-   - 或執行 `/isaac-sim/isaac-sim.selector.sh` 開 **App Selector** → 選 **Isaac Sim Full** → **START**
-2. 開檔(任選一種):
-   - 選單 **File > Open**,選 `scene_final_ui.usd`
-   - 或在下方 **Content** 面板的路徑列貼上交付包的路徑 → 對著 `scene_final_ui.usd` **雙擊**
-     (不要把 USD 拖進 viewport,那樣是當成 reference 加進目前的場景,不是開檔)
-   - 之後可以從 **File > Open Recent** 直接開
-3. 按左邊工具列的 ▶ **Play**。
-
-### 4.2 滑鼠 / 鍵盤(Kit 預設)
-
-| 動作 | 操作 |
-|---|---|
-| 旋轉視角(繞焦點) | **Alt + 左鍵**拖曳 |
-| 平移 | **中鍵**拖曳 |
-| 縮放 | 滾輪,或 **Alt + 右鍵**拖曳 |
-| 原地環視 | **右鍵**拖曳(按住右鍵 + WASD = 飛行) |
-| 選取 / 對焦 | 左鍵選取;**F** = 對焦到選取的物件 |
-| 移動 / 旋轉 / 縮放 gizmo | **W / E / R**(Q = 回到選取模式) |
-
-### 4.3 用滑鼠跟物理互動(要先按 Play)
-
-| 操作 | 效果 |
-|---|---|
-| **Shift + 左鍵**拖曳 | 抓住剛體拖著走 |
-| **Shift + 左鍵**雙擊 | 推一下 |
-
-力道在 Physics 設定的 **Mouse Interaction** 區(Mouse Grab Force Coeff、Mouse Push Acceleration)。
-
-**哪些東西抓得到:**
-
-| prim | 類型 | 能不能互動 |
-|---|---|---|
-| `/World/Packed/Box/base`(箱底 + 四面牆) | 剛體 | ✅ |
-| `/World/Packed/Box/fxp, fxn, fyp, fyn`(四片蓋) | 剛體,用 crease 關節接在 base 上 | ✅ |
-| `/World/Packed/Wrap`(氣泡布) | **靜態 Mesh,沒有碰撞、沒有剛體** | ❌ 抓不到;蓋子會穿過去 |
-| `/World/Packed/Mug`(杯子) | **靜態 Mesh,沒有碰撞、沒有剛體** | ❌ 抓不到 |
-| 手臂 `/World/stationary_ai` | articulation(有 drive) | 用 §4.5 的方式控制 |
-
-包材和杯子是把模擬結果烘成固定幾何(呈現「包好的樣子」);surface deformable 的狀態存不進 USD。
-
-### 4.4 真正的彈塑性摺痕(蓋子折開放手後會停在新角度)
-
-`scene_final_ui.usd` 的 drive 是彈簧,蓋子拉開放手會彈回 0°。
-要原本的塑性行為(超過降伏力矩就停在新角度),請開**原檔 `scene_final.usd`**,再執行 `crease_hold_ui.py`:
-
-**從 UI 開(不用打字)**
-1. **Window > Script Editor**
-2. Script Editor 視窗的 **File > Open**(Alt + O),選 `sim/crease_hold_ui.py`
-3. 交付包**不在** `/isaac-sim/test_scripts/manip_fr3/handoff_20261002/` 的話,把第 16 行的
-   `SIM_DIR_OVERRIDE = ""` 填成你的 `sim/` 完整路徑
-4. 按 **Run**(Ctrl + Enter)
-
-**或貼一行**(會自動判斷路徑,不用改第 16 行)
-```python
-p = "/你的路徑/sim/crease_hold_ui.py"; exec(compile(open(p).read(), p, "exec"))
-```
-
-執行後:
-1. 修正 PhysicsScene(同 §3 的值),避免箱子下陷;
-2. 每一個物理步對四片蓋套用 `ElastoplasticCrease.step()`
-   (係數同 `wrap_sim.py`:k=3.2、My0=0.60、H=0.85、c=0.33、clip=3.0),蓋子受 +τ、箱底受 −τ。
-
-接著按 Play。要停掉摺痕就執行 `crease_stop()`。**不要**在 `scene_final_ui.usd` 上再跑這支(drive 和力矩會疊加)。
-
-### 4.5 控制手臂
-兩支手臂是同一個 articulation(root:`/World/stationary_ai/root_joint`),每個關節都已經有 drive(target 0)。按 Play 之後:
-
-| 關節 | prim(在 `/World/stationary_ai/joints/` 底下) | drive |
-|---|---|---|
-| 手臂 6 軸 | `follower_{left,right}_joint_0` … `_5` | angular;stiffness:joint_0~2 為 664~738,joint_3~5 為 33~62 |
-| 夾爪 | `follower_{left,right}_left_carriage_joint` | linear,target 單位是公尺(`right_carriage_joint` 沒有 drive) |
-
-- 單一關節:在 Stage 選該關節,到 Property > **Drive > Target Position** 改角度(單位:度)。
-- 所有關節的滑桿:Window 選單裡的 **Physics Inspector**。
-
----
-
-## 5. 用 WebRTC 遠端看
-
-伺服器上跑串流,遠端電腦用 **Isaac Sim WebRTC Streaming Client**(NVIDIA Isaac Sim 下載頁上的桌面程式)連線。
-串流畫面就是完整的 Isaac Sim UI,§4 的滑鼠操作和選單都能用。
-
-### 5.1 用指令(推薦:開好場景、調好視角、開啟滑鼠拖曳、自動 Play)
-```bash
-./open_in_webrtc.sh                              # 預設 scene_final_ui.usd
-./open_in_webrtc.sh scene_final.usd --crease     # 原檔 + 彈塑性摺痕(= §4.4)
-WEBRTC_IP=<對外 IP> WEBRTC_PORT=49110 ./open_in_webrtc.sh   # 換 IP / port
-WEBRTC_NO_PLAY=1 ./open_in_webrtc.sh             # 開好但不自動 Play
-./open_in_webrtc.sh --stop                       # 停止
-```
-- 預設 IP 是 `140.96.68.42`(這台伺服器)、signaling port 49100;換機器時要設 `WEBRTC_IP`。
-- 記錄檔在 `logs/webrtc.log`,出現 `[handoff] READY` 就可以連。
-- 防火牆要開 **TCP 49100**(signaling)和 **UDP 47998**(影音)。
-- 這個模式下物理互動**不用按 Shift**,左鍵直接拖紙箱或蓋子(`webrtc_boot.py` 把滑鼠互動設成 ENABLED)。
-
-連線步驟:打開 Streaming Client → Server 欄填伺服器 IP → **Connect**。
-
-實測(2026-10-07):兩種模式都能在約 20 s 內出現 READY(場景 591~592 個 prim、port 49100 有在監聽、物理有啟動),`--stop` 可以正常關閉。
-Streaming Client 端的畫面這次沒有實測(伺服器上沒有 client)。
-
-### 5.2 從 UI 啟動
-1. 在伺服器桌面執行 `/isaac-sim/isaac-sim.selector.sh`,開 **App Selector**
-2. 選 **Isaac Sim Full Streaming**
-3. 對外 IP 不是預設值的話,在 **Extra Args** 填 `--/app/livestream/publicEndpointAddress=<對外 IP>`
-4. 按 **START**,再從 Streaming Client 連進去
-5. 連上之後在串流畫面裡用 **File > Open** 開 `scene_final_ui.usd`,按 Play(物理互動要 **Shift + 左鍵**)
-
----
-
-## 6. scene_final.usd 規格與物理驗證
-
-| 項目 | 值 |
-|---|---|
-| 手臂場景 | `build/stationary_ai_carton_scene_flat.usd`,手臂與桌子**完全沒動** |
-| 原本的 `/World/Carton` | 已移除,換成 `/World/Packed`(Box + Wrap + Mug) |
-| 擺放 | 對齊原本的紙箱:中心 (x, y) = (-20, 0) mm,箱底 z = 20 mm(= 桌面) |
-| 方向 | 繞 z 轉 90°,270 mm 長邊沿 y(左右手臂的方向) |
-| 箱子世界座標 bbox | x -135~95 / y -135~135 / z 20~154 mm |
-| 與夾爪距離 | 四根夾爪指在 y 方向都離箱子 68.7 mm,沒有干涉 |
-| 包材 / 杯子 | 取自影片第 3 段結束(`states/box.npz`),逐頂點檢查 100% 在內腔內 |
-| 蓋子 | 四片關閉(= USD 預設角度,與模擬結束時一致) |
-| 外部依賴 | 紙箱已攤平寫進檔案;只剩手臂場景本來就有的兩個 NVIDIA 雲端 MDL 材質 |
-| 座標 | Z-up,metersPerUnit = 1 |
-
-紙箱的摺痕關節是被動的(±185°、沒有 drive);彈塑性摺痕(`crease_physics.py`)是執行時每一步額外施加的力矩,存不進 USD。
-程式裡要做動態模擬,就對 `/World/Packed/Box/crease_{fxp,fxn,fyp,fyn}` 每一步套用 `ElastoplasticCrease.step()`,
-寫法參考 `scene_physics_check.py`(最短)或 `wrap_sim.py`。
-
-**World 路徑驗證**(`sim/scene_physics_check.py`;2026-10-07 用 `make_videos.sh` 重跑,數字與 10-02 相同):
-
-| 檢查 | 關蓋 + 摺痕 | 開蓋 170° + 摺痕 | 關蓋、無摺痕(對照) |
+| 檢查 | 蓋子關 + 摺痕 | 蓋子翻開 170° + 摺痕 | 蓋子關、無摺痕(對照) |
 |---|---|---|---|
-| 箱子位移 | 0.00 mm | 0.00 mm | 0.00 mm |
-| 箱底面 − 桌面 | 0.00 mm | 0.00 mm | 0.00 mm |
-| 下層蓋 fxp / fxn 最大偏角 | 0.3° / 0.3° | 0.3° / 0.3° | **91.7° / 91.7°(掉進箱子)** |
-| 上層蓋 fyp / fyn 最大偏角 | 0.3° / 0.3° | 0.3° / 0.3° | 4.1° / 4.1° |
+| 紙箱位移 | 0.00 mm | 0.00 mm | 0.00 mm |
+| 箱底 − 桌面 | 0.00 mm | 0.00 mm | 0.00 mm |
+| 下層蓋 fxp / fxn 最大角度 | 0.3° / 0.3° | 0.3° / 0.3° | **91.7° / 91.7°(掉進箱子)** |
+| 上層蓋 fyp / fyn 最大角度 | 0.3° / 0.3° | 0.3° / 0.3° | 4.1° / 4.1° |
 | 手臂關節最大漂移 | 0.07° | 0.07° | 0.07° |
 
-偏角 = 蓋子相對起始姿態繞鉸鏈轉了多少(0.3° 是重力造成的下垂)。`--open_deg` 只改這次模擬的 stage,不會存回 USD。
+角度 = 蓋子相對起始姿態繞鉸鏈轉了多少(0.3° 是重力造成的下垂)。`--open_deg` 只改那次執行的 stage,不會改到 USD 檔。
 
----
+### 8.4 DEMO 的重現性
 
-## 7. 影片 —— 不進 git,執行指令就能產生
+GPU deformable 不是確定性的。重跑的影片長度相同(62.2 秒),但結果不會逐位元相同:
 
-```bash
-./make_videos.sh            # 下表前 4 支,約 5 分鐘
-./make_videos.sh --demo     # 再加 DEMO,再多約 10 分鐘(需要 GPU)
-VIDEO_DIR=/tmp/v ./make_videos.sh     # 輸出到別的地方(預設 ./videos)
-```
-
-| 影片 | 內容 | 單獨產生的指令(在 `sim/` 裡執行) |
-|---|---|---|
-| `videos/scene_physics_crease_on.mp4` | 開物理 8 s,蓋子關著,有摺痕力矩 | `python.sh scene_physics_check.py ../scene_final.usd --out phys --secs 8` |
-| `videos/scene_physics_crease_off.mp4` | 對照組:沒有摺痕,下層蓋掉進箱子 | `python.sh scene_physics_check.py ../scene_final.usd --out phys_nc --secs 8 --no_crease` |
-| `videos/scene_physics_open_lids.mp4` | 四片蓋翻開 170°,開物理 10 s,最後從正上方看箱內 | `python.sh scene_physics_check.py ../scene_final.usd --out phys_open --secs 10 --open_deg 170` |
-| `videos/scene_final_orbit.mp4` | 場景環繞(只算圖,不跑物理) | `python.sh orbit_video.py ../scene_final.usd orbit.mp4` |
-| `videos/DEMO_new_order_sheet400.mp4` | 成果:包第一對邊 → 包第二對邊 → 入箱關蓋 → 搬箱開蓋(62 s) | `./run_demo.sh`(產出 `sim/DEMO.mp4`) |
-
-`python.sh` = `/isaac-sim/python.sh`。每支物理驗證影片旁邊會有同名的 `.log`,記錄逐秒的數字。
-
-**run_demo.sh 的重現性**:GPU deformable 不是確定性的,重跑的影片長度相同(62.2 s),但結果不會逐位元相同:
-
-| 檢查 | 交付版(states/) | 2026-10-02 重跑 |
-|---|---|---|
-| 入箱:布 / 杯子超出內腔的頂點 | 0 / 0 | 0 / 0 |
-| 入箱後杯子位置差 | — | 11.5 mm(整體平移) |
-| 入箱後布頂點差 | — | 平均 24.8 mm、最大 130 mm |
-| 搬箱:包裹相對箱子位移 | 2.5 mm | 9.1 mm |
-| 搬箱後超出內腔的頂點 | 6 | 6 |
+| 檢查 | 交付版(`states/`) | 2026-10-02 重跑 | 2026-10-07 重跑 |
+|---|---|---|---|
+| 入箱:布 / 杯子超出內腔的頂點 | 0 / 0 | 0 / 0 | 0 / 0 |
+| 入箱後杯子位置差 | — | 11.5 mm(整體平移) | — |
+| 入箱後布頂點差 | — | 平均 24.8 mm、最大 130 mm | — |
+| 搬箱後:包裹相對紙箱的位移 | 2.5 mm | 9.1 mm | 4.3 mm |
+| 搬箱後:超出內腔的頂點 | 6 | 6 | 4(布,略低於箱底) |
 
 `scene_final.usd` 用的是交付版的 `states/box.npz`,不是重跑的結果。
 
----
-
-## 8. 重組場景(換位置 / 換包裹狀態)
+### 8.5 重組場景
 
 ```bash
 /isaac-sim/python.sh build/build_full_scene.py \
     --scene build/stationary_ai_carton_scene_flat.usd \
     --carton sim/carton.usd --wrap states/box.npz --mug sim/mug.stl \
-    --out scene_final.usd            # --place x,y,z 可以手動指定位置;預設 auto = 對齊原本的紙箱
+    --out scene_final.usd     # --place x,y,z 指定位置;預設 "auto" 對齊原本的紙箱
 ```
-重組出來的檔案一樣**沒有** PhysicsScene 和 crease drive。要在 UI 用的話,走 §4.4 的 Script Editor 路線,或照 §3 的值自己加上去。
+
+重組出來的檔案一樣**沒有** PhysicsScene,也沒有摺痕 drive。要在 UI 用,照 §3.4 做,或自己加上 §8.2 的值。
 
 ---
 
-## 9. 已知問題 / 交接注意
+## 9. 已知問題
 
-| # | 問題 | 影響 | 狀態 / 做法 |
+| # | 問題 | 影響 | 怎麼處理 |
 |---|---|---|---|
-| 1 | `scene_final.usd` 沒有 PhysicsScene,UI 自動補的預設值太弱 | UI 按 Play 時箱子陷 48 mm | 用 `scene_final_ui.usd` 或 `crease_hold_ui.py`(§3) |
-| 2 | Wrap / Mug 是靜態 Mesh | 滑鼠抓不到、不會碰撞 | 設計如此。要互動的話:杯子可以加凸包碰撞體 + 剛體;布只能做成靜態三角網格碰撞體;要能變形就得回到 deformable(見開發資料夾) |
-| 3 | `crease_physics.py` 檔案裡的**預設係數**(k=3.5、My0=0.85、H=0.55、c=0.28、clip=3.6)≠ 實際用的係數(k=3.2、My0=0.60、H=0.85、c=0.33、clip=3.0) | 直接用預設值,結果會跟影片和驗證數字不一樣 | 建 `ElastoplasticCrease(...)` 時一律明確傳入係數;c 不要超過 0.4(數值會爆) |
-| 4 | Play 時 log 出現 `angle limit ... clamped to ±180 degrees`(crease_*) | 無 | USD 設 ±185°,PhysX D6 上限是 ±180°;蓋子實際只動幾度 |
-| 5 | Play 時 log 出現 `PhysX error: ... foundLostAggregatePairsCapacity to 3418` | 預設設定下可能漏掉碰撞 | `scene_final_ui.usd` 和 `crease_hold_ui.py` 已經把容量設為 8192,實測不再出現 |
-| 6 | `make_definitive.sh` 最後提示要跑 `carton_sweep.py`、`gap.py`、`qa_carton.py`,這三支**不在交付包裡** | 紙箱 QA 沒辦法照提示重跑 | 紙箱本身能照常產生。原始位置:`manip_fr3/carton/{gap,qa_carton}.py`、`manip_fr3/handoff_20260929/scripts/carton_sweep.py` |
-| 7 | GPU deformable 不是確定性的 | 重跑 DEMO 數字會有差異(§7) | 以 `states/*.npz` 為準 |
-| 8 | 從 Script Editor 的 File > Open 執行 `crease_hold_ui.py` 時拿不到檔案路徑 | 交付包不在預設路徑時 import 會失敗(會印出清楚的錯誤) | 填第 16 行的 `SIM_DIR_OVERRIDE`,或用 §4.4 的一行 `exec(compile(...))` |
-| 9 | WebRTC 預設 IP 寫的是 `140.96.68.42` | 換機器後連不上 | 設 `WEBRTC_IP=<對外 IP>` |
+| 1 | `scene_final.usd` 沒有 PhysicsScene;UI 的預設值太弱 | UI 按 Play 時紙箱陷 48 mm | 用 `scene_final_ui.usd` 或 `crease_hold_ui.py`(§2、§8.2) |
+| 2 | 包材與杯子是靜態 mesh | 抓不到,也不會跟任何東西碰撞 | 設計如此。要能互動:杯子加凸包碰撞體 + 剛體;布只能做成靜態三角網格碰撞體;要能再變形就得回到 deformable(見開發資料夾) |
+| 3 | `crease_physics.py` 的**預設係數**(k=3.5、My0=0.85、H=0.55、c=0.28、clip=3.6)跟實際使用的(k=3.2、My0=0.60、H=0.85、c=0.33、clip=3.0)不一樣 | 用預設值會對不上影片和數字 | 建 `ElastoplasticCrease(...)` 時一律明確傳入係數;c 不要超過 0.4(會數值爆炸) |
+| 4 | Play 時 log 出現 `angle limit ... clamped to ±180 degrees`(crease_*) | 無 | USD 設 ±185°,PhysX D6 上限 ±180°;蓋子實際只動幾度 |
+| 5 | Play 時 log 出現 `PhysX error: ... foundLostAggregatePairsCapacity to 3418` | 預設設定下可能漏接觸 | `scene_final_ui.usd` 和 `crease_hold_ui.py` 已調到 8192;實測不再出現 |
+| 6 | `make_definitive.sh` 提示要跑 `carton_sweep.py`、`gap.py`、`qa_carton.py`,但**不在交付包裡** | 沒辦法照提示重跑紙箱 QA | 紙箱本身照常能產生。原始位置:`manip_fr3/carton/{gap,qa_carton}.py`、`manip_fr3/handoff_20260929/scripts/carton_sweep.py` |
+| 7 | GPU deformable 不是確定性的 | 每次跑 DEMO 數字會有差異(§8.4) | 以 `states/*.npz` 為準 |
+| 8 | 從 Script Editor 的 File → Open 執行時,`crease_hold_ui.py` 拿不到自己的路徑 | 交付包不在預設路徑時 import 會失敗(有清楚的錯誤訊息) | 設第 16 行的 `SIM_DIR_OVERRIDE`,或用 §3.4 的一行指令 |
+| 9 | WebRTC 預設 IP 是 `140.96.68.42` | 換機器就連不上 | 設 `WEBRTC_IP=<對外 IP>` |
+
+<p align="right"><a href="#繁體中文">↑ 回到中文開頭</a> · <a href="#english">English ↑</a></p>

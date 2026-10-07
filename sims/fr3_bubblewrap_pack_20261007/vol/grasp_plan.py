@@ -47,8 +47,10 @@ def inward(v):
     if j == NX: return v - (NX + 1), "tip"
     return (v + 1 if i == 0 else v - 1), "side"
 
-def frame(Pl, v):
+def frame(Pl, v, rows=1):
+    """rows=2:外法線 u 用『布邊 → 往內第 2 排』的弦(布面凸起時比切線陡,指沿弦插不會撞到內側的布)"""
     M = mid(Pl); vin, _ = inward(v)
+    vin = v + rows * (vin - v)                # 往內的索引步長固定(±1 或 ±(NX+1))
     u3 = M[v] - M[vin]; u = u3 / np.linalg.norm(u3)
     tt = np.cross([0, 0, 1.0], u); tt /= np.linalg.norm(tt)
     n = np.cross(tt, u)                      # 右手系 [t,u,n](det +1)

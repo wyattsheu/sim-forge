@@ -66,6 +66,12 @@ ap.add_argument("--arc_k", type=float, default=0.9, help="掀:弧半徑 = arc_k 
 ap.add_argument("--peel_t", type=float, default=3.0, help="掀:弧線秒數")
 ap.add_argument("--gap_mm", type=float, default=4.5, help="夾:指面間距")
 ap.add_argument("--ffric", type=float, default=2.0, help="指面摩擦")
+ap.add_argument("--pick_mode", choices=["jaw", "rod"], default="jaw",
+                help="jaw(預設):下指本身當挑角的指(插到布邊下 → 上抬)再由上指從 +n 合;rod:另一根 8mm 單指挑角,上下指張口從布邊外插入再合(第 2~4 次實跑夾到 0)")
+ap.add_argument("--chord", type=int, default=1, help="挑角/夾的局部框:1 = 布邊切線(預設,同 grasp_points);2 = 布邊→往內第 2 排的弦")
+ap.add_argument("--arc2", type=int, default=1, help="1 = 弧線第 2 段繞箱壁頂角轉到 180°(箱外指頭最低點墊高到蓋頂);0 = 只做第 1 段(轉到指向箱壁頂角為止)")
+ap.add_argument("--clear_mm", type=float, default=3.0, help="挑角:下指頂面在布底下幾 mm 插入")
+ap.add_argument("--steep_deg", type=float, default=90.0, help="布邊坡度 >= 這個角度就不上抬(角已翹起,下指插到位直接合上指)")
 ap.add_argument("--second", type=int, default=1, help="1 = yn 掀完接著掀 yp(不論 yn 判定)")
 ap.add_argument("--gcam_focal", type=float, default=2.8, help="抓取段相機 focal(Camera API 單位,x10 = mm)")
 a = ap.parse_args()
@@ -595,8 +601,11 @@ def phase(t):
     if t < T_END_ALL or not a.grasp: return "hold"
     if t < TG0: return "grasp settle"
     k_ = min(int((t - TG0) // G_SHEET), len(G_SEQ) - 1); sd = G_SEQ[k_]; r_ = t - TG0 - k_ * G_SHEET
-    for nm_, tt_ in [("pick: rod to corner", GT["rod_above"] + GT["rod_down"]), ("pick: rod insert", GT["rod_above"] + GT["rod_down"] + GT["rod_in"]),
-                     ("pick: lift corner", G_TPICK), ("open jaws in", G_TLOIN), ("close jaws", G_TJAW), ("rod out / grip hold", G_TGRIP),
+    _pf = "lower jaw" if a.pick_mode == "jaw" else "rod"
+    _sq = ([("upper jaw down", G_TPICK + GT["lo_above"] + GT["lo_down"]), ("close jaws", G_TPICK + GT["lo_above"] + GT["lo_down"] + GT["close"]),
+            ("grip hold", G_TGRIP)] if a.pick_mode == "jaw" else [("open jaws in", G_TLOIN), ("close jaws", G_TJAW), ("rod out / grip hold", G_TGRIP)])
+    for nm_, tt_ in [("pick: %s to corner" % _pf, GT["rod_above"] + GT["rod_down"]), ("pick: %s insert" % _pf, GT["rod_above"] + GT["rod_down"] + GT["rod_in"]),
+                     ("pick: lift corner", G_TPICK)] + _sq + [
                      ("PEEL arc", G_TGRIP + a.peel_t), ("hold peeled", G_TGRIP + a.peel_t + GT["peel_hold"])]:
         if r_ < tt_: return "%s %s" % (sd, nm_)
     return "%s release" % sd
@@ -789,7 +798,7 @@ if a.grasp:
         else:
             pick = max(rows, key=lambda r: r["gap"]); why = "★ 沒有合格點 → 退而求其次:下方空隙最大"
         v = pick["v"]
-        R0, slope = GPL.frame(Pl, v); tt_, uu, nn_ = R0[:, 0], R0[:, 1], R0[:, 2]
+        R0, slope = GPL.frame(Pl, v, rows=a.chord); tt_, uu, nn_ = R0[:, 0], R0[:, 1], R0[:, 2]
         M = GPL.mid(Pl); half = np.linalg.norm(Pl[v + N1] - Pl[v]) / 2
         i_, j_ = v % (a.nxy + 1), v // (a.nxy + 1)
         nbs = [v - 1, v + 1] if j_ in (0, a.nxy) else [v - (a.nxy + 1), v + (a.nxy + 1)]
@@ -810,22 +819,39 @@ if a.grasp:
         up_f = lo_f + R0 @ [0, 0, GFS[2] + GAPG]
         up_pre = up_f + R0 @ [0, 0, 0.012]; up_above = up_pre + [0, 0, 0.06]
         W_ = lambda x: np.asarray(x) + offw
-        g_lin("rod", S0, GT["rod_above"], W_(rod_above), R0)
-        t_ = S0 + GT["rod_above"]; g_lin("rod", t_, GT["rod_down"], W_(rod_pre))
-        t_ += GT["rod_down"]; g_lin("rod", t_, GT["rod_in"], W_(rod_ins))
-        t_ += GT["rod_in"]; g_lin("rod", t_, GT["rod_lift"], W_(rod_lift))
-        t_ = S0 + G_TJAW                                  # 兩指夾好後 rod 才撤(第 2 次實跑:先撤 rod,布角落回去、下指撈不到)
-        g_lin("rod", t_, GT["rod_out"], W_(rod_out)); g_lin("rod", t_ + GT["rod_out"], GT["rod_up"], W_(rod_up))
-        g_lin("rod", t_ + GT["rod_out"] + GT["rod_up"], 1.0, GPARK["rod"])
-        # 上/下指的路徑在挑角完(S0+G_TPICK)才用『當下』的布邊位置/局部框排(第 1 次實跑:照挑角前規劃 → 角幾乎直立時下指足跡整個在布邊外,夾到 0)
-        P("  [%s] 挑角路徑(箱局部 mm):rod 從上方降到 %s(前端在布邊外 %.0fmm、頂面在布底下 3mm)→ 沿 −u 伸進 %.0fmm 到 %s → 上抬 %.0fmm 到 %s;下指進來後 rod 沿 +u 撤 45mm"
-          % (sd, np.round(rod_pre * 1e3, 1), 5.0, pin * 1e3, np.round(rod_ins * 1e3, 1), lift * 1e3, np.round(rod_lift * 1e3, 1)))
+        if a.pick_mode == "jaw":
+            # 下指(20x20x8)本身挑角:足跡起點 u∈[+7,+27](= grasp_points (b) 檢查的下指掃掠)、頂面在布底下 3mm,沿 −u 伸進 pin,再上抬
+            if slope >= a.steep_deg:
+                lift = 0.0
+                P("  [%s] 布邊坡度 %.1f° >= %.0f° → 角已翹起,不上抬(下指插到位後直接合上指)" % (sd, slope, a.steep_deg))
+            lo_ins = p + R0 @ [0, 0.017 - pin, -(half + a.clear_mm / 1e3 + GFS[2] / 2)]
+            lo_pre_ = lo_ins + R0 @ [0, pin, 0]; lo_ab_ = lo_pre_ + [0, 0, 0.08]; lo_lift = lo_ins + [0, 0, lift]
+            g_lin("lo", S0, GT["rod_above"], W_(lo_ab_), R0)
+            t_ = S0 + GT["rod_above"]; g_lin("lo", t_, GT["rod_down"], W_(lo_pre_))
+            t_ += GT["rod_down"]; g_lin("lo", t_, GT["rod_in"], W_(lo_ins))
+            t_ += GT["rod_in"]; g_lin("lo", t_, GT["rod_lift"], W_(lo_lift))
+            pl_extra = dict(lo_lift=lo_lift)
+            P("  [%s] 挑角路徑(jaw 模式,箱局部 mm):下指從上方降到 %s(足跡 u∈[+7,+27]、頂面在布底下 %.0fmm)→ 沿 −u 伸進 %.0fmm 到 %s(足跡 u∈[%.0f,%.0f])→ 上抬 %.0fmm 到 %s"
+              % (sd, np.round(lo_pre_ * 1e3, 1), a.clear_mm, pin * 1e3, np.round(lo_ins * 1e3, 1), (0.007 - pin) * 1e3, (0.027 - pin) * 1e3, lift * 1e3,
+                 np.round(lo_lift * 1e3, 1)))
+        if a.pick_mode == "rod":
+            pl_extra = {}
+            g_lin("rod", S0, GT["rod_above"], W_(rod_above), R0)
+            t_ = S0 + GT["rod_above"]; g_lin("rod", t_, GT["rod_down"], W_(rod_pre))
+            t_ += GT["rod_down"]; g_lin("rod", t_, GT["rod_in"], W_(rod_ins))
+            t_ += GT["rod_in"]; g_lin("rod", t_, GT["rod_lift"], W_(rod_lift))
+            t_ = S0 + G_TJAW                                  # 兩指夾好後 rod 才撤(第 2 次實跑:先撤 rod,布角落回去、下指撈不到)
+            g_lin("rod", t_, GT["rod_out"], W_(rod_out)); g_lin("rod", t_ + GT["rod_out"], GT["rod_up"], W_(rod_up))
+            g_lin("rod", t_ + GT["rod_out"] + GT["rod_up"], 1.0, GPARK["rod"])
+            # 上/下指的路徑在挑角完(S0+G_TPICK)才用『當下』的布邊位置/局部框排(第 1 次實跑:照挑角前規劃 → 角幾乎直立時下指足跡整個在布邊外,夾到 0)
+            P("  [%s] 挑角路徑(箱局部 mm):rod 從上方降到 %s(前端在布邊外 %.0fmm、頂面在布底下 3mm)→ 沿 −u 伸進 %.0fmm 到 %s → 上抬 %.0fmm 到 %s;下指進來後 rod 沿 +u 撤 45mm"
+              % (sd, np.round(rod_pre * 1e3, 1), 5.0, pin * 1e3, np.round(rod_ins * 1e3, 1), lift * 1e3, np.round(rod_lift * 1e3, 1)))
         others = {"yn": ("yp", "xp", "xn"), "yp": ("xp", "xn")}[sd]
         TOPS = np.where((GSIDE2 == sd) & (sg * Pl[:, 1] < CY - 0.003))[0]
         r_, _, _ = measure(S0, full=True)
         pl = dict(sd=sd, sg=sg, S0=S0, v=v, nb=nb, R0=R0, p=p, half=half, pick=pick, rows=rows[:6], offw=offw, P0=Pw.copy(), Pl0=Pl.copy(),
                   mug0=mp.copy(), others=np.isin(GSIDE2, others), osides=others, TOPS=TOPS, lo_f=lo_f, up_f=up_f, z_v0=float(M[v, 2]),
-                  cov0=(r_.get("lay") or {}).get("cov", float("nan")), r_plan=r_, slip=[], ev={})
+                  cov0=(r_.get("lay") or {}).get("cov", float("nan")), r_plan=r_, slip=[], ev={}, **pl_extra)
         SNAP["g_%s_plan" % sd] = (Pw.copy(), mug_world()[2].copy(), r_)
         P("  [%s] 翻面量測集:%s 片在折線(y=%+.1fmm)內側的頂點 %d 個;他片 %s 共 %d 頂點;杯頂俯視覆蓋 %.0f%%(露出 %.0f%%)"
           % (sd, sd, sg * CY * 1e3, len(TOPS), "/".join(others), int(pl["others"].sum()), 100 * pl["cov0"], 100 * (1 - pl["cov0"])))
@@ -846,6 +872,21 @@ if a.grasp:
         P("\n★ t=%.2f [%s] 挑角完:角 v%d z %.1f → %.1f mm(+%.1f);下方空隙 %.1f → %.1f mm;相鄰層(非 %s 片)位移 >10mm 頂點 %d / %d,最大 %.1f mm"
           % (t, pl["sd"], v, e["z0"], e["z1"], e["z1"] - e["z0"], e["gap0"], e["gap1"], pl["sd"], n10, e["adj_tot"], e["adj_max"]))
         SNAP["g_%s_pick" % pl["sd"]] = (Pw.copy(), mug_world()[2].copy(), measure(t)[0])
+        if a.pick_mode == "jaw":
+            # 上指:在挑角時的局部框 R0 裡,停在下指正上方 15mm(先從 +z 垂直降),再沿 −n 合到指面間距 gap
+            R0 = pl["R0"]; lo_f = pl["lo_lift"]; up_f = lo_f + R0 @ [0, 0, GFS[2] + GAPG]
+            up_pre = up_f + R0 @ [0, 0, 0.015]; up_above = up_pre + [0, 0, 0.06]
+            W_ = lambda x: np.asarray(x) + offw
+            t_ = pl["S0"] + G_TPICK
+            g_lin("up", t_, GT["lo_above"], W_(up_above), R0); t_ += GT["lo_above"]
+            g_lin("up", t_, GT["lo_down"], W_(up_pre)); t_ += GT["lo_down"]
+            g_lin("up", t_, GT["close"], W_(up_f))
+            pl.update(lo_f=lo_f, up_f=up_f)
+            Lk = (Pw - (lo_f + offw)) @ R0
+            on = (np.abs(Lk[:, 0]) < GFS[0] / 2) & (np.abs(Lk[:, 1]) < GFS[1] / 2) & (Lk[:, 2] > GFS[2] / 2 - 0.001) & (Lk[:, 2] < GFS[2] / 2 + 0.008)
+            P("  [%s] 上指:從 +z 降到下指正上方 %s → 沿 −n 合 15mm 到 %s(指面間距 %.1fmm);挑角後躺在下指頂面上(0~7mm)的布頂點 %d 個"
+              % (pl["sd"], np.round(up_pre * 1e3, 1), np.round(up_f * 1e3, 1), a.gap_mm, int(on.sum())))
+            return
         # 用當下的布邊排上/下指
         R1, sl1 = GPL.frame(Pl, v); t1 = R1[:, 0]
         nb = pl["nb"]; toff = float(np.dot(M[nb] - M[v], t1)) / 2 if nb != v else 0.0
@@ -875,9 +916,20 @@ if a.grasp:
         offw, Pw, Pl, MUGl, mp = g_state(); sd, sg, v = pl["sd"], pl["sg"], pl["v"]
         G_, L_ = g_between(Pw, t)
         pl["G"] = G_; pl["rel0"] = L_[G_].copy()
+        try:
+            _tr = GFV.get_transforms(); _tr = _tr.numpy() if hasattr(_tr, "numpy") else np.asarray(_tr)
+            for i_, pth_ in enumerate(GFV.prim_paths):
+                k_ = [kk for kk in GKEYS if GPATH[kk] == pth_][0]
+                P("  [%s] 實際 %s 位置(箱局部)%s mm vs 目標 %s" % (sd, k_, np.round((_tr[i_, :3] - offw) * 1e3, 1), np.round((g_pose(k_, t)[0] - offw) * 1e3, 1)))
+        except Exception as e_:
+            P("  get_transforms 失敗 %s" % e_)
         P("\n★ t=%.2f [%s] 夾好:指面之間(間距 %.1fmm、足跡 20x20)的布頂點 %d 個(歸屬 %s)"
           % (t, sd, a.gap_mm, len(G_), dict(zip(*np.unique(GSIDE2[G_], return_counts=True))) if len(G_) else {}))
-        pl["ev"]["grip"] = dict(n=len(G_))
+        _m25 = (np.abs(L_[:, 0]) < GFS[0] / 2 + 0.0025) & (np.abs(L_[:, 1]) < GFS[1] / 2 + 0.0025) & (np.abs(L_[:, 2]) <= GAPG / 2 + 0.0025)
+        _near = (np.abs(L_[:, 0]) < 0.03) & (np.abs(L_[:, 1]) < 0.03) & (np.abs(L_[:, 2]) < 0.03)
+        P("  [%s] 參考:足跡外擴 2.5mm、離指面 <=2.5mm 的布頂點 %d 個;夾爪 30mm 內布頂點的 (t,u,n) mm:%s"
+          % (sd, int(_m25.sum()), "; ".join("v%d(%.0f,%.0f,%.0f)" % (q, *(L_[q] * 1e3)) for q in np.where(_near)[0][:14])))
+        pl["ev"]["grip"] = dict(n=len(G_), n25=int(_m25.sum()))
         SNAP["g_%s_grip" % sd] = (Pw.copy(), mug_world()[2].copy(), measure(t)[0])
         col_i = v % (a.nxy + 1)
         hy, hz, hfy, ym, zm, nc = GPL.hinge(Pl, sd, col_i)
@@ -895,7 +947,7 @@ if a.grasp:
         Ea, Ez = -(IY + 0.0015), CBOX["top_y"] + T / 2 + 0.002
         a0, z0 = -sg * gc0[1] - Ba, gc0[2] - Bz; r0 = float(np.hypot(a0, z0)); th0 = float(np.arctan2(z0, a0))
         BE = float(np.hypot(Ea - Ba, Ez - Bz)); th1 = float(np.arctan2(Ez - Bz, Ea - Ba))
-        R2 = Rr - BE; two = R2 > 0.012
+        R2 = Rr - BE; two = (R2 > 0.012) and bool(a.arc2)
         if th0 >= th1:
             th1 = th0
         s1 = Rr * (th1 - th0); s2 = R2 * (np.pi - th1) if two else 0.0
@@ -937,7 +989,7 @@ if a.grasp:
           % (sd, hy * 1e3, hz * 1e3, ym * 1e3, zm * 1e3, sg * CY * 1e3, Lcur * 1e3, Lflat * 1e3, a.arc_k, Lmat * 1e3, Rr * 1e3, r0 * 1e3))
         P("  [%s] 第 1 段繞彎折處 %.0f° → %.0f°(指向箱壁外頂角 y=%+.1f z=%.1f);第 2 段 %s;箱外指頭最低點 >= 蓋頂 %.1f + T + 2 = %.1f mm;終點夾爪中心 (%.1f,%.1f,%.1f) mm;%.1fs 後停 %.1fs 再放開"
           % (sd, np.degrees(th0), np.degrees(th1), sg * (IY + 0.0015) * 1e3, Ez * 1e3,
-             ("繞箱壁頂角 半徑 %.1fmm 轉到 180°" % (R2 * 1e3)) if two else ("略過(半徑剩 %.1fmm < 12)" % (R2 * 1e3)),
+             ("繞箱壁頂角 半徑 %.1fmm 轉到 180°" % (R2 * 1e3)) if two else ("略過(半徑剩 %.1fmm;--arc2 %d)" % (R2 * 1e3, a.arc2)),
              (zclear - T - 0.002) * 1e3, zclear * 1e3, *(pl["end_local"] * 1e3), a.peel_t, GT["peel_hold"]))
 
     def g_metrics(pl, t, Pw=None):
@@ -986,6 +1038,17 @@ if a.grasp:
                 except Exception: pass
                 G.look(cam, list(EYE), list(TGT))
         pl = GS["plans"][k_]; ev = pl["ev"]
+        _r = t - S0
+        if a.pick_mode == "jaw" and 1.5 <= _r <= G_TPICK + 0.05 and int(round(_r / a.dt)) % int(round(0.1 / a.dt)) == 0:
+            pj, Rj = g_pose("lo", t); Lj = (PLATE.pts() - pj) @ Rj
+            fp = (np.abs(Lj[:, 0]) < GFS[0] / 2) & (np.abs(Lj[:, 1]) < GFS[1] / 2)
+            ontop = fp & (Lj[:, 2] >= GFS[2] / 2) & (Lj[:, 2] < GFS[2] / 2 + 0.008)
+            inside = fp & (np.abs(Lj[:, 2]) < GFS[2] / 2)
+            below = fp & (Lj[:, 2] <= -GFS[2] / 2) & (Lj[:, 2] > -GFS[2] / 2 - 0.008)
+            P("    pick t=%.2f 下指足跡內:頂面上 0~8mm %d 點 / 穿進指內 %d 點 / 底面下 0~8mm %d 點;角 v%d z=%.1f"
+              % (t, int(ontop.sum()), int(inside.sum()), int(below.sum()), pl["v"], (GPL.mid(PLATE.pts())[pl["v"], 2] - g_offw()[2]) * 1e3))
+        if "ins" not in ev and t >= S0 + GT["rod_above"] + GT["rod_down"] + GT["rod_in"] - 1e-6:
+            ev["ins"] = dict(t=t); SNAP["g_%s_ins" % pl["sd"]] = (PLATE.pts().copy(), mug_world()[2].copy(), dict(t=t))
         if "pick" not in ev and t >= S0 + G_TPICK - 1e-6:
             g_after_pick(pl, t)
         if "grip" not in ev and t >= S0 + G_TGRIP - 1e-6:
