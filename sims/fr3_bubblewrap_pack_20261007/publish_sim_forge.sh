@@ -29,6 +29,8 @@ mkdir -p $STAGE/docs/handoff_20260929
 cp $H/*.md $STAGE/docs/handoff_20260929/ 2>/dev/null || true
 cp $H/publish_sim_forge.sh $STAGE/
 cp $H/REPO_README.md $STAGE/README.md
+# 進度報告投影片(pptx + outline + 15s 剪輯)
+mkdir -p $STAGE/deck && rsync -a --delete --exclude 'figs/*.png' $H/deck/ $STAGE/deck/
 # 場景 USD(雙臂 + 紙箱 + 包裹)
 mkdir -p $STAGE/scene
 cp $SRC/handoff_20261002/scene_final.usd $STAGE/scene/
@@ -60,7 +62,7 @@ G
 
 cd $CLONE
 git add -A $TASK
-git add -f $STAGE/scene/*.usd $STAGE/work/*.usd $STAGE/vol/*.usd $STAGE/work/*.npz 2>/dev/null || true
+git add -f $STAGE/deck/figs/*.mp4 $STAGE/deck/*.pptx $STAGE/scene/*.usd $STAGE/work/*.usd $STAGE/vol/*.usd $STAGE/work/*.npz 2>/dev/null || true
 git -c core.quotepath=off commit -q -m "$MSG" || echo "(沒有變更可提交)"
 git push -q origin HEAD
 echo "pushed: $(git rev-parse --short HEAD)  $(git log -1 --format=%s)"
