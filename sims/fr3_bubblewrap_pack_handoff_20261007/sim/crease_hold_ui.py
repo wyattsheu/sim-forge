@@ -48,6 +48,17 @@ def _setup():
     cr = ElastoplasticCrease(len(order), "cpu", k=3.2, my0=0.60, h=0.85, c=0.33, clip=3.0)
     cr.reset(torch.arange(len(order)), torch.zeros(len(order)))
     _S.update(lids=lids, base=base, order=order, rel0=rel0, cr=cr)
+    # scene_final_ui/phys.usd 的摺痕關節有彈簧 drive;掛上彈塑性力矩時先把 drive 歸零,停止時還原
+    from pxr import UsdPhysics
+    import omni.usd
+    st = omni.usd.get_context().get_stage(); saved = {}
+    for n in order:
+        d = UsdPhysics.DriveAPI.Get(st.GetPrimAtPath(BOX + "/crease_" + n), "angular")
+        if d and d.GetStiffnessAttr() and d.GetStiffnessAttr().Get():
+            saved[n] = (d.GetStiffnessAttr().Get(), d.GetDampingAttr().Get())
+            d.GetStiffnessAttr().Set(0.0); d.GetDampingAttr().Set(0.0)
+    _S["saved_drives"] = saved
+    if saved: print("[crease] 已暫時關掉 %d 個蓋子 drive(停止時還原)" % len(saved))
     print("[crease] 已接上", order)
 
 def _state():
@@ -98,7 +109,16 @@ def crease_fix_solver(hz=120, pos_iter=8, vel_iter=1):
         print("[crease] %s -> %d Hz / posIter>=%d / velIter>=%d" % (p.GetPath(), hz, pos_iter, vel_iter))
 
 def crease_stop():
-    _S.pop("sub", None); _S.clear(); print("[crease] 已停止")
+    _S.pop("sub", None)
+    saved = _S.pop("saved_drives", {})
+    if saved:
+        from pxr import UsdPhysics
+        import omni.usd
+        st = omni.usd.get_context().get_stage()
+        for n, (k, c) in saved.items():
+            d = UsdPhysics.DriveAPI.Get(st.GetPrimAtPath(BOX + "/crease_" + n), "angular")
+            d.GetStiffnessAttr().Set(k); d.GetDampingAttr().Set(c)
+    _S.clear(); print("[crease] 已停止")
 
 crease_fix_solver()
 _S["sub"] = get_physx_interface().subscribe_physics_step_events(_on_step)

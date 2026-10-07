@@ -6,9 +6,9 @@ settings only from USD) of the physical-wrap scene.  Numbers, no images.
 
 A  rest 8 s, nothing touched
 B  carry: carton base servoed (velocity set every physics step, body stays dynamic, like a
-   stiff hand) along smoothstep +0.20 m y / +0.10 m z over 3 s, hold 2 s
+   stiff hand) along smoothstep --move (default +0.10 m x / +0.10 m z) over 3 s, hold 2 s
 Bm carry by PhysX mouse interaction (update_interaction MOUSE_DRAG_*), ray from the side onto
-   the carton wall, ray origin moved +0.20 y / +0.10 z over 3 s, hold 2 s
+   the carton wall, ray origin moved by --move over 3 s, hold 2 s (forceGrab=1, pickingForce 100)
 C  lid-vs-wrap: 3 N downward force on the free half of lower lid fxn for 3 s, then release 2 s
 """
 import argparse, os, sys, math
@@ -19,6 +19,11 @@ ap.add_argument("--log", default="")
 ap.add_argument("--secs", type=float, default=8.0)
 ap.add_argument("--force", type=float, default=3.0)
 ap.add_argument("--warm", type=float, default=1.0, help="B/C: rest before acting (s)")
+ap.add_argument("--move", default="0.10,0,0.10", help="B/Bm: carry vector x,y,z (m). ±y runs into the arms' grippers (69 mm away), so default moves in +x")
+ap.add_argument("--force_grab", type=int, default=1, help="Bm: 1 = /physics/forceGrab=True (the setting that actually drags; joint mode moves ~1 cm)")
+ap.add_argument("--picking_force", type=float, default=70.0, help="Bm: /physics/pickingForce (launcher default 70; 100 flips the carton when lifting by a wall)")
+ap.add_argument("--grab_z", type=float, default=0.06, help="Bm: grab height above the carton floor (m) on the +x wall")
+ap.add_argument("--base_damping", default="", help="override carton base linear,angular damping before Play, e.g. 2,2")
 a = ap.parse_args()
 os.environ.setdefault("OMNI_KIT_ALLOW_ROOT", "1")
 from isaacsim import SimulationApp
@@ -77,6 +82,11 @@ for n in LIDN:
 paths = [BASE] + [BOX + "/" + n for n in LIDN] + ([MUG] if LIVE_M else [])
 T0 = [xfw(p_) for p_ in paths]       # authored (pre-Play) poses = reference
 W0w = wrap_world(); M0w = mug_world()
+if a.base_damping:
+    ld, ad = [float(v) for v in a.base_damping.split(",")]
+    _bp = PhysxSchema.PhysxRigidBodyAPI.Apply(st.GetPrimAtPath(BOX + "/base"))
+    _bp.CreateLinearDampingAttr().Set(ld); _bp.CreateAngularDampingAttr().Set(ad)
+    P("base damping override: linear %.2f angular %.2f" % (ld, ad))
 tl = omni.timeline.get_timeline_interface()
 tl.play(); sim.update()
 sv = tensors.create_simulation_view("numpy"); sv.set_subspace_roots("/")
@@ -132,7 +142,7 @@ for n in ("fxn", "fxp"):
 # ---------------------------------------------------------------- actions
 state = dict(t=0.0, act=None)
 def smooth(u): u = min(max(u, 0.0), 1.0); return u*u*(3 - 2*u)
-MOVE = np.array([0.0, 0.20, 0.10]); TMOVE = 3.0; THOLD = 2.0
+MOVE = np.array([float(v) for v in a.move.split(",")]); TMOVE = 3.0; THOLD = 2.0
 def on_step(dt):
     state["t"] += dt
     t = state["t"]
@@ -168,10 +178,10 @@ sub = get_physx_interface().subscribe_physics_step_events(on_step)
 drag = dict(on=False)
 if a.test == "Bm":
     _s.set_bool("/physics/mouseInteractionEnabled", True); _s.set_bool("/physics/mouseGrab", True)
-    _s.set_bool("/physics/forceGrab", False); _s.set_float("/physics/pickingForce", 25.0)
+    _s.set_bool("/physics/forceGrab", a.force_grab == 1); _s.set_float("/physics/pickingForce", a.picking_force)
     from omni.physx.bindings._physx import PhysicsInteractionEvent as PIE
     # ray from +x side onto the carton wall facing +x (world x = 95 mm), 40 mm below the rim
-    O0 = np.array([0.6, TB0[1, 3], TB0[2, 3] + 0.10]); DIR = carb.Float3(-1.0, 0.0, 0.0)
+    O0 = np.array([0.6, TB0[1, 3], TB0[2, 3] + a.grab_z]); DIR = carb.Float3(-1.0, 0.0, 0.0)
 
 total = a.secs if a.test == "A" else (a.warm + TMOVE + THOLD if a.test in ("B", "Bm") else a.warm + 5.0)
 mxlid = np.zeros(4); mx_dz = 0.0; nan_seen = False; k = 0; last_print = -1

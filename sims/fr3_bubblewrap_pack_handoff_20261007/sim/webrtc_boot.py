@@ -16,6 +16,7 @@ import omni.usd
 
 USD = os.environ["HANDOFF_USD"]
 CREASE = os.environ.get("HANDOFF_CREASE", "0") == "1"
+CREASE_MODE = CREASE
 SIM = os.environ.get("HANDOFF_SIM", "")
 NO_PLAY = os.environ.get("HANDOFF_NO_PLAY", "0") == "1"
 DELAY = 180
@@ -31,8 +32,10 @@ def _mouse_drag():
     _st.set_bool("/physics/mouseInteractionEnabled", True)
     _st.set_bool("/physics/mouseGrab", True)
     _st.set_bool("/physics/mouseGrabIgnoreInvisible", True)
-    _st.set_bool("/physics/forceGrab", False)
-    _st.set_float("/physics/pickingForce", 25.0)
+    # 2026-10-07 實測(sim/sweep 掃描):forceGrab=False(關節式)不管 pickingForce 多大,拖 15 cm 只動 1.4 cm;
+    # forceGrab=True + pickingForce=100 拖 15 cm 動 14.5 cm、不傾斜,但抓箱壁往上提會翻箱;70 提起來只翹 26° 不翻。所以用力量式 70。
+    _st.set_bool("/physics/forceGrab", True)
+    _st.set_float("/physics/pickingForce", float(os.environ.get("MOUSE_PICKING_FORCE", "70")))
     try:
         from omni.physxui.scripts.extension import get_physicsui_instance
         from omni.physxui.scripts.physxViewportOverlays import PhysxUIMouseInteraction
@@ -94,7 +97,19 @@ def _on_update(_e):
         if not NO_PLAY:
             tl.play()
         hint = "左鍵直接拖" if _s.get("no_shift") else "Shift + 左鍵拖"
-        _log("READY —— %s紙箱 / 蓋子;%s" % (hint, "未按 Play(HANDOFF_NO_PLAY=1)" if NO_PLAY else "已按 Play"))
+        _log("READY —— %s紙箱 / 蓋子(pickingForce=%s);%s" % (hint, _st.get("/physics/pickingForce"), "未按 Play(HANDOFF_NO_PLAY=1)" if NO_PLAY else "已按 Play"))
+        if os.environ.get("CLICK_TO_ROS", "1") == "1":
+            p = os.path.join(SIM, "click_to_ros.py")
+            try:
+                exec(compile(open(p).read(), p, "exec"), globals())
+            except Exception as e:
+                _log("click_to_ros.py 載入失敗:%s" % e)
+        if os.environ.get("LID_LATCH", "1") == "1" and not CREASE_MODE:
+            p = os.path.join(SIM, "lid_latch.py")
+            try:
+                exec(compile(open(p).read(), p, "exec"), globals())
+            except Exception as e:
+                _log("lid_latch.py 載入失敗:%s" % e)
         _s["done"] = True
 
 

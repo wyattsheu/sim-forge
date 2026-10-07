@@ -6,6 +6,7 @@
 #   ./open_in_webrtc.sh scene_final.usd --crease # 原檔 + 彈塑性摺痕(crease_hold_ui.py)
 #   WEBRTC_IP=1.2.3.4 WEBRTC_PORT=49110 ./open_in_webrtc.sh
 #   WEBRTC_NO_PLAY=1 ./open_in_webrtc.sh         # 開好不要自動按 Play
+#   CLICK_TO_ROS=0 ./open_in_webrtc.sh           # 不載入 Ctrl+點擊 → ROS 2 座標
 #
 #   ./open_in_webrtc.sh --stop                   # 停止
 set -e
@@ -46,6 +47,16 @@ echo "場景   : $SCENE  (摺痕腳本: $([ $CREASE = 1 ] && echo 開 || echo �
 echo "連線   : Streaming Client 輸入 $PUBLIC_IP(signaling TCP $PORT、媒體 UDP 47998)"
 echo "記錄檔 : $LOG   —— 看到 [handoff] READY 就可以連"
 export OMNI_KIT_ALLOW_ROOT=1
+# ROS 2:用 Isaac 內建的 jazzy 函式庫與 rclpy(python 3.11)。系統的 /opt/ros 是 python 3.12,
+# 一起放進 Kit 會互相干擾(rclpy 載入失敗),所以把 /opt/ros 從 PYTHONPATH / LD_LIBRARY_PATH 拿掉。
+export ROS_DISTRO=${ROS_DISTRO:-jazzy}
+export RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
+ROS_EXT=/isaac-sim/exts/isaacsim.ros2.bridge/$ROS_DISTRO
+export PYTHONPATH=$(echo "$PYTHONPATH" | tr ':' '\n' | grep -v '^/opt/ros' | paste -sd: -)
+export LD_LIBRARY_PATH=$ROS_EXT/lib:$(echo "$LD_LIBRARY_PATH" | tr ':' '\n' | grep -v '^/opt/ros' | paste -sd: -)
+unset AMENT_PREFIX_PATH
+export CLICK_TO_ROS=${CLICK_TO_ROS:-1}          # 0 = 不載入 Ctrl+點擊 → ROS 2 座標的功能
+export HANDOFF_SIM="$HERE/sim"
 nohup /isaac-sim/kit/kit /isaac-sim/apps/isaacsim.exp.full.streaming.kit \
   --no-window --allow-root \
   --/persistent/physics/enableDeformableBeta=true \

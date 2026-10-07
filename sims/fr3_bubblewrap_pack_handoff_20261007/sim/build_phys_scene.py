@@ -49,6 +49,11 @@ ap.add_argument("--mug_cont", type=float, default=0.004)
 ap.add_argument("--mug_rest", type=float, default=0.0)
 # carton floor pad (wrap_sim --base_collider_pad), filtered against the table colliders
 ap.add_argument("--pad", type=float, default=0.02, help="m; 0 = no pad")
+# carton feel in the UI (2026-10-07): weaker lid spring so a mouse can open lids (+ lid_latch.py keeps them open),
+# damped base so force-mode mouse grab doesn't overshoot when lifting
+ap.add_argument("--lid_stiff", type=float, default=0.012, help="N*m/deg; scene_final_ui.usd has 0.056 (mouse only reached 15 deg)")
+ap.add_argument("--lid_damp", type=float, default=0.003)
+ap.add_argument("--base_damp", default="2,2", help="carton base linear,angular damping; '' = keep")
 a = ap.parse_args()
 os.environ.setdefault("OMNI_KIT_ALLOW_ROOT", "1")
 os.makedirs(os.path.dirname(a.log), exist_ok=True)
@@ -241,7 +246,8 @@ prb.CreateSleepThresholdAttr(0.0005); prb.CreateMaxDepenetrationVelocityAttr(0.4
 
 # -- optional carton floor pad, filtered against the table so it doesn't lift the carton
 if a.pad > 0:
-    bc = UsdGeom.BBoxCache(Usd.TimeCode.Default(), ["default", "render"])
+    # 碰撞 mesh 的 purpose 常是 guide/proxy,不含在 default/render 裡會算成空 bbox → 2026-10-07 之前這裡漏掉桌面,pad 被卡死
+    bc = UsdGeom.BBoxCache(Usd.TimeCode.Default(), ["default", "render", "guide", "proxy"])
     rb = bc.ComputeWorldBound(st.GetPrimAtPath(BASE + "/bottom")).ComputeAlignedRange()
     pad = UsdGeom.Cube.Define(st, BASE + "/pad_collider"); pad.CreateSizeAttr(1.0)
     pad.AddTranslateOp().Set(Gf.Vec3d(0, 0, -a.pad/2)); pad.AddScaleOp().Set(Gf.Vec3f(0.267, 0.227, a.pad))
@@ -257,10 +263,23 @@ if a.pad > 0:
             if r.IsEmpty(): continue
             l2, h2 = np.array(r.GetMin()), np.array(r.GetMax())
             if np.all(l2 <= phi) and np.all(h2 >= plo):
-                tgt.append(p.GetPath())
+                q = p                                   # 過濾整個剛體(例如 tabletop_link),不只單一碰撞 mesh
+                while q and not q.HasAPI(UsdPhysics.RigidBodyAPI) and q.GetParent() and q.GetParent().GetPath() != Sdf.Path.absoluteRootPath:
+                    q = q.GetParent()
+                if q.GetPath() not in tgt: tgt.append(q.GetPath())
+    assert tgt, "pad 下面找不到任何碰撞體?桌面碰撞 mesh 應該要被找到"
     UsdPhysics.FilteredPairsAPI.Apply(pad.GetPrim()).CreateFilteredPairsRel().SetTargets(tgt)
     P("pad %.0f mm under base, filtered vs %s" % (a.pad*1e3, [str(x) for x in tgt]))
 
+for _n in ("fxp", "fxn", "fyp", "fyn"):
+    _d = UsdPhysics.DriveAPI.Get(st.GetPrimAtPath(PK + "/Box/crease_" + _n), "angular")
+    _d.GetStiffnessAttr().Set(a.lid_stiff); _d.GetDampingAttr().Set(a.lid_damp)
+P("lid drives: stiffness %g N*m/deg damping %g" % (a.lid_stiff, a.lid_damp))
+if a.base_damp:
+    _ld, _ad = [float(v) for v in a.base_damp.split(",")]
+    _bp = PhysxSchema.PhysxRigidBodyAPI.Apply(st.GetPrimAtPath(BASE))
+    _bp.CreateLinearDampingAttr().Set(_ld); _bp.CreateAngularDampingAttr().Set(_ad)
+    P("base damping: linear %g angular %g" % (_ld, _ad))
 PRE = a.out if a.no_bake else a.out.replace(".usd", "_prebake.usd")
 layer.Export(PRE)
 P("authored ->", PRE)
