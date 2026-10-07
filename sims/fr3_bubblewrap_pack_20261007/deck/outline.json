@@ -448,46 +448,34 @@
       "notes": "厚度不是免費的。第一,板一有厚度彎曲剛性就上去,E 要降一階才像泡泡紙,再降一階布就被拉長,可用窗口很窄。第二,反直覺的是板做薄反而更彈,因為厚度方向只有一層四面體會數值鎖死。第三是最大的:純彈性材料放開就 100% 回彈,包裹把箱子填滿,縮布也救不了。第四,粗網格讓夾爪夾不到足夠頂點,而且 solver 要加倍、時間步減半。"
     },
     {
-      "role": "project_insight",
-      "title": "surface 夾得住嗎?已知 / 未測 / 預期",
-      "cards": {
-        "items": [
-          {
-            "title": "已知可以",
-            "bullets": [
-              "attachment 錨點拉得動整條邊(折疊就是這樣做的)",
-              "kinematic 平板靠摩擦帶動布 0 mm 滑動",
-              "deformable 對剛體摩擦有效"
-            ]
-          },
-          {
-            "title": "沒測過",
-            "bullets": [
-              "兩指夾住零厚度膜再抬起",
-              "多層一起夾會不會互穿",
-              "夾持點滑動量"
-            ],
-            "highlight": true
-          },
-          {
-            "title": "預期",
-            "bullets": [
-              "等效厚度 = 2×contactOffset ≈ 10 mm",
-              "指面間距 ~8 mm 應夾得住",
-              "夾緊到 < 2 mm 可能穿過膜"
-            ]
-          },
-          {
-            "title": "建議",
-            "bullets": [
-              "用 volume 的夾爪探針原樣跑 surface",
-              "G1/G2 各一次,約半天",
-              "結果補進這頁"
-            ]
-          }
-        ]
+      "role": "project_results",
+      "title": "surface 夾得住:間隙 2 mm = 2×restOffset",
+      "video": {
+        "src": "figs/10_surf_grip.mp4",
+        "caption": "G1 surface:間隙 2 mm、摩擦 1.0,抬 150 拉 100,滑動 0.4 mm(11 s)",
+        "source": "ours",
+        "autoplay": true,
+        "loop": true
       },
-      "notes": "這題要誠實講:surface 版我們沒有做過兩指夾持的探針。能確定的是 attachment 綁住頂點可以拉動整條邊,折疊就是靠這個;還有 kinematic 平板移動時布靠摩擦完全跟著走。沒測的是兩指把一張零厚度的膜夾起來。預期上它的等效厚度是兩倍 contactOffset 約 10 mm,指面間距 8 mm 左右應該夾得住,但夾太緊會穿過膜。建議把 volume 用的夾爪探針原樣對 surface 跑一次,半天就有答案。"
+      "bullets": [
+        {
+          "text": "虛擬厚度 = 2×restOffset = 2 mm;間隙 1.5~2 滑動 0.3~0.5、穿指 0",
+          "level": 0
+        },
+        {
+          "text": "間隙 4~10 沒夾到,布掛在下指上滑 5~20 mm;≤ 1 mm 開始穿膜",
+          "level": 1
+        },
+        {
+          "text": "疊層只掀上片:互穿 0,翻面 74~83%(volume 100%)",
+          "level": 1
+        },
+        {
+          "text": "窗口窄、懸出段會垂直垂下,接近方式要改",
+          "level": 1
+        }
+      ],
+      "notes": "這題補測了。surface 膜夾得住,但只有指面間距約等於兩倍 restOffset、也就是 2 mm 時才是真的夾住:滑動 0.3 到 0.5 mm、零穿指、邊長比 1.06,四條判準全過。間隙 4 到 10 mm 時頂點根本沒被夾到,布只是掛在下指上被帶起來,滑 5 到 20 mm;間隙小於 1 mm 開始穿膜,而且越擠滑得越多。靠的是 restOffset 造出來的虛擬厚度,不是 contactOffset 也不是 surfaceThickness。疊兩片只掀上片兩片互穿 0,翻面 74 到 83%,volume 是 100%。缺點是可用間隙窗口只有 1.5 到 2 mm,volume 是 2 到 5 mm;而且懸出的邊會自己垂成垂直,用上下合攏的接近方式抓不到任何頂點。結論:只為了能夾,不需要厚度;要穿模與重現性,還是 volume。"
     },
     {
       "role": "project_insight",
