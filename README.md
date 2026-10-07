@@ -3,11 +3,12 @@
 Isaac Sim 物理模擬資產的生成管線。每個模擬是 `sims/` 底下一個獨立資料夾,
 自帶參數表、生成腳本、驗收腳本與實測紀錄。
 
-目前有一個:
+目前有兩個:
 
 | 模擬 | 內容 |
 | --- | --- |
 | [`sims/wrapped_mug`](sims/wrapped_mug) | 逆物流情境:紙箱內用泡泡紙包覆的馬克杯,放進 stationary_ai 雙臂平台 |
+| [`sims/fr3_bubblewrap_pack_20261007`](sims/fr3_bubblewrap_pack_20261007) | 同一情境的**物理模擬開發紀錄**(2026-09-30~10-07):surface / volume deformable 包材折疊、入箱、搬箱、開蓋、夾爪掀包材、FR3 可達性;含 122 次模擬紀錄、自動測試集與場景 USD |
 
 ![wrapped_mug](sims/wrapped_mug/docs/img/rig.png)
 
