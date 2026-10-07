@@ -111,9 +111,9 @@ def _modifier_down():
 
 def _on_query(prim_path, world_pos, *rest):
     if not prim_path or world_pos is None:
-        _log("點到空的地方(沒有物件),不發佈"); return
+        _log("clicked empty space (no object), nothing published"); return
     _publish(world_pos, prim_path); _marker(world_pos)
-    _log("#%d  %s  →  (%.4f, %.4f, %.4f) m  已發佈到 %s" % (_S["n"], prim_path, world_pos[0], world_pos[1], world_pos[2], TOPIC))
+    _log("#%d  %s  →  (%.4f, %.4f, %.4f) m  published to %s" % (_S["n"], prim_path, world_pos[0], world_pos[1], world_pos[2], TOPIC))
 
 
 def _on_click(sender):
@@ -130,10 +130,10 @@ def _on_click(sender):
 
 def click_to_ros_start():
     if _S.get("frame") is not None:
-        _log("已經在執行"); return
+        _log("already running"); return
     vw = get_active_viewport_window()
     if vw is None:
-        _log("找不到 viewport 視窗(headless?),無法接滑鼠"); return
+        _log("no viewport window (headless?), cannot listen to the mouse"); return
     _ros_init()
     _S["vw"] = vw
     frame = vw.get_frame("handoff.click_to_ros.frame")
@@ -142,8 +142,8 @@ def click_to_ros_start():
         with sv.scene:
             sc.Screen(gesture=[sc.ClickGesture(_on_click, manager=_Pass())])
     _S["frame"] = frame; _S["sv"] = sv
-    mod = {"ctrl": "Ctrl + 左鍵", "alt": "Alt + 左鍵", "none": "左鍵"}.get(MODIFIER, MODIFIER)
-    _log("READY —— 在 viewport 裡 %s 點任何物件,座標會發佈到 %s(frame_id=%s)" % (mod, TOPIC, FRAME))
+    mod = {"ctrl": "Ctrl + left-click", "alt": "Alt + left-click", "none": "left-click"}.get(MODIFIER, MODIFIER)
+    _log("READY -- %s in the viewport on anything; the point is published to %s (frame_id=%s)" % (mod, TOPIC, FRAME))
 
 
 def click_to_ros_stop():
@@ -152,12 +152,12 @@ def click_to_ros_stop():
         if sv is not None and vw is not None: vw.viewport_api.remove_scene_view(sv)
         if fr is not None: fr.clear()
     except Exception as e:
-        _log("清除 viewport 疊層時出錯:%s" % e)
+        _log("error while clearing the viewport overlay: %s" % e)
     node = _S.pop("node", None)
     if node is not None:
         node.destroy_node()
     for k in ("pub", "pub_prim"): _S.pop(k, None)
-    _log("已停止")
+    _log("stopped")
 
 
 if os.environ.get("CLICK_TO_ROS_AUTOSTART", "1") == "1":

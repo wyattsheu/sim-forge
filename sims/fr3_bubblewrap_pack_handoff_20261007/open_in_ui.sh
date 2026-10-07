@@ -12,7 +12,7 @@ find_isaac || exit 5
 isaac_kit_cmd ui
 isaac_setup_ros
 export HANDOFF_SIM="$HERE/sim"
-echo "開啟 $HANDOFF_USD  (DISPLAY=$DISPLAY, click_to_ros=$CLICK_TO_ROS, Isaac Sim: $ISAAC_KIND $ISAAC_HOME)"
+echo "Opening $HANDOFF_USD  (DISPLAY=$DISPLAY, click_to_ros=$CLICK_TO_ROS, Isaac Sim: $ISAAC_KIND $ISAAC_HOME)"
 exec "${KIT_CMD[@]}" \
   --/persistent/physics/enableDeformableBeta=true \
   --/physics/updateToUsd=true \

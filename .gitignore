@@ -13,3 +13,6 @@ sims/*/assets/
 __pycache__/
 *.pyc
 .DS_Store
+
+# Kit streamer traces
+*.etli
