@@ -45,7 +45,7 @@ def _mouse_drag():
             inst.mouse_interaction_override_toggle(PhysxUIMouseInteraction.ENABLED)
             return True
     except Exception as e:
-        _log("no-shift 拖曳不可用,改用 Shift + 左鍵:%s" % e)
+        _log("no-Shift dragging unavailable, use Shift + left-drag: %s" % e)
     return False
 
 
@@ -65,7 +65,7 @@ def _camera():
             UsdGeom.Xformable(c).MakeMatrixXform().Set(m)
         vp.camera_path = "/World/ViewCam"
     except Exception as e:
-        _log("視角切換略過:%s" % e)
+        _log("camera switch skipped: %s" % e)
 
 
 def _on_update(_e):
@@ -91,26 +91,26 @@ def _on_update(_e):
         if CREASE:
             p = os.path.join(SIM, "crease_hold_ui.py")
             exec(compile(open(p).read(), p, "exec"), globals())
-            _log("crease_hold_ui.py 已掛上(摺痕力矩 + 解算器修正)")
+            _log("crease_hold_ui.py loaded (crease torque + solver fix)")
     elif f == DELAY + 60 and _s["opened"]:
         tl = omni.timeline.get_timeline_interface()
         tl.set_start_time(0.0); tl.set_end_time(100000.0); tl.set_looping(True)
         if not NO_PLAY:
             tl.play()
-        hint = "左鍵直接拖" if _s.get("no_shift") else "Shift + 左鍵拖"
-        _log("READY —— %s紙箱 / 蓋子(pickingForce=%s);%s" % (hint, _st.get("/physics/pickingForce"), "未按 Play(HANDOFF_NO_PLAY=1)" if NO_PLAY else "已按 Play"))
+        hint = "left-drag" if _s.get("no_shift") else "Shift + left-drag"
+        _log("READY -- %s the carton / lids (pickingForce=%s); %s" % (hint, _st.get("/physics/pickingForce"), "Play NOT pressed (HANDOFF_NO_PLAY=1)" if NO_PLAY else "Play pressed"))
         if os.environ.get("CLICK_TO_ROS", "1") == "1":
             p = os.path.join(SIM, "click_to_ros.py")
             try:
                 exec(compile(open(p).read(), p, "exec"), globals())
             except Exception as e:
-                _log("click_to_ros.py 載入失敗:%s" % e)
+                _log("click_to_ros.py failed to load: %s" % e)
         if os.environ.get("LID_LATCH", "1") == "1" and not CREASE_MODE:
             p = os.path.join(SIM, "lid_latch.py")
             try:
                 exec(compile(open(p).read(), p, "exec"), globals())
             except Exception as e:
-                _log("lid_latch.py 載入失敗:%s" % e)
+                _log("lid_latch.py failed to load: %s" % e)
         _s["done"] = True
 
 

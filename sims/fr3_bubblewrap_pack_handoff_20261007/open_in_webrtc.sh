@@ -22,16 +22,16 @@ BOOT="$HERE/sim/webrtc_boot.py"
 running() { pgrep -f -- "--exec $BOOT" ; }      # 這個資料夾開出來的所有串流實例
 if [ "$1" = "--stop" ]; then
   P_=$(running)
-  if [ -z "$P_" ]; then echo "沒有在跑"; rm -f "$PIDF"; exit 0; fi
+  if [ -z "$P_" ]; then echo "No stream is running"; rm -f "$PIDF"; exit 0; fi
   kill $P_ 2>/dev/null
-  echo -n "停止中(pid $(echo $P_ | tr '\n' ' '))"
+  echo -n "Stopping (pid $(echo $P_ | tr '\n' ' '))"
   for i in $(seq 1 30); do [ -z "$(running)" ] && break; echo -n "."; sleep 1; done   # Kit 要幾秒才會真的結束
-  if [ -n "$(running)" ]; then kill -9 $(running) 2>/dev/null; sleep 1; echo -n " 強制結束"; fi
-  echo " 已停止"; rm -f "$PIDF"; exit 0
+  if [ -n "$(running)" ]; then kill -9 $(running) 2>/dev/null; sleep 1; echo -n " force-killed"; fi
+  echo " stopped"; rm -f "$PIDF"; exit 0
 fi
 if [ -n "$(running)" ]; then
-  echo "已經有串流在跑(pid $(running | tr '\n' ' '))。" >&2
-  echo "同時開兩個會互相干擾(client 可能連到另一個、或黑畫面)。先執行:$0 --stop" >&2
+  echo "A stream is already running (pid $(running | tr '\n' ' '))." >&2
+  echo "Two streams interfere with each other (the client may connect to the wrong one, or show a black screen). Run first: $0 --stop" >&2
   exit 4
 fi
 CHECK=0
@@ -45,13 +45,13 @@ done
 source "$HERE/sim/find_isaac.sh"
 find_isaac || exit 5
 isaac_kit_cmd stream
-[ -f "$SCENE" ] || { echo "找不到場景:$SCENE" >&2; exit 2; }
+[ -f "$SCENE" ] || { echo "Scene not found: $SCENE" >&2; exit 2; }
 PORT="${WEBRTC_PORT:-49100}"
 if [ -z "${WEBRTC_PORT:-}" ]; then      # 沒指定就找第一個沒被佔用的
   for _ in $(seq 1 20); do ss -lnt 2>/dev/null | grep -q ":$PORT " || break; PORT=$((PORT+1)); done
 fi
 if ss -lnt 2>/dev/null | grep -q ":$PORT "; then
-  echo "port $PORT 已被佔用 —— 換一個:WEBRTC_PORT=49110 $0 $*" >&2; exit 3
+  echo "Port $PORT is in use -- pick another: WEBRTC_PORT=49110 $0 $*" >&2; exit 3
 fi
 # 對外 IP:優先 WEBRTC_IP;否則取本機第一個非內網、非 docker 的 IPv4(內網 / VPN 環境請自己設 WEBRTC_IP)
 if [ -n "${WEBRTC_IP:-}" ]; then PUBLIC_IP="$WEBRTC_IP"
@@ -59,21 +59,21 @@ else
   PUBLIC_IP=$(hostname -I 2>/dev/null | tr ' ' '\n' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' \
     | grep -vE '^(10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.|127\.|169\.254\.)' | head -1)
   [ -n "$PUBLIC_IP" ] || PUBLIC_IP=$(hostname -I 2>/dev/null | awk '{print $1}')
-  echo "IP     : 沒設 WEBRTC_IP,自動用 $PUBLIC_IP(不對的話:WEBRTC_IP=<client 連得到的 IP> $0)"
+  echo "IP     : WEBRTC_IP not set, using $PUBLIC_IP (if wrong: WEBRTC_IP=<an IP the client can reach> $0)"
 fi
 if [ "$CHECK" = 1 ]; then
-  echo "Isaac  : $ISAAC_KIND  $ISAAC_HOME"; echo "啟動   : ${KIT_CMD[*]}"
-  echo "場景   : $SCENE"; echo "連線   : $PUBLIC_IP  signaling TCP $PORT / 媒體 UDP 47998"
+  echo "Isaac  : $ISAAC_KIND  $ISAAC_HOME"; echo "Launch :  ${KIT_CMD[*]}"
+  echo "Scene  : $SCENE"; echo "Connect: $PUBLIC_IP  signaling TCP $PORT / media UDP 47998"
   nvidia-smi --query-gpu=index,name,memory.free --format=csv,noheader 2>/dev/null | sed 's/^/GPU    : /'
-  ss -lnu 2>/dev/null | grep -q ":47998 " && echo "警告   : UDP 47998 已被佔用(別的串流在跑?)"
+  ss -lnu 2>/dev/null | grep -q ":47998 " && echo "Warning: UDP 47998 is in use (another stream running?)"
   exit 0
 fi
 mkdir -p "$HERE/logs"; LOG="$HERE/logs/webrtc.log"
 export HANDOFF_USD="$SCENE" HANDOFF_CREASE="$CREASE" HANDOFF_SIM="$HERE/sim" HANDOFF_NO_PLAY="${WEBRTC_NO_PLAY:-0}"
 echo "Isaac  : $ISAAC_KIND  $ISAAC_HOME"
-echo "場景   : $SCENE  (摺痕腳本: $([ $CREASE = 1 ] && echo 開 || echo 關))"
-echo "連線   : Streaming Client 輸入 $PUBLIC_IP(signaling TCP $PORT、媒體 UDP 47998)"
-echo "記錄檔 : $LOG   —— 看到 [handoff] READY 就可以連"
+echo "Scene  : $SCENE  (crease script: $([ $CREASE = 1 ] && echo on || echo off))"
+echo "Connect: enter $PUBLIC_IP in the Streaming Client (signaling TCP $PORT, media UDP 47998)"
+echo "Log    : $LOG   -- connect once you see [handoff] READY (first start of a pip install can take ~5 min)"
 [ "$(id -u)" = 0 ] && export OMNI_KIT_ALLOW_ROOT=1
 isaac_setup_ros
 export HANDOFF_SIM="$HERE/sim"
@@ -93,4 +93,4 @@ nohup "${KIT_CMD[@]}" \
   --exec "$BOOT" \
   > "$LOG" 2>&1 &
 echo $! > "$PIDF"
-echo "pid    : $!(停止:$0 --stop)"
+echo "pid    : $! (stop with: $0 --stop)"
