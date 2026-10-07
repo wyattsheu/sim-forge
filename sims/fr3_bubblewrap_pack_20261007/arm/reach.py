@@ -216,9 +216,9 @@ ARC = {}
 for k in (1, 2):
     g = G[k]; gp = np.array(g["p"]) + np.array([0, 0, 30.0])
     th0 = math.atan2(gp[2] - HZ, gp[1] - HY); R = math.hypot(gp[1] - HY, gp[2] - HZ)
-    # 終點:翻到折線外側,但要高過 yn 牆頂(126.5)+ 30mm(y < −112 時)
+    # 終點:乾跑發現 +30mm 時 carriage 會撞 yn 牆 ⇒ 改成 y ≥ −95(留在內腔)或高過牆頂 80mm
     ths = np.linspace(th0, math.radians(175), 400)
-    ok = [(HY + R * math.cos(t) > -112 + 10) or (HZ + R * math.sin(t) > 126.5 + 30) for t in ths]
+    ok = [(HY + R * math.cos(t) > -112 + 17) or (HZ + R * math.sin(t) > 126.5 + 80) for t in ths]   # 指頭/carriage 斜著伸下來 ~60mm,過牆要高 80mm;否則留在內腔(y ≥ −95)
     th1 = ths[np.argmin(ok)] if not all(ok) else ths[-1]
     pts = []
     for f in np.linspace(0, 1, 5):

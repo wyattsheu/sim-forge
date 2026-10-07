@@ -39,10 +39,10 @@ ap.add_argument("--nz", type=int, default=1)
 ap.add_argument("--gap_mm", type=float, default=10.0)
 ap.add_argument("--r_T", type=float, default=2.0, help="圓角半徑 / T")
 ap.add_argument("--align", type=int, default=0, help="1 = 圓弧 1 起點對齊格線(Xw 跟著動)")
-ap.add_argument("--arap", type=int, default=300, help="角落 ARAP 迭代數(0 = 只用 SIDEPICK 初值)")
+ap.add_argument("--arap", type=int, default=1000, help="角落 ARAP 迭代數(0 = 只用 SIDEPICK 初值)")
 ap.add_argument("--out", default="")
-ap.add_argument("--tip_clear_mm", type=float, default=3.0, help="xp/xn 同層,尖端之間至少留這麼多")
-ap.add_argument("--init", choices=["sidepick", "blend"], default="blend", help="角落 ARAP 初值")
+ap.add_argument("--tip_clear_mm", type=float, default=10.0, help="xp/xn 同層,尖端之間至少留這麼多")
+ap.add_argument("--init", choices=["sidepick", "blend"], default="sidepick", help="角落 ARAP 初值")
 ap.add_argument("--blend_cells", type=float, default=3.0, help="blend 初值:對角線兩側過渡帶寬(格)")
 a = ap.parse_args()
 
@@ -187,7 +187,11 @@ if a.arap > 0:
     P("角落 ARAP:%d 個角落頂點自由、其餘固定,%d 次迭代" % (len(fi), a.arap))
 
 # ── 自檢 ──
+def _mx(v):
+    return float(v.max()) if len(v) else 0.0
+
 def check(Rr, tag):
+    used = np.zeros(len(Rr), bool); used[TETS.ravel()] = True
     EDG = np.unique(np.sort(np.concatenate([TETS[:, [i, j]] for i in range(4) for j in range(i + 1, 4)]), axis=1), axis=0)
     L0 = np.linalg.norm(FLAT[EDG[:, 0]] - FLAT[EDG[:, 1]], axis=1)
     L1 = np.linalg.norm(Rr[EDG[:, 0]] - Rr[EDG[:, 1]], axis=1)
@@ -210,7 +214,8 @@ def check(Rr, tag):
     # 彈性能 proxy:rest 為參考,F' = rest→平板,ψ = Σ(σ'-1)^2,權重 rest 體積
     psi = (((1 / np.maximum(sv, 1e-9)) - 1) ** 2).sum(1) * np.abs(V1)
     # 層間:材料距離 > 3 格的頂點對,空間最小距離
-    tr = cKDTree(Rr); pr = tr.query_pairs(0.03, output_type="ndarray")
+    ui = np.where(used)[0]
+    tr = cKDTree(Rr[ui]); pr = ui[tr.query_pairs(0.03, output_type="ndarray")]
     md = np.linalg.norm(FLAT[pr[:, 0], :2] - FLAT[pr[:, 1], :2], axis=1)
     pr = pr[md > 3 * h]
     dd = np.linalg.norm(Rr[pr[:, 0]] - Rr[pr[:, 1]], axis=1)
@@ -221,14 +226,14 @@ def check(Rr, tag):
     dmin_top = dd[top].min() if top.any() else np.inf
     # 穿杯(杯子當 box)
     lo = np.array([-MUG[0] / 2, -MUG[1] / 2, MUGBOT]); hi = np.array([MUG[0] / 2, MUG[1] / 2, MUGTOP])
-    in_cup = int(((Rr > lo) & (Rr < hi)).all(1).sum())
-    npen, _ = self_pen_count(Rr, TETS, FLAT, far=3 * h)
+    in_cup = int(((Rr[ui] > lo) & (Rr[ui] < hi)).all(1).sum())
+    npen, _ = self_pen_count(Rr, TETS, FLAT, far=3 * h, idx=ui)
     out = dict(tag=tag,
                edge_flat=float(err[flat_e].max()), edge_arc=float(err[arc_e].max()) if arc_e.any() else 0.0,
-               edge_corner=float(err[ecor].max()), edge_nc_n_over5=int((err[~ecor] > 0.05).sum()),
+               edge_corner=_mx(err[ecor]), edge_nc_n_over5=int((err[~ecor] > 0.05).sum()),
                vol_min=float(vr.min()), vol_max=float(vr.max()), n_negvol=int((V1 <= 0).sum()),
                vol_minmax_nc=float(vr[~tcor].min() / vr[~tcor].max()), vol_minmax_all=float(vr.min() / vr.max()),
-               sig_nc=float(sig[~tcor].max()), sig_cor=float(sig[tcor].max()),
+               sig_nc=float(sig[~tcor].max()), sig_cor=_mx(sig[tcor]),
                n_sig14_nc=int((sig[~tcor] > 1.4).sum()), n_sig14_cor=int((sig[tcor] > 1.4).sum()),
                n_str50=int((sv[:, 2] < 1 / 1.5).sum() + (sv[:, 0] > 1.5).sum()),
                energy=float(psi.sum()), energy_nc=float(psi[~tcor].sum()),
@@ -245,10 +250,15 @@ def check(Rr, tag):
       % (dmin_all * 1e3, dmin_nc * 1e3, dmin_top * 1e3, a.gap_mm - a.thick_mm, in_cup, npen))
     return out
 
+CROSS = ~((np.abs(FLAT[TETS].mean(1)[:, 0]) > s1x) & (np.abs(FLAT[TETS].mean(1)[:, 1]) > s1y))   # 十字形:去掉角落格
 res = {}
 res["sidepick"] = check(R_sidepick, "SIDEPICK 初值(角落不連續)")
 if a.arap > 0:
     res["final"] = check(R, "最終(角落 ARAP)")
+if a.align:
+    _T0 = TETS; TETS = TETS[CROSS]
+    res["cross"] = check(R, "十字形(去掉角落格 %d tets,剩 %d)" % ((~CROSS).sum(), CROSS.sum()))
+    TETS = _T0
 # 對照:wrap_vol 快照(500 板 fold_end)、單折探針
 def ref(npz, kf, kr):
     z = np.load(npz); Tt = z["tets"]; F = defgrad(z[kr], z[kf], Tt); sv = np.linalg.svd(F, compute_uv=False)
@@ -263,7 +273,7 @@ try:
 except Exception as e:
     P("對照讀不到:", e)
 if a.out:
-    np.savez(a.out, fold=R, flat=FLAT, tets=TETS, region=REG, sidepick=R_sidepick,
+    np.savez(a.out, fold=R, flat=FLAT, tets=TETS, region=REG, sidepick=R_sidepick, cross_keep=CROSS,
              params=json.dumps(dict(vars(a), sides=SIDES, MUGTOP=MUGTOP, MUGBOT=MUGBOT, r=r, ZB=ZB)),
              check=json.dumps(res))
     P("存 %s" % a.out)

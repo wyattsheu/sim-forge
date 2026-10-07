@@ -813,19 +813,12 @@ if a.grasp:
         t_ = S0 + GT["rod_above"]; g_lin("rod", t_, GT["rod_down"], W_(rod_pre))
         t_ += GT["rod_down"]; g_lin("rod", t_, GT["rod_in"], W_(rod_ins))
         t_ += GT["rod_in"]; g_lin("rod", t_, GT["rod_lift"], W_(rod_lift))
-        t_ = S0 + G_TPICK
-        g_lin("lo", t_, GT["lo_above"], W_(lo_above), R0); t_ += GT["lo_above"]
-        g_lin("lo", t_, GT["lo_down"], W_(lo_pre)); t_ += GT["lo_down"]
-        g_lin("lo", t_, GT["lo_in"], W_(lo_f)); t_ += GT["lo_in"]
+        t_ = S0 + G_TLOIN
         g_lin("rod", t_, GT["rod_out"], W_(rod_out)); g_lin("rod", t_ + GT["rod_out"], GT["rod_up"], W_(rod_up))
         g_lin("rod", t_ + GT["rod_out"] + GT["rod_up"], 1.0, GPARK["rod"])
-        g_lin("up", t_, GT["up_above"], W_(up_above), R0); t_ += GT["up_above"]
-        g_lin("up", t_, GT["up_down"], W_(up_pre)); t_ += GT["up_down"]
-        g_lin("up", t_, GT["close"], W_(up_f))
-        P("  [%s] 路徑(箱局部 mm):rod 從上方降到 %s(布邊外 %.0fmm、布底下 3mm)→ 沿 −u 伸進 %.0fmm 到 %s → 上抬 %.0fmm 到 %s;"
-          "下指 %s 降 → 沿 −u 平移 32mm 到 %s(頂面 = rod 頂面 +0.5mm);rod 沿 +u 撤 45mm;上指從 +z 降到 %s 再沿 −n 合 12mm 到 %s(指面間距 %.1fmm)"
-          % (sd, np.round(rod_pre * 1e3, 1), 5.0, pin * 1e3, np.round(rod_ins * 1e3, 1), lift * 1e3, np.round(rod_lift * 1e3, 1),
-             np.round(lo_pre * 1e3, 1), np.round(lo_f * 1e3, 1), np.round(up_pre * 1e3, 1), np.round(up_f * 1e3, 1), a.gap_mm))
+        # 上/下指的路徑在挑角完(S0+G_TPICK)才用『當下』的布邊位置/局部框排(第 1 次實跑:照挑角前規劃 → 角幾乎直立時下指足跡整個在布邊外,夾到 0)
+        P("  [%s] 挑角路徑(箱局部 mm):rod 從上方降到 %s(前端在布邊外 %.0fmm、頂面在布底下 3mm)→ 沿 −u 伸進 %.0fmm 到 %s → 上抬 %.0fmm 到 %s;下指進來後 rod 沿 +u 撤 45mm"
+          % (sd, np.round(rod_pre * 1e3, 1), 5.0, pin * 1e3, np.round(rod_ins * 1e3, 1), lift * 1e3, np.round(rod_lift * 1e3, 1)))
         others = {"yn": ("yp", "xp", "xn"), "yp": ("xp", "xn")}[sd]
         TOPS = np.where((GSIDE2 == sd) & (sg * Pl[:, 1] < CY - 0.003))[0]
         r_, _, _ = measure(S0, full=True)
@@ -852,6 +845,26 @@ if a.grasp:
         P("\n★ t=%.2f [%s] 挑角完:角 v%d z %.1f → %.1f mm(+%.1f);下方空隙 %.1f → %.1f mm;相鄰層(非 %s 片)位移 >10mm 頂點 %d / %d,最大 %.1f mm"
           % (t, pl["sd"], v, e["z0"], e["z1"], e["z1"] - e["z0"], e["gap0"], e["gap1"], pl["sd"], n10, e["adj_tot"], e["adj_max"]))
         SNAP["g_%s_pick" % pl["sd"]] = (Pw.copy(), mug_world()[2].copy(), measure(t)[0])
+        # 用當下的布邊排上/下指
+        R1, sl1 = GPL.frame(Pl, v); t1 = R1[:, 0]
+        nb = pl["nb"]; toff = float(np.dot(M[nb] - M[v], t1)) / 2 if nb != v else 0.0
+        p1 = M[v] + t1 * toff
+        lo_f = p1 + R1 @ [0, -0.0075, -(GAPG / 2 + GFS[2] / 2)]; up_f = p1 + R1 @ [0, -0.0075, GAPG / 2 + GFS[2] / 2]
+        lo_pre = lo_f + R1 @ [0, 0.032, 0]; lo_above = lo_pre + [0, 0, 0.06]
+        up_pre = up_f + R1 @ [0, 0, 0.012]; up_above = up_pre + [0, 0, 0.06]
+        W_ = lambda x: np.asarray(x) + offw
+        t_ = pl["S0"] + G_TPICK
+        g_lin("lo", t_, GT["lo_above"], W_(lo_above), R1); t_ += GT["lo_above"]
+        g_lin("lo", t_, GT["lo_down"], W_(lo_pre)); t_ += GT["lo_down"]
+        g_lin("lo", t_, GT["lo_in"], W_(lo_f)); t_ += GT["lo_in"]
+        g_lin("up", t_, GT["up_above"], W_(up_above), R1); t_ += GT["up_above"]
+        g_lin("up", t_, GT["up_down"], W_(up_pre)); t_ += GT["up_down"]
+        g_lin("up", t_, GT["close"], W_(up_f))
+        pl.update(lo_f=lo_f, up_f=up_f, R0=R1)
+        P("  [%s] 夾爪路徑(用挑角後的布邊:v%d (%.1f,%.1f,%.1f) 坡度 %.1f°,外法線 u=(%.2f,%.2f,%.2f)):下指從上方降到 %s(布邊外 32mm)→ 沿 −u 進到 %s(足跡 u∈[−17.5,+2.5]);"
+              "上指從 +z 降到 %s → 沿 −n 合 12mm 到 %s(指面間距 %.1fmm)"
+          % (pl["sd"], v, *(M[v] * 1e3), sl1, *R1[:, 1], np.round(lo_pre * 1e3, 1), np.round(lo_f * 1e3, 1), np.round(up_pre * 1e3, 1),
+             np.round(up_f * 1e3, 1), a.gap_mm))
 
     def g_grip_and_arc(pl, t):
         """夾好:登記夾到的頂點;用『現在』的彎折處排弧線(半徑 = arc_k x 材料長度)+ 停 + 放開。"""

@@ -47,6 +47,8 @@ else:
 ps.CreateGravityMagnitudeAttr().Set(0.0)      # kinematic 乾跑:不要重力把手臂往下拉
 for n in ("base", "fxp", "fxn", "fyp", "fyn"):
     UsdPhysics.RigidBodyAPI(st.GetPrimAtPath(BOX + "/" + n)).CreateKinematicEnabledAttr().Set(True)
+for n in ("fxp", "fxn", "fyp", "fyn"):     # 蓋子:關掉剛體,改成純 USD xform(每格寫 transform op),渲染一定跟得上
+    UsdPhysics.RigidBodyAPI(st.GetPrimAtPath(BOX + "/" + n)).CreateRigidBodyEnabledAttr().Set(False)
 for n in ("fxp", "fxn", "fyp", "fyn"):
     UsdPhysics.Joint(st.GetPrimAtPath(BOX + "/crease_" + n)).CreateJointEnabledAttr().Set(False)
 P("紙箱底 + 4 蓋 = kinematic,摺痕關節停用(蓋子由 lid_pose 直接擺)、重力 0")
@@ -96,7 +98,9 @@ def ik(side, pos, R, q_prev, phi_prev=0.0, maxjump=25.0, nseed=12):
     order = sorted(PHIS, key=lambda p: (abs(p - phi_prev), abs(p)))
     for ph in order:
         Rp = rot_axis(R[:, 1], ph) @ R
-        for flip in (1, -1):
+        away = np.array([0, 1.0, 0]) if side == "left" else np.array([0, -1.0, 0])
+        flips = sorted((1, -1), key=lambda f_: -(f_ * Rp[:, 2] @ away))       # 腕上相機(tool +z 側)朝自己的基座,不朝另一臂
+        for flip in flips:
             Rf = Rp.copy()
             if flip < 0: Rf[:, 1] *= -1; Rf[:, 2] *= -1
             starts = [q_prev] + [m["lo"] + (m["hi"] - m["lo"]) * rng.uniform(0.05, 0.95, 6) for _ in range(nseed if q_prev is None else 4)]
@@ -329,6 +333,7 @@ else:
 
 # ── 碰撞(幾何)────────────────────────────────────────────
 P("\n=== 碰撞檢查(幾何:手臂 collision mesh 取樣點 vs 紙箱 Cube 有號距離;兩臂點對點;桌面)")
+PT = {}
 def frame_check(qL, qR, gL, gR, lids, contact):
     res = {}; W = {}
     for side, q6, g in (("left", qL, gL), ("right", qR, gR)):
@@ -341,10 +346,10 @@ def frame_check(qL, qR, gL, gR, lids, contact):
         for o in OBB:
             T = lid_T(o["body"], lids[o["body"]]) if o["body"] != "base" else np.eye(4)
             for b, pts in W[side].items():
-                d = sdist(pts, o, T).min() * 1e3
+                dv = sdist(pts, o, T); jmin = int(np.argmin(dv)); d = dv[jmin] * 1e3
                 fing = ("gripper_" in b or "carriage_" in b)
                 key = ("intended" if (fing and contact.get(side) == o["body"]) else "box") + "_" + side
-                if key not in res or d < res[key][0]: res[key] = (d, o["name"], b.rsplit("/", 1)[-1])
+                if key not in res or d < res[key][0]: res[key] = (d, o["name"], b.rsplit("/", 1)[-1]); PT[key] = (pts[jmin] * 1e3).round(0).tolist()
     nl = [b for b in W["left"] for _ in range(len(W["left"][b]))]; nr = [b for b in W["right"] for _ in range(len(W["right"][b]))]
     pl = np.vstack(list(W["left"].values())); pr = np.vstack(list(W["right"].values()))
     dd, ii = cKDTree(pl).query(pr, k=1); j = int(np.argmin(dd))
@@ -382,6 +387,7 @@ for s in SEG:
     P("  [%5.1f–%5.1fs] %-34s 左↔箱 %s | 右↔箱 %s | 兩臂 %s | 桌 L%.0f R%.0f | 預期接觸 L %s R %s %s"
       % (t, t + dur, s["name"], f("box_left"), f("box_right"), ("%.1f(%s↔%s)" % worst["arm_arm"]), worst["table_left"], worst["table_right"],
          f("intended_left"), f("intended_right"), "★ 穿入:" + ",".join(col) if col else "OK"))
+    if col: P("      最深點(世界 mm):" + "; ".join("%s %s" % (k, PT.get(k)) for k in col if k in PT))
     summary.append(dict(name=s["name"], t0=t, t1=t + dur, worst={k: v for k, v in worst.items()}, collide=col)); t += dur
 P("  (數字 = 最小有號距離 mm,負 = 穿入;括號 = 紙箱部位↔手臂剛體)")
 for f_ in FAIL: P("  ⚠ " + f_)
@@ -408,21 +414,25 @@ if not a.no_video:
         c = Camera(prim_path="/World/dry_cam%d" % i, resolution=(960, 540), frequency=FPS); cams.append((c, eye, tgt))
 world.reset()
 ART = Articulation(prim_paths_expr="/World/stationary_ai", name="arms"); ART.initialize()
-LR = RigidPrim(prim_paths_expr=BOX + "/f[xy][pn]", name="lids"); LR.initialize()
 L6 = RigidPrim(prim_paths_expr=R0 + "/follower_*_link_6", name="l6"); L6.initialize()
-lid_order = [str(p).rsplit("/", 1)[-1] for p in LR.prim_paths]; l6_order = [str(p).split("follower_")[1].split("_")[0] for p in L6.prim_paths]
+lid_order = ["fxp", "fxn", "fyp", "fyn"]; l6_order = [str(p).split("follower_")[1].split("_")[0] for p in L6.prim_paths]
 dof = list(ART.dof_names)
 P("\nArticulation DOF %d:%s" % (len(dof), dof))
 idx = {side: [dof.index("follower_%s_joint_%d" % (side, k)) for k in range(6)] for side in ("left", "right")}
 cidx = {side: (dof.index("follower_%s_left_carriage_joint" % side), dof.index("follower_%s_right_carriage_joint" % side)) for side in ("left", "right")}
-LT0 = {}
-pL0, qL0 = [np.array(x, float) for x in LR.get_world_poses()]
-for i, nm in enumerate(lid_order):
-    T = np.eye(4); w, x, y, z = qL0[i]; T[:3, :3] = RM.q2R(w, x, y, z); T[:3, 3] = pL0[i]; LT0[nm] = T
+LT0, LOP, PAR = {}, {}, {}
+for nm in lid_order:
+    pr = st.GetPrimAtPath(BOX + "/" + nm); LT0[nm] = Wm(BOX + "/" + nm)
+    PAR[nm] = np.array(UsdGeom.Xformable(pr.GetParent()).ComputeLocalToWorldTransform(Usd.TimeCode.Default())).T
+    xf = UsdGeom.Xformable(pr); xf.ClearXformOpOrder(); LOP[nm] = xf.AddTransformOp()
+    LOP[nm].Set(Gf.Matrix4d(*(np.linalg.inv(PAR[nm]) @ LT0[nm]).T.flatten().tolist()))
 for c, eye, tgt in cams:
     c.initialize(); set_camera_view(eye=np.array(eye), target=np.array(tgt), camera_prim_path=c.prim_path)
     cp = UsdGeom.Camera(st.GetPrimAtPath(c.prim_path)); cp.GetFocalLengthAttr().Set(18.0 if c.prim_path.endswith("0") else 20.0)
     cp.GetHorizontalApertureAttr().Set(20.955); cp.GetVerticalApertureAttr().Set(20.955 * 540 / 960); cp.GetClippingRangeAttr().Set(Gf.Vec2f(0.01, 100.0))
+EN = {"a1": "a1 to pre-pose", "a2": "a2 R down to lid edge / L press", "a3": "a3 R close", "a4": "a4 R lift back lid (L holds front)",
+      "a5": "a5 release / retreat", "a6": "a6 to READY", "b0": "b0 lids open (kinematic)", "b1": "b1 to 60mm above grasp #1",
+      "b2": "b2 descend to #1", "b3": "b3 close to 4.5mm", "b4": "b4 lift 30mm", "b5": "b5 peel arc", "b6": "b6 hold"}
 try: FONT = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf", 17)
 except Exception: FONT = None
 wr = imageio.get_writer(OUT, fps=FPS, codec="libx264", quality=8, pixelformat="yuv420p") if cams else None
@@ -431,11 +441,9 @@ def apply(qL, qR, gL, gR, lids):
     J[idx["left"]] = qL; J[idx["right"]] = qR
     J[cidx["left"][0]] = gL; J[cidx["left"][1]] = MIM * gL; J[cidx["right"][0]] = gR; J[cidx["right"][1]] = MIM * gR
     ART.set_joint_positions(J[None]); ART.set_joint_position_targets(J[None]); ART.set_joint_velocities(np.zeros_like(J)[None])
-    ps_, qs_ = [], []
     for nm in lid_order:
-        T = lid_T(nm, lids[nm]) @ LT0[nm]; q = Gf.Matrix3d(*T[:3, :3].T.flatten().tolist()).ExtractRotation().GetQuat()
-        ps_.append(T[:3, 3]); qs_.append([q.GetReal(), *q.GetImaginary()])
-    LR.set_world_poses(positions=np.array(ps_), orientations=np.array(qs_))
+        T = np.linalg.inv(PAR[nm]) @ lid_T(nm, lids[nm]) @ LT0[nm]
+        LOP[nm].Set(Gf.Matrix4d(*T.T.flatten().tolist()))
 # 暖機
 s0 = SEG[0]; apply(s0["qL"][0], s0["qR"][0], s0["gL"][0], s0["gR"][0], s0["lids"][0])
 for _ in range(15): world.step(render=bool(cams))
@@ -458,9 +466,9 @@ for si, s in enumerate(SEG):
                 ims.append(np.asarray(rgb)[:, :, :3] if rgb is not None and rgb.size else np.zeros((540, 960, 3), np.uint8))
             im = Image.fromarray(np.concatenate(ims, 1)); d = ImageDraw.Draw(im)
             r = T_ALL[k]
-            txt = "t=%5.2fs  %s\nbox clearance L %.0f / R %.0f mm   arm-arm %.0f mm   gripR %.1f mm" % (
-                t, s["name"].encode("ascii", "ignore").decode() or s["name"][:2], r["box_left"][0], r["box_right"][0], r["arm_arm"][0],
-                G0 + GK * s["gR"][i])
+            txt = "t=%5.2fs  %s\nbox clearance L %.0f / R %.0f mm   arm-arm %.0f mm   gripL %.1f gripR %.1f mm" % (
+                t, EN.get(s["name"].split()[0], s["name"].split()[0]), r["box_left"][0], r["box_right"][0], r["arm_arm"][0],
+                G0 + GK * s["gL"][i], G0 + GK * s["gR"][i])
             d.rectangle([0, 0, 760, 44], fill=(0, 0, 0)); d.text((6, 3), txt, fill=(255, 255, 255), font=FONT)
             if wr: wr.append_data(np.asarray(im))
         k += 1; t += 1 / FPS
