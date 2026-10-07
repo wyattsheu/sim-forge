@@ -8,12 +8,13 @@
 
 > **This is the delivered handoff.** Clone it and you can open the scene, press Play, interact with the mouse,
 > re-run the simulation, and regenerate every video.
+> **New:** in `scene_final_phys.usd` the bubble wrap and the mug have real physics (§2, §8.6).
 > The development history (experiments, 122 logged runs, volume-deformable work, tests) lives in
 > [`sims/fr3_bubblewrap_pack_20261007`](../fr3_bubblewrap_pack_20261007). You don't need it to use this package.
 
 | | |
 |---|---|
-| **Version** | handoff_20261007 — scene and simulation from 2026-10-02, plus UI / WebRTC usage and a Play fix added 2026-10-07 |
+| **Version** | handoff_20261007 — scene and simulation from 2026-10-02; added 2026-10-07: UI / WebRTC usage, a Play fix, and a physics version of the package (`scene_final_phys.usd`) |
 | **Tested on** | Isaac Sim 5.1.0, RTX 5090, NVIDIA driver 580 |
 | **Get it** | git: this folder (videos excluded — run `./make_videos.sh`) · tarball: `handoff_20261007.tgz` (videos included) |
 
@@ -34,7 +35,7 @@
 ## 1. Quick start
 
 ```bash
-./open_in_ui.sh        # local desktop: open Isaac Sim with the scene loaded
+./open_in_ui.sh        # local desktop: open Isaac Sim with scene_final_phys.usd loaded
 ./open_in_webrtc.sh    # remote: stream it, connect with the WebRTC Streaming Client (§4)
 ./make_videos.sh       # regenerate the verification videos; add --demo for the 62 s result video
 ```
@@ -49,12 +50,16 @@ Once the viewport is up:
 
 ## 2. Which scene file to open
 
-| File | Use it for | What happens on Play |
-|---|---|---|
-| **`scene_final_ui.usd`** | **Interactive use in the UI** (the default for both launch scripts) | Carton stays put (0.00 mm), lids hold (≤ 0.75°) |
-| `scene_final.usd` | The canonical deliverable; headless scripts; the elastoplastic crease (§3.4) | ⚠️ Pressed directly in the UI, **the carton sinks 48 mm into the table** |
+| File | Wrap and mug | Use it for | What happens on Play |
+|---|---|---|---|
+| **`scene_final_phys.usd`** | **Real physics:** wrap = surface deformable, mug = rigid body | **Default for both launch scripts.** Interaction with the package | Carton 0.12 mm, wrap settles within 3 s (max 13.3 mm, mean 4.3 mm), mug 0.13 mm (§8.6) |
+| `scene_final_ui.usd` | Static meshes (no physics) | The most stable interactive scene; carton and lids only | Carton 0.00 mm, lids ≤ 0.75° |
+| `scene_final.usd` | Static meshes (no physics) | The canonical deliverable; headless scripts; the elastoplastic crease (§3.4) | ⚠️ Pressed directly in the UI, **the carton sinks 48 mm into the table** |
 
-**Why:** `scene_final.usd` has no PhysicsScene, so the UI creates a default one
+> ⚠️ **`scene_final_phys.usd` needs deformables enabled when Isaac Sim starts.** The two launch scripts do this for you.
+> If you start Isaac Sim any other way, enable it first (§3.1) — otherwise the wrap doesn't simulate.
+
+**Why `scene_final.usd` sinks:** it has no PhysicsScene, so the UI creates a default one
 (60 Hz, 1 position iteration, 0 velocity iterations), which is too weak to hold the carton up.
 `scene_final_ui.usd` is the same scene with a properly tuned PhysicsScene and spring drives on the four lid creases.
 Details and measurements: [§8.2](#82-the-play-fix-in-scene_final_uiusd).
@@ -71,15 +76,20 @@ Details and measurements: [§8.2](#82-the-play-fix-in-scene_final_uiusd).
 ./open_in_ui.sh                    # opens scene_final_ui.usd
 ./open_in_ui.sh scene_final.usd    # or any other USD
 ```
+`open_in_ui.sh` opens `scene_final_phys.usd` by default and starts Isaac Sim with
+`--/persistent/physics/enableDeformableBeta=true --/physics/updateToUsd=true`.
 
 **From the UI**
 
+0. **Once per machine (needed for `scene_final_phys.usd`):** in Isaac Sim, **Edit → Preferences → Physics** →
+   tick **Enable Deformable Schema Beta (Requires Restart)** → close and restart Isaac Sim.
+   (Or put `--/persistent/physics/enableDeformableBeta=true --/physics/updateToUsd=true` in the App Selector's **Extra Args**.)
 1. Start Isaac Sim, either way:
    - run `/isaac-sim/isaac-sim.sh` (as root, `export OMNI_KIT_ALLOW_ROOT=1` first), or
    - run `/isaac-sim/isaac-sim.selector.sh` → choose **Isaac Sim Full** → **START**.
 2. Open the file, either way:
-   - **File → Open** → pick `scene_final_ui.usd`, or
-   - in the **Content** panel, paste this folder's path into the address bar and **double-click** `scene_final_ui.usd`.
+   - **File → Open** → pick `scene_final_phys.usd` (or `scene_final_ui.usd`), or
+   - in the **Content** panel, paste this folder's path into the address bar and **double-click** the USD.
      (Don't drag the USD into the viewport — that adds it as a reference instead of opening it.)
    - Next time: **File → Open Recent**.
 3. Press **▶ Play**.
@@ -108,12 +118,12 @@ Grab strength is under the Physics settings → **Mouse Interaction** (Grab Forc
 |---|---|---|
 | Carton body (floor + 4 walls) | `/World/Packed/Box/base` | ✅ rigid body |
 | Four lids | `/World/Packed/Box/{fxp,fxn,fyp,fyn}` | ✅ rigid bodies, hinged to the base by crease joints |
-| Bubble wrap | `/World/Packed/Wrap` | ❌ static mesh — no collider, no rigid body (lids pass through it) |
-| Mug | `/World/Packed/Mug` | ❌ static mesh — no collider, no rigid body |
+| Bubble wrap | `/World/Packed/Wrap` | `scene_final_phys.usd`: surface deformable — collides with the carton, lids and mug; grabbing the wrap itself is not yet tested · other scenes: ❌ static mesh (lids pass through it) |
+| Mug | `/World/Packed/Mug` | `scene_final_phys.usd`: ✅ rigid body (0.32 kg) · other scenes: ❌ static mesh |
 | Arms | `/World/stationary_ai` | Drive the joints instead (§3.5) |
 
-The wrap and mug are the simulation result baked into fixed geometry ("the packed state").
-Surface-deformable state cannot be stored in USD.
+In `scene_final_ui.usd` and `scene_final.usd` the wrap and mug are the simulation result baked into fixed geometry.
+`scene_final_phys.usd` keeps the same shape but gives them physics (§8.6).
 
 ### 3.4 Real elastoplastic creases (lids stay where you bend them)
 
@@ -186,7 +196,8 @@ WEBRTC_NO_PLAY=1 ./open_in_webrtc.sh             # load, but don't press Play
 2. Choose **Isaac Sim Full Streaming**.
 3. If the public IP isn't the default, put `--/app/livestream/publicEndpointAddress=<public IP>` in **Extra Args**.
 4. Click **START**.
-5. Connect with the Streaming Client, then **File → Open** `scene_final_ui.usd` and press Play
+   For `scene_final_phys.usd` also add `--/persistent/physics/enableDeformableBeta=true --/physics/updateToUsd=true`.
+5. Connect with the Streaming Client, then **File → Open** `scene_final_phys.usd` and press Play
    (here physics dragging needs **Shift + left-drag**).
 
 ### 4.3 Connecting
@@ -230,6 +241,7 @@ physics videos about 3 min, orbit about 25 min, DEMO about 6 min, **about 32 min
 README.md                       this document (English + 繁體中文)
 scene_final.usd                 ★ the deliverable: dual-arm workstation + carton + wrapped mug (single file, 14 MB)
 scene_final_ui.usd              same scene + tuned PhysicsScene + lid spring drives, for the UI (§2)
+scene_final_phys.usd            scene_final_ui.usd + physics on the wrap (deformable) and mug (rigid body) (§8.6)
 open_in_ui.sh                   open in the local Isaac Sim UI
 open_in_webrtc.sh               open over WebRTC (--stop to stop)
 make_videos.sh                  regenerate videos/
@@ -242,6 +254,8 @@ sim/                            simulation and tools — flat folder, run script
   webrtc_boot.py                  boot script for open_in_webrtc.sh (kit --exec)
   scene_physics_check.py          physics check + video, through isaacsim.core World
   ui_path_check.py                physics check through the same Play path the UI uses (§8.2)
+  build_phys_scene.py             build scene_final_phys.usd from scene_final_ui.usd (§8.6)
+  verify_phys_scene.py            tests A / B / Bm / C for scene_final_phys.usd (§8.6)
   orbit_video.py                  orbit video (render only)
   run_demo.sh                     run the four simulation stages and stitch DEMO.mp4
   make_carton_P.py, make_definitive.sh   carton generator
@@ -269,6 +283,8 @@ build/
 | `sim/wrap_sim.py` | Wrap → box → move simulation | Terminal: `sim/run_demo.sh` or `./make_videos.sh --demo` |
 | `sim/scene_physics_check.py` | Physics check + video | Terminal (§5, §8.3) |
 | `sim/ui_path_check.py` | UI-path Play check | Terminal (§8.2) |
+| `sim/build_phys_scene.py` | Build `scene_final_phys.usd` | Terminal (§8.6) |
+| `sim/verify_phys_scene.py` | Physics-package tests | Terminal (§8.6) |
 | `sim/orbit_video.py` | Orbit video | Terminal (§5) |
 | `sim/make_carton_P.py` | Carton generator | Terminal, called by `make_definitive.sh` |
 | `build/build_full_scene.py` | Rebuild the scene | Terminal (§8.5) |
@@ -370,6 +386,50 @@ GPU deformables are not deterministic. A re-run gives a video of the same length
 
 The rebuilt file again has **no** PhysicsScene and no crease drives. For UI use, follow §3.4 or add the §8.2 values yourself.
 
+### 8.6 The physics package (`scene_final_phys.usd`)
+
+Built by `sim/build_phys_scene.py` from `scene_final_ui.usd`. Everything else (arms, carton, crease drives, 120 Hz TGS solver) is unchanged.
+
+| Part | How it is modelled |
+|---|---|
+| Wrap `/World/Packed/Wrap` | **Surface deformable** (1225 vertices, 2312 triangles). Rest shape = the wrapped shape (`restShapePoints` = points, `restBendAnglesDefault = restShapeDefault`), so the folds don't spring open. Material: Young's modulus 2e4 Pa, Poisson 0.45, thickness 4 mm, bend stiffness 4, friction 0.8, density 100 (≈ 65 g). Self-collision on, 64 solver iterations, contact / rest offset 5 / 1 mm, sleep settings as in `wrap_sim.py` |
+| Mug `/World/Packed/Mug` | **Dynamic rigid body**, 0.32 kg, friction 0.9. Collider = stacked convex frusta following the outer profile + 13 spheres (r = 10 mm) along the handle |
+| Carton | Unchanged, plus an invisible 20 mm pad collider under the 3 mm floor (child of the base), so wrap vertices can't poke through the floor |
+| PhysicsScene | GPU dynamics + GPU broadphase, deformable contact capacity 4 M, collision stack 128 MB |
+| Bake | Settled in the file before saving: 2 s with the mug held still, then 4 s free; the settled shape was written into both points and rest shape, velocities zeroed |
+
+Why this works: a surface deformable's rest shape must be authored before Play (changing it during Play has no effect),
+and the rest shape removes the bending spring-back but not gravity — every part of the wrap has to be supported, here by the mug and the carton floor.
+
+**Tests** (UI path: open the file → Play; numbers in `sim/logs/verify_scene_final_phys_<test>.txt`):
+
+```bash
+cd sim
+/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test A    # rest 8 s, nothing touched
+/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test B    # carry: carton moved +0.20 m y / +0.10 m z over 3 s, hold 2 s
+/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test Bm   # same carry, done with a simulated mouse drag
+/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test C    # 3 N pressing lid fxn down onto the wrap for 3 s
+```
+
+Test A on the shipped file (2026-10-07):
+
+| Measure | Result |
+|---|---|
+| Carton displacement / tilt | 0.12 mm / 0.07° |
+| Wrap relative to carton | max 13.3 mm, mean 4.3 mm — **reached by 3 s, then no further change** |
+| Mug relative to carton | 0.13 mm |
+| Vertices outside the cavity (1 mm tolerance) | wrap 4 / 1225 (same as at the start), mug 0 |
+| NaN / explosion | none |
+| Lid angles | ≤ 2.1° |
+
+Tests B, Bm and C have not been run on this file yet.
+
+**Rebuild** (≈ 2 min; the defaults reproduce the shipped file — GPU deformables are not deterministic, so numbers vary slightly):
+
+```bash
+cd sim && /isaac-sim/python.sh build_phys_scene.py     # writes ../scene_final_phys.usd, log in ../logs/build_phys.log
+```
+
 ---
 
 ## 9. Known issues
@@ -377,7 +437,10 @@ The rebuilt file again has **no** PhysicsScene and no crease drives. For UI use,
 | # | Issue | Impact | What to do |
 |---|---|---|---|
 | 1 | `scene_final.usd` has no PhysicsScene; the UI's default is too weak | Carton sinks 48 mm on Play in the UI | Use `scene_final_ui.usd` or `crease_hold_ui.py` (§2, §8.2) |
-| 2 | Wrap and mug are static meshes | Can't be grabbed; nothing collides with them | By design. To make them interactive: give the mug a convex-hull collider + rigid body; the cloth can only become a static triangle-mesh collider; deforming it again means going back to deformables (see the development folder) |
+| 2 | In `scene_final_ui.usd` / `scene_final.usd` the wrap and mug are static meshes | Can't be grabbed; dragging the carton leaves them behind; lids pass through | Use `scene_final_phys.usd` (§8.6) |
+| 2a | `scene_final_phys.usd` needs deformables enabled at startup | Opened without it, the wrap doesn't simulate | Use the launch scripts, or §3.1 step 0 |
+| 2b | `scene_final_phys.usd`: only the rest test (A) has been measured | Carrying the carton (B / Bm), pressing a lid onto the wrap (C) and mouse-dragging the wrap are not yet verified | Run `verify_phys_scene.py --test B / Bm / C` (§8.6) |
+| 2c | Lids reported hard to pull open with the mouse | Not yet diagnosed | Open the upper lids (fyp / fyn) before the lower ones; report what you see |
 | 3 | `crease_physics.py` **defaults** (k=3.5, My0=0.85, H=0.55, c=0.28, clip=3.6) differ from the values actually used (k=3.2, My0=0.60, H=0.85, c=0.33, clip=3.0) | Using the defaults won't reproduce the videos or numbers | Always pass the coefficients to `ElastoplasticCrease(...)` explicitly; keep c ≤ 0.4 (higher blows up numerically) |
 | 4 | Log on Play: `angle limit ... clamped to ±180 degrees` (crease_*) | None | USD says ±185°, PhysX D6 caps at ±180°; the lids only move a few degrees |
 | 5 | Log on Play: `PhysX error: ... foundLostAggregatePairsCapacity to 3418` | May miss contacts with default settings | `scene_final_ui.usd` and `crease_hold_ui.py` raise it to 8192; the error no longer appears |
@@ -393,12 +456,13 @@ The rebuilt file again has **no** PhysicsScene and no crease drives. For UI use,
 # 繁體中文
 
 > **這是交出去的 handoff。** clone 下來就能開場景、按 Play、用滑鼠互動、重跑模擬、重新產生所有影片。
+> **新增:** `scene_final_phys.usd` 裡的氣泡布和杯子有真正的物理(§2、§8.6)。
 > 開發過程(實驗、122 次模擬紀錄、volume deformable、測試集)在
 > [`sims/fr3_bubblewrap_pack_20261007`](../fr3_bubblewrap_pack_20261007),使用這份交付包不需要看那邊。
 
 | | |
 |---|---|
-| **版本** | handoff_20261007 —— 2026-10-02 的場景與模擬,2026-10-07 補上 UI / WebRTC 用法並修正按 Play 的問題 |
+| **版本** | handoff_20261007 —— 2026-10-02 的場景與模擬;2026-10-07 新增:UI / WebRTC 用法、按 Play 的修正、有物理的包裹版本(`scene_final_phys.usd`) |
 | **測試環境** | Isaac Sim 5.1.0、RTX 5090、NVIDIA driver 580 |
 | **取得方式** | git:這個資料夾(不含影片,執行 `./make_videos.sh` 產生)· 壓縮檔:`handoff_20261007.tgz`(含影片) |
 
@@ -419,7 +483,7 @@ The rebuilt file again has **no** PhysicsScene and no crease drives. For UI use,
 ## 1. 快速開始
 
 ```bash
-./open_in_ui.sh        # 本機有螢幕:開 Isaac Sim 並載入場景
+./open_in_ui.sh        # 本機有螢幕:開 Isaac Sim 並載入 scene_final_phys.usd
 ./open_in_webrtc.sh    # 遠端:開串流,用 WebRTC Streaming Client 連線(§4)
 ./make_videos.sh       # 重新產生驗證影片;加 --demo 會連 62 秒的成果影片一起產生
 ```
@@ -434,12 +498,16 @@ The rebuilt file again has **no** PhysicsScene and no crease drives. For UI use,
 
 ## 2. 該開哪個場景檔
 
-| 檔案 | 用途 | 按 Play 的結果 |
-|---|---|---|
-| **`scene_final_ui.usd`** | **在 UI 裡互動**(兩支啟動腳本的預設值) | 紙箱不動(0.00 mm),蓋子撐住(≤ 0.75°) |
-| `scene_final.usd` | 正式交付檔;給 headless 腳本用;彈塑性摺痕(§3.4) | ⚠️ 在 UI 直接按 Play,**紙箱會陷進桌面 48 mm** |
+| 檔案 | 包材與杯子 | 用途 | 按 Play 的結果 |
+|---|---|---|---|
+| **`scene_final_phys.usd`** | **有物理:** 包材是 surface deformable、杯子是剛體 | **兩支啟動腳本的預設值。** 要跟包裹互動就用這個 | 紙箱 0.12 mm,包材 3 秒內穩定(最大 13.3 mm、平均 4.3 mm),杯子 0.13 mm(§8.6) |
+| `scene_final_ui.usd` | 靜態 mesh(沒有物理) | 最穩的互動場景;只動紙箱和蓋子 | 紙箱 0.00 mm,蓋子 ≤ 0.75° |
+| `scene_final.usd` | 靜態 mesh(沒有物理) | 正式交付檔;給 headless 腳本用;彈塑性摺痕(§3.4) | ⚠️ 在 UI 直接按 Play,**紙箱會陷進桌面 48 mm** |
 
-**原因:** `scene_final.usd` 沒有 PhysicsScene,UI 會自動補一個預設的
+> ⚠️ **`scene_final_phys.usd` 需要在 Isaac Sim 啟動時就開啟 deformable。** 兩支啟動腳本會自動處理。
+> 用其他方式啟動的話,請先照 §3.1 開啟,否則包材不會有物理。
+
+**`scene_final.usd` 會下陷的原因:** 它沒有 PhysicsScene,UI 會自動補一個預設的
 (60 Hz、位置迭代 1 次、速度迭代 0 次),強度不夠,撐不住紙箱。
 `scene_final_ui.usd` 是同一個場景,只多了調好的 PhysicsScene,以及四片蓋子摺痕上的彈簧 drive。
 細節與實測數字見 [§8.2](#82-scene_final_uiusd-的修正)。
@@ -456,15 +524,20 @@ The rebuilt file again has **no** PhysicsScene and no crease drives. For UI use,
 ./open_in_ui.sh                    # 開 scene_final_ui.usd
 ./open_in_ui.sh scene_final.usd    # 或指定其他 USD
 ```
+`open_in_ui.sh` 預設開 `scene_final_phys.usd`,並用
+`--/persistent/physics/enableDeformableBeta=true --/physics/updateToUsd=true` 啟動 Isaac Sim。
 
 **從 UI 開**
 
+0. **每台機器做一次(`scene_final_phys.usd` 需要):** 在 Isaac Sim 裡 **Edit → Preferences → Physics** →
+   勾選 **Enable Deformable Schema Beta (Requires Restart)** → 關掉 Isaac Sim 再重開。
+   (或在 App Selector 的 **Extra Args** 填 `--/persistent/physics/enableDeformableBeta=true --/physics/updateToUsd=true`。)
 1. 啟動 Isaac Sim,任選一種:
    - 執行 `/isaac-sim/isaac-sim.sh`(以 root 執行時,先 `export OMNI_KIT_ALLOW_ROOT=1`),或
    - 執行 `/isaac-sim/isaac-sim.selector.sh` → 選 **Isaac Sim Full** → **START**。
 2. 開檔,任選一種:
-   - **File → Open** → 選 `scene_final_ui.usd`,或
-   - 在下方 **Content** 面板的路徑列貼上這個資料夾的路徑,**雙擊** `scene_final_ui.usd`。
+   - **File → Open** → 選 `scene_final_phys.usd`(或 `scene_final_ui.usd`),或
+   - 在下方 **Content** 面板的路徑列貼上這個資料夾的路徑,**雙擊** USD 檔。
      (不要把 USD 拖進 viewport —— 那是把它當 reference 加進目前的場景,不是開檔。)
    - 之後可以從 **File → Open Recent** 直接開。
 3. 按 **▶ Play**。
@@ -493,12 +566,12 @@ The rebuilt file again has **no** PhysicsScene and no crease drives. For UI use,
 |---|---|---|
 | 紙箱本體(箱底 + 四面牆) | `/World/Packed/Box/base` | ✅ 剛體 |
 | 四片蓋子 | `/World/Packed/Box/{fxp,fxn,fyp,fyn}` | ✅ 剛體,用摺痕關節接在箱體上 |
-| 氣泡布 | `/World/Packed/Wrap` | ❌ 靜態 mesh,沒有碰撞、沒有剛體(蓋子會穿過去) |
-| 馬克杯 | `/World/Packed/Mug` | ❌ 靜態 mesh,沒有碰撞、沒有剛體 |
+| 氣泡布 | `/World/Packed/Wrap` | `scene_final_phys.usd`:surface deformable,會跟紙箱、蓋子、杯子碰撞;直接抓包材還沒測過 · 其他場景:❌ 靜態 mesh(蓋子會穿過去) |
+| 馬克杯 | `/World/Packed/Mug` | `scene_final_phys.usd`:✅ 剛體(0.32 kg)· 其他場景:❌ 靜態 mesh |
 | 手臂 | `/World/stationary_ai` | 改用關節 drive 控制(§3.5) |
 
-包材和杯子是把模擬結果烘成固定幾何(呈現「包好的樣子」)。
-surface deformable 的狀態沒辦法存進 USD。
+在 `scene_final_ui.usd` 和 `scene_final.usd` 裡,包材和杯子是把模擬結果烘成的固定幾何。
+`scene_final_phys.usd` 保留同樣的形狀,但讓它們有物理(§8.6)。
 
 ### 3.4 真正的彈塑性摺痕(蓋子折到哪就停在哪)
 
@@ -571,7 +644,8 @@ WEBRTC_NO_PLAY=1 ./open_in_webrtc.sh             # 載入但不自動 Play
 2. 選 **Isaac Sim Full Streaming**。
 3. 對外 IP 不是預設值時,在 **Extra Args** 填 `--/app/livestream/publicEndpointAddress=<對外 IP>`。
 4. 按 **START**。
-5. 用 Streaming Client 連進去,**File → Open** `scene_final_ui.usd`,按 Play
+   要開 `scene_final_phys.usd` 的話,再加上 `--/persistent/physics/enableDeformableBeta=true --/physics/updateToUsd=true`。
+5. 用 Streaming Client 連進去,**File → Open** `scene_final_phys.usd`,按 Play
    (這個模式下,物理拖曳要 **Shift + 左鍵拖曳**)。
 
 ### 4.3 連線
@@ -615,6 +689,7 @@ VIDEO_DIR=/tmp/v ./make_videos.sh # 輸出到別的地方
 README.md                       本文件(English + 繁體中文)
 scene_final.usd                 ★ 交付檔:雙臂工作站 + 紙箱 + 包好的馬克杯(單一檔案,14 MB)
 scene_final_ui.usd              同一場景 + 調好的 PhysicsScene + 蓋子彈簧 drive,給 UI 用(§2)
+scene_final_phys.usd            scene_final_ui.usd + 包材(deformable)與杯子(剛體)的物理(§8.6)
 open_in_ui.sh                   在本機 Isaac Sim UI 開啟
 open_in_webrtc.sh               用 WebRTC 開啟(--stop 停止)
 make_videos.sh                  重新產生 videos/
@@ -627,6 +702,8 @@ sim/                            模擬與工具 —— 平鋪資料夾,在裡面
   webrtc_boot.py                  open_in_webrtc.sh 的開機腳本(kit --exec)
   scene_physics_check.py          物理驗證 + 影片(走 isaacsim.core World)
   ui_path_check.py                物理驗證(走跟 UI 一樣的 Play 路徑,§8.2)
+  build_phys_scene.py             從 scene_final_ui.usd 建出 scene_final_phys.usd(§8.6)
+  verify_phys_scene.py            scene_final_phys.usd 的測試 A / B / Bm / C(§8.6)
   orbit_video.py                  環繞影片(只算圖)
   run_demo.sh                     跑四段模擬並串成 DEMO.mp4
   make_carton_P.py, make_definitive.sh   紙箱產生器
@@ -654,6 +731,8 @@ build/
 | `sim/wrap_sim.py` | 包布 → 入箱 → 搬箱模擬 | 終端機:`sim/run_demo.sh` 或 `./make_videos.sh --demo` |
 | `sim/scene_physics_check.py` | 物理驗證 + 影片 | 終端機(§5、§8.3) |
 | `sim/ui_path_check.py` | UI 路徑的 Play 驗證 | 終端機(§8.2) |
+| `sim/build_phys_scene.py` | 建出 `scene_final_phys.usd` | 終端機(§8.6) |
+| `sim/verify_phys_scene.py` | 物理包裹的測試 | 終端機(§8.6) |
 | `sim/orbit_video.py` | 環繞影片 | 終端機(§5) |
 | `sim/make_carton_P.py` | 紙箱產生器 | 終端機,由 `make_definitive.sh` 呼叫 |
 | `build/build_full_scene.py` | 重組場景 | 終端機(§8.5) |
@@ -755,6 +834,50 @@ GPU deformable 不是確定性的。重跑的影片長度相同(62.2 秒),但結
 
 重組出來的檔案一樣**沒有** PhysicsScene,也沒有摺痕 drive。要在 UI 用,照 §3.4 做,或自己加上 §8.2 的值。
 
+### 8.6 有物理的包裹(`scene_final_phys.usd`)
+
+由 `sim/build_phys_scene.py` 從 `scene_final_ui.usd` 建出。其他部分(手臂、紙箱、摺痕 drive、120 Hz TGS 解算器)都沒動。
+
+| 部分 | 怎麼建模 |
+|---|---|
+| 包材 `/World/Packed/Wrap` | **Surface deformable**(1225 個頂點、2312 個三角形)。靜止形狀 = 包好的形狀(`restShapePoints` = points,`restBendAnglesDefault = restShapeDefault`),所以摺痕不會彈開。材質:楊氏模數 2e4 Pa、Poisson 0.45、厚度 4 mm、彎曲剛性 4、摩擦 0.8、密度 100(約 65 g)。自碰撞開、解算迭代 64 次、contact / rest offset 5 / 1 mm、睡眠參數同 `wrap_sim.py` |
+| 杯子 `/World/Packed/Mug` | **動態剛體**,0.32 kg,摩擦 0.9。碰撞體 = 沿外型疊起來的凸台 + 把手上 13 顆球(半徑 10 mm) |
+| 紙箱 | 不變,另外在 3 mm 箱底下面加一塊看不見的 20 mm 墊片碰撞體(掛在箱底下),包材頂點才不會穿出箱底 |
+| PhysicsScene | GPU dynamics + GPU broadphase,deformable 接觸容量 4 M,碰撞堆疊 128 MB |
+| 沉降 | 存檔前先在檔案裡沉降:杯子固定 2 秒,再放開 4 秒;沉降後的形狀同時寫進 points 和靜止形狀,速度歸零 |
+
+為什麼這樣可行:surface deformable 的靜止形狀要在 Play 之前寫好(Play 中途改沒有作用);
+靜止形狀只消除摺痕的回彈,擋不住重力 —— 包材每個部分都要有東西撐著,這裡是杯子和箱底。
+
+**測試**(走 UI 路徑:開檔 → Play;數字寫在 `sim/logs/verify_scene_final_phys_<測試>.txt`):
+
+```bash
+cd sim
+/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test A    # 靜置 8 秒,不碰任何東西
+/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test B    # 搬箱:3 秒內把紙箱往 y +0.20 m、z +0.10 m 移動,再停 2 秒
+/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test Bm   # 同樣的搬箱,改用模擬的滑鼠拖曳
+/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test C    # 用 3 N 把下層蓋 fxn 往下壓在包材上 3 秒
+```
+
+出貨檔的測試 A(2026-10-07):
+
+| 項目 | 結果 |
+|---|---|
+| 紙箱位移 / 傾斜 | 0.12 mm / 0.07° |
+| 包材相對紙箱 | 最大 13.3 mm、平均 4.3 mm —— **3 秒時就停住,之後不再變化** |
+| 杯子相對紙箱 | 0.13 mm |
+| 跑出內腔的頂點(容差 1 mm) | 包材 4 / 1225(跟一開始一樣)、杯子 0 |
+| NaN / 爆炸 | 無 |
+| 蓋子角度 | ≤ 2.1° |
+
+測試 B、Bm、C 還沒在這個檔上跑過。
+
+**重建**(約 2 分鐘;預設參數就會做出出貨的這個檔 —— GPU deformable 不是確定性的,數字會略有差異):
+
+```bash
+cd sim && /isaac-sim/python.sh build_phys_scene.py     # 寫出 ../scene_final_phys.usd,log 在 ../logs/build_phys.log
+```
+
 ---
 
 ## 9. 已知問題
@@ -762,7 +885,10 @@ GPU deformable 不是確定性的。重跑的影片長度相同(62.2 秒),但結
 | # | 問題 | 影響 | 怎麼處理 |
 |---|---|---|---|
 | 1 | `scene_final.usd` 沒有 PhysicsScene;UI 的預設值太弱 | UI 按 Play 時紙箱陷 48 mm | 用 `scene_final_ui.usd` 或 `crease_hold_ui.py`(§2、§8.2) |
-| 2 | 包材與杯子是靜態 mesh | 抓不到,也不會跟任何東西碰撞 | 設計如此。要能互動:杯子加凸包碰撞體 + 剛體;布只能做成靜態三角網格碰撞體;要能再變形就得回到 deformable(見開發資料夾) |
+| 2 | `scene_final_ui.usd` / `scene_final.usd` 的包材與杯子是靜態 mesh | 抓不到;拖紙箱時它們留在原地;蓋子會穿過去 | 改用 `scene_final_phys.usd`(§8.6) |
+| 2a | `scene_final_phys.usd` 需要在啟動時開啟 deformable | 沒開的話包材不會有物理 | 用啟動腳本,或照 §3.1 第 0 步 |
+| 2b | `scene_final_phys.usd` 目前只量過靜置測試(A) | 搬紙箱(B / Bm)、蓋子壓包材(C)、用滑鼠直接拖包材都還沒驗證 | 執行 `verify_phys_scene.py --test B / Bm / C`(§8.6) |
+| 2c | 有人回報蓋子用滑鼠很難拉開 | 還沒查出原因 | 先開上層蓋(fyp / fyn)再開下層蓋;遇到請回報狀況 |
 | 3 | `crease_physics.py` 的**預設係數**(k=3.5、My0=0.85、H=0.55、c=0.28、clip=3.6)跟實際使用的(k=3.2、My0=0.60、H=0.85、c=0.33、clip=3.0)不一樣 | 用預設值會對不上影片和數字 | 建 `ElastoplasticCrease(...)` 時一律明確傳入係數;c 不要超過 0.4(會數值爆炸) |
 | 4 | Play 時 log 出現 `angle limit ... clamped to ±180 degrees`(crease_*) | 無 | USD 設 ±185°,PhysX D6 上限 ±180°;蓋子實際只動幾度 |
 | 5 | Play 時 log 出現 `PhysX error: ... foundLostAggregatePairsCapacity to 3418` | 預設設定下可能漏接觸 | `scene_final_ui.usd` 和 `crease_hold_ui.py` 已調到 8192;實測不再出現 |

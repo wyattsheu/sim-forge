@@ -15,3 +15,5 @@ sim/ui_check/
 # repo 根目錄的 .gitignore 擋掉了 *.usd,這裡放行:場景、手臂場景、紙箱都要讓人 clone 下來就能用
 !*.usd
 !**/*.usd
+# 建置中間檔
+*_prebake.usd
