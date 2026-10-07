@@ -631,33 +631,29 @@
     },
     {
       "role": "project_results",
-      "title": "手臂不是 FR3:6 軸 follower,IK 自建",
+      "title": "手臂是 6 軸 follower:乾跑 v2 無碰撞",
       "video": {
         "src": "figs/08_arm_dry.mp4",
-        "caption": "空箱乾跑:右手掀後蓋 → 到抓取點 → 弧線(15 s,有碰撞)",
+        "caption": "v2 乾跑:左手捏後蓋板厚掀起、右手壓前蓋 → 右手到 #1 掀弧線(15 s,無碰撞)",
         "source": "ours",
         "autoplay": true,
         "loop": true
       },
       "bullets": [
         {
-          "text": "USD 關節框架 → URDF + Lula:FK 誤差 0.000 mm",
+          "text": "USD 關節 → URDF + Lula,FK 誤差 0;箱轉 180° 右手可達 #1",
           "level": 0
         },
         {
-          "text": "箱子在工作空間邊緣:σ 0.05~0.09,弧線中段 0.015",
+          "text": "v2 穿入 ≤ 0.5 mm、兩臂 ≥ 10 mm;掀蓋改捏板厚",
           "level": 1
         },
         {
-          "text": "乾跑碰撞:插鄰片 1.5 mm、掀蓋到 79°、腕壓牆頂",
-          "level": 1
-        },
-        {
-          "text": "箱轉 180° 右手可達 #1;v2 乾跑待重跑",
+          "text": "妥協:蓋 0→35° kinematic、其餘三蓋開 260°;σ 低至 0.015",
           "level": 1
         }
       ],
-      "notes": "雙臂場景盤點發現兩隻手臂是 stationary_ai 的 6 軸 follower,不是 FR3,Isaac 內建沒有它的運動學設定,所以從 USD 的 PhysX 關節框架直接產 URDF 和 Lula 描述檔來解 IK,正向運動學跟 USD 誤差為零。可達性顯示箱子在工作空間邊緣,手指朝下的姿態很不靈活。第一版乾跑有三處碰撞:夾上蓋外緣會插進隔壁那片、掀後蓋到 79 度解不出 IK、掀包材弧線腕部壓到牆頂。把紙箱轉 180 度後右手能照規格到抓取點,v2 正在改夾角落與弧線。"
+      "notes": "雙臂場景盤點發現兩隻手臂是 stationary_ai 的 6 軸 follower,不是 FR3,Isaac 內建沒有它的運動學設定,所以從 USD 的 PhysX 關節框架直接產 URDF 和 Lula 描述檔來解 IK,正向運動學跟 USD 誤差為零。紙箱繞 z 轉 180° 之後右手能照規格到抓取點,PPT 的左右分工跟著對調。乾跑 v2 照門檻全程無碰撞,但有三處妥協:夾上蓋外緣會插進鄰片,改成蓋子先 kinematic 開 35° 再用指頭捏板厚掀到 50°,之後也由 kinematic 轉到 180°;掀包材時其他三片蓋要開到 260° 貼外牆,不然腕部會撞到平躺的蓋;弧線上指尖軸要偏 15°。箱子在工作空間邊緣,靈巧度很低,抓點離牆不到 30 mm 指頭就會碰牆。手臂端需要布那邊輸出什麼,寫在 arm/INTERFACE.md。"
     },
     {
       "role": "project_results",
