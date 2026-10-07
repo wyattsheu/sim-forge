@@ -244,6 +244,12 @@ OPEN_GAP = 21.0; CLOSE_GAP = 4.5
 gOpen, gClose, gShut = q_for_gap(OPEN_GAP), q_for_gap(CLOSE_GAP), 0.0
 P("指寬:開 %.1f mm ⇒ q %.1f mm;合 %.1f mm ⇒ q %.1f mm" % (OPEN_GAP, gOpen * 1e3, CLOSE_GAP, gClose * 1e3))
 
+READY = {}
+for side, sy in (("left", 1), ("right", -1)):
+    Rr_ = np.column_stack([[0, 0, -1.0], [1.0, 0, 0], [0, -1.0, 0]])
+    qr_, _p = ik(side, np.array([-0.02, sy * 0.25, 0.33]), Rr_, None)
+    READY[side] = qr_ if qr_ is not None else HOME
+    P("  READY(%s):tcp (−20, %+d, 330) mm 指尖朝下 IK %s" % (side, sy * 250, qr_ is not None))
 P("\n=== (a) 右手掀後方上蓋 fyn(世界 +x)、左手按前方上蓋 fyp(世界 −x)")
 # 右手:外緣中點(剛性夾持跟著蓋轉)
 eR = lid_edge("fyn", 0); RR0 = Rspec_lid("fyn")
@@ -283,7 +289,7 @@ else:
     up = [(tipL + np.array([0, 0, 0.06 * u]), RL0) for u in np.linspace(0, 1, 20)]
     qsU, _, _f = cart_seg("left", up, qsL[-1], 0, "a5 左抬 60mm")
     add("a5 右退 / 左抬", 1.0, qL=qsU, qR=qsB)
-    add("a6 回 home", 2.0, qL=HOME, qR=HOME, gL=0.0, gR=0.0)
+    add("a6 到 READY(高位、讓開下蓋)", 2.0, qL=READY["left"], qR=READY["right"], gL=0.0, gR=0.0)
 
 P("\n=== (b) 開四片蓋 → %s 手掀抓取點 #1" % a.hand_b)
 add("b0 上蓋 fy 開到 180°", 1.2, lids=dict(fyp=180.0, fyn=180.0))
@@ -339,8 +345,10 @@ def frame_check(qL, qR, gL, gR, lids, contact):
                 fing = ("gripper_" in b or "carriage_" in b)
                 key = ("intended" if (fing and contact.get(side) == o["body"]) else "box") + "_" + side
                 if key not in res or d < res[key][0]: res[key] = (d, o["name"], b.rsplit("/", 1)[-1])
+    nl = [b for b in W["left"] for _ in range(len(W["left"][b]))]; nr = [b for b in W["right"] for _ in range(len(W["right"][b]))]
     pl = np.vstack(list(W["left"].values())); pr = np.vstack(list(W["right"].values()))
-    dd, _ = cKDTree(pl).query(pr, k=1); res["arm_arm"] = dd.min() * 1e3
+    dd, ii = cKDTree(pl).query(pr, k=1); j = int(np.argmin(dd))
+    res["arm_arm"] = (dd[j] * 1e3, nl[ii[j]].rsplit("follower_", 1)[1], nr[j].rsplit("follower_", 1)[1])
     return res
 def nearest_pair(qL, qR, gL, gR):
     W = {}
@@ -370,9 +378,9 @@ for s in SEG:
             if k not in worst or vv < (worst[k][0] if isinstance(worst[k], tuple) else worst[k]): worst[k] = v
     dur = s["n"] / FPS
     f = lambda k: ("%.1f(%s↔%s)" % worst[k] if isinstance(worst.get(k), tuple) else ("%.1f" % worst[k] if k in worst else "-"))
-    col = [k for k in ("box_left", "box_right", "arm_arm", "table_left", "table_right") if k in worst and (worst[k][0] if isinstance(worst[k], tuple) else worst[k]) < 0]
+    col = [k for k in ("box_left", "box_right", "arm_arm", "table_left", "table_right") if k in worst and (worst[k][0] if isinstance(worst[k], tuple) else worst[k]) < (5.0 if k == "arm_arm" else 0)]
     P("  [%5.1f–%5.1fs] %-34s 左↔箱 %s | 右↔箱 %s | 兩臂 %s | 桌 L%.0f R%.0f | 預期接觸 L %s R %s %s"
-      % (t, t + dur, s["name"], f("box_left"), f("box_right"), f("arm_arm"), worst["table_left"], worst["table_right"],
+      % (t, t + dur, s["name"], f("box_left"), f("box_right"), ("%.1f(%s↔%s)" % worst["arm_arm"]), worst["table_left"], worst["table_right"],
          f("intended_left"), f("intended_right"), "★ 穿入:" + ",".join(col) if col else "OK"))
     summary.append(dict(name=s["name"], t0=t, t1=t + dur, worst={k: v for k, v in worst.items()}, collide=col)); t += dur
 P("  (數字 = 最小有號距離 mm,負 = 穿入;括號 = 紙箱部位↔手臂剛體)")
@@ -385,6 +393,10 @@ np.savez(os.path.join(HERE, "data", "peel_traj_%s.npz" % TAG), qL=np.array([q fo
 # ── 播放:set_joint_positions + 錄影 ──────────────────────
 from isaacsim.core.api import World
 from isaacsim.core.prims import Articulation, RigidPrim
+for p in Usd.PrimRange(st.GetPrimAtPath(R0)):
+    if p.HasAPI(UsdPhysics.CollisionAPI) and "follower_" in str(p.GetPath()):
+        UsdPhysics.CollisionAPI(p).CreateCollisionEnabledAttr().Set(False)
+P("播放時手臂 collision 關掉(碰撞只用上面的幾何檢查;避免 PhysX 把 teleport 的手臂推開)")
 world = World(physics_dt=1 / 120.0, rendering_dt=1 / FPS, stage_units_in_meters=1.0)
 cams = []
 if not a.no_video:
@@ -429,6 +441,7 @@ s0 = SEG[0]; apply(s0["qL"][0], s0["qR"][0], s0["gL"][0], s0["gR"][0], s0["lids"
 for _ in range(15): world.step(render=bool(cams))
 k = 0; t = 0.0; maxdev = 0.0; maxjerr = 0.0
 for si, s in enumerate(SEG):
+    sdev = 0.0
     for i in range(s["n"]):
         apply(s["qL"][i], s["qR"][i], s["gL"][i], s["gR"][i], s["lids"][i])
         world.step(render=bool(cams))
@@ -437,7 +450,7 @@ for si, s in enumerate(SEG):
         p6, q6 = [np.array(x, float) for x in L6.get_world_poses()]
         for j, side in enumerate(l6_order):
             fk = ARMS[side]["base_T"] @ RM.fk_np(ARMS[side], s["qL"][i] if side == "left" else s["qR"][i])["link_6"]
-            maxdev = max(maxdev, np.linalg.norm(fk[:3, 3] - p6[j]) * 1e3)
+            maxdev = max(maxdev, np.linalg.norm(fk[:3, 3] - p6[j]) * 1e3); sdev = max(sdev, np.linalg.norm(fk[:3, 3] - p6[j]) * 1e3)
         if cams:
             ims = []
             for c, _e, _t in cams:
@@ -446,11 +459,12 @@ for si, s in enumerate(SEG):
             im = Image.fromarray(np.concatenate(ims, 1)); d = ImageDraw.Draw(im)
             r = T_ALL[k]
             txt = "t=%5.2fs  %s\nbox clearance L %.0f / R %.0f mm   arm-arm %.0f mm   gripR %.1f mm" % (
-                t, s["name"].encode("ascii", "ignore").decode() or s["name"][:2], r["box_left"][0], r["box_right"][0], r["arm_arm"],
+                t, s["name"].encode("ascii", "ignore").decode() or s["name"][:2], r["box_left"][0], r["box_right"][0], r["arm_arm"][0],
                 G0 + GK * s["gR"][i])
             d.rectangle([0, 0, 760, 44], fill=(0, 0, 0)); d.text((6, 3), txt, fill=(255, 255, 255), font=FONT)
             if wr: wr.append_data(np.asarray(im))
         k += 1; t += 1 / FPS
+    if sdev > 1.0: P("  播放 %s:link_6 讀回偏差 %.1f mm" % (s["name"], sdev))
 if wr: wr.close()
 P("播放 %d 格(%.1f s);PhysX 讀回 vs 指令:關節最大差 %.3f°、link_6 位置 vs numpy FK 最大差 %.2f mm" % (k, t, math.degrees(maxjerr), maxdev))
 if cams: P("影片 → %s" % OUT)

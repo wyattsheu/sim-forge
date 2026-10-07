@@ -11,3 +11,9 @@ img/
 logs/
 data/
 *.tgz
+# repo 根目錄的 .gitignore 擋了 *.usd,這裡解開(場景與紙箱要給人 clone 就能用)
+!*.usd
+!**/*.usd
+!*.meta.json
+!*.npz
+!*.stl

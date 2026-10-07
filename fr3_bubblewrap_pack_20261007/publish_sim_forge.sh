@@ -50,10 +50,17 @@ img/
 logs/
 data/
 *.tgz
+# repo 根目錄的 .gitignore 擋了 *.usd,這裡解開(場景與紙箱要給人 clone 就能用)
+!*.usd
+!**/*.usd
+!*.meta.json
+!*.npz
+!*.stl
 G
 
 cd $CLONE
 git add -A $TASK
+git add -f $STAGE/scene/*.usd $STAGE/work/*.usd $STAGE/vol/*.usd $STAGE/work/*.npz 2>/dev/null || true
 git -c core.quotepath=off commit -q -m "$MSG" || echo "(沒有變更可提交)"
 git push -q origin HEAD
 echo "pushed: $(git rev-parse --short HEAD)  $(git log -1 --format=%s)"
