@@ -6,7 +6,7 @@ set -euo pipefail
 MSG="${1:-update}"
 SRC=/isaac-sim/test_scripts/manip_fr3
 H=$SRC/handoff_20260929
-TASK=fr3_bubblewrap_pack_20261007
+TASK=sims/fr3_bubblewrap_pack_20261007
 CLONE=/tmp/claude-0/sim-forge
 STAGE=$CLONE/$TASK
 
@@ -67,5 +67,5 @@ echo "pushed: $(git rev-parse --short HEAD)  $(git log -1 --format=%s)"
 du -sh $STAGE | cut -f1
 
 # tgz(舊的保留)
-cd $CLONE && tar czf $SRC/handoff_20261007.tgz $TASK
+cd $CLONE && tar czf $SRC/handoff_20261007.tgz -C sims fr3_bubblewrap_pack_20261007
 ls -la $SRC/handoff_2026100*.tgz | awk '{print $5, $9}'
