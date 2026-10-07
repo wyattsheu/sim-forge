@@ -31,6 +31,8 @@ ap.add_argument("--span", type=float, default=3.0)
 ap.add_argument("--tobs", type=float, default=3.0)
 ap.add_argument("--tag", default="")
 ap.add_argument("--pts_rest", action="store_true", help="診斷:points 也 = rest(預折,沒有初始應變)")
+ap.add_argument("--free", action="store_true", help="診斷:不建地面、關重力")
+ap.add_argument("--teleport", action="store_true", help="試:建板 points=rest(預折),reset 後把 USD points 改成平板")
 ap.add_argument("--self", type=int, default=1, help="自碰撞 1/0")
 ap.add_argument("--diag", type=int, default=0, help="reset 前後與前 N 步逐步印 bbox/能量")
 a = ap.parse_args()
@@ -71,10 +73,11 @@ P("板 %.0fmm n%d T%.0f r=%.1fmm gap=%.0fmm:%d 點 %d tets%s;rest = %s"
   % (S * 1e3, n, T * 1e3, r * 1e3, PRM["gap_mm"], len(FLAT), len(TETS), "(十字形)" if a.cross else "",
      "平板(C)" if a.rest_flat else "解析四折 " + os.path.basename(NPZ)))
 RREF = FLAT if a.rest_flat else REST
-PTS0 = REST if a.pts_rest else FLAT
+PTS0 = REST if (a.pts_rest or a.teleport) else FLAT
 
 world = World(physics_dt=a.dt, rendering_dt=a.dt)
-world.scene.add_default_ground_plane()
+if not a.free:
+    world.scene.add_default_ground_plane()
 st = omni.usd.get_context().get_stage()
 UsdGeom.SetStageMetersPerUnit(st, 1.0); UsdGeom.SetStageUpAxis(st, UsdGeom.Tokens.z)
 pxs = PhysxSchema.PhysxSceneAPI.Apply(st.GetPrimAtPath("/physicsScene"))
@@ -93,6 +96,8 @@ body.ApplyAPI("PhysxBaseDeformableBodyAPI")
 VC.sa(body, "physxDeformableBody:solverPositionIterationCount", int(a.solver), Sdf.ValueTypeNames.UInt)
 VC.sa(body, "physxDeformableBody:selfCollision", bool(a.self), Sdf.ValueTypeNames.Bool)
 VC.sa(body, "physxDeformableBody:selfCollisionFilterDistance", float(a.self_filter), Sdf.ValueTypeNames.Float)
+if a.free:
+    VC.sa(body, "physxDeformableBody:disableGravity", True, Sdf.ValueTypeNames.Bool)
 pc = PhysxSchema.PhysxCollisionAPI.Apply(body)
 pc.CreateContactOffsetAttr().Set(0.002); pc.CreateRestOffsetAttr().Set(0.0005)
 ra = body.GetAttribute("omniphysics:restShapePoints")
@@ -177,6 +182,13 @@ if a.diag:
         P("  attr %s %s" % (_at.GetName(), ("<len %d>" % _n) if _n > 6 else _v))
     _p = MESH.pts(); P("diag reset 後 USD points bbox %s mm;與初始 points 差 max %.2f mm"
                        % (np.round((_p.max(0) - _p.min(0)) * 1e3, 1), np.abs(_p - PTS0).max() * 1e3))
+if a.teleport:
+    tm.GetPointsAttr().Set(Vt.Vec3fArray([Gf.Vec3f(*map(float, p)) for p in FLAT]))
+    _v = body.GetAttribute("velocities")
+    if _v: _v.Set(Vt.Vec3fArray([Gf.Vec3f(0, 0, 0)] * len(FLAT)))
+    sim.update() if False else None
+    _p = MESH.pts(); P("teleport:USD points ← 平板;讀回與 FLAT 差 max %.2f mm" % (np.abs(_p - FLAT).max() * 1e3))
+    PTS0 = FLAT
 bars = {A["sd"]: SingleXFormPrim(A["path"], name="bar_" + A["sd"]) for A in ANC}
 P0 = MESH.pts(); assert len(P0) == len(FLAT)
 VR = VP.tet_vol(RREF, TETS); SGN = np.sign(VR)
