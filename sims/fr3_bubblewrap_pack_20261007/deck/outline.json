@@ -449,10 +449,10 @@
     },
     {
       "role": "project_results",
-      "title": "surface 夾得住:間隙 2 mm = 2×restOffset",
+      "title": "單片夾持對照:surface 2 mm vs volume 4 mm",
       "video": {
-        "src": "figs/10_surf_grip.mp4",
-        "caption": "G1 surface:間隙 2 mm、摩擦 1.0,抬 150 拉 100,滑動 0.4 mm(11 s)",
+        "src": "figs/12_grip_side_by_side.mp4",
+        "caption": "G1 夾懸出邊、抬 150 mm、拉 100 mm:左 volume 間隙 4 mm、右 surface 間隙 2 mm(11 s)",
         "source": "ours",
         "autoplay": true,
         "loop": true
@@ -559,29 +559,29 @@
     },
     {
       "role": "project_results",
-      "title": "夾爪探針成立:4~5 mm 間隙,只掀上片",
+      "title": "兩種包材都夾得住、掀得開(左 volume / 右 surface)",
       "video": {
-        "src": "figs/07_grip_peel_probe.mp4",
-        "caption": "G2:疊兩片只夾上片翻 180°,下片位移 0.8 mm(10 s)",
+        "src": "figs/11_peel_side_by_side.mp4",
+        "caption": "G2 疊兩片只夾上片翻 180°:左 volume 4 mm 板、右 surface 零厚度膜(10 s)",
         "source": "ours",
         "autoplay": true,
         "loop": true
       },
       "bullets": [
         {
-          "text": "間隙 = 板厚~+1 mm、摩擦 2.0:滑動 ~1 mm、穿指 0.3 mm",
+          "text": "volume:間隙 4~5 mm,滑動 ~1 mm,翻面 100%,下片 0.8 mm",
           "level": 0
         },
         {
-          "text": "≤ 3 mm 掉落;弧線半徑 ≤ 0.9× 材料長否則滑脫",
-          "level": 1
+          "text": "surface:間隙 2 mm(=2×rest),滑動 0.4 mm,翻面 74~83%,下片 3~5 mm",
+          "level": 0
         },
         {
-          "text": "deformable 對 kinematic 剛體摩擦有效",
+          "text": "兩者穿杯 / 互穿 0;弧線半徑 ≤ 0.9× 材料長",
           "level": 1
         }
       ],
-      "notes": "夾持的三支探針。單片用純摩擦夾住邊緣抬 150 mm 拉 100 mm 都不脫,間隙要等於板厚到板厚加一毫米,夾太緊反而把材料擠出去。疊兩片只夾上面那片翻 180 度,下片幾乎不動。翻轉時圓弧半徑不能超過夾點到被壓住點的材料長度,第一版半徑太大就滑脫 67 mm。這些參數會直接給手臂用。"
+      "notes": "左邊是 volume 板、右邊是 surface 膜,同一個探針:兩片疊著,夾爪只夾上面那片的伸出邊,沿圓弧翻 180 度。兩種都夾得住、掀得開,下面那片都留在原位。差別在夾持窗口:volume 的指面間距 4 到 5 mm 都行,surface 只有 1.5 到 2 mm,等於兩倍 restOffset,夾太鬆布只是掛在下指上、夾太緊會穿膜。翻面 volume 是 100%,surface 74 到 83%,落下時會皺。兩種都沒有穿杯、沒有互穿。這張證明「夾得住」不是選 surface 或 volume 的決定因素,決定因素在整包的穿模、重現性與回彈。"
     },
     {
       "role": "project_results",
