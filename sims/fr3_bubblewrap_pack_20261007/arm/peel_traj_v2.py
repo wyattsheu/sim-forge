@@ -344,10 +344,12 @@ if a.only != "b":
     sgn_press = 1.0 if (TB[:3, :3] @ np.array([1.0, 0, 0]))[1] * (1 if PRESS == "left" else -1) > 0 else -1.0
     press_loc = hF + inF * 0.055 + np.array([sgn_press * 0.09, 0, 0]); press_loc[2] = LF["mid"][2] + 0.0015 + 0.0003
     pw = (TB @ np.r_[press_loc, 1])[:3]
-    Rp0 = np.column_stack([[0, 0, -1.0], [0, 1.0, 0], [1.0, 0, 0]])   # 開合軸(夾爪滑軌,寬 186mm)沿 y,不要橫在後蓋掀起的路上
+    Rp0 = np.column_stack([[0, 0, -1.0], [1.0, 0, 0], [0, -1.0, 0]])
+    PSI_PRESS = [90, -90, 75, -75, 60, -60, 45, -45, 30, -30, 0]     # 繞指軸轉:優先讓夾爪滑軌(寬 186mm)沿 y,不要橫在後蓋掀起的路上
     tipP = pw + np.array([0, 0, RM.TCP_BACK])
     L0 = dict(lids0)
-    qPpre, phP = ik_cf(PRESS, tipP + np.array([0, 0, 0.06]), Rp0, READY[PRESS], 0, 0.0, L0, PH_ALL, maxjump=None)
+    qPpre, phP = ik_cf(PRESS, tipP + np.array([0, 0, 0.06]), Rp0, READY[PRESS], 0, 0.0, L0, PH_ALL, maxjump=None, psis=PSI_PRESS)
+    Rp0 = rot_axis(Rp0[:, 0], LASTPSI[0]) @ Rp0; P("  壓的手:指軸轉 ψ=%d°(滑軌方向 %s)" % (LASTPSI[0], (Rp0[:, 1]).round(2).tolist()))
     dnP = [(tipP + np.array([0, 0, 0.06 * (1 - u)]), Rp0) for u in np.linspace(0, 1, 25)]
     qsP, phsP, fP = cart_cf(PRESS, dnP, qPpre, phP, 0.0, L0, PH_ALL, "a2 壓的手下降到 %s 板面" % FRONT) if qPpre is not None else ([], [], 0)
     P("  壓點 世界 %s mm" % ((pw * 1e3).round(1).tolist()))
@@ -491,7 +493,7 @@ if a.only != "b":
             Tl = fk_tcp(PEEL, qsL[-1]); Tr = lidT_loc(reached) @ np.linalg.inv(T0w); enR = Tr[:3, :3] @ enA if a.lid_mode in ("lift", "pinch") else Tr[:3, :3] @ en_w
             L_r = dict(L0, **{BACK: float(reached)})
             if a.lid_mode in ("corner", "pinch"): add("a5 開指", 0.4, **{gk(PEEL): q_for_gap(10.0) if a.lid_mode == "corner" else gOpen})
-            back = [(Tl[:3, 3] + enR * 0.03 * u + np.array([0, 0, 0.06]) * max(0, 2 * u - 1), Tl[:3, :3]) for u in np.linspace(0, 1, 30)]
+            back = [(Tl[:3, 3] + enR * 0.03 * u, Tl[:3, :3]) for u in np.linspace(0, 1, 20)]     # 只沿外緣外向退 30mm,之後關節內插回 READY(也有碰撞檢查)
             qsB, phB, fB = cart_cf(PEEL, back, qsL[-1], phL[-1], {"lift": gC, "pinch": gOpen, "corner": q_for_gap(10.0)}[a.lid_mode], L_r, PH_ALL, "a5 掀的手退開", otherP)
             if fB is not None: FAIL.append("(a) 退開中斷")
             if qsB: add("a5 掀的手退開(放手,兩段式)", 1.0, **{qk(PEEL): qsB})
