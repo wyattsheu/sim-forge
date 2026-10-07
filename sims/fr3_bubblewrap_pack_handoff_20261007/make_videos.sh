@@ -5,13 +5,14 @@
 #   ./make_videos.sh --demo     # 再加成果影片 DEMO(wrap_sim 四段,約 10 分鐘,需 GPU)
 #
 #   VIDEO_DIR=/tmp/v ./make_videos.sh   # 輸出到別的地方(預設 ./videos)
-#   ISAAC=/path/to/python.sh ./make_videos.sh
+#   ISAAC=/path/to/python.sh ./make_videos.sh   # 不設就自動找(ISAAC_SIM_PATH / ISAAC_SIM_PIP_ENV 可指定)
 set -e
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PY="${ISAAC:-/isaac-sim/python.sh}"
+if [ -n "$ISAAC" ]; then PY="$ISAAC"
+else source "$HERE/sim/find_isaac.sh"; find_isaac || exit 5; PY="$ISAAC_PYTHON"; fi
 VID="${VIDEO_DIR:-$HERE/videos}"
 WORK="${WORK_DIR:-$HERE/logs/make_videos}"
-export OMNI_KIT_ALLOW_ROOT=1
+[ "$(id -u)" = 0 ] && export OMNI_KIT_ALLOW_ROOT=1
 mkdir -p "$VID" "$WORK"
 cd "$HERE/sim"
 

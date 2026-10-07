@@ -8,7 +8,12 @@
 #   WEBRTC_NO_PLAY=1 ./open_in_webrtc.sh         # 開好不要自動按 Play
 #   CLICK_TO_ROS=0 ./open_in_webrtc.sh           # 不載入 Ctrl+點擊 → ROS 2 座標
 #
+#   ./open_in_webrtc.sh --check                  # 只印偵測結果(Isaac Sim 在哪、IP、port、GPU),不啟動
 #   ./open_in_webrtc.sh --stop                   # 停止
+#
+# Isaac Sim 位置自動偵測(二進位版 / Docker / pip 版),見 sim/find_isaac.sh;偵測不到時指定:
+#   ISAAC_SIM_PATH=<含 kit/kit 的目錄>  或  ISAAC_SIM_PIP_ENV=<含 bin/isaacsim 的 venv>
+# WEBRTC_IP 沒設就用本機第一個非內網 IP;port 被佔用會自動往上找空的(WEBRTC_PORT 可指定起點)。
 set -e
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCENE="$HERE/scene_final_phys.usd"; CREASE=0
@@ -29,35 +34,50 @@ if [ -n "$(running)" ]; then
   echo "同時開兩個會互相干擾(client 可能連到另一個、或黑畫面)。先執行:$0 --stop" >&2
   exit 4
 fi
+CHECK=0
 for a in "$@"; do
   case "$a" in
+    --check) CHECK=1 ;;
     --crease) CREASE=1 ;;
     *) SCENE="$(cd "$(dirname "$a")" && pwd)/$(basename "$a")" ;;
   esac
 done
-PORT="${WEBRTC_PORT:-49100}"
-PUBLIC_IP="${WEBRTC_IP:-140.96.68.42}"
+source "$HERE/sim/find_isaac.sh"
+find_isaac || exit 5
+isaac_kit_cmd stream
 [ -f "$SCENE" ] || { echo "找不到場景:$SCENE" >&2; exit 2; }
+PORT="${WEBRTC_PORT:-49100}"
+if [ -z "${WEBRTC_PORT:-}" ]; then      # 沒指定就找第一個沒被佔用的
+  for _ in $(seq 1 20); do ss -lnt 2>/dev/null | grep -q ":$PORT " || break; PORT=$((PORT+1)); done
+fi
 if ss -lnt 2>/dev/null | grep -q ":$PORT "; then
   echo "port $PORT 已被佔用 —— 換一個:WEBRTC_PORT=49110 $0 $*" >&2; exit 3
 fi
+# 對外 IP:優先 WEBRTC_IP;否則取本機第一個非內網、非 docker 的 IPv4(內網 / VPN 環境請自己設 WEBRTC_IP)
+if [ -n "${WEBRTC_IP:-}" ]; then PUBLIC_IP="$WEBRTC_IP"
+else
+  PUBLIC_IP=$(hostname -I 2>/dev/null | tr ' ' '\n' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' \
+    | grep -vE '^(10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.|127\.|169\.254\.)' | head -1)
+  [ -n "$PUBLIC_IP" ] || PUBLIC_IP=$(hostname -I 2>/dev/null | awk '{print $1}')
+  echo "IP     : 沒設 WEBRTC_IP,自動用 $PUBLIC_IP(不對的話:WEBRTC_IP=<client 連得到的 IP> $0)"
+fi
+if [ "$CHECK" = 1 ]; then
+  echo "Isaac  : $ISAAC_KIND  $ISAAC_HOME"; echo "啟動   : ${KIT_CMD[*]}"
+  echo "場景   : $SCENE"; echo "連線   : $PUBLIC_IP  signaling TCP $PORT / 媒體 UDP 47998"
+  nvidia-smi --query-gpu=index,name,memory.free --format=csv,noheader 2>/dev/null | sed 's/^/GPU    : /'
+  ss -lnu 2>/dev/null | grep -q ":47998 " && echo "警告   : UDP 47998 已被佔用(別的串流在跑?)"
+  exit 0
+fi
 mkdir -p "$HERE/logs"; LOG="$HERE/logs/webrtc.log"
 export HANDOFF_USD="$SCENE" HANDOFF_CREASE="$CREASE" HANDOFF_SIM="$HERE/sim" HANDOFF_NO_PLAY="${WEBRTC_NO_PLAY:-0}"
+echo "Isaac  : $ISAAC_KIND  $ISAAC_HOME"
 echo "場景   : $SCENE  (摺痕腳本: $([ $CREASE = 1 ] && echo 開 || echo 關))"
 echo "連線   : Streaming Client 輸入 $PUBLIC_IP(signaling TCP $PORT、媒體 UDP 47998)"
 echo "記錄檔 : $LOG   —— 看到 [handoff] READY 就可以連"
-export OMNI_KIT_ALLOW_ROOT=1
-# ROS 2:用 Isaac 內建的 jazzy 函式庫與 rclpy(python 3.11)。系統的 /opt/ros 是 python 3.12,
-# 一起放進 Kit 會互相干擾(rclpy 載入失敗),所以把 /opt/ros 從 PYTHONPATH / LD_LIBRARY_PATH 拿掉。
-export ROS_DISTRO=${ROS_DISTRO:-jazzy}
-export RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_fastrtps_cpp}
-ROS_EXT=/isaac-sim/exts/isaacsim.ros2.bridge/$ROS_DISTRO
-export PYTHONPATH=$(echo "$PYTHONPATH" | tr ':' '\n' | grep -v '^/opt/ros' | paste -sd: -)
-export LD_LIBRARY_PATH=$ROS_EXT/lib:$(echo "$LD_LIBRARY_PATH" | tr ':' '\n' | grep -v '^/opt/ros' | paste -sd: -)
-unset AMENT_PREFIX_PATH
-export CLICK_TO_ROS=${CLICK_TO_ROS:-1}          # 0 = 不載入 Ctrl+點擊 → ROS 2 座標的功能
+[ "$(id -u)" = 0 ] && export OMNI_KIT_ALLOW_ROOT=1
+isaac_setup_ros
 export HANDOFF_SIM="$HERE/sim"
-nohup /isaac-sim/kit/kit /isaac-sim/apps/isaacsim.exp.full.streaming.kit \
+nohup "${KIT_CMD[@]}" \
   --no-window --allow-root \
   --/persistent/physics/enableDeformableBeta=true \
   --/physics/updateToUsd=true \

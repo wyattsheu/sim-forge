@@ -3,8 +3,9 @@
 # 用法:cd sim && ./run_demo.sh   (ISAAC=/path/to/python.sh 可覆寫)
 set -e
 cd "$(dirname "$0")"
-P=${ISAAC:-/isaac-sim/python.sh}
-export OMNI_KIT_ALLOW_ROOT=1
+if [ -n "$ISAAC" ]; then P="$ISAAC"
+else source ./find_isaac.sh; find_isaac || exit 5; P="$ISAAC_PYTHON"; fi
+[ "$(id -u)" = 0 ] && export OMNI_KIT_ALLOW_ROOT=1
 C="--wrapsim --tex bubble_normal.png --thick 0.004 --hold_mm 6 --tip_over_mm 0 --sheet_mm 400 --layer_mm 5 --young 2e4 --bend 4"
 run(){ o=$1; shift; rm -rf $o; echo "== $o"; $P wrap_sim.py $C "$@" --out $o > $o.stdout 2>&1; [ -f $o/wrap.npz ] || { echo "FAIL $o(看 $o.stdout)"; exit 1; }; }
 run c1      --wrap_edge --wrap_n 2 --cam_ref 0.586                                   # 1. 包第一對邊

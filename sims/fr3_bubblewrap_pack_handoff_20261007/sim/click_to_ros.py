@@ -39,7 +39,11 @@ def _ros_init():
     """在 Kit 裡載入 rclpy。優先用已經在 sys.path 上的(ros2 bridge extension 載入過的),
     否則用 Isaac 內建的 jazzy/humble rclpy;並把系統 /opt/ros 的 python 路徑拿掉(python 版本不同會互相干擾)。"""
     distro = os.environ.get("ROS_DISTRO", "jazzy")
-    ext_rclpy = "/isaac-sim/exts/isaacsim.ros2.bridge/%s/rclpy" % distro
+    ext_rclpy = os.path.join(os.environ.get("ISAAC_ROOT", "/isaac-sim"), "exts/isaacsim.ros2.bridge", distro, "rclpy")
+    if not os.path.isdir(ext_rclpy):
+        alt = os.path.join(os.environ.get("ISAAC_ROOT", "/isaac-sim"), "exts/isaacsim.ros2.core", distro, "rclpy")
+        if os.path.isdir(alt):
+            ext_rclpy = alt
     sys.path[:] = [p for p in sys.path if not p.startswith("/opt/ros")]
     try:
         import rclpy  # noqa

@@ -88,3 +88,9 @@ arm scene, carton, `mug.stl`, `open_in_ui.sh`, `open_in_webrtc.sh`, `crease_hold
 ## 2026-10-02 — original delivery (`handoff_20261002.tgz`, not in git)
 `scene_final.usd`, four-stage simulation (`wrap_sim.py`, `run_demo.sh`), physics verification videos, states, carton generator.
 原始交付:`scene_final.usd`、四段模擬(`wrap_sim.py`、`run_demo.sh`)、物理驗證影片、states、紙箱產生器。
+
+## portable Isaac Sim launch
+- `sim/find_isaac.sh`: auto-detects Isaac Sim (binary / Docker `/isaac-sim` / pip venv); `ISAAC_SIM_PATH` / `ISAAC_SIM_PIP_ENV` override. Used by `open_in_ui.sh`, `open_in_webrtc.sh`, `make_videos.sh`, `sim/run_demo.sh`.
+- `open_in_webrtc.sh`: `--check`, auto public IP, auto free port, `OMNI_KIT_ALLOW_ROOT` only when root; READY now also printed to `logs/webrtc.log`.
+- ROS 2 libs located under `exts/isaacsim.ros2.{bridge,core}`; click→ROS auto-disabled when absent.
+- Tested on this server with pip Isaac Sim 6.0.0-rc.22: reached `[handoff] READY`, port 49100 listening. WebRTC client side not tested.
