@@ -449,7 +449,7 @@
     },
     {
       "role": "project_results",
-      "title": "單片夾持對照:surface 2 mm vs volume 4 mm",
+      "title": "單片夾持:surface 2 mm vs volume 4 mm",
       "video": {
         "src": "figs/12_grip_side_by_side.mp4",
         "caption": "G1 夾懸出邊、抬 150 mm、拉 100 mm:左 volume 間隙 4 mm、右 surface 間隙 2 mm(11 s)",
