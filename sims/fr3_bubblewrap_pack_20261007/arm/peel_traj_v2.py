@@ -265,7 +265,10 @@ def ik_cf(side, pos, R, q_prev, phi_prev, g, lids, phis, other=None, maxjump=25.
                 qs = wrap_lim(qs, m["lo"], m["hi"])
                 good, pe, oe = check(side, qs, pos, Rf)
                 if not good or (q_prev is not None and maxjump and np.max(np.abs(qs - q_prev)) > math.radians(maxjump)): continue
-                (d, nm, bn), allp = arm_clear(side, qs, g, lids)
+                if isinstance(lids, list):      # 多個蓋子狀態都要過(例如蓋子會掀過來的路徑)
+                    rr = [arm_clear(side, qs, g, l_) for l_ in lids]; (d, nm, bn), allp = min(rr, key=lambda r_: r_[0][0])
+                else:
+                    (d, nm, bn), allp = arm_clear(side, qs, g, lids)
                 if d < PLAN_TOL:
                     if DIAG[0] is None or d > DIAG[0][0]: DIAG[0] = (d, nm, bn, ph, ps)
                     continue
@@ -277,7 +280,7 @@ LASTPSI = [0.0]; USEDPSI = set()
 def cart_cf(side, poses, q0, phi0, g, lids_seq, phis, label, other_seq=None, psis=None):
     qs, phs = [], []; q, ph = q0, phi0; USEDPSI.clear()
     for i, (p_, R_) in enumerate(poses):
-        lids = lids_seq[i] if isinstance(lids_seq, list) else lids_seq
+        lids = lids_seq[i] if (isinstance(lids_seq, list) and len(lids_seq) == len(poses)) else lids_seq
         oth = other_seq[i] if isinstance(other_seq, list) else other_seq
         DIAG[0] = None
         qn, phn = ik_cf(side, p_, R_, q, ph, g, lids, phis, oth, psis=psis); USEDPSI.add(LASTPSI[0])
@@ -348,10 +351,11 @@ if a.only != "b":
     PSI_PRESS = [90, -90, 75, -75, 60, -60, 45, -45, 30, -30, 0]     # 繞指軸轉:優先讓夾爪滑軌(寬 186mm)沿 y,不要橫在後蓋掀起的路上
     tipP = pw + np.array([0, 0, RM.TCP_BACK])
     L0 = dict(lids0)
-    qPpre, phP = ik_cf(PRESS, tipP + np.array([0, 0, 0.06]), Rp0, READY[PRESS], 0, 0.0, L0, PH_ALL, maxjump=None, psis=PSI_PRESS)
+    LPR = [dict(lids0, **{BACK: float(d_)}) for d_ in np.linspace(0, a.lid_mid, 7)]    # 壓的手要讓開「後蓋 0→lid_mid 整段」
+    qPpre, phP = ik_cf(PRESS, tipP + np.array([0, 0, 0.06]), Rp0, READY[PRESS], 0, 0.0, LPR, PH_ALL, maxjump=None, psis=PSI_PRESS)
     Rp0 = rot_axis(Rp0[:, 0], LASTPSI[0]) @ Rp0; P("  壓的手:指軸轉 ψ=%d°(滑軌方向 %s)" % (LASTPSI[0], (Rp0[:, 1]).round(2).tolist()))
     dnP = [(tipP + np.array([0, 0, 0.06 * (1 - u)]), Rp0) for u in np.linspace(0, 1, 25)]
-    qsP, phsP, fP = cart_cf(PRESS, dnP, qPpre, phP, 0.0, L0, PH_ALL, "a2 壓的手下降到 %s 板面" % FRONT) if qPpre is not None else ([], [], 0)
+    qsP, phsP, fP = cart_cf(PRESS, dnP, qPpre, phP, 0.0, LPR, PH_ALL, "a2 壓的手下降到 %s 板面" % FRONT) if qPpre is not None else ([], [], 0)
     P("  壓點 世界 %s mm" % ((pw * 1e3).round(1).tolist()))
     if qPpre is None or fP is not None: FAIL.append("(a) 壓的手到不了")
     qk = lambda s_: "qL" if s_ == "left" else "qR"; gk = lambda s_: "gL" if s_ == "left" else "gR"
@@ -647,9 +651,11 @@ for c, eye, tgt in cams:
     c.initialize(); set_camera_view(eye=np.array(eye), target=np.array(tgt), camera_prim_path=c.prim_path)
     cp = UsdGeom.Camera(st.GetPrimAtPath(c.prim_path)); cp.GetFocalLengthAttr().Set(18.0 if c.prim_path.endswith("0") else 20.0)
     cp.GetHorizontalApertureAttr().Set(20.955); cp.GetVerticalApertureAttr().Set(20.955 * 540 / 960); cp.GetClippingRangeAttr().Set(Gf.Vec2f(0.01, 100.0))
-EN = {"a1": "a1 to pre-pose", "a2": "a2 R down to lid edge / L press", "a3": "a3 R close", "a4": "a4 R lift back lid (L holds front)",
-      "a5": "a5 release / retreat", "a6": "a6 to READY", "b0": "b0 lids open (kinematic)", "b1": "b1 to 60mm above grasp #1",
-      "b2": "b2 descend to #1", "b3": "b3 close to 4.5mm", "b4": "b4 lift 30mm", "b5": "b5 peel arc", "b6": "b6 hold"}
+EN = {"a0": "a0 home -> READY", "a1": "a1 to pre-poses", "a2": "a2 R presses front lid", "a2b": "a2b back lid kinematic ajar (not by hand)",
+      "a3": "a3 L fingers slide onto back-lid corner edge", "a3b": "a3b L pinch 5mm", "a4": "a4 L lifts back lid (R holds front)",
+      "a5": "a5 L release / retreat", "a6": "a6 both to READY", "a7": "a7 back lid continues kinematic to 180",
+      "b0": "b0 lids open (kinematic)", "b1": "b1 R to 60mm above grasp #1", "b2": "b2 R descend to #1", "b3": "b3 R close to 4.5mm",
+      "b4": "b4 R lift 30mm", "b5": "b5 R radius-in + R60 peel arc + raise", "b6": "b6 hold"}
 try: FONT = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf", 17)
 except Exception: FONT = None
 wr = imageio.get_writer(OUT, fps=FPS, codec="libx264", quality=8, pixelformat="yuv420p") if cams else None
