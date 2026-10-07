@@ -13,7 +13,7 @@ from isaacsim import SimulationApp
 sim=SimulationApp({"headless":True,"extra_args":["--/persistent/physics/enableDeformableBeta=true"]})
 import carb, numpy as np, omni.usd, omni.timeline
 import omni.physx.bindings._physx as pxb
-s_=carb.settings.get_settings(); s_.set(pxb.SETTING_ENABLE_DEFORMABLE_BETA,True); s_.set_bool("/physics/updateToUsd",True)
+s_=carb.settings.get_settings(); hasattr(pxb,"SETTING_ENABLE_DEFORMABLE_BETA") and s_.set(pxb.SETTING_ENABLE_DEFORMABLE_BETA,True); s_.set_bool("/physics/updateToUsd",True)
 from omni.physx import get_physx_interface
 from omni.physx.bindings._physx import PhysicsInteractionEvent as PIE
 from isaacsim.core.prims import RigidPrim
