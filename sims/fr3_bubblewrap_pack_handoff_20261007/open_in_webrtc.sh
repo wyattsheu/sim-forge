@@ -16,8 +16,12 @@ BOOT="$HERE/sim/webrtc_boot.py"
 running() { pgrep -f -- "--exec $BOOT" ; }      # 這個資料夾開出來的所有串流實例
 if [ "$1" = "--stop" ]; then
   P_=$(running)
-  if [ -n "$P_" ]; then kill $P_ && echo "已停止:$(echo $P_ | tr '\n' ' ')"; else echo "沒有在跑"; fi
-  rm -f "$PIDF"; exit 0
+  if [ -z "$P_" ]; then echo "沒有在跑"; rm -f "$PIDF"; exit 0; fi
+  kill $P_ 2>/dev/null
+  echo -n "停止中(pid $(echo $P_ | tr '\n' ' '))"
+  for i in $(seq 1 30); do [ -z "$(running)" ] && break; echo -n "."; sleep 1; done   # Kit 要幾秒才會真的結束
+  if [ -n "$(running)" ]; then kill -9 $(running) 2>/dev/null; sleep 1; echo -n " 強制結束"; fi
+  echo " 已停止"; rm -f "$PIDF"; exit 0
 fi
 if [ -n "$(running)" ]; then
   echo "已經有串流在跑(pid $(running | tr '\n' ' '))。" >&2
