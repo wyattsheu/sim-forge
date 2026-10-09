@@ -13,6 +13,12 @@ Isaac Sim 物理模擬資產的生成管線。每個模擬是 `sims/` 底下一�
 
 ![wrapped_mug](sims/wrapped_mug/docs/img/rig.png)
 
+## 踩坑記憶:動手前先讀
+
+[`memory/`](memory) 收錄所有模擬與工具踩過的坑和解法。
+人看 [`memory/HANDBOOK.md`](memory/HANDBOOK.md);**AI agent 動手實作前先讀 [`memory/AGENTS.md`](memory/AGENTS.md)**,
+照裡面的規程讀索引與相關教訓,做完把新踩到的坑寫回去。
+
 ## 設計原則
 
 每個模擬遵守同一套規矩,方便互相參考、也方便換件:
