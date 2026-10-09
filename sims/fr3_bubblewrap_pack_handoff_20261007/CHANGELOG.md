@@ -119,3 +119,19 @@ arm scene, carton, `mug.stl`, `open_in_ui.sh`, `open_in_webrtc.sh`, `crease_hold
   12 mm lower (78 vs 90 mm) with tilt 1.8 deg because the 0.32 kg mug now outweighs the 0.11 kg carton; shake S (1.5 m/s)
   wrap through walls max 15 (pads only 12, no pads 18). Pulling a flap hard now slides the lighter carton ~4 cm on the table.
 - `verify_phys_scene.py`: test `P` (arm pull), `--video/--label/--cam` (mp4 with caption, real time).
+
+## 2026-10-10 elastic-plastic creases, lids fold to ~261 deg, crease mechanics write-up
+- Answer to "is yield modelled?": before, by default no (`lid_latch.py` is an open/shut latch); the optional `crease_hold_ui.py`
+  had yield at 0.60 N*m (~70x the flap's weight torque, the mouse could not exceed it). Now `sim/crease_plastic.py` is the default
+  (`LID_MODE=plastic`; `latch` / `spring` = old models): elastic -> yield -> plastic plateau -> partial spring-back, softening on refolds.
+- Parameters from the literature (docs/CREASE_MECHANICS.md): yield 0.25 N*m/m x crease width (Nagasawa 2019 Mp1 0.244 N*m/m,
+  paperboard; corrugated NOT calibrated), spring-back 45 deg (90 deg fold releases to 43-46 deg), k = yield / 45 deg.
+  `build_phys_scene.py --crease_my_per_m / --crease_springback_deg`; written onto the joints as `crease:yieldMoment`, `crease:width`.
+- Lids stuck at ~100 deg: (1) the wall pads blocked them (collision groups did not filter pad <-> flap) -> explicit FilteredPairs
+  pad <-> every flap, and lid pads <-> base; (2) maximal-coordinate revolute joints wrap at +-180 deg and the limit then throws the
+  flap round -> the carton is now an articulation (`--articulation 1`), limits -275..+5 deg (`--lid_limits`).
+- Measured (Isaac Sim 6.0): fold to 90 deg and release -> rests at 45.3 deg (lit. 43-46); fold to 270 -> flap meets the wall at
+  260.8 deg, rests at 240; refolds spring back 44.7/44.6/44.5 deg; arm pull 0.29 N -> 10 deg, 1.43 N -> 60 deg, released rests at
+  30.6 deg; carry test B lifts the upper flaps ~15 deg and the 1.5 m/s shake flings one to 73 deg (softer creases + wrap pushing).
+- New: `sim/crease_test.py` (crease bending-tester protocol, CSV + video), `sim/plot_crease.py`, `sim/run_crease_matrix.sh`,
+  `docs/CREASE_MECHANICS.md` + `docs/img/*.png`; `verify_phys_scene.py --lid_model`, `lid_test.py ... plastic`.
