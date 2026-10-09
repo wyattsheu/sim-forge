@@ -31,6 +31,7 @@ ap.add_argument("--shake_amp", type=float, default=0.05, help="S: amplitude (m)"
 ap.add_argument("--shake_hz", type=float, default=2.0, help="S: frequency (Hz); default peak speed ~0.6 m/s")
 ap.add_argument("--pull_lid", default="fyp", help="P: which lid")
 ap.add_argument("--pull_max", type=float, default=2.0, help="P: final force (N)")
+ap.add_argument("--lid_model", default="plastic", choices=["plastic", "latch", "spring"], help="flap model loaded at run time (as the launchers do)")
 ap.add_argument("--video", default="", help="record an mp4 (real time, 30 fps) of the run")
 ap.add_argument("--label", default="", help="--video: caption in the top-left corner")
 ap.add_argument("--cam", default="", help="--video: eye offset from the carton centre 'dx,dy,dz' (m); default depends on the test")
@@ -70,7 +71,10 @@ wp = st.GetPrimAtPath(WRAP); mp = st.GetPrimAtPath(MUG)
 LIVE_W = wp.HasAPI("OmniPhysicsDeformableBodyAPI") if hasattr(wp, "HasAPI") else False
 LIVE_W = "OmniPhysicsDeformableBodyAPI" in wp.GetAppliedSchemas()
 LIVE_M = mp.HasAPI(UsdPhysics.RigidBodyAPI)
-P("wrap deformable:", LIVE_W, " mug rigid:", LIVE_M)
+P("wrap deformable:", LIVE_W, " mug rigid:", LIVE_M, " lid model:", a.lid_model)
+if a.lid_model != "spring":
+    _p = os.path.join(os.path.dirname(os.path.abspath(__file__)), "crease_plastic.py" if a.lid_model == "plastic" else "lid_latch.py")
+    exec(compile(open(_p).read(), _p, "exec"), globals())
 for n in LIDN:
     d = UsdPhysics.DriveAPI.Get(st.GetPrimAtPath(BOX + "/crease_" + n), "angular")
     P("crease_%s drive stiffness %s damping %s target %s maxForce %s" % (n, d.GetStiffnessAttr().Get(), d.GetDampingAttr().Get(),

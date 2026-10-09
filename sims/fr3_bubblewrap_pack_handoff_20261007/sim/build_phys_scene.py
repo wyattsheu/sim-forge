@@ -62,7 +62,13 @@ ap.add_argument("--lid_pad_lids", default="fyp,fyn", help="only the OUTER (upper
 # stable. With the implicit PhysX drive it only makes the lids feel immovable. Defaults below follow parcel-forge
 # carton_v1 (crease 0.42 N*m/rad per metre of crease, inertia from geometry).
 ap.add_argument("--lid_stiff", type=float, default=-1.0, help="N*m/deg for every crease; <0 = from --lid_stiff_per_m (old value 0.012)")
-ap.add_argument("--lid_stiff_per_m", type=float, default=0.42, help="N*m/rad per metre of crease width (carton_v1)")
+ap.add_argument("--lid_stiff_per_m", type=float, default=-1.0, help="N*m/rad per metre of crease width; <0 = crease_my_per_m / spring-back (carton_v1 used 0.42)")
+# elastic-plastic crease (sim/crease_plastic.py reads these from the joints): literature, see docs/CREASE_MECHANICS.md
+ap.add_argument("--crease_my_per_m", type=float, default=0.25, help="N*m/m yield / plateau moment per metre of crease (Nagasawa 2019: Mp1 0.244 N*m/m)")
+ap.add_argument("--crease_springback_deg", type=float, default=45.0, help="elastic spring-back after a fold (Nagasawa 2019: 90 deg fold releases to ~44-46 deg)")
+ap.add_argument("--articulation", type=int, default=1, help="1 = make the carton (base + 4 flaps) one articulation: needed for crease angles past 180 deg "
+                "(maximal-coordinate revolute joints wrap at +-180 and the limit then throws the flap round)")
+ap.add_argument("--lid_limits", default="-275,5", help="crease joint limits deg 'lower,upper' (opening is negative; -270 = folded down the outside of the wall)")
 ap.add_argument("--lid_damp_ratio", type=float, default=0.5, help="drive damping as a fraction of critical (old: 0.003 N*m*s/deg fixed)")
 ap.add_argument("--lid_armature", type=float, default=2e-4, help="kg*m^2 joint armature (old 0.006)")
 ap.add_argument("--lid_inertia", default="auto", help="'auto' = from geometry; 'keep' = authored 0.006")
@@ -341,6 +347,13 @@ if a.wall_pad > 0 or a.lid_pad > 0:
     oc.CreateIncludesRel().SetTargets([q.GetPath() for q in st.GetPseudoRoot().GetChildren()])
     oc.CreateExcludesRel().SetTargets([Sdf.Path(WRAP)] + pads)
     gp.CreateFilteredGroupsRel().SetTargets([go.GetPath()])
+    # groups alone did not stop pad <-> flap contacts (lids popped open / stopped at ~100 deg against the wall
+    # pads), so also filter every pad against every flap body explicitly
+    _lidb = [Sdf.Path(PK + "/Box/" + n) for n in ("fxp", "fxn", "fyp", "fyn")]
+    for _pp in pads:
+        _own = str(_pp).split("/")[-2]
+        _t = [b for b in _lidb if b.name != _own] + ([Sdf.Path(BASE)] if _own != "base" else [])   # a lid pad faces the wall at 270 deg
+        UsdPhysics.FilteredPairsAPI.Apply(st.GetPrimAtPath(_pp)).CreateFilteredPairsRel().SetTargets(_t)
     P("pads (wrap-only collision group, mass 1e-6 each): wall %.0f mm, lid %.0f mm -> %s" % (a.wall_pad*1e3, a.lid_pad*1e3, [str(x) for x in pads]))
 
 for _n in ("fxp", "fxn", "fyp", "fyn"):
@@ -353,15 +366,28 @@ for _n in ("fxp", "fxn", "fyp", "fyn"):
         for _at in ("physics:diagonalInertia", "physics:principalAxes"):
             if _lp.HasAttribute(_at): _lp.RemoveProperty(_at)
     _I = _m * _L * _L / 3.0 + a.lid_armature                 # about the hinge, + armature
-    _k = a.lid_stiff * 180/math.pi if a.lid_stiff > 0 else a.lid_stiff_per_m * _w     # N*m/rad
+    _my = a.crease_my_per_m * _w                                                     # N*m
+    _k = (a.lid_stiff * 180/math.pi if a.lid_stiff > 0 else
+          a.lid_stiff_per_m * _w if a.lid_stiff_per_m > 0 else _my / math.radians(a.crease_springback_deg))   # N*m/rad
     _c = a.lid_damp_ratio * 2.0 * math.sqrt(_k * _I)                                  # N*m*s/rad
     _j = st.GetPrimAtPath(PK + "/Box/crease_" + _n)
     _d = UsdPhysics.DriveAPI.Get(_j, "angular")
     _d.GetStiffnessAttr().Set(_k * math.pi/180); _d.GetDampingAttr().Set(_c * math.pi/180)   # USD angular drive is per degree
     PhysxSchema.PhysxJointAPI.Apply(_j).CreateArmatureAttr().Set(a.lid_armature)
+    _lo, _hi = [float(v) for v in a.lid_limits.split(",")]
+    UsdPhysics.RevoluteJoint(_j).GetLowerLimitAttr().Set(_lo); UsdPhysics.RevoluteJoint(_j).GetUpperLimitAttr().Set(_hi)
+    _j.CreateAttribute("crease:yieldMoment", Sdf.ValueTypeNames.Float).Set(_my)      # read by sim/crease_plastic.py
+    _j.CreateAttribute("crease:width", Sdf.ValueTypeNames.Float).Set(_w)
     P("lid %s: width %.0f mm reach %.0f mm mass %.1f g | k %.4f N*m/rad (%.5f /deg) c %.5f N*m*s/rad | I_hinge %.2e (armature %.0e) | "
-      "gravity torque flat %.4f N*m, tip force to hold 45 deg %.2f N"
-      % (_n, _w*1e3, _L*1e3, _m*1e3, _k, _k*math.pi/180, _c, _I, a.lid_armature, _m*9.81*_L/2, (_k*math.pi/4 + _m*9.81*_L/2*math.cos(math.pi/4))/_L))
+      "gravity torque flat %.4f N*m | yield %.4f N*m (tip force %.2f N), spring-back %.0f deg | limits %s"
+      % (_n, _w*1e3, _L*1e3, _m*1e3, _k, _k*math.pi/180, _c, _I, a.lid_armature, _m*9.81*_L/2, _my, _my/_L, math.degrees(_my/_k), a.lid_limits))
+if a.articulation:
+    _bx = st.GetPrimAtPath(PK + "/Box")
+    UsdPhysics.ArticulationRootAPI.Apply(_bx)
+    _pa = PhysxSchema.PhysxArticulationAPI.Apply(_bx)
+    _pa.CreateEnabledSelfCollisionsAttr(True)            # flaps rest on / fold against the walls
+    _pa.CreateSolverPositionIterationCountAttr(32); _pa.CreateSolverVelocityIterationCountAttr(8)   # carton_v1
+    P("carton is an articulation (root %s): crease angles 0..270 deg" % _bx.GetPath())
 if a.pad > 0 and a.pad_mass > 0:
     UsdPhysics.MassAPI.Apply(st.GetPrimAtPath(BASE + "/pad_collider")).CreateMassAttr(a.pad_mass)
     P("floor pad mass %g kg" % a.pad_mass)

@@ -105,12 +105,16 @@ def _on_update(_e):
                 exec(compile(open(p).read(), p, "exec"), globals())
             except Exception as e:
                 _log("click_to_ros.py failed to load: %s" % e)
-        if os.environ.get("LID_LATCH", "1") == "1" and not CREASE_MODE:
-            p = os.path.join(SIM, "lid_latch.py")
+        # flap model: plastic = elastic-plastic crease (default, docs/CREASE_MECHANICS.md); latch = old open/shut
+        # latch; spring = USD drive only (LID_LATCH=0 also means spring, for old command lines)
+        lid_mode = os.environ.get("LID_MODE", "spring" if os.environ.get("LID_LATCH", "1") == "0" else "plastic")
+        if not CREASE_MODE and lid_mode in ("plastic", "latch"):
+            p = os.path.join(SIM, "crease_plastic.py" if lid_mode == "plastic" else "lid_latch.py")
             try:
                 exec(compile(open(p).read(), p, "exec"), globals())
+                _log("flap model: %s (%s)" % (lid_mode, os.path.basename(p)))
             except Exception as e:
-                _log("lid_latch.py failed to load: %s" % e)
+                _log("%s failed to load: %s" % (os.path.basename(p), e))
         _s["done"] = True
 
 

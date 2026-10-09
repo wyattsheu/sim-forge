@@ -2,13 +2,14 @@
 往上提 15 cm,量拉著時的角度;放手 2 s 再量。結果寫到 lid_<scene>_pf<PF>[_mode].txt。
 
   cd sim
-  /isaac-sim/python.sh lid_test.py ../scene_final_phys.usd 100 latch    # 預設模式:彈簧 + lid_latch.py
+  /isaac-sim/python.sh lid_test.py ../scene_final_phys.usd 70 plastic   # 預設模式:彈塑性摺痕 crease_plastic.py
+  /isaac-sim/python.sh lid_test.py ../scene_final_phys.usd 100 latch    # 舊模式:彈簧 + lid_latch.py
   /isaac-sim/python.sh lid_test.py ../scene_final_phys.usd 100 spring   # 只有彈簧(LID_LATCH=0)
   /isaac-sim/python.sh lid_test.py ../scene_final_phys.usd 100 crease   # crease_hold_ui.py(彈塑性摺痕)
 """
 import os, sys, math
 os.environ.setdefault("OMNI_KIT_ALLOW_ROOT","1")
-SCENE=sys.argv[1]; PF=float(sys.argv[2]); MODE=sys.argv[3] if len(sys.argv)>3 else ""; CREASE=MODE=="crease"; LATCH=MODE=="latch"
+SCENE=sys.argv[1]; PF=float(sys.argv[2]); MODE=sys.argv[3] if len(sys.argv)>3 else ""; CREASE=MODE=="crease"; LATCH=MODE=="latch"; PLASTIC=MODE=="plastic"
 from isaacsim import SimulationApp
 sim=SimulationApp({"headless":True,"extra_args":["--/persistent/physics/enableDeformableBeta=true"]})
 import carb, numpy as np, omni.usd, omni.timeline
@@ -29,6 +30,8 @@ if CREASE:
     p=os.path.join(os.path.dirname(os.path.abspath(__file__)),"crease_hold_ui.py"); exec(compile(open(p).read(),p,"exec"),globals())
 if LATCH:
     p=os.path.join(os.path.dirname(os.path.abspath(__file__)),"lid_latch.py"); exec(compile(open(p).read(),p,"exec"),globals())
+if PLASTIC:
+    p=os.path.join(os.path.dirname(os.path.abspath(__file__)),"crease_plastic.py"); exec(compile(open(p).read(),p,"exec"),globals())
 s_.set_bool("/physics/mouseInteractionEnabled",True); s_.set_bool("/physics/mouseGrab",True); s_.set_bool("/physics/mouseGrabIgnoreInvisible",True)
 s_.set_bool("/physics/forceGrab",True); s_.set_float("/physics/pickingForce",PF)
 tl=omni.timeline.get_timeline_interface(); tl.play()
