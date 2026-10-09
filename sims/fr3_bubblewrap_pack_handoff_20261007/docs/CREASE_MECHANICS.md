@@ -3,6 +3,8 @@
 > 對象：要接手或報告這個紙箱模擬的人。說明蓋子為什麼這樣動、參數從哪來、哪些是量過的、哪些是假設。
 > 版本：2026-10-10，`portable-isaac-launch` 分支。數字都在 Isaac Sim 6.0（pip）上量的；交付用的 `scene_final_phys.usd` 尚未以新參數重建（見 §7）。
 
+> 報告用簡報：[slides/2026-10-10-Carton-Crease.pptx](slides/2026-10-10-Carton-Crease.pptx)（ACM Lab 範本，內嵌影片，請用 PowerPoint 播放；大綱在 `slides/outline.json`）。
+
 ## 1. 結論先講
 
 | 問題 | 原本 | 現在 |

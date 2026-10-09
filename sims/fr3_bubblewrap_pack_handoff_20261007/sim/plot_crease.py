@@ -202,5 +202,57 @@ def fig_fbd():
     fig.savefig(os.path.join(IMG, "flap_free_body.png")); plt.close(fig)
 
 
-fig_fbd(); fig_schematic(); fig_sim(); fig_cycles_old()
+# 5. slide figure: our measured curve with the paper's data points on top (large fonts for projection)
+def fig_paper_vs_ours():
+    d = load("crease_fyp_90_plastic_empty")
+    if not d: return
+    a, m = measured(d)
+    rel = [d["ang"][i] for i, p in enumerate(d["ph"]) if p == "release"][-1]
+    with plt.rc_context({"font.size": 16, "axes.labelsize": 18, "xtick.labelsize": 15, "ytick.labelsize": 15}):
+        fig, ax = plt.subplots(figsize=(10.0, 7.0))
+        ax.plot(a, m, color=C1, lw=3, label="ours: simulated crease (fold to 90°)")
+        ax.plot([20], [0.244], "s", ms=13, color=C2, label="paper: peak Mp1 = 0.244")
+        ax.plot([90], [0.215], "D", ms=12, color=C2, label="paper: M90 = 0.215")
+        near = [v for x, v in zip(a, m) if 85 <= x <= 89]; m90 = sum(near) / len(near)
+        ax.plot([87], [m90], "o", ms=12, mfc="white", mec=C1, mew=3, label="ours: %.3f at 85–89°" % m90)
+        ax.axvspan(43, 46, color=C2, alpha=0.15, label="paper: release angle 43–46°")
+        ax.axvline(rel, color=C1, lw=2, ls="--"); ax.text(rel - 1.5, 0.315, "ours: released\nflap rests at %.1f°" % rel, color=C1, fontsize=14, ha="right")
+        ax.annotate("model yields at 45°\n(paper ≈ 20°)", xy=(48, 0.275), xytext=(60, 0.305), fontsize=14, color=INK,
+                    arrowprops=dict(arrowstyle="->", color=INK))
+        ax.set_xlim(0, 95); ax.set_ylim(0, 0.34)
+        ax.set_xlabel("fold angle (deg)"); ax.set_ylabel("crease moment per width (N·m/m)")
+        ax.legend(frameon=False, fontsize=13, loc="upper center", bbox_to_anchor=(0.5, -0.14), ncol=2)
+        fig.tight_layout(); fig.savefig(os.path.join(IMG, "paper_vs_ours.png"), dpi=200); plt.close(fig)
+
+
+# 6. slide version of the free-body diagram: one panel, large type
+def fig_fbd_slide():
+    from matplotlib.patches import Rectangle, FancyArrowPatch, Arc
+    with plt.rc_context({"font.size": 18}):
+        fig, ax = plt.subplots(figsize=(7.5, 6.6)); ax.set_aspect("equal"); ax.axis("off")
+        L, th = 1.0, 55.0
+        ax.add_patch(Rectangle((-0.08, -1.0), 0.08, 1.0, fc="#d9c3a0", ec="#8a6d3b"))
+        ax.text(-0.62, -0.75, "carton wall", color=MUTED, fontsize=16)
+        ax.plot([-0.08, -1.0], [0, 0], ls="--", color="#bbbbbb"); ax.text(-1.0, -0.12, "shut (θ = 0)", color=MUTED, fontsize=15)
+        a_ = math.radians(180 - th); fx, fy = L*math.cos(a_), L*math.sin(a_)
+        ax.plot([0, fx], [0, fy], color="#b08850", lw=12, solid_capstyle="round")
+        ax.plot(0, 0, "o", color=INK, ms=12); ax.text(0.07, -0.12, "crease", color=INK, fontsize=16)
+        ax.add_patch(Arc((0, 0), 0.7, 0.7, theta1=180 - th, theta2=180, color=C1, lw=2.5)); ax.text(-0.5, 0.15, "θ", color=C1, fontsize=22)
+        cx, cy = fx/2, fy/2
+        ax.plot(cx, cy, "o", color=C4, ms=10)
+        ax.add_patch(FancyArrowPatch((cx, cy), (cx, cy - 0.5), arrowstyle="-|>", mutation_scale=24, color=C4, lw=3))
+        ax.text(cx - 0.40, cy - 0.12, "m g", color="#b07a12", fontsize=20)
+        nx, ny = math.sin(a_), -math.cos(a_)
+        ax.add_patch(FancyArrowPatch((fx, fy), (fx + 0.42*nx, fy + 0.42*ny), arrowstyle="-|>", mutation_scale=24, color=C2, lw=3))
+        ax.text(fx + 0.44*nx + 0.03, fy + 0.44*ny, "F", color=C2, fontsize=22)
+        ax.add_patch(FancyArrowPatch((0.32*math.cos(math.radians(100)), 0.32*math.sin(math.radians(100))),
+                                     (0.32*math.cos(math.radians(150)), 0.32*math.sin(math.radians(150))),
+                                     connectionstyle="arc3,rad=0.35", arrowstyle="-|>", mutation_scale=22, color=C3, lw=3))
+        ax.text(0.12, 0.30, "M_c", color=C3, fontsize=20)
+        ax.text(cx - 0.32, cy + 0.12, "L", color=MUTED, fontsize=18)
+        ax.set_xlim(-1.1, 0.75); ax.set_ylim(-1.05, 1.2)
+        fig.tight_layout(); fig.savefig(os.path.join(IMG, "flap_fbd_slide.png"), dpi=200); plt.close(fig)
+
+
+fig_fbd(); fig_schematic(); fig_sim(); fig_cycles_old(); fig_paper_vs_ours(); fig_fbd_slide()
 print("figures ->", IMG)
