@@ -1,0 +1,3 @@
+[submodule "tools/parcel-forge"]
+	path = tools/parcel-forge
+	url = https://github.com/wyattsheu/parcel-forge.git

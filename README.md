@@ -43,3 +43,24 @@ source tools/usdenv.sh && $PY your_script.py
 ```bash
 tools/fetch_assets.sh
 ```
+
+## 工具:parcel-forge
+
+[`tools/parcel-forge`](tools/parcel-forge) 是 git submodule,指向獨立 repo
+[wyattsheu/parcel-forge](https://github.com/wyattsheu/parcel-forge)(Isaac Sim 資產的可重現生成與自動驗證:image→TripoSR→rigid USD→PhysX、紙箱 / 開箱判定等),
+自己有一套 AGENTS.md 與開發流程,所以不複製進來,只記版本。
+
+```bash
+# 第一次 clone 時一起拉
+git clone --recurse-submodules https://github.com/wyattsheu/sim-forge.git
+
+# 已經 clone 了才補拉
+git submodule update --init tools/parcel-forge
+
+# 把 parcel-forge 更新到它的最新版,再提交新的指標
+git submodule update --remote tools/parcel-forge
+git add tools/parcel-forge && git commit -m "tools: bump parcel-forge"
+```
+
+要改 parcel-forge 的程式,進 `tools/parcel-forge` 當成獨立 repo 操作(commit / push 到它自己的 repo),
+回到 sim-forge 再提交指標更新。
