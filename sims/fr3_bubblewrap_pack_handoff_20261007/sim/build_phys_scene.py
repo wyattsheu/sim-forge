@@ -57,8 +57,16 @@ ap.add_argument("--pad", type=float, default=0.02, help="m; 0 = no pad")
 ap.add_argument("--wall_pad", type=float, default=0.02, help="m, thickness outside each wall; 0 = none")
 ap.add_argument("--lid_pad", type=float, default=0.02, help="m, thickness on the outer face of the lids in --lid_pad_lids; 0 = none")
 ap.add_argument("--lid_pad_lids", default="fyp,fyn", help="only the OUTER (upper) flaps: a pad on fxp/fxn overlaps fyp/fyn and pops all lids open")
-ap.add_argument("--lid_stiff", type=float, default=0.012, help="N*m/deg; scene_final_ui.usd has 0.056 (mouse only reached 15 deg)")
-ap.add_argument("--lid_damp", type=float, default=0.003)
+# lid feel (2026-10-09): the flaps had an authored diagonal inertia 0.006 kg*m^2 PLUS joint armature 0.006 (~180x the
+# physical ~7e-5 of a 15 g flap) -- a leftover from the old explicit-torque crease (k 3.5 N*m/rad) that needed it to stay
+# stable. With the implicit PhysX drive it only makes the lids feel immovable. Defaults below follow parcel-forge
+# carton_v1 (crease 0.42 N*m/rad per metre of crease, inertia from geometry).
+ap.add_argument("--lid_stiff", type=float, default=-1.0, help="N*m/deg for every crease; <0 = from --lid_stiff_per_m (old value 0.012)")
+ap.add_argument("--lid_stiff_per_m", type=float, default=0.42, help="N*m/rad per metre of crease width (carton_v1)")
+ap.add_argument("--lid_damp_ratio", type=float, default=0.5, help="drive damping as a fraction of critical (old: 0.003 N*m*s/deg fixed)")
+ap.add_argument("--lid_armature", type=float, default=2e-4, help="kg*m^2 joint armature (old 0.006)")
+ap.add_argument("--lid_inertia", default="auto", help="'auto' = from geometry; 'keep' = authored 0.006")
+ap.add_argument("--pad_mass", type=float, default=1e-6, help="kg for the floor pad (it weighed 0.24 kg at density 200 = 2/3 of the carton)")
 ap.add_argument("--base_damp", default="2,2", help="carton base linear,angular damping; '' = keep")
 a = ap.parse_args()
 os.environ.setdefault("OMNI_KIT_ALLOW_ROOT", "1")
@@ -336,9 +344,27 @@ if a.wall_pad > 0 or a.lid_pad > 0:
     P("pads (wrap-only collision group, mass 1e-6 each): wall %.0f mm, lid %.0f mm -> %s" % (a.wall_pad*1e3, a.lid_pad*1e3, [str(x) for x in pads]))
 
 for _n in ("fxp", "fxn", "fyp", "fyn"):
-    _d = UsdPhysics.DriveAPI.Get(st.GetPrimAtPath(PK + "/Box/crease_" + _n), "angular")
-    _d.GetStiffnessAttr().Set(a.lid_stiff); _d.GetDampingAttr().Set(a.lid_damp)
-P("lid drives: stiffness %g N*m/deg damping %g" % (a.lid_stiff, a.lid_damp))
+    _lp = st.GetPrimAtPath(PK + "/Box/" + _n); _g = st.GetPrimAtPath(PK + "/Box/" + _n + "/geo")
+    _sc = _g.GetAttribute("xformOp:scale").Get()              # cube size 2: half extents (x = half width, y = reach/2, z = t)
+    _w, _L, _t = 2*float(_sc[0]), 2*float(_sc[1]), 2*float(_sc[2])
+    _dens = float(_lp.GetAttribute("physics:density").Get() or 200.0)
+    _m = _dens * _w * _L * _t
+    if a.lid_inertia == "auto":
+        for _at in ("physics:diagonalInertia", "physics:principalAxes"):
+            if _lp.HasAttribute(_at): _lp.RemoveProperty(_at)
+    _I = _m * _L * _L / 3.0 + a.lid_armature                 # about the hinge, + armature
+    _k = a.lid_stiff * 180/math.pi if a.lid_stiff > 0 else a.lid_stiff_per_m * _w     # N*m/rad
+    _c = a.lid_damp_ratio * 2.0 * math.sqrt(_k * _I)                                  # N*m*s/rad
+    _j = st.GetPrimAtPath(PK + "/Box/crease_" + _n)
+    _d = UsdPhysics.DriveAPI.Get(_j, "angular")
+    _d.GetStiffnessAttr().Set(_k * math.pi/180); _d.GetDampingAttr().Set(_c * math.pi/180)   # USD angular drive is per degree
+    PhysxSchema.PhysxJointAPI.Apply(_j).CreateArmatureAttr().Set(a.lid_armature)
+    P("lid %s: width %.0f mm reach %.0f mm mass %.1f g | k %.4f N*m/rad (%.5f /deg) c %.5f N*m*s/rad | I_hinge %.2e (armature %.0e) | "
+      "gravity torque flat %.4f N*m, tip force to hold 45 deg %.2f N"
+      % (_n, _w*1e3, _L*1e3, _m*1e3, _k, _k*math.pi/180, _c, _I, a.lid_armature, _m*9.81*_L/2, (_k*math.pi/4 + _m*9.81*_L/2*math.cos(math.pi/4))/_L))
+if a.pad > 0 and a.pad_mass > 0:
+    UsdPhysics.MassAPI.Apply(st.GetPrimAtPath(BASE + "/pad_collider")).CreateMassAttr(a.pad_mass)
+    P("floor pad mass %g kg" % a.pad_mass)
 if a.base_damp:
     _ld, _ad = [float(v) for v in a.base_damp.split(",")]
     _bp = PhysxSchema.PhysxRigidBodyAPI.Apply(st.GetPrimAtPath(BASE))
