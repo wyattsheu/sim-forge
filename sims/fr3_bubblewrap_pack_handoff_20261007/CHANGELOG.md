@@ -104,3 +104,18 @@ arm scene, carton, `mug.stl`, `open_in_ui.sh`, `open_in_webrtc.sh`, `crease_hold
   S 0.6 m/s 1 -> 0; S 1.5 m/s 18 -> 12; 0 for both at the end. Fewer, not zero.
 - Isaac Sim 6.0 compat: SETTING_ENABLE_DEFORMABLE_BETA guarded (default in 6.x); tensors view needs stage_id + omni.physx.tensors.
 - `scene_final_phys.usd` NOT rebuilt here: a 6.0 build settles the mug ~90 deg differently from the delivered 5.1 build.
+
+## 2026-10-09 lid feel: lids can actually be opened by the arm and the mouse (build_phys_scene.py)
+- Root cause: each flap had an authored diagonal inertia 0.006 kg*m^2 AND joint armature 0.006 (~180x a real 15 g flap),
+  left over from the old explicit-torque crease that needed it for stability; plus a stiff crease 0.012 N*m/deg = 0.69 N*m/rad
+  and damping 0.003 N*m*s/deg. The floor pad also weighed 0.24 kg (2/3 of the carton).
+- New defaults (follow parcel-forge carton_v1): `--lid_stiff_per_m 0.42` N*m/rad per metre of crease (lower 0.092, upper 0.110 N*m/rad),
+  `--lid_damp_ratio 0.5` of critical, `--lid_armature 2e-4`, `--lid_inertia auto` (from geometry), `--pad_mass 1e-6`
+  (carton base 0.352 -> 0.110 kg). Old behaviour: `--lid_stiff 0.012 --lid_inertia keep --lid_armature 0.006 --pad_mass 0`.
+- Measured (Isaac Sim 6.0, `verify_phys_scene.py --test P`, upward pull at the flap edge ramped to 3 N):
+  before 1.53 N -> 10 deg, 3 N -> 21 deg max; after 0.34 N -> 10 deg, 0.78 N -> 30 deg, 2.36 N -> 60 deg, 3 N -> 65 deg.
+  Mouse (`lid_test.py`, pickingForce 70, latch): lower flaps before 27 deg and fell back shut, after 112-117 deg and stay open.
+- Side effects: at rest the lower flaps sit at ~7 deg (wrap pushes them; before ~2.6); test B carry (soft velocity servo) ends
+  12 mm lower (78 vs 90 mm) with tilt 1.8 deg because the 0.32 kg mug now outweighs the 0.11 kg carton; shake S (1.5 m/s)
+  wrap through walls max 15 (pads only 12, no pads 18). Pulling a flap hard now slides the lighter carton ~4 cm on the table.
+- `verify_phys_scene.py`: test `P` (arm pull), `--video/--label/--cam` (mp4 with caption, real time).

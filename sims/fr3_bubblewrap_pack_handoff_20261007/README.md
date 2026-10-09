@@ -426,7 +426,7 @@ cd sim && /isaac-sim/python.sh build_phys_scene.py     # writes ../scene_final_p
 | Wrap `/World/Packed/Wrap` | **Surface deformable** (1225 vertices, 2312 triangles). Rest shape = the wrapped shape (`restShapePoints` = points, `restBendAnglesDefault = restShapeDefault`), so the folds don't spring open. Young's modulus 2e4 Pa, Poisson 0.45, thickness 4 mm, bend stiffness 4, friction 0.8, density 100 (≈ 65 g), self-collision on, 64 solver iterations, contact / rest offset 5 / 1 mm |
 | Mug `/World/Packed/Mug` | **Dynamic rigid body**, 0.32 kg, friction 0.9. Collider = stacked convex frusta following the outer profile + 13 spheres (r = 10 mm) along the handle |
 | Carton | Unchanged geometry. Base gets linear / angular damping 2 / 2 (force-mode mouse drag would otherwise overshoot). An invisible 20 mm pad collider under the 3 mm floor stops wrap vertices poking through; it is **filtered against `tabletop_link` and `frame_link`** (before 2026-10-07 pm it was not, and the carton was pinned to the table) |
-| Lid creases | Spring drives stiffness **0.012 N·m/deg**, damping 0.003 (was 0.056: the mouse could only open a lid 15°). Gravity sag ≈ 1°. `lid_latch.py` adds the open / closed latch at run time |
+| Lid creases | (2026-10-09) Spring drive **0.42 N·m/rad per metre of crease** like parcel-forge `carton_v1` (lower flaps 0.092, upper 0.110 N·m/rad), damping 0.5 × critical, armature 2e-4, flap inertia from geometry. Before: 0.012 N·m/deg (0.69 N·m/rad) and an authored flap inertia 0.006 + armature 0.006 (~180× a real 15 g flap), so arm and mouse could barely move them. Upward pull at the flap edge: 0.34 N → 10°, 0.78 N → 30° (before 1.5 N → 10°, 3 N → 21°). `lid_latch.py` adds the open / closed latch at run time |
 | PhysicsScene | 120 Hz TGS, 8 / 1 iterations, GPU dynamics + GPU broadphase, deformable contact capacity 4 M, collision stack 128 MB |
 | Bake | Settled in the file before saving: 2 s with the mug held still, then 4 s free; the settled shape written into both points and rest shape, velocities zeroed |
 
@@ -953,7 +953,7 @@ cd sim && /isaac-sim/python.sh build_phys_scene.py     # 寫出 ../scene_final_p
 | 包材 `/World/Packed/Wrap` | **Surface deformable**(1225 個頂點、2312 個三角形)。靜止形狀 = 包好的形狀(`restShapePoints` = points,`restBendAnglesDefault = restShapeDefault`),摺痕不會彈開。楊氏模數 2e4 Pa、Poisson 0.45、厚度 4 mm、彎曲剛性 4、摩擦 0.8、密度 100(約 65 g)、自碰撞開、解算 64 次、contact / rest offset 5 / 1 mm |
 | 杯子 `/World/Packed/Mug` | **動態剛體**,0.32 kg,摩擦 0.9。碰撞體 = 沿外型疊起來的凸台 + 把手上 13 顆球(半徑 10 mm) |
 | 紙箱 | 幾何不變。箱底加線性 / 角阻尼 2 / 2(不然力量式滑鼠拖曳會衝過頭)。3 mm 箱底下方有一塊看不見的 20 mm 墊片碰撞體,擋住包材頂點穿出箱底;它**對 `tabletop_link`、`frame_link` 不碰撞**(10-07 下午之前沒有過濾,紙箱被卡死在桌上) |
-| 蓋子摺痕 | 彈簧 drive 剛性 **0.012 N·m/deg**、阻尼 0.003(原本 0.056,滑鼠只拉得開 15°)。重力下垂約 1°。`lid_latch.py` 在執行期加上開 / 關閂鎖 |
+| 蓋子摺痕 | (2026-10-09)彈簧 drive 改成跟 parcel-forge `carton_v1` 一樣 **每公尺摺痕 0.42 N·m/rad**(下層蓋 0.092、上層蓋 0.110 N·m/rad),阻尼取臨界阻尼的 0.5 倍,armature 2e-4,蓋子慣量由幾何計算。原本:0.012 N·m/deg(0.69 N·m/rad),而且蓋子寫死慣量 0.006 再加 armature 0.006(約真實 15 g 蓋子的 180 倍),所以手臂和滑鼠幾乎拉不動。在蓋子邊緣往上拉:0.34 N → 10°、0.78 N → 30°(原本 1.5 N → 10°、3 N 只到 21°)。`lid_latch.py` 在執行期加上開 / 關閂鎖 |
 | PhysicsScene | 120 Hz TGS、迭代 8 / 1、GPU dynamics + GPU broadphase、deformable 接觸容量 4 M、碰撞堆疊 128 MB |
 | 沉降 | 存檔前先沉降:杯子固定 2 秒,再放開 4 秒;沉降後的形狀同時寫進 points 和靜止形狀,速度歸零 |
 
