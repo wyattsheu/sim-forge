@@ -7,6 +7,7 @@ _s = {"f": 0, "opened": -1, "done": False}
 
 
 def _log(m): carb.log_warn("[handoff] " + m)
+_hlog = _log      # kept: click_to_ros.py etc. are exec'd into these globals and redefine _log
 
 
 def _on_update(_e):
@@ -42,9 +43,9 @@ def _on_update(_e):
             p = os.path.join(SIM, "crease_plastic.py" if lid_mode == "plastic" else "lid_latch.py")
             try:
                 exec(compile(open(p).read(), p, "exec"), globals())
-                _log("flap model: %s (%s)" % (lid_mode, os.path.basename(p)))
+                _hlog("flap model: %s (%s)" % (lid_mode, os.path.basename(p)))
             except Exception as e:
-                _log("%s failed to load: %s" % (os.path.basename(p), e))
+                _hlog("%s failed to load: %s" % (os.path.basename(p), e))
         _log("READY"); _s["done"] = True
 
 

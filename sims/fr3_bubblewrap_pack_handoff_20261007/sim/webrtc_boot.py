@@ -27,6 +27,7 @@ _st = carb.settings.get_settings()
 def _log(m):
     carb.log_warn("[handoff] " + m)
     print("[handoff] " + m, flush=True)   # 也印到 stdout,open_in_webrtc.sh 的 logs/webrtc.log 才看得到 READY
+_hlog = _log      # kept: click_to_ros.py etc. are exec'd into these globals and redefine _log
 
 
 def _mouse_drag():
@@ -112,9 +113,9 @@ def _on_update(_e):
             p = os.path.join(SIM, "crease_plastic.py" if lid_mode == "plastic" else "lid_latch.py")
             try:
                 exec(compile(open(p).read(), p, "exec"), globals())
-                _log("flap model: %s (%s)" % (lid_mode, os.path.basename(p)))
+                _hlog("flap model: %s (%s)" % (lid_mode, os.path.basename(p)))
             except Exception as e:
-                _log("%s failed to load: %s" % (os.path.basename(p), e))
+                _hlog("%s failed to load: %s" % (os.path.basename(p), e))
         _s["done"] = True
 
 
