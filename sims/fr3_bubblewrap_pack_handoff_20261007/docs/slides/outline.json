@@ -11,52 +11,125 @@
       "title": "Original lids: no yield, stuck at 100°",
       "layout": "figure-right",
       "bullets": [
-        {"text": "Arm pull at flap edge: 1.53 N → only 10°", "level": 0},
-        {"text": "Flap inertia authored ~180× real (0.006 kg·m² + armature)", "level": 1},
-        {"text": "No yield by default: open/shut latch only", "level": 0},
-        {"text": "Lids stop at ~100°: wall pads + ±180° joint wrap", "level": 0}
+        {
+          "text": "Arm pull at flap edge: 1.53 N → only 10°",
+          "level": 0
+        },
+        {
+          "text": "Flap inertia authored ~180× real (0.006 kg·m² + armature)",
+          "level": 1
+        },
+        {
+          "text": "No yield by default: open/shut latch only",
+          "level": 0
+        },
+        {
+          "text": "Lids stop at ~100°: wall pads + ±180° joint wrap",
+          "level": 0
+        }
       ],
       "video": {
         "src": "figs/pull_fyp_before_after.mp4",
         "caption": "Same 3 N pull. Top: original carton (21°). Bottom: real flap inertia (65°)",
         "source": "ours, Isaac Sim 6.0",
-        "autoplay": true, "loop": true
+        "autoplay": true,
+        "loop": true
       },
       "notes": "這個紙箱是別人交付給我們的，實際用滑鼠和手臂去拉蓋子時幾乎拉不動。我先找原因，發現問題不只是彈性係數太大。最主要的是蓋子的轉動慣量被寫死成 0.006 kg·m²，關節又再加了 armature 0.006，加起來大約是真實 15 公克蓋子的 180 倍，所以施力之後蓋子只會很慢地動。影片上面是原本的版本，3 N 只拉到 21 度；下面是把慣量改回由幾何計算之後，同樣的力可以拉到 65 度。另外兩個問題是：預設沒有降伏，只有一個開關式的閂鎖；以及蓋子開到大約 100 度就卡住。接下來我先看文獻裡真實的紙箱摺痕是怎麼受力的，再照文獻重做模型。"
     },
     {
+      "role": "project_why",
+      "title": "Delivered carton vs my carton_v1",
+      "layout": "text-only",
+      "matrix": {
+        "header": [
+          "",
+          "Delivered carton (handoff)",
+          "My carton_v1 (parcel-forge)"
+        ],
+        "rows": [
+          [
+            "Crease model",
+            "Stiff spring 0.69 N·m/rad + open/shut latch; optional yield 0.60 N·m",
+            "Viscoplastic: yield, plastic set, softening"
+          ],
+          [
+            "Joints / range",
+            "Maximal joints wrap at ±180° → stuck ~100°",
+            "Articulation, −5…270°"
+          ],
+          [
+            "Flap inertia",
+            "Authored 0.006 + armature 0.006 (~180× real)",
+            "From geometry"
+          ],
+          [
+            "Parameters",
+            "Tuned for numerical stability",
+            "Documented; B-flute literature"
+          ],
+          [
+            "Strength",
+            "Full scene: wrap, mug, arms, mouse, ROS 2",
+            "Physically structured, calibratable"
+          ],
+          [
+            "Weakness",
+            "Lids cannot open realistically",
+            "Carton only; spring-back 4° (lit. ~45°)"
+          ]
+        ]
+      },
+      "callout": {
+        "label": "Decision",
+        "text": "Keep the delivered scene; replace its lid physics with carton_v1's crease model and literature parameters."
+      },
+      "notes": "這頁比較兩個紙箱。左邊是交付給我們的紙箱，優點是整個場景都接好了：泡泡紙、杯子、手臂、滑鼠拖曳和 ROS 2，但它的蓋子物理有結構性的問題：摺痕是一個很硬的彈簧加上開關式閂鎖，預設沒有降伏；選用的彈塑性版本降伏力矩 0.60 N·m，大約是蓋子自重力矩的 70 倍，滑鼠拉不過去；蓋子的慣量被放大約 180 倍；關節是 maximal joint，角度超過 180 度會跳號，所以卡在 100 度左右。右邊是我之前在 parcel-forge 做的 carton_v1，摺痕是黏塑性模型，有降伏、永久折痕和軟化，用 articulation 可以開到 270 度，慣量由幾何計算，參數也都有文件記錄。它的缺點是只有紙箱本身，而且當時回彈只設 4 度，比文獻的 45 度小很多。所以最後的決定是：保留交付版的整個場景，只把蓋子的物理換成 carton_v1 的摺痕模型，再把參數改成文獻值。原因是交付版的問題出在結構上，調參數解決不了；carton_v1 的結構是對的，只需要校正數值。"
+    },
+    {
       "role": "project_pipeline",
-      "title": "Real creases yield, then spring back half",
-      "layout": "figure-right",
+      "title": "Reference: Nagasawa et al., JAMDSM 2019",
+      "subtitle": "Creased paperboard folded on a crease tester: moment–angle curve and release angle",
+      "layout": "figure-bottom",
       "bullets": [
-        {"text": "Creasing delaminates the board; folding bulges inner plies", "level": 0},
-        {"text": "< ~20°: elastic", "level": 1},
-        {"text": "Peak Mp1 = 0.244 N·m/m, plateau M90 = 0.215 N·m/m", "level": 1},
-        {"text": "Fold to 90°, release → rests at 43–46°", "level": 1},
-        {"text": "Refolds soften the crease", "level": 1}
+        {
+          "text": "0.3 mm white-coated paperboard, scored; folded to 90° at 0.2 rps, held, released",
+          "level": 0
+        },
+        {
+          "text": "Measures moment M(θ) and release angle — our quantitative reference",
+          "level": 0
+        },
+        {
+          "text": "Same curve shape: Beex & Peerlings 2009; Mentrasti et al. 2013",
+          "level": 1
+        }
       ],
       "figure": {
-        "src": "../img/crease_model_vs_literature.png",
-        "caption": "Dashed: measured shape, 0.3 mm white-coated paperboard, 72°/s. Blue/red: our model",
-        "source": "Nagasawa et al., JAMDSM 13(1), 2019 (re-plotted)"
+        "src": "figs/nagasawa_fig4.png",
+        "caption": "Fig. 4: scoring damages the plies (a); folding stretches the outer layer and bulges the inner ones (b)",
+        "source": "Nagasawa, Kaneko & Adachi, J. Adv. Mech. Des. Syst. Manuf. 13(1), 2019, DOI 10.1299/jamdsm.2019jamdsm0004"
       },
-      "notes": "文獻上最直接的是 Nagasawa 等人 2019 年在 JAMDSM 的實驗，他們用摺疊試驗機把壓過線的紙板摺到 90 度、停住、再放開。摺痕的彎矩曲線分成幾段：前面大約 20 度是彈性，接著中間層開始脫層，出現峰值 Mp1 約 0.244 N·m/m，之後到 90 度是近乎平穩的平台，約 0.215 N·m/m。最重要的是放開之後，摺痕會立刻彈回到大約 45 度，也就是第一次摺的時候大約一半是塑性、一半是彈性。Mentrasti 2013 量到 180 度也是類似的形狀，淺壓痕還會有兩個峰值。重複摺疊會變軟，這是 Nagasawa 另一篇的結果。所以一個合理的摺痕模型至少要有：彈性段、降伏平台、部分回彈、重複摺會軟化。"
+      "notes": "我們參考的主要論文是 Nagasawa、Kaneko 和 Adachi 2019 年發表在 Journal of Advanced Mechanical Design, Systems, and Manufacturing 的研究。他們用 0.3 mm 的白紙板，先用壓線刀壓出摺痕，再放到摺痕試驗機上，以每秒 0.2 圈的速度摺到 90 度、停住、再放開，同時量摺痕的彎矩和放開後的角度。右邊是論文的 Fig. 4：壓線時中間的層被壓壞；摺疊時外層被拉長、內層被壓縮鼓起，這就是摺痕彎矩的來源。這篇是我們定量比較的依據。另外 Beex & Peerlings 2009 和 Mentrasti 2013 也量過同樣形狀的曲線，Mentrasti 一路量到 180 度。要先說明的是：論文的材料是紙板，不是瓦楞紙板，瓦楞摺痕的公開量測我沒有找到。"
+    },
+    {
+      "role": "project_pipeline",
+      "title": "Carton crease mechanics at a glance",
+      "layout": "figure-full",
+      "figure": {
+        "src": "figs/mechanics_summary.png",
+        "caption": "Eight properties of a creased carton flap; values from Nagasawa 2019 (paperboard). Six are in our model.",
+        "source": "ours, after Nagasawa et al. 2019"
+      },
+      "notes": "這頁把紙箱摺痕的力學特性整理成八點。一，小角度是彈性，放手會完全回去。二，到了某個彎矩會降伏，論文量到峰值約 0.24 N·m/m，這時中間層脫層。三，降伏後彎矩近乎不變，摺痕繼續轉。四，放手後只彈回一部分，摺到 90 度會停在大約 45 度。五，摺過的摺痕會變軟，第二次比較好摺。六，蓋子自己的重量：90 度以前把它往關的方向壓，過了 90 度變成往開的方向拉。這六點我們的模型都有。七和八是時間相依的行為：摺得越快彎矩越大，但很弱，每 e 倍約 5%；停住時彎矩會隨 ln t 慢慢鬆弛。這兩點我們沒有模擬，後面的比較表會列出來。"
     },
     {
       "role": "project_pipeline",
       "title": "Elastic–plastic crease + flap moment balance",
-      "subtitle": "F·L = M_c(θ) + m g (L/2) cos θ — past 90° the flap's weight helps opening",
-      "layout": "figure-right",
-      "bullets": [
-        {"text": "M_c = k (θ − θ_p), capped at M_y", "level": 0},
-        {"text": "Above M_y, θ_p flows", "level": 1},
-        {"text": "Released: returns by M_y / k = 45°", "level": 1},
-        {"text": "M_y = 0.25 N·m/m × width (fyp 0.066 N·m)", "level": 0},
-        {"text": "Weight m g L/2 = 14% of M_y", "level": 0}
-      ],
+      "layout": "figure-full",
       "figure": {
-        "src": "../img/flap_fbd_slide.png",
-        "caption": "Upper flap fyp, side view: L 111 mm, width 262 mm, 17.4 g",
+        "src": "figs/model_eq.png",
+        "caption": "Same law as carton_v1 (crease_model.advance); M_y0 = 0.25 N·m/m × width, k = M_y0 / 45°, s = 0.15 /rad",
         "source": "ours"
       },
       "notes": "模型的部分。每片蓋子是一個剛體，用旋轉摺痕接在箱子上。摺痕彎矩 M_c 等於 k 乘以角度減掉塑性角 θ_p；當彈性彎矩超過降伏彎矩 M_y 時，塑性角會跟著流動，所以蓋子摺到哪裡就留在哪裡，放手後只彈回 M_y 除以 k。這跟我自己 carton_v1 的控制器是同一條定律，只是參數改用文獻值：M_y 取 0.25 N·m/m 乘以摺痕寬度，回彈角取 45 度，所以 k 等於 M_y 除以 45 度。下面那張圖回答老師之前問的，為什麼過了 90 度就變好拗：力矩平衡裡重力那一項是 m g L/2 乘以 cos θ，過了 90 度 cos θ 變成負的，蓋子自己的重量開始幫忙往外開。上層蓋的重量力矩約是降伏力矩的 14%，所以手感上有感。"
@@ -66,11 +139,27 @@
       "title": "Three causes, three fixes",
       "layout": "text-only",
       "matrix": {
-        "header": ["Symptom", "Cause", "Fix"],
+        "header": [
+          "Symptom",
+          "Cause",
+          "Fix"
+        ],
         "rows": [
-          ["Lids barely move", "Flap inertia ~180× real", "Inertia from geometry, armature 2e-4"],
-          ["No permanent fold", "Open/shut latch only", "crease_plastic.py: plastic set updated every physics step"],
-          ["Stuck at ~100°", "Wall pads hit flaps; joints wrap at ±180°", "Pad↔flap filtered pairs; carton as articulation, limits −275…+5°"]
+          [
+            "Lids barely move",
+            "Flap inertia ~180× real",
+            "Inertia from geometry, armature 2e-4"
+          ],
+          [
+            "No permanent fold",
+            "Open/shut latch only",
+            "crease_plastic.py: plastic set updated every physics step"
+          ],
+          [
+            "Stuck at ~100°",
+            "Wall pads hit flaps; joints wrap at ±180°",
+            "Pad↔flap filtered pairs; carton as articulation, limits −275…+5°"
+          ]
         ],
         "highlight_row": 2
       },
@@ -85,41 +174,93 @@
         "src": "figs/crease_fold90.mp4",
         "caption": "Crease-tester protocol: carton clamped, PD fixture folds fyp at 60°/s to 90°, holds 1 s, releases",
         "source": "ours, Isaac Sim 6.0",
-        "autoplay": true, "loop": true
+        "autoplay": true,
+        "loop": true
       },
       "notes": "接下來是驗證。我照論文的試驗方式寫了一個 crease_test.py：把箱子夾住，用一個 PD 夾具以每秒 60 度把上層蓋摺到 90 度，停一秒，然後放開，看它停在幾度。論文用的是每秒約 72 度，速度相依性很弱，每變化 e 倍只有約 5%，所以可以比。結果放開之後停在 45.3 度，也就是回彈 44.7 度，落在論文 43 到 46 度的範圍內。畫面上方會即時顯示角度、夾具力矩、摺痕彎矩和塑性角，可以看到放開的瞬間彈性彎矩歸零、塑性角停在大約 50 度。"
     },
     {
       "role": "project_results",
-      "title": "Matches Nagasawa 2019: M90 and rest angle",
-      "subtitle": "Plateau 0.219 vs 0.215 N·m/m; rest 45.3° vs 43–46°",
+      "title": "Moment–angle: paper Fig. 8 vs ours",
+      "subtitle": "Same shape: rise, peak, plateau, unload; M90 0.215 vs 0.219 N·m/m",
       "layout": "assertion-evidence",
       "figure": {
-        "src": "../img/paper_vs_ours.png",
-        "caption": "Blue: simulated crease moment (fixture + gravity torque) / 0.262 m; red: values reported in the paper",
-        "source": "ours; paper values from Nagasawa et al., JAMDSM 2019"
+        "src": "figs/cmp_fig8.png",
+        "caption": "Left: original Fig. 8 of the paper. Right: our simulated crease, same axes. Separate panels, not overlaid.",
+        "source": "left: Nagasawa et al., JAMDSM 2019, Fig. 8; right: ours"
       },
-      "annotations": [
-        {"type": "box", "at": [0.84, 0.21, 0.12, 0.13], "color": "C00000", "dash": true}
-      ],
-      "notes": "這張把我們量到的曲線和論文的數據點疊在一起。藍線是夾具力矩加上重力力矩，除以摺痕寬度 0.262 公尺，單位跟論文一樣是 N·m/m。紅色方塊和菱形是論文的 Mp1 和 M90，粉紅色帶是論文的回彈角範圍。90 度附近的平台我們量到 0.219，論文是 0.215，差不到 2%；放開後停的角度 45.3 度在論文的範圍內。不一樣的地方是峰值的位置：我們在 47 度、0.275，論文在大約 20 度、0.244。原因是我們的模型只有一個剛性，k 由 M_y 除以 45 度決定，所以彈性段一路延伸到 45 度才降伏；論文的卸載剛性其實比加載剛性軟。我們選擇讓回彈角和平台彎矩對上，這兩個是使用時最容易感覺到的量。"
+      "notes": "左邊是論文原本的 Fig. 8，右邊是我們模擬的結果，座標刻度和標註方式都比照論文，兩張分開放，沒有把資料疊在一起。形狀是一樣的：先上升，到峰值，接著是近乎平穩的平台一直到 90 度，然後卸載。數值上，90 度的彎矩論文是 0.215，我們是 0.219 N·m/m；卸載時彎矩歸零的角度，論文約 46 度，我們是 48.1 度。不一樣的是上升段：論文大約 25 度就到峰值，我們要到 47 度，因為我們的模型只有一個剛性 k，而 k 是由回彈角 45 度決定的；論文的卸載剛性比加載剛性軟，單一剛性沒辦法同時對上兩者。另外論文的卸載是夾具慢慢退回，我們是直接放開，所以我們的卸載線是摺痕自己的彈性彎矩。"
+    },
+    {
+      "role": "project_results",
+      "title": "Release: paper Fig. 10 vs ours",
+      "subtitle": "Paper settles at 42.7° after 0.42 s; ours settles at 45.3°",
+      "layout": "assertion-evidence",
+      "figure": {
+        "src": "figs/cmp_fig10.png",
+        "caption": "Top: original Fig. 10 (CCD photos of the crease). Bottom: frames of our crease_fold90.mp4 at the matching stages.",
+        "source": "top: Nagasawa et al., JAMDSM 2019, Fig. 10; bottom: ours"
+      },
+      "notes": "這頁比較放手的過程。上面是論文的 Fig. 10，用 CCD 相機拍摺痕的側面：(a) 34 度摺疊中、(b) 89.9 度、(c) 放開的瞬間 46.0 度、(d) 0.42 秒後 42.7 度。下面是我們模擬影片中對應的四個時間點：34 度、停在 88.8 度、放開 0.2 秒後先擺到 39.1 度、最後穩定在 45.3 度。兩邊最後停的角度只差大約 3 度。差別在過程：論文是夾具慢慢退回，所以是單調地慢慢回彈；我們是直接放開，蓋子有慣性，會先擺過頭再回來。尺度也不同：論文拍的是 1 mm 等級的摺痕截面，我們看的是整片蓋子。"
     },
     {
       "role": "project_results",
       "title": "Quantitative comparison with the paper",
       "layout": "text-only",
       "matrix": {
-        "header": ["Quantity", "Paper (0.3 mm board)", "Ours (sim)", "Match"],
+        "header": [
+          "Quantity",
+          "Paper (Nagasawa 2019)",
+          "Ours (sim)",
+          "Match"
+        ],
         "rows": [
-          ["Plateau moment near 90°", "0.215 N·m/m", "0.219 N·m/m", "✓ (+2%)"],
-          ["Rest angle after 90° fold", "43–46°", "45.3°", "✓"],
-          ["Refold softening", "yes", "yield 0.25 → 0.219 N·m/m", "✓ qualitative"],
-          ["Peak moment Mp1", "0.244 @ ~20°", "0.275 @ 47°", "✗ elastic range too long"],
-          ["Relaxation while held / log-time recovery", "yes", "not modelled", "✗"]
+          [
+            "Moment at 90° (M90)",
+            "0.215 N·m/m",
+            "0.219 N·m/m",
+            "✓ (+2%)"
+          ],
+          [
+            "Moment reaches 0 on unloading",
+            "≈ 46° (Fig. 10c)",
+            "48.1°",
+            "✓"
+          ],
+          [
+            "Rest angle after release",
+            "42.7° (0.42 s)",
+            "45.3°",
+            "✓ (±3°)"
+          ],
+          [
+            "Peak moment Mp1",
+            "0.244 (Eq. 5), ≈ 0.27 (Fig. 8)",
+            "0.274",
+            "✓ magnitude"
+          ],
+          [
+            "Angle of the peak",
+            "≈ 25°",
+            "47°",
+            "✗ single stiffness"
+          ],
+          [
+            "Refold softening",
+            "yes",
+            "yield 0.25 → 0.219",
+            "✓ qualitative"
+          ],
+          [
+            "Relaxation / log-time creep",
+            "yes",
+            "not modelled",
+            "✗"
+          ]
         ],
         "highlight_row": 1
       },
-      "notes": "定量對照整理成這張表。前三列是對得上的：90 度的平台彎矩差 2%、放開後停的角度在範圍內、重複摺疊會變軟，我們重複摺三次，降伏彎矩從 0.25 掉到 0.219。後兩列是對不上、要老實講的：峰值的角度，原因上一頁說過是單一剛性；以及時間相依的行為，論文裡停在 90 度時彎矩會隨 ln t 鬆弛，放開後也會隨 ln t 慢慢再回彈幾度，我們沒有模擬。另外一個必須強調的前提是：論文的材料是 0.3 mm 白紙板，我們的箱子是瓦楞紙板，我找不到瓦楞摺痕每公尺彎矩的公開量測，所以 0.25 N·m/m 是借用紙板的值，這是未校準的假設。"
+      "notes": "定量對照整理成這張表。對得上的有：90 度的彎矩差 2%、卸載時彎矩歸零的角度差約 2 度、放開後停的角度差約 3 度、峰值彎矩的大小、以及重複摺疊會變軟。對不上的有兩個：峰值出現的角度，原因是單一剛性；以及時間相依的鬆弛和蠕變，我們沒有模擬。最重要的前提要再說一次：論文是 0.3 mm 紙板，我們的箱子是瓦楞紙板，所以這張表證明的是我們的行為符合摺痕力學的理論和數量級，不代表瓦楞紙的數值已經校準。"
     },
     {
       "role": "project_results",
@@ -127,17 +268,33 @@
       "subtitle": "Past 90° the weight helps; released at 261° it rests at 240°",
       "layout": "figure-right",
       "bullets": [
-        {"text": "Before: stuck at ~100°", "level": 0},
-        {"text": "Now: flap meets the wall at 260.8°", "level": 0},
-        {"text": "Hinge at the wall's inner edge: ~9° short of 270°", "level": 1},
-        {"text": "Released: rests at 240°", "level": 0},
-        {"text": "Spring-back only 30°: weight opposes it", "level": 1}
+        {
+          "text": "Before: stuck at ~100°",
+          "level": 0
+        },
+        {
+          "text": "Now: flap meets the wall at 260.8°",
+          "level": 0
+        },
+        {
+          "text": "Hinge at the wall's inner edge: ~9° short of 270°",
+          "level": 1
+        },
+        {
+          "text": "Released: rests at 240°",
+          "level": 0
+        },
+        {
+          "text": "Spring-back only 30°: weight opposes it",
+          "level": 1
+        }
       ],
       "video": {
         "src": "figs/crease_fold270.mp4",
         "caption": "Fixture folds fyp to 270°; the flap stops against the wall, then is released",
         "source": "ours, Isaac Sim 6.0",
-        "autoplay": true, "loop": true
+        "autoplay": true,
+        "loop": true
       },
       "notes": "這頁回答之前的問題：為什麼只能開到 90 度左右，真實紙箱應該可以翻到 270 度。改成 articulation 之後，同一個夾具可以一路把蓋子摺到箱壁外側，在 260.8 度碰到箱壁停住。差了大約 9 度是因為原作者把鉸鏈點放在牆的內緣，蓋子還要越過牆的厚度。放開後停在 240 度，回彈只有 30 度，比 90 度時的 45 度小，因為這時候重力是往下拉、在抵抗回彈。這跟受力圖的預測一致。"
     },
@@ -147,16 +304,29 @@
       "subtitle": "Upward pull at the flap edge, ramped to 3 N in 4 s, then released",
       "layout": "figure-right",
       "bullets": [
-        {"text": "10°: 1.53 N → 0.29 N", "level": 0},
-        {"text": "60°: not reached → 1.43 N", "level": 0},
-        {"text": "Released: springs shut → stays at 30.6°", "level": 0},
-        {"text": "Vertical pull loses leverage near 90°", "level": 1}
+        {
+          "text": "10°: 1.53 N → 0.29 N",
+          "level": 0
+        },
+        {
+          "text": "60°: not reached → 1.43 N",
+          "level": 0
+        },
+        {
+          "text": "Released: springs shut → stays at 30.6°",
+          "level": 0
+        },
+        {
+          "text": "Vertical pull loses leverage near 90°",
+          "level": 1
+        }
       ],
       "video": {
         "src": "figs/pull_fyp_crease.mp4",
         "caption": "verify_phys_scene.py --test P on the new scene; on-screen: pull force and flap angle",
         "source": "ours, Isaac Sim 6.0",
-        "autoplay": true, "loop": true
+        "autoplay": true,
+        "loop": true
       },
       "notes": "回到最初的問題：手臂拉不動。這是模擬手臂在蓋子邊緣往上拉的測試，力在 4 秒內從 0 加到 3 牛頓，然後放開。原本 1.53 牛頓才拉開 10 度、3 牛頓只到 21 度；現在 0.29 牛頓就到 10 度、1.43 牛頓到 60 度。放開之後原本會彈回關閉，現在停在 30.6 度，因為摺痕已經降伏。拉不到 90 度不是摺痕的問題，而是力是垂直往上的，蓋子接近直立時力臂趨近於零；真實的手臂會沿著蓋子轉動的方向推。滑鼠的測試結果也類似：上層蓋拉到 80 度，放開停在約 30 度。"
     },
@@ -164,11 +334,26 @@
       "role": "project_insight",
       "title": "Softer creases are realistic — and have side effects",
       "bullets": [
-        {"text": "Carry test: upper flaps pop ~15° open", "level": 0},
-        {"text": "1.5 m/s shake: one flap flung to 73°", "level": 0},
-        {"text": "Lower flaps open only after upper flaps pass 90°", "level": 0},
-        {"text": "Corrugated crease uncalibrated (paperboard value)", "level": 0},
-        {"text": "Shut lids needed: seal box or LID_MODE=latch", "level": 1}
+        {
+          "text": "Carry test: upper flaps pop ~15° open",
+          "level": 0
+        },
+        {
+          "text": "1.5 m/s shake: one flap flung to 73°",
+          "level": 0
+        },
+        {
+          "text": "Lower flaps open only after upper flaps pass 90°",
+          "level": 0
+        },
+        {
+          "text": "Corrugated crease uncalibrated (paperboard value)",
+          "level": 0
+        },
+        {
+          "text": "Shut lids needed: seal box or LID_MODE=latch",
+          "level": 1
+        }
       ],
       "notes": "這頁是跟預期不一樣、需要討論的地方。摺痕照文獻變軟之後，搬運測試時包材往上頂加上加速度，上層蓋會被頂開大約 15 度並留在那裡；劇烈甩動時有一片被甩到 73 度。沒封箱的真實紙箱也會這樣，所以我認為是合理的，但如果之後手臂任務需要蓋子保持關著，就要在任務裡處理，例如先封箱，或暫時用舊的閂鎖模式。第二點是下層蓋要等上層蓋翻過 90 度才拉得開，因為上層蓋回彈後還壓在上面，這跟真實紙箱一樣。最大的未知是瓦楞紙板的實際數值，我們借用的是紙板的 0.25 N·m/m，瓦楞紙很可能更硬，這需要拿真箱子量一次。想請老師看看校準的方式是否合理。"
     },
