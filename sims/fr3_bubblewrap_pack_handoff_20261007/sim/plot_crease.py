@@ -237,22 +237,53 @@ def fig_fbd_slide():
         a_ = math.radians(180 - th); fx, fy = L*math.cos(a_), L*math.sin(a_)
         ax.plot([0, fx], [0, fy], color="#b08850", lw=12, solid_capstyle="round")
         ax.plot(0, 0, "o", color=INK, ms=12); ax.text(0.07, -0.12, "crease", color=INK, fontsize=16)
-        ax.add_patch(Arc((0, 0), 0.7, 0.7, theta1=180 - th, theta2=180, color=C1, lw=2.5)); ax.text(-0.5, 0.15, "θ", color=C1, fontsize=22)
+        ax.add_patch(Arc((0, 0), 0.7, 0.7, theta1=180 - th, theta2=180, color=C1, lw=2.5)); ax.text(-0.5, 0.15, r"$\theta$", color=C1, fontsize=26)
         cx, cy = fx/2, fy/2
         ax.plot(cx, cy, "o", color=C4, ms=10)
         ax.add_patch(FancyArrowPatch((cx, cy), (cx, cy - 0.5), arrowstyle="-|>", mutation_scale=24, color=C4, lw=3))
-        ax.text(cx - 0.40, cy - 0.12, "m g", color="#b07a12", fontsize=20)
+        ax.text(cx - 0.40, cy - 0.12, r"$mg$", color="#b07a12", fontsize=24)
         nx, ny = math.sin(a_), -math.cos(a_)
         ax.add_patch(FancyArrowPatch((fx, fy), (fx + 0.42*nx, fy + 0.42*ny), arrowstyle="-|>", mutation_scale=24, color=C2, lw=3))
-        ax.text(fx + 0.44*nx + 0.03, fy + 0.44*ny, "F", color=C2, fontsize=22)
+        ax.text(fx + 0.44*nx + 0.03, fy + 0.44*ny, r"$F$", color=C2, fontsize=26)
         ax.add_patch(FancyArrowPatch((0.32*math.cos(math.radians(100)), 0.32*math.sin(math.radians(100))),
                                      (0.32*math.cos(math.radians(150)), 0.32*math.sin(math.radians(150))),
                                      connectionstyle="arc3,rad=0.35", arrowstyle="-|>", mutation_scale=22, color=C3, lw=3))
-        ax.text(0.12, 0.30, "M_c", color=C3, fontsize=20)
-        ax.text(cx - 0.32, cy + 0.12, "L", color=MUTED, fontsize=18)
+        ax.text(0.12, 0.30, r"$M_c$", color=C3, fontsize=24)
+        ax.text(cx - 0.32, cy + 0.12, r"$L$", color=MUTED, fontsize=24)
         ax.set_xlim(-1.1, 0.75); ax.set_ylim(-1.05, 1.2)
         fig.tight_layout(); fig.savefig(os.path.join(IMG, "flap_fbd_slide.png"), dpi=200); plt.close(fig)
 
 
-fig_fbd(); fig_schematic(); fig_sim(); fig_cycles_old(); fig_paper_vs_ours(); fig_fbd_slide()
+# 7. our run drawn the way Nagasawa 2019 Fig. 8 is drawn (same axes / markers), to sit NEXT TO the paper's figure
+def fig_ours_fig8_style():
+    d = load("crease_fyp_90_plastic_empty")
+    if not d: return
+    a, m = measured(d)
+    rel = [i for i, p in enumerate(d["ph"]) if p == "release"]
+    imin = min(rel, key=lambda i: d["ang"][i])                       # first swing after release
+    ua = [d["ang"][i] for i in rel if i <= imin]; um = [d["mc"][i] / WIDTH for i in rel if i <= imin]
+    pk = max(range(len(m)), key=lambda i: m[i])
+    near = [v for x, v in zip(a, m) if 85 <= x <= 89]; m90 = sum(near) / len(near)
+    zero = next(x for x, v in zip(ua, um) if v <= 0)
+    rest = d["ang"][rel[-1]]
+    with plt.rc_context({"font.size": 18, "axes.labelsize": 20, "xtick.labelsize": 17, "ytick.labelsize": 17}):
+        fig, ax = plt.subplots(figsize=(10.0, 5.6))
+        ax.plot(a, m, color="black", lw=4)
+        ax.plot(ua, um, color="black", lw=4)
+        ax.plot(a[pk], m[pk], "o", color=C2, ms=12); ax.plot(88.8, m90, "o", color=C2, ms=12)
+        ax.annotate("", xy=(84, 0.29), xytext=(60, 0.33), arrowprops=dict(arrowstyle="-|>", color=C2, lw=2.5))
+        ax.text(48, 0.345, "Loading, ω", color=C2, fontsize=20)
+        ax.annotate("", xy=(66, 0.03), xytext=(82, 0.10), arrowprops=dict(arrowstyle="-|>", color=C2, lw=2.5))
+        ax.text(84, 0.02, "Unloading\n(released)", color=C2, fontsize=18)
+        ax.text(a[pk] - 2, m[pk] + 0.03, "Mp1 = %.3f" % m[pk], fontsize=18, ha="right")
+        ax.text(91, m90 + 0.03, "M90 = %.3f" % m90, fontsize=18)
+        ax.annotate("M = 0 at θ = %.1f°" % zero, xy=(zero, 0.0), xytext=(6, -0.062), fontsize=17,
+                    arrowprops=dict(arrowstyle="->", color=INK))
+        ax.axvline(rest, color=C1, lw=2, ls="--"); ax.text(rest - 1, 0.55, "rests at %.1f°" % rest, color=C1, fontsize=17, ha="right")
+        ax.set_xlim(0, 105); ax.set_ylim(-0.08, 0.6)
+        ax.set_xlabel("Folding angle θ (°)"); ax.set_ylabel("Bending moment M (N·m/m)")
+        fig.tight_layout(); fig.savefig(os.path.join(IMG, "ours_fig8_style.png"), dpi=200); plt.close(fig)
+
+
+fig_fbd(); fig_schematic(); fig_sim(); fig_cycles_old(); fig_paper_vs_ours(); fig_fbd_slide(); fig_ours_fig8_style()
 print("figures ->", IMG)
