@@ -107,6 +107,10 @@ ap.add_argument("--attach_proxy", type=int, default=0, help="[drag] 1 = 上指�
 ap.add_argument("--proxy_k", type=float, default=500.0, help="[drag] 代理 drive 剛度 N/m")
 ap.add_argument("--proxy_c", type=float, default=-1.0, help="[drag] 代理 drive 阻尼 N·s/m;-1 = 2*sqrt(k*m_proxy)")
 ap.add_argument("--proxy_fmax", type=float, default=0.5, help="[drag] 代理 drive maxForce N(每軸);布抗力超過就讓代理落後")
+ap.add_argument("--grasp_site", choices=["design", "state"], default="design", help="[robust] design = 舊行為(自由邊中段);state = 夾前用實際頂點狀態在自由邊取候選,選預估綁點最多、沒被他片壓住、下方有支撐的")
+ap.add_argument("--grasp_retry", type=int, default=0, help="[robust] 合指後綁點 < --grasp_retry_min 就張開、換下一個候選重夾,最多 N 次;0 = 舊行為")
+ap.add_argument("--grasp_retry_min", type=int, default=6, help="[robust] 重夾門檻(綁點數)")
+ap.add_argument("--grasp_site_k", type=int, default=7, help="[robust] state 模式沿自由邊取幾個候選")
 ap.add_argument("--fold_order", default="xp,xn,yp,yn", help="[variants] 折序,四片任意排列;預設 = 舊行為")
 ap.add_argument("--mug_off_mm", default="0,0", help="[variants] 杯子(佔位中心)相對布中心偏 dx,dy mm;實作 = 布反向平移")
 ap.add_argument("--mug_yaw_deg", type=float, default=0.0, help="[variants] 杯子繞 z 轉幾度(佔位 = 轉後 AABB)")
@@ -670,7 +674,8 @@ G_TJAW = G_TLOIN + GT["close"]                                                  
 G_TGRIP = G_TJAW + GT["rod_out"] + GT["rod_up"] + GT["grip_hold"] + 0.4                                 # 9.7 登記夾到的點、開始掀
 G_LF = a.lift_first_t if a.lift_first_mm > 0 else 0.0                                                  # [drag] 先拉起
 G_EXT = a.arc2_ext_t if a.arc2_ext_mm > 0 else 0.0                                                # [drag2]
-G_SHEET = G_TGRIP + G_LF + G_EXT + a.peel_t + GT["peel_hold"] + GT["rel_open"] + GT["rel_slide"] + GT["rel_up"] + 0.3
+G_RT = 4.0                                                                                             # [robust] 每次重夾:抬 0.5 + 移 0.8 + 降 0.8 + 合 0.8 + 停 0.7 + 餘
+G_SHEET = G_RT * a.grasp_retry + G_TGRIP + G_LF + G_EXT + a.peel_t + GT["peel_hold"] + GT["rel_open"] + GT["rel_slide"] + GT["rel_up"] + 0.3
 G_SEQ = (["yn", "yp"] if a.second else ["yn"]) if a.grasp else []
 TG0 = T_END_ALL + 1.0
 if a.grasp and a.until == "all":
@@ -880,6 +885,45 @@ if a.grasp:
             st.GetPrimAtPath("/World/Box/" + nm_)).ComputeAlignedRange()
         return float(r_.GetMax()[2]) - g_offw()[2]
 
+    def g_site_cands(Pl, MUGl, sd, t):
+        """[robust] 自由邊候選表:預估綁點(同 pad/|n| 規則)、被他片壓住、下方空隙(>15mm 視為沒支撐,上指會把布壓走)"""
+        cs = GPL.site_candidates(Pl, sd, GAPG, a.attach_pad_mm / 1e3, nk=a.grasp_site_k, r_mm=a.attach_mask_r_mm, dz_mm=a.attach_mask_dz_mm, chord=a.chord)
+        for c in cs:
+            Rc, _ = GPL.frame(Pl, c["v"]); c["gap"] = GPL.gap_below(Pl, MUGl, c["v"], Rc, BOXL) * 1e3
+            c["sup"] = c["gap"] <= 15.0
+        cs.sort(key=lambda c: (c["press"], not c["sup"], -c["n_att"], c["dmid"]))
+        P("\n★ t=%.2f [%s] 抓點候選表(state;自由邊 %d 點;排序 = 沒被壓 > 有支撐(空隙<=15) > 預估綁點多 > 近中段)" % (t, sd, len(cs)))
+        for k_, c in enumerate(cs):
+            P("   CAND #%d v%-4d flat x %5.0f 位置 (%6.1f,%6.1f,%6.1f) 預估綁 %2d(窗上方 %2d)| 窗內 %2d 點被壓 %2d(%s)%s | 下方空隙 %5.1f %s"
+              % (k_ + 1, c["v"], c["flat_x"], *c["p"], c["n_att"], c["n_above"], c["n_win"], c["n_press"], c["who"], " 壓住" if c["press"] else "", c["gap"], "" if c["sup"] else "沒支撐"))
+        return cs
+
+    def g_regrip(pl, t, n_att):
+        """[robust] 綁點不足:上指抬起 → 換下一個候選(用當下狀態重算)→ 降、合;回傳 False = 沒候選"""
+        offw, Pw, Pl, MUGl, mp = g_state(); sd = pl["sd"]
+        cs = [c for c in g_site_cands(Pl, MUGl, sd, t) if c["v"] not in pl["tried"]]
+        if not cs: return False
+        c = cs[0]; v = c["v"]
+        R0, slope = GPL.frame(Pl, v, rows=a.chord); tt_ = R0[:, 0]; M = GPL.mid(Pl)
+        nbs = [b_ for b_ in (v - 1, v + 1) if 0 <= b_ < N1 and GSIDE2[b_] == sd and b_ // (a.nxy + 1) == v // (a.nxy + 1)]
+        nb = min(nbs, key=lambda b_: np.linalg.norm(M[b_, :2])) if nbs else v
+        p = M[v] + tt_ * float(np.dot(M[nb] - M[v], tt_)) / 2
+        pc = p + R0 @ [0, -0.012, 0]; lo_f = pc - R0 @ [0, 0, GAPG / 2 + GFS[2] / 2]
+        up_f = lo_f + R0 @ [0, 0, GFS[2] + GAPG]; up_pre = up_f + R0 @ [0, 0, 0.015]; up_above = up_pre + [0, 0, 0.06]
+        pu0, _ = g_pose("up", t)
+        g_lin("up", t, 0.5, pu0 + [0, 0, 0.05]); t_ = t + 0.5
+        g_lin("up", t_, 0.8, up_above + offw, R0); t_ += 0.8
+        g_lin("up", t_, 0.8, up_pre + offw); t_ += 0.8
+        g_lin("up", t_, 0.8, up_f + offw); t_ += 0.8 + 0.7
+        pl["retries"] += 1; pl["tried"].append(v)
+        _rv = {r["v"]: r for r in pl["rows"]}
+        pl.update(v=v, nb=nb, R0=R0, p=p, lo_lift=lo_f, lo_f=lo_f, up_f=up_f, z_v0=float(M[v, 2]), t_grip=t_,
+                  pick=dict(pl["pick"], v=v, p=M[v] * 1e3, slope=slope, gap=c["gap"], kind="tip"))
+        pl.setdefault("retry_log", []).append(dict(t=t, n_att=n_att, v_new=v))
+        P("★ t=%.2f [%s] RETRY %d/%d:綁 %d < %d → 上指抬起、換候選 v%d(flat x %.0f、預估綁 %d、空隙 %.1f);%.2f 再合指"
+          % (t, sd, pl["retries"], a.grasp_retry, n_att, a.grasp_retry_min, v, c["flat_x"], c["n_att"], c["gap"], t_))
+        return True
+
     def g_plan(sd, S0):
         """S0:用 sim 當下頂點算抓取點 → 排定挑角/下指/上指的 kinematic 路徑(掀的弧線在夾好後才排)。"""
         tw = time.time()
@@ -907,6 +951,10 @@ if a.grasp:
             pick = rows[min(rk, len(okr)) - 1]; why = "合格第 %d 名" % min(rk, len(okr))
         else:
             pick = max(rows, key=lambda r: r["gap"]); why = "★ 沒有合格點 → 退而求其次:下方空隙最大"
+        cands = g_site_cands(Pl, MUGl, sd, S0) if (a.grasp_site == "state" or a.grasp_retry > 0) else []
+        if a.grasp_site == "state" and ATT_MODE and cands:
+            _rv = {r["v"]: r for r in rows}; pick = _rv[cands[0]["v"]]
+            why = "★ state 選點:候選表第 1(預估綁 %d、%s、下方空隙 %.1f)" % (cands[0]["n_att"], "被壓" if cands[0]["press"] else "沒被壓", cands[0]["gap"])
         v = pick["v"]
         R0, slope = GPL.frame(Pl, v, rows=a.chord); tt_, uu, nn_ = R0[:, 0], R0[:, 1], R0[:, 2]
         M = GPL.mid(Pl); half = np.linalg.norm(Pl[v + N1] - Pl[v]) / 2
@@ -966,7 +1014,7 @@ if a.grasp:
         r_, _, _ = measure(S0, full=True)
         pl = dict(sd=sd, sg=sg, S0=S0, v=v, nb=nb, R0=R0, p=p, half=half, pick=pick, rows=rows[:6], offw=offw, P0=Pw.copy(), Pl0=Pl.copy(),
                   mug0=mp.copy(), others=np.isin(GSIDE2, others), osides=others, TOPS=TOPS, lo_f=lo_f, up_f=up_f, z_v0=float(M[v, 2]),
-                  cov0=(r_.get("lay") or {}).get("cov", float("nan")), r_plan=r_, slip=[], ev={}, **pl_extra)
+                  cov0=(r_.get("lay") or {}).get("cov", float("nan")), r_plan=r_, slip=[], ev={}, cands=cands, tried=[v], retries=0, **pl_extra)
         SNAP["g_%s_plan" % sd] = (Pw.copy(), mug_world()[2].copy(), r_)
         P("  [%s] 翻面量測集:%s 片在折線(y=%+.1fmm)內側的頂點 %d 個;他片 %s 共 %d 頂點;杯頂俯視覆蓋 %.0f%%(露出 %.0f%%)"
           % (sd, sd, sg * CY * 1e3, len(TOPS), "/".join(others), int(pl["others"].sum()), 100 * pl["cov0"], 100 * (1 - pl["cov0"])))
@@ -1065,6 +1113,10 @@ if a.grasp:
                 if ma.sum() == 0:
                     ma = _ma0; P("  [%s] ★ 遮罩後 0 點 → 退回不遮罩" % sd)
             AV = np.where(ma)[0]
+            if a.grasp_retry > 0 and len(AV) < a.grasp_retry_min and pl["retries"] < a.grasp_retry:   # [robust]
+                if g_regrip(pl, t, len(AV)):
+                    del pl["ev"]["grip"]; return
+                P("  [%s] ★ RETRY:沒有剩下的候選,照綁 %d 點" % (sd, len(AV)))
             pu_, Ru_ = g_pose("up", t)
             loc = (Pw[AV] - pu_) @ Ru_
             scp = "/World/gatt_%s" % sd
@@ -1270,7 +1322,7 @@ if a.grasp:
             ev["ins"] = dict(t=t); SNAP["g_%s_ins" % pl["sd"]] = (PLATE.pts().copy(), mug_world()[2].copy(), dict(t=t))
         if "pick" not in ev and t >= S0 + G_TPICK - 1e-6:
             g_after_pick(pl, t)
-        if "grip" not in ev and t >= S0 + G_TGRIP - 1e-6:
+        if "grip" not in ev and t >= pl.get("t_grip", S0 + G_TGRIP) - 1e-6:
             g_grip_and_arc(pl, t)
         if pl.get("att", {}).get("on") and t >= pl["TR"] - 1e-6:
             st.RemovePrim(Sdf.Path(pl["att"]["scope"])); pl["att"]["on"] = False

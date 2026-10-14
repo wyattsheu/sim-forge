@@ -114,6 +114,7 @@ def summarize():
             w = csv.DictWriter(f, COLS, extrasaction="ignore"); w.writeheader(); [w.writerow(x) for x in out]
     return out
 
+PHYS = False
 def run(pats, full):
     vids = sorted(os.path.basename(os.path.dirname(p)) for p in glob.glob(os.path.join(VD, "*/cmd.sh")))
     vids = [v for v in vids if any(fnmatch.fnmatch(v, p) for p in pats)]
@@ -121,7 +122,7 @@ def run(pats, full):
         vd = os.path.join(VD, vid)
         for stage in (["box", "full"] if full else ["box"]):
             log = os.path.join(vd, stage, "wrap_vol.log")
-            if stage == "full" and parse(os.path.join(vd, "box", "wrap_vol.log"))["status"] != "PASS": break
+            if stage == "full" and not (lambda r_: r_["status"] == "PASS" or (PHYS and r_.get("phys_pass")))(parse(os.path.join(vd, "box", "wrap_vol.log"))): break
             if os.path.exists(os.path.join(vd, stage, "wrap.npz")): continue
             while gpu_used() >= GPU_MAX:
                 print("  GPU %d MiB >= %d,等 30s" % (gpu_used(), GPU_MAX), flush=True); time.sleep(30)
@@ -136,7 +137,7 @@ def run(pats, full):
 
 def video(maxn=24, out="videos/VARIANTS_grid.mp4"):
     """通過的組:折疊段壓成 5 s + 入箱前 1 幀停 1 s,480x270 加標籤,xstack 拼格。"""
-    rows = [r for r in summarize() if r.get("status") == "PASS"][:maxn]
+    rows = [r for r in summarize() if r.get("status") == "PASS" or r.get("phys_pass")][:maxn]
     os.makedirs("videos", exist_ok=True); tmp = os.path.join(VD, "_clips"); os.makedirs(tmp, exist_ok=True); clips = []
     for r in rows:
         bd = os.path.join(VD, r["id"], "box"); L = open(os.path.join(bd, "wrap_vol.log"), errors="ignore").read()
@@ -166,7 +167,8 @@ if __name__ == "__main__":
     ap.add_argument("--run", action="store_true"); ap.add_argument("--ids", nargs="*", default=["*"])
     ap.add_argument("--full", action="store_true"); ap.add_argument("--csv", action="store_true")
     ap.add_argument("--video", action="store_true", help="拼 videos/VARIANTS_grid.mp4")
-    a = ap.parse_args()
+    ap.add_argument("--phys", action="store_true", help="--full 的門檻改用 phys_pass(不看邊長比)")
+    a = ap.parse_args(); PHYS = a.phys
     if a.list:
         for i, o in enumerate(ORDERS): print("%2d %s  %s  最外層(名義)=%s" % (i, o, cls(o), o.split(",")[-1]))
     if a.orders:

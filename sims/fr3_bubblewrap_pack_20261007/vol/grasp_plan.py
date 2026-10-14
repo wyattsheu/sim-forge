@@ -160,6 +160,45 @@ def matlen(Pl, v, sd, yh, zh):
     h = col[np.argmin(d)]
     return float(abs(F2[v, 1] - F2[h, 1])), int(h), float(d.min())
 
+def site_candidates(Pl, sd, gap, pad, nk=7, r_mm=16., dz_mm=2., press_frac=0.3, chord=1, x_margin=0.040):
+    """[robust] --grasp_site state:在片 sd 的自由邊(layer_order 的 TOP 邊,j=0/NX 那排)沿邊等距取 nk 個候選,
+    對每個候選照 wrap_vol 綁定模式的夾爪框(邊內 12mm、指沿 t 置中於 v 與鄰點之間)離線算
+      n_att = |t|,|u| < pad、n ∈ [-(gap/2+4), gap/2+4] mm、歸屬 sd 的頂點數(上下層都算,同 wrap_vol 綁定規則)
+      press = 窗內 sd 中面點被他片壓住(layer_order.analyze over)的比例
+    回傳依 (未被壓, n_att, 離邊中點近) 排序的 list of dict。"""
+    import layer_order as LO
+    NX, N1, F2, ii, jj = S["NX"], S["N1"], S["F2"], S["ii"], S["jj"]
+    sg = -1.0 if sd == "yn" else 1.0
+    jrow = 0 if sd == "yn" else NX
+    edge = [v for v in np.where(jj == jrow)[0] if S["SIDE"][v] == sd]
+    xs = F2[edge, 0]; lo_x, hi_x = xs.min() + x_margin, xs.max() - x_margin
+    edge = [v for v in edge if lo_x <= F2[v, 0] <= hi_x]
+    pick = sorted(set(int(round(k)) for k in np.linspace(0, len(edge) - 1, nk)))
+    M = mid(Pl)
+    idx, over, who, _ = LO.analyze(M * 1e3, S["SIDE"], sd, r=r_mm, dz=dz_mm)
+    OV = np.zeros(N1, bool); OV[idx] = over
+    WHO = np.array([""] * N1, dtype=object); WHO[idx] = who
+    sd2 = S["SIDE2"] == sd
+    out = []
+    for k in pick:
+        v = int(edge[k])
+        R0, slope = frame(Pl, v, rows=chord); tt = R0[:, 0]
+        nbs = [b for b in (v - 1, v + 1) if 0 <= b < N1 and jj[b] == jrow and S["SIDE"][b] == sd]
+        nb = min(nbs, key=lambda b: np.linalg.norm(M[b, :2])) if nbs else v
+        p = M[v] + tt * float(np.dot(M[nb] - M[v], tt)) / 2
+        pc = p + R0 @ [0, -0.012, 0]
+        L = (Pl - pc) @ R0
+        win = (np.abs(L[:, 0]) < pad) & (np.abs(L[:, 1]) < pad)
+        ma = win & (np.abs(L[:, 2]) <= gap / 2 + 0.004) & sd2
+        wm = win[:N1] & sd2[:N1] & (np.abs(L[:N1, 2]) < 0.030)
+        nw = int(wm.sum()); npr = int((wm & OV).sum())
+        wh = [w for w in WHO[wm & OV] if w]
+        out.append(dict(v=v, flat_x=F2[v, 0] * 1e3, p=M[v] * 1e3, slope=slope, n_att=int(ma.sum()), n_win=nw, n_press=npr,
+                        press=(npr > press_frac * max(nw, 1)), who=(max(set(wh), key=wh.count) if wh else "-"),
+                        n_above=int((win & (L[:, 2] > gap / 2 + 0.004) & sd2).sum()), dmid=abs(F2[v, 0] - (xs.min() + xs.max()) / 2)))
+    out.sort(key=lambda c: (c["press"], -c["n_att"], c["dmid"]))
+    return out
+
 if __name__ == "__main__":     # 離線自測:對 s2 snap_end 重現 grasp_points.py 的排名
     import sys, os
     HERE = os.path.dirname(os.path.abspath(__file__))
