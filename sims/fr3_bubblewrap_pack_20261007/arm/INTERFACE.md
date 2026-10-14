@@ -52,3 +52,28 @@ L → S:`p_S = T + Rz(yaw) · p_L`,T = (−20, 0, 20) mm。
 
 - 夾指單指外框 36 × 70 × 60 mm:抓點離牆 < ~30 mm 時,指頭的 60 mm 寬會碰牆或已開的蓋(#1 離 +x 牆 19 mm,在下蓋平躺 180° 時腕部會撞到;下蓋垂到 260° 才無碰撞)。
 - 上蓋開蓋:手只能做 35° → 50°(前 0 → 35° 由 kinematic 直接轉,代表摺痕預彎/指甲勾起;50° → 180° 也是 kinematic 接續)。
+
+## 5. 布 ↔ 夾爪的綁定介面(2026-10-14 補,volume 線 out_ga3 / arm r2 實測)
+
+摩擦(μ 0.8)單獨夾不住 4 mm volume 布,官方做法是 **摩擦 + 合指時綁定**(`VtxXformAttachment`,見 `vol/grip_attach/README.md`、`work/LIT_grasp_20261014.md`)。
+
+| 項目 | 值 | 來源 |
+|---|---|---|
+| 綁定對象 | 手臂場景裡 attachment 不能直接綁 `follower_*_gripper_*`(Isaac Lab #4628);改綁 kinematic 代理方塊 `/World/grip_proxy`(無碰撞),每格 `set_kinematic_targets` 跟 TCP 走 | `arm/cloth/peel_with_cloth.py` r2 |
+| 何時綁 | 合指完成那一格(指面間距到 4.5 mm);何時放:弧線走完、停留 `--hold` 秒後 | `wrap_vol.py --grasp_attach 1` |
+| 挑點 | 指面足跡 ±pad(**24 mm**),指間中面 n ∈ [−(間距/2+4), +(間距/2+4)] mm,**只挑 yn 最外層**(`vol/layer_order.py` 的 TOP 索引);上下兩層都綁(`--attach_layer both`) | out_ga3:yn 12 點、yp 8 點 |
+| 抓取位置 | yn **自由邊中段**(邊參數 0.3~0.6),不要抓角尖(角尖指間只有 1~2 點) | out_ga3 vs out_ga2 |
+| 夾持軸 | 必須**垂直布面**(平行布邊切線時指間沒布,r1 綁到 0 點);lula IK 重解,不要用數值 Jacobian 修 72 mm 平移(r3 發散) | arm r1 / r3 |
+| 放手方式 | 手臂場景用 `omniphysics:attachmentEnabled = False`;`RemovePrim` 在手臂場景會讓程序無訊息結束(wrap_vol 單獨跑則正常) | arm r2 / r3 |
+| 守衛 | 布邊長比 > 2.3 自動放手(綁定剛度無限,拉過頭會撕布) | `--guard 2.3` |
+| 弧線終點 | 要**繞過箱壁頂角翻到箱外**(`--arc2 1`),停在箱內放手會彈回 | out_ga3:放手後 62% 仍越線 |
+| 判準 | yn 越線 ≥ 80%、放手後 ≥ 50%、滑動 < 2 mm、他片拖動 < 5%、穿杯 0 | `DECISION_phase3.md` |
+
+### 目前數據(未全過)
+| | yn 越線 | 放手後 | 他片拖動 | 下降穿入 |
+|---|---|---|---|---|
+| volume 整包 out_ga3(代理夾爪) | 100% | 62% | **20%** ✗ | – |
+| 手臂 r2(v2 軌跡、高度帶放寬 14 mm) | 56~60% | 未量到 | **29%** ✗ | 6.9 mm ✗ |
+| 手臂 v3 u45(lula 重解,2 mm 高度帶) | 1% | – | – | 綁到 1 點 ✗ |
+
+他片拖動的來源:綁定無限剛度,翻 yn 時把相連的 xp/xn 一起扯動。下一步:有限剛度 attachment,或第二隻手先壓住 xp/xn(PPT 的雙手分工)。
