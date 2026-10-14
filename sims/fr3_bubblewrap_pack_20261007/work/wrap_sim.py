@@ -211,6 +211,16 @@ ap.add_argument("--no_ground_collision", action="store_true",
                 help="關掉預設地板的碰撞(視覺保留)。movebox + kinematic 紙箱時地板沒有功能")
 ap.add_argument("--base_collider_pad", type=float, default=0.0,
                 help="紙箱底板碰撞往下加厚幾 m(base 下方加不可見碰撞方塊)。0 = 不改")
+ap.add_argument("--grasp", type=int, default=0,
+                help="1 = --move_open 開蓋後續跑:即時挑 yn 抓取點 → 下指挑角 → 上指合到 --g_gap_mm → 綁定足跡內 yn 頂點 → 繞實測彎折處弧線掀 → 停 → 張開 RemovePrim")
+ap.add_argument("--g_gap_mm", type=float, default=2.0, help="抓取:指面間距")
+ap.add_argument("--g_pad_mm", type=float, default=16.0, help="抓取:綁定足跡(20x20 指面)外擴 mm")
+ap.add_argument("--g_arc_k", type=float, default=0.8, help="抓取:弧半徑 = k x 夾點到彎折處材料長度")
+ap.add_argument("--g_peel_t", type=float, default=6.0, help="抓取:掀的秒數")
+ap.add_argument("--g_hold", type=float, default=2.0, help="抓取:掀完停幾秒再放")
+ap.add_argument("--g_pick_mm", type=float, default=12.0, help="抓取:下指挑角上抬 mm")
+ap.add_argument("--g_th1", type=float, default=160.0, help="抓取:弧線終點角(度;0 = 夾點起始方向 +y、180 = 水平朝 -y)")
+ap.add_argument("--g_rank", type=int, default=1, help="抓取:用合格第幾名")
 ap.add_argument("--in_box_already", action="store_true",
                 help="--init_npz 已是箱內座標(如 lidcheck/wrap.npz):跳過入箱的置中/墊高平移")
 a, _ = ap.parse_known_args()
@@ -1152,6 +1162,21 @@ if LIDS and LID_REST_CLOSED and a.close_lid and not a.unbox and MOVE is None:
         _xf = UsdGeom.Xformable(_pr); _xf.ClearXformOpOrder()
         _xf.AddTransformOp().Set(_Wm * _par.GetInverse())
     P("★ 蓋子 USD 預設 = 關 ⇒ reset 前先擺到 180°(開),物理從開蓋起步;drive 再 180°→0° 關上")
+# ── --grasp 1:兩根 kinematic 指(Xform 剛體 + scale 子 Cube),先停在場外 ──
+GFS = np.array([0.020, 0.020, 0.006])        # 指面 (t,u,n)
+GPARK = {"up": np.array([3.0, 3.0, 1.0]), "lo": np.array([3.0, 3.2, 1.0])}
+if a.grasp:
+    for _k, _c in (("up", (0.9, 0.45, 0.1)), ("lo", (0.2, 0.7, 0.25))):
+        _xf = UsdGeom.Xform.Define(st, "/World/gf_" + _k)
+        _xf.AddTranslateOp().Set(Gf.Vec3d(*map(float, GPARK[_k]))); _xf.AddOrientOp().Set(Gf.Quatf(1, 0, 0, 0))
+        UsdPhysics.RigidBodyAPI.Apply(_xf.GetPrim()).CreateKinematicEnabledAttr(True)
+        _cb = UsdGeom.Cube.Define(st, "/World/gf_%s/geom" % _k); _cb.CreateSizeAttr(1.0)
+        UsdGeom.Xformable(_cb).AddScaleOp().Set(Gf.Vec3f(*map(float, GFS)))
+        _cb.CreateDisplayColorAttr([Gf.Vec3f(*_c)])
+        UsdPhysics.CollisionAPI.Apply(_cb.GetPrim())
+        _pcg = PhysxSchema.PhysxCollisionAPI.Apply(_cb.GetPrim())
+        _pcg.CreateContactOffsetAttr(0.002); _pcg.CreateRestOffsetAttr(0.0)
+    P("★ --grasp 1:上/下指 %s mm(t,u,n),kinematic,間距 %.1fmm,綁定足跡外擴 %.0fmm" % (GFS*1e3, a.g_gap_mm, a.g_pad_mm))
 world.reset(); cam.initialize()
 _TRI0 = np.array(tris, int)
 _p0 = self_pen(np.array(UsdGeom.Mesh(sp).GetPointsAttr().Get()), _TRI0)[0]
@@ -1168,6 +1193,8 @@ if P6 is not None:
 for L in LIDS:
     L["prim"] = SingleXFormPrim("/World/Box/" + L["nm"], name="lid_" + L["nm"])
 mugx = SingleXFormPrim("/World/mug", name="mugx")
+if a.grasp:
+    GX = {k_: SingleXFormPrim("/World/gf_" + k_, name="gf_" + k_) for k_ in GPARK}
 MOVEB = None
 if MOVE is not None:
     assert a.carton and LIDS, "--movebox 需要 --carton(且讀得到 meta、建得出四片蓋)"
@@ -1274,6 +1301,225 @@ T_END = (a.move_wait + a.move_t + a.settle + ((2*a.lid_span + 3.0) if a.move_ope
         (T_SET + len(WORDER)*SPAN_W + a.settle) if (a.wrapsim or a.stage2) else (T_SET + 2*(T_SW + T_HOLD + T_OFF) + a.settle)
 T_FREE = T_SET + 2*(T_SW + T_HOLD + T_OFF) + 0.5
 ss = lambda u: (lambda v: v*v*(3-2*v))(min(max(u, 0.), 1.))
+
+# ── --grasp 1 時間表與函式 ─────────────────────────────────────────────
+if a.grasp:
+    if MOVE is None or not a.move_open:
+        raise SystemExit("--grasp 1 要配 --movebox ... --move_open")
+    from scipy.spatial.transform import Rotation as _Rot
+    import json as _gjs
+    TG0 = T_END + 0.5
+    GT = dict(lo_above=1.0, lo_down=1.0, lo_in=1.0, lo_lift=1.0, up_down=0.8, up_close=0.7)
+    T_LIFT = GT["lo_above"] + GT["lo_down"] + GT["lo_in"] + GT["lo_lift"]
+    T_BIND = T_LIFT + GT["up_down"] + GT["up_close"] + 0.1
+    T_P1 = T_BIND + a.g_peel_t
+    T_REL = T_P1 + a.g_hold
+    T_END = TG0 + T_REL + 2.0 + 3.0
+    GFLAT = np.array([[-WX/2 + i2*WX/nx, -WY/2 + j2*WY/ny] for j2 in range(ny+1) for i2 in range(nx+1)])
+    def _gside(fx, fy):
+        sx = max(0.0, abs(fx) - CX); sy = max(0.0, abs(fy) - CY)
+        if sx == 0 and sy == 0: return "base"
+        return ("yp" if fy > 0 else "yn") if sy >= sx else ("xp" if fx > 0 else "xn")
+    GSIDE = np.array([_gside(*f) for f in GFLAT])
+    GII = np.arange(len(GFLAT)) % (nx+1); GJJ = np.arange(len(GFLAT)) // (nx+1)
+    GF = {k_: [] for k_ in GPARK}; GLAST = {k_: (GPARK[k_].copy(), np.eye(3)) for k_ in GPARK}
+    GS = dict(ev={}, plan=None, done=set())
+    GX = {}
+    def rq(Rm_):
+        x_, y_, z_, w_ = _Rot.from_matrix(Rm_).as_quat(); return np.array([w_, x_, y_, z_])
+    def g_lin(k_, t0, dur, pos, Rm_=None):
+        p0, R0_ = GLAST[k_]; R1 = R0_ if Rm_ is None else Rm_; pos = np.array(pos, float)
+        GF[k_].append((t0, t0 + dur, lambda w, p0=np.array(p0), pos=pos, R1=R1: (p0 + (pos - p0)*w, R1)))
+        GLAST[k_] = (pos, R1)
+    def g_fn(k_, t0, dur, fn):
+        GF[k_].append((t0, t0 + dur, fn)); GLAST[k_] = fn(1.0)
+    def g_pose(k_, t):
+        cur = None
+        for (t0, t1, fn) in GF[k_]:
+            if t >= t1: cur = fn(1.0)
+            elif t >= t0: return fn(ss((t - t0)/(t1 - t0)))
+            else: break
+        return cur if cur is not None else (GPARK[k_], np.eye(3))
+    def g_drive(t):
+        if not GX: return
+        for k_ in GPARK:
+            p_, R_ = g_pose(k_, t)
+            GX[k_].set_world_pose(position=p_, orientation=rq(R_))
+    def g_mug():
+        mp_, mq_ = mugx.get_world_pose(); w_, x_, y_, z_ = [float(v) for v in mq_]
+        Rm_ = _Rot.from_quat([x_, y_, z_, w_]).as_matrix()
+        return np.array(mp_, float), V @ Rm_.T + np.array(mp_, float)
+    def g_sheet():
+        return np.array(UsdGeom.Mesh(sp).GetPointsAttr().Get(), float)
+    def g_box():
+        bc = BOXC0 + box_off(); return np.array([bc[0], bc[1], box_off()[2]])   # 世界 → 箱局部的平移(z 保持 CDZ 基準)
+    def g_hinge(S, i_col):
+        col = np.where((GII == i_col) & (GSIDE == "yn"))[0]
+        col = col[np.argsort(-GFLAT[col, 1])]                 # 從折線往尖端(flat y 由大到小)
+        vert = False
+        for k in range(len(col) - 1):
+            d = S[col[k+1]] - S[col[k]]
+            if abs(d[2]) > abs(d[1]): vert = True
+            elif vert and abs(d[2]) < abs(d[1]): return int(col[k])
+        return None
+    def g_plan(t):
+        S = g_sheet(); mp, MW = g_mug(); bo = g_box(); Sl = S - bo; Ml = MW - bo
+        IX_, IY_ = CBOX["ix"], CBOX["iy"]; ZO = max(CBOX["top"], CBOX["top_y"]) + 0.005
+        bnd = (GII == 0) | (GII == nx) | (GJJ == 0) | (GJJ == ny)
+        cand = np.where(bnd & (GSIDE == "yn"))[0]
+        rows = []
+        for v in cand:
+            p = Sl[v]
+            vin = v + (nx+1) if GJJ[v] == 0 else (v + 1 if GII[v] == 0 else v - 1)
+            u3 = Sl[v] - Sl[vin]; uh = np.array([u3[0], u3[1], 0.0])
+            if np.linalg.norm(uh) < 1e-6: continue
+            uh /= np.linalg.norm(uh); tt = np.cross([0, 0, 1.0], uh); R0 = np.stack([tt, uh, [0, 0, 1.0]], 1)
+            fd = np.linalg.norm(GFLAT - GFLAT[v], axis=1); other = fd > 0.045
+            hr = np.linalg.norm(Sl[:, :2] - p[:2], axis=1)
+            na = int((other & (hr < 0.030) & (Sl[:, 2] > p[2] + 0.0005)).sum())
+            # (c) 下方空隙:下指足跡(以 p 往內 7.5mm 為中心 20x20)內、比 p 低的他處布 / 杯頂點
+            L = (Sl - p) @ R0; Lm = (Ml - p) @ R0
+            fp = (np.abs(L[:, 0]) < 0.010) & (L[:, 1] > -0.0175) & (L[:, 1] < 0.0025) & other & (L[:, 2] < 0)
+            fm = (np.abs(Lm[:, 0]) < 0.010) & (Lm[:, 1] > -0.0175) & (Lm[:, 1] < 0.0025) & (Lm[:, 2] < 0)
+            gap = min([p[2] - CDZ] + ([-L[fp, 2].max()] if fp.any() else []) + ([-Lm[fm, 2].max()] if fm.any() else []))
+            # (b) 掃掠:下指在布邊外 u∈[+7,+27] 從 ZO 垂直降到 p 下方 → 該柱內不能有他處布/杯、不能出箱內腔
+            fc = (np.abs(L[:, 0]) < 0.012) & (L[:, 1] > 0.005) & (L[:, 1] < 0.029) & (L[:, 2] > -0.012) & other
+            fcm = (np.abs(Lm[:, 0]) < 0.012) & (Lm[:, 1] > 0.005) & (Lm[:, 1] < 0.029) & (Lm[:, 2] > -0.012)
+            cc = p + R0 @ [0, 0.017, 0]
+            nwall = int(abs(cc[0]) > IX_ - 0.012 or abs(cc[1]) > IY_ - 0.012)
+            r = dict(v=int(v), p=p, R0=R0, a=na, gap=float(gap), b=(int(fc.sum()), int(fcm.sum()), nwall),
+                     dwall=float(min(IX_ - abs(p[0]), IY_ - abs(p[1]))))
+            r["ok_a"] = na == 0; r["ok_b"] = sum(r["b"]) == 0; r["ok_c"] = gap >= 0.006
+            r["ok"] = r["ok_a"] and r["ok_b"] and r["ok_c"]
+            rows.append(r)
+        rows.sort(key=lambda r: (-int(r["ok"]), -(int(r["ok_a"]) + int(r["ok_b"])), -r["gap"], -r["dwall"]))
+        P("\n★ t=%.2f [grasp] yn 抓取點即時排名:%d 候選,(a) %d /(b) %d /(c) %d / 全過 %d"
+          % (t, len(rows), sum(r["ok_a"] for r in rows), sum(r["ok_b"] for r in rows), sum(r["ok_c"] for r in rows), sum(r["ok"] for r in rows)))
+        for k_, r in enumerate(rows[:6]):
+            P("   #%d v%-4d 箱局部 (%6.1f,%6.1f,%6.1f) 上方他處 %d 下方空隙 %5.1f 掃掠 布/杯/牆 %s %s"
+              % (k_+1, r["v"], *(r["p"]*1e3), r["a"], r["gap"]*1e3, "/".join(map(str, r["b"])), "OK" if r["ok"] else "NG"))
+        okr = [r for r in rows if r["ok"]]
+        pick = okr[min(a.g_rank, len(okr)) - 1] if okr else rows[0]
+        v, p, R0 = pick["v"], pick["p"], pick["R0"]
+        pin = 0.025; hf = GFS[2]/2
+        lo_ins = p + R0 @ [0, 0.017 - pin, -(0.0015 + hf)]          # 下指頂面在布邊下 1.5mm,足跡 u∈[-18,+2]
+        lo_pre = lo_ins + R0 @ [0, pin, 0]; lo_ab = lo_pre + [0, 0, 0.08]
+        lo_lift = lo_ins + [0, 0, a.g_pick_mm/1e3]
+        up_f = lo_lift + [0, 0, 2*hf + a.g_gap_mm/1e3]
+        up_pre = up_f + [0, 0, 0.015]; up_ab = up_pre + [0, 0, 0.06]
+        W_ = lambda x: np.asarray(x) + bo
+        t_ = TG0
+        g_lin("lo", t_, GT["lo_above"], W_(lo_ab), R0); t_ += GT["lo_above"]
+        g_lin("lo", t_, GT["lo_down"], W_(lo_pre)); t_ += GT["lo_down"]
+        g_lin("lo", t_, GT["lo_in"], W_(lo_ins)); t_ += GT["lo_in"]
+        g_lin("lo", t_, GT["lo_lift"], W_(lo_lift)); t_ += GT["lo_lift"]
+        g_lin("up", TG0, T_LIFT, W_(up_ab), R0)
+        g_lin("up", t_, GT["up_down"], W_(up_pre)); t_ += GT["up_down"]
+        g_lin("up", t_, GT["up_close"], W_(up_f))
+        TOPS = np.where((GSIDE == "yn") & (Sl[:, 1] > -CY + 0.003))[0]
+        GS["plan"] = dict(v=v, p=p, R0=R0, lo_f=lo_lift, up_f=up_f, bo=bo, S0=S.copy(), mp0=mp.copy(), TOPS=TOPS,
+                          rows=[dict(v=r["v"], p=(r["p"]*1e3).tolist(), a=r["a"], gap=r["gap"]*1e3, b=r["b"], ok=r["ok"]) for r in rows[:8]])
+        GS["ev"]["plan"] = dict(t=t, v=int(v), p_mm=(p*1e3).tolist(), n_ok=len(okr), n_cand=len(rows), gap=pick["gap"]*1e3,
+                                n_tops=int(len(TOPS)), S1=int(self_pen(S, _TRI0)[0]))
+        P("  [grasp] 選 v%d 箱局部 (%.1f,%.1f,%.1f) mm,外法線 u=(%.2f,%.2f);yn 在折線內側(y>-CY+3mm)頂點 %d;此刻 S1 %d"
+          % (v, *(p*1e3), *R0[:2, 1], len(TOPS), GS["ev"]["plan"]["S1"]))
+    def g_bind(t):
+        pl = GS["plan"]; S = g_sheet(); bo = pl["bo"]; Sl = S - bo
+        pu, Ru = g_pose("up", t); pl_, _ = g_pose("lo", t); gc = (pu + pl_)/2
+        L = (S - gc) @ Ru
+        pad = 0.010 + a.g_pad_mm/1e3; hn = a.g_gap_mm/2e3 + 0.004
+        m_ = (np.abs(L[:, 0]) < pad) & (np.abs(L[:, 1]) < pad) & (np.abs(L[:, 2]) <= hn)
+        AV = np.where(m_ & (GSIDE == "yn"))[0]
+        nbet = int(((np.abs(L[:, 0]) < 0.010) & (np.abs(L[:, 1]) < 0.010) & (np.abs(L[:, 2]) <= a.g_gap_mm/2e3 + 0.0005)).sum())
+        loc = (S[AV] - pu) @ Ru
+        scp = "/World/gatt"
+        sc = st.DefinePrim(scp, "Scope"); sc.ApplyAPI("PhysxAutoDeformableAttachmentAPI")
+        for k2, v2 in [("enableDeformableVertexAttachments", False), ("enableRigidSurfaceAttachments", False),
+                       ("enableCollisionFiltering", True), ("enableDeformableFilteringPairs", False)]:
+            sa(sc, "physxAutoDeformableAttachment:" + k2, v2, Sdf.ValueTypeNames.Bool)
+        sa(sc, "physxAutoDeformableAttachment:collisionFilteringOffset", 0.010, Sdf.ValueTypeNames.Float)
+        for rn, tg in [("attachable0", "/World/sheet"), ("attachable1", "/World/gf_up")]:
+            (sc.GetRelationship("physxAutoDeformableAttachment:" + rn) or
+             sc.CreateRelationship("physxAutoDeformableAttachment:" + rn)).SetTargets([Sdf.Path(tg)])
+        ch = st.DefinePrim(scp + "/vtx_xform_attachment", "OmniPhysicsVtxXformAttachment")
+        sa(ch, "omniphysics:attachmentEnabled", True, Sdf.ValueTypeNames.Bool)
+        sa(ch, "omniphysics:damping", 0.0, Sdf.ValueTypeNames.Float)
+        sa(ch, "omniphysics:stiffness", float("inf"), Sdf.ValueTypeNames.Float)
+        sa(ch, "omniphysics:vtxIndicesSrc0", Vt.IntArray([int(q) for q in AV]), Sdf.ValueTypeNames.IntArray)
+        sa(ch, "omniphysics:localPositionsSrc1", Vt.Vec3fArray([Gf.Vec3f(*map(float, q)) for q in loc]), Sdf.ValueTypeNames.Point3fArray)
+        for rn, tg in [("src0", "/World/sheet"), ("src1", "/World/gf_up")]:
+            (ch.GetRelationship("omniphysics:" + rn) or ch.CreateRelationship("omniphysics:" + rn)).SetTargets([Sdf.Path(tg)])
+        nother = int((m_ & (GSIDE != "yn")).sum())
+        P("\n★ t=%.2f [grasp] 綁定 %d 個 yn 頂點(足跡半寬 %.0fmm、|n|<=%.1fmm);同範圍非 yn 頂點(不綁)%d;指面之間(20x20、間距 %.1fmm)頂點 %d"
+          % (t, len(AV), pad*1e3, hn*1e3, nother, a.g_gap_mm, nbet))
+        # 弧線:鉸點 = 夾點那欄實測彎折處
+        v = pl["v"]; hv = g_hinge(S, GII[v])
+        if hv is None:
+            hv = int(np.where((GII == GII[v]) & (GSIDE == "yn"))[0][np.argmax(GFLAT[(GII == GII[v]) & (GSIDE == "yn"), 1])])
+            P("  [grasp] ⚠ 找不到彎折處,改用折線頂點 v%d" % hv)
+        yh, zh = S[hv, 1], S[hv, 2]
+        Lmat = float(abs(GFLAT[v, 1] - GFLAT[hv, 1])); Rr = a.g_arc_k*Lmat
+        y0, z0 = gc[1] - yh, gc[2] - zh; r0 = float(np.hypot(y0, z0)); th0 = float(np.arctan2(z0, y0))
+        th1 = np.radians(a.g_th1)
+        o_ = {"up": pu - gc, "lo": pl_ - gc}; R0 = Ru
+        zclear = bo[2] + max(CBOX["top_y"], CBOX["hz_up"]) + 0.012
+        IYw = bo[1] - CBOX["iy"]
+        corners = np.array([[sx, sy, sz] for sx in (-1, 1) for sy in (-1, 1) for sz in (-1, 1)], float)*GFS/2
+        def at(w):
+            th = th0 + (th1 - th0)*w
+            r = r0 + (Rr - r0)*min(1.0, w/0.3)
+            Rt = _Rot.from_rotvec([th - th0, 0, 0]).as_matrix()
+            c = np.array([gc[0], yh + r*np.cos(th), zh + r*np.sin(th)])
+            Pf = {k_: c + Rt @ o_[k_] for k_ in o_}; Rf = Rt @ R0
+            cs = np.array([Pf[k_] + Rf @ q for k_ in Pf for q in corners])
+            m2 = cs[:, 1] < IYw + 0.004
+            if m2.any():
+                dz = max(0.0, zclear - cs[m2, 2].min()); Pf = {k_: Pf[k_] + [0, 0, dz] for k_ in Pf}
+            return Pf, Rf
+        TP0 = TG0 + T_BIND
+        for k_ in ("up", "lo"):
+            g_fn(k_, TP0, a.g_peel_t, lambda w, k_=k_: (at(w)[0][k_], at(w)[1]))
+        Pf1, Rf1 = at(1.0); n_e = Rf1[:, 2]; u_e = Rf1[:, 1]
+        TR = TG0 + T_REL
+        for k_, sg_ in (("up", 1.0), ("lo", -1.0)):
+            g_lin(k_, TR, 0.5, Pf1[k_] + sg_*n_e*0.010)
+            g_lin(k_, TR + 0.5, 0.7, Pf1[k_] + sg_*n_e*0.010 + u_e*0.030)
+            g_lin(k_, TR + 1.2, 0.8, Pf1[k_] + sg_*n_e*0.010 + u_e*0.030 + [0, 0, 0.08])
+        GS["ev"]["bind"] = dict(t=t, n_att=int(len(AV)), vids=AV.tolist(), n_between=nbet, n_other_in_pad=nother,
+                                hinge_v=int(hv), hinge_local_mm=[float((yh - bo[1])*1e3), float((zh - bo[2])*1e3)],
+                                Lmat_mm=Lmat*1e3, R_mm=Rr*1e3, r0_mm=r0*1e3, th0_deg=float(np.degrees(th0)), th1_deg=a.g_th1)
+        P("  [grasp] 彎折處 v%d 箱局部 y=%.1f z=%.1f mm(名義折線 y=%.1f);材料長 %.1f mm → 半徑 %.1f mm;夾爪起始離鉸點 %.1f mm,角 %.0f° → %.0f°"
+          % (hv, (yh - bo[1])*1e3, (zh - bo[2])*1e3, -CY*1e3, Lmat*1e3, Rr*1e3, r0*1e3, np.degrees(th0), a.g_th1))
+    def g_measure(tag, t):
+        pl = GS["plan"]; S = g_sheet(); mp, _ = g_mug(); bo = pl["bo"]; Sl = S - bo
+        TOPS = pl["TOPS"]
+        cross = float((Sl[TOPS, 1] < -CY).mean()) if len(TOPS) else float("nan")
+        oth = np.isin(GSIDE, ["yp", "xp", "xn"])
+        d_ = np.linalg.norm(S - pl["S0"], axis=1)
+        e = dict(t=t, cross=cross, oth10=float((d_[oth] > 0.010).mean()), oth_max_mm=float(d_[oth].max()*1e3),
+                 base10=float((d_[GSIDE == "base"] > 0.010).mean()),
+                 mug_mm=float(np.linalg.norm(mp - pl["mp0"])*1e3), S1=int(self_pen(S, _TRI0)[0]))
+        GS["ev"][tag] = e
+        P("★ t=%.2f [grasp:%s] yn 越過折線 %.0f%% | 他片(yp/xp/xn)位移>10mm %.1f%%(最大 %.0fmm)| base >10mm %.1f%% | 杯位移 %.1f mm | S1 %d"
+          % (t, tag, 100*cross, 100*e["oth10"], e["oth_max_mm"], 100*e["base10"], e["mug_mm"], e["S1"]))
+    def g_events(t):
+        dn = GS["done"]
+        if "plan" not in dn and t >= TG0 - 1e-6:
+            dn.add("plan"); g_plan(t)
+            _bo = GS["plan"]["bo"]
+            G.look(cam, list(_bo + [0.30, -0.42, 0.40]), list(_bo + [0, -0.03, 0.06]))
+        if "bind" not in dn and t >= TG0 + T_BIND - 1e-6:
+            dn.add("bind"); g_measure("pre_bind", t); g_bind(t)
+        if "hold" not in dn and t >= TG0 + T_REL - 0.05:
+            dn.add("hold"); g_measure("hold_end", t)
+            st.RemovePrim(Sdf.Path("/World/gatt")); P("★ t=%.2f [grasp] RemovePrim 綁定 → 張開" % t)
+        if "end" not in dn and t >= T_END - 2.0/FPS:
+            dn.add("end"); g_measure("after_release", t)
+    def g_phase(t):
+        r = t - TG0
+        return ("grasp: pick corner" if r < T_LIFT else "grasp: close" if r < T_BIND else
+                "grasp: peel arc" if r < T_P1 else "grasp: hold" if r < T_REL else
+                "grasp: open/release" if r < T_REL + 2.0 else "grasp: after release")
 
 
 NACT = {}
@@ -1651,9 +1897,13 @@ for k in range(int(T_END*FPS)):
             LIDVIEW.apply_forces_and_torques_at_pos(torques=_tau, is_global=True)
         if MOVE is not None:
             move_box(t + _/(5.0*FPS))       # 每個物理步都更新 kinematic 目標,不要一格才跳一次
+        if a.grasp:
+            g_drive(t + _/(5.0*FPS))
         world.step(render=False)
     if MOVE is not None:
         move_box(t + 4.0/(5.0*FPS))
+    if a.grasp:
+        g_drive(t + 4.0/(5.0*FPS))
     world.step(render=True)
     if MOVE is not None:
         ph_ = ("settle" if t < a.move_wait else
@@ -1726,6 +1976,9 @@ for k in range(int(T_END*FPS)):
         p2 = T_SET + T_SW + T_HOLD + T_OFF
         ph_ = ("settle" if t < T_SET else "fold +-y" if t < p2 else
                "fold +-x" if t < p2 + T_SW + T_HOLD + T_OFF else "release")
+    if a.grasp:
+        g_events(t + 1.0/FPS)
+        if t >= TG0 - 0.5: ph_ = g_phase(t)
     if a.pentrack > 0 and (k % max(1, int(a.pentrack*FPS)) == 0):
         _S = np.array(UsdGeom.Mesh(sp).GetPointsAttr().Get())
         _np_ = self_pen(_S, _TRI0)[0]
@@ -1747,6 +2000,10 @@ for k in range(int(T_END*FPS)):
         P("  t=%5.2f %-9s 布 bbox %3.0f x %3.0f x %3.0f ;杯心 (%.0f, %.0f, %.0f) mm"
           % (t, ph_, *((S_.max(0)-S_.min(0))*1e3), *(np.array(mp)*1e3)))
 
+if a.grasp:
+    _gjs.dump(dict(ev=GS["ev"], rows=GS["plan"]["rows"] if GS["plan"] else [], TG0=TG0, T_BIND=T_BIND, T_REL=T_REL, args=vars(a)),
+              open(os.path.join(a.out, "grasp.json"), "w"), indent=1, default=lambda o: o.tolist() if hasattr(o, "tolist") else str(o))
+    P("抓取段 → %s/grasp.json" % a.out)
 imageio.mimwrite(os.path.join(a.out, "wrap.mp4"), frames, fps=FPS, quality=7, macro_block_size=1)
 P("影格 %d → %s/wrap.mp4" % (len(frames), a.out))
 
