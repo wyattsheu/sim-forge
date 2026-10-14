@@ -345,7 +345,7 @@ for sd in FOLD_ORDER:
     S_ = SIDES[sd]
     P("  %s:折線 %.1f、折邊 %.1f、已疊 %d 層 → 尖端中面 z=%.1f(底面 %.1f)、越過頂面 arm %.1f → 尖端 along=%.1f mm%s"
       % (sd, S_["C"]*1e3, S_["R"]*1e3, S_["lay"], S_["zend"]*1e3, (S_["zend"]-T/2)*1e3, S_["arm"]*1e3,
-         S_["along_end"]*1e3, "(搆不到中線)" if S_["along_end"] > 0.001 else "(到/越過中線)"))
+         S_["along_end"]*1e3, ("(搆不到中線)" if S_["along_end"] > 0.001 else "(到/越過中線)") + (" ★ infeasible:折邊搆不到杯頂(arm<0)" if S_["arm"] < 0 else "")))
 
 UsdGeom.Xform.Define(st, "/World/bars")
 def qaxis(axis, ang):

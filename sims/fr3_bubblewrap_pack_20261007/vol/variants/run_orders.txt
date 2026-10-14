@@ -1,0 +1,17 @@
+[07:07] o_xnxpynyp box 開跑(GPU 18843 MiB)
+   → PASS  252s
+Traceback (most recent call last):
+  File "/isaac-sim/test_scripts/manip_fr3/handoff_20260929/vol/fold_variants.py", line 148, in <module>
+    "[a][b]concat=n=2,drawtext=text='%s':x=6:y=6:fontsize=16:fontcolor=white:box=1:boxcolor=black@0.5[v]") % (
+    ^^^^^^^^^^^^^^^^^^
+  File "/isaac-sim/test_scripts/manip_fr3/handoff_20260929/vol/fold_variants.py", line 134, in run
+    summarize()
+  File "/isaac-sim/test_scripts/manip_fr3/handoff_20260929/vol/fold_variants.py", line 100, in summarize
+    row = dict(id=vid, fold_order=fo, **{"class": cls(fo)}, first=fo.split(",")[0], outer_by_order=fo.split(",")[-1], **prm, **r)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: dict() got multiple values for keyword argument 'fold_order'
+[07:11] o_xnxpypyn box 開跑(GPU 18843 MiB)
+   → PASS  258s
+[07:16] o_xnynxpyp box 開跑(GPU 13125 MiB)
+   → FAIL 邊長比[0.47,2.32] 235s
+[07:20] o_xnynypxp box 開跑(GPU 13125 MiB)
