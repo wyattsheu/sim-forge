@@ -101,6 +101,10 @@ ap.add_argument("--guard_hold", type=float, default=0.0, help="[drag2] 釘住期
 ap.add_argument("--lift_first_out_mm", type=float, default=0.0, help="[drag2] 先拉起時同時往箱外(本片外側 y)抽這麼多 mm")
 ap.add_argument("--arc2_ext_mm", type=float, default=0.0, help="[drag2] 弧線終點後再往箱外(本片外側 y)直線延伸 mm;0 = 舊行為")
 ap.add_argument("--arc2_ext_t", type=float, default=1.0, help="[drag2] 延伸用時 s")
+ap.add_argument("--arc2_over_mm", type=float, default=0.0, help="[peel] 弧線終點後夾爪中心再越過箱壁外緣這麼多 mm,同時轉到 180°(片翻過箱壁躺到外側);上限 = 材料長 − 鉸點到箱壁頂角 − 5mm;0 = 舊行為")
+ap.add_argument("--arc2_over_t", type=float, default=1.5, help="[peel] 越過用時 s")
+ap.add_argument("--release_press_mm", type=float, default=0.0, help="[peel] 放手前末端再往下壓 mm(箱壁外側貼住);0 = 舊行為")
+ap.add_argument("--release_settle_s", type=float, default=0.0, help="[peel] 下壓後再停 s 才放手;0 = 舊行為")
 ap.add_argument("--hold_rel_s", type=float, default=0.5, help="[drag] TR(放手開始)後幾秒移除釘住")
 ap.add_argument("--attach_damp", type=float, default=0.0, help="[drag] 夾持綁定 omniphysics:damping(每頂點 N·s/m);-1 = 自動臨界 2*sqrt(k*m_vtx)")
 ap.add_argument("--attach_proxy", type=int, default=0, help="[drag] 1 = 上指綁定改綁到動態代理 /World/gfing/upx(D6 drive 掛在上指,力上限 proxy_fmax);0 = 舊行為")
@@ -674,6 +678,7 @@ G_TJAW = G_TLOIN + GT["close"]                                                  
 G_TGRIP = G_TJAW + GT["rod_out"] + GT["rod_up"] + GT["grip_hold"] + 0.4                                 # 9.7 登記夾到的點、開始掀
 G_LF = a.lift_first_t if a.lift_first_mm > 0 else 0.0                                                  # [drag] 先拉起
 G_EXT = a.arc2_ext_t if a.arc2_ext_mm > 0 else 0.0                                                # [drag2]
+G_EXT += (a.arc2_over_t if a.arc2_over_mm > 0 else 0.0) + (0.5 if a.release_press_mm > 0 else 0.0) + a.release_settle_s   # [peel]
 G_RT = 4.0                                                                                             # [robust] 每次重夾:抬 0.5 + 移 0.8 + 降 0.8 + 合 0.8 + 停 0.7 + 餘
 G_SHEET = G_RT * a.grasp_retry + G_TGRIP + G_LF + G_EXT + a.peel_t + GT["peel_hold"] + GT["rel_open"] + GT["rel_slide"] + GT["rel_up"] + 0.3
 G_SEQ = (["yn", "yp"] if a.second else ["yn"]) if a.grasp else []
@@ -711,7 +716,7 @@ def phase(t):
             ("grip hold", G_TGRIP)] if a.pick_mode == "jaw" else [("open jaws in", G_TLOIN), ("close jaws", G_TJAW), ("rod out / grip hold", G_TGRIP)])
     for nm_, tt_ in [("pick: %s to corner" % _pf, GT["rod_above"] + GT["rod_down"]), ("pick: %s insert" % _pf, GT["rod_above"] + GT["rod_down"] + GT["rod_in"]),
                      ("pick: lift corner", G_TPICK)] + _sq + [
-                     ("LIFT first", G_TGRIP + G_LF), ("PEEL arc", G_TGRIP + G_LF + a.peel_t), ("hold peeled", G_TGRIP + G_LF + a.peel_t + GT["peel_hold"])]:
+                     ("LIFT first", G_TGRIP + G_LF), ("PEEL arc", G_TGRIP + G_LF + a.peel_t + G_EXT), ("hold peeled", G_TGRIP + G_LF + a.peel_t + G_EXT + GT["peel_hold"])]:
         if r_ < tt_: return "%s %s" % (sd, nm_)
     return "%s release" % sd
 
@@ -1230,6 +1235,32 @@ if a.grasp:
             for k_ in (("up",) if a.grasp_attach else ("up", "lo")):
                 g_lin(k_, TP1, a.arc2_ext_t, Pf1[k_] + offw, Rf1)
             P("  [%s] 弧線終點再往箱外延伸 %.0f mm(%.1f s)" % (sd, a.arc2_ext_mm, a.arc2_ext_t)); TP1 = TP1 + a.arc2_ext_t
+        if a.arc2_over_mm > 0:                                                # [peel] 越過箱壁外緣並轉到 180°
+            Dm = max(0.005, min(a.arc2_over_mm / 1e3, Lmat - BE - 0.005))
+            gce = (Pf1["up"] + Pf1["lo"]) / 2; o2 = {k_: Rf1.T @ (Pf1[k_] - gce) for k_ in Pf1}
+            gct = np.array([gce[0], sg * (IY + Dm), gce[2]])
+            def over(w, gce=gce, gct=gct, o2=o2, Rf1=Rf1, th_e=th_e):
+                th = th_e + (np.pi - th_e) * w; Rt = rotm(axis, th - th_e)
+                gc = gce + (gct - gce) * w; Rf = Rt @ Rf1
+                Pf = {k_: gc + Rf @ o2[k_] for k_ in o2}
+                cs = np.array([Pf[k_] + c_ @ Rf.T for k_ in Pf for c_ in corners])
+                m_ = sg * cs[:, 1] > IY - 0.003
+                if m_.any():
+                    dz = max(0.0, zclear - cs[m_, 2].min()); Pf = {k_: Pf[k_] + [0, 0, dz] for k_ in Pf}
+                return Pf, Rf
+            for k_ in (("up",) if a.grasp_attach else ("up", "lo")):
+                g_fn(k_, TP1, a.arc2_over_t, lambda w, k_=k_: (over(w)[0][k_] + offw, over(w)[1]))
+            Pf1, Rf1 = over(1.0); n_e, u_e = Rf1[:, 2], Rf1[:, 1]
+            P("  [%s] [peel] 越過箱壁外緣 %.1f mm(要求 %.0f;材料長 %.1f − 鉸點到頂角 %.1f − 5)轉到 180°(%.1f s);終點夾爪中心 y=%.1f z=%.1f mm"
+              % (sd, Dm * 1e3, a.arc2_over_mm, Lmat * 1e3, BE * 1e3, a.arc2_over_t, ((Pf1["up"] + Pf1["lo"]) / 2)[1] * 1e3, ((Pf1["up"] + Pf1["lo"]) / 2)[2] * 1e3))
+            TP1 = TP1 + a.arc2_over_t
+        if a.release_press_mm > 0 or a.release_settle_s > 0:                  # [peel] 放手前下壓 + 停
+            if a.release_press_mm > 0:
+                Pf1 = {k_: Pf1[k_] - np.array([0, 0, a.release_press_mm / 1e3]) for k_ in Pf1}
+                for k_ in (("up",) if a.grasp_attach else ("up", "lo")):
+                    g_lin(k_, TP1, 0.5, Pf1[k_] + offw, Rf1)
+                TP1 = TP1 + 0.5
+            P("  [%s] [peel] 放手前下壓 %.0f mm 再停 %.1f s" % (sd, a.release_press_mm, a.release_settle_s)); TP1 = TP1 + a.release_settle_s
         TR = TP1 + GT["peel_hold"]
         for k_, sgn in ((("up", 1.0),) if a.grasp_attach else (("up", 1.0), ("lo", -1.0))):
             p1 = Pf1[k_] + offw

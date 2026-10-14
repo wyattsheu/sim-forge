@@ -14,7 +14,7 @@ if [ ! -d $CLONE/.git ]; then git clone -q git@github.com:wyattsheu/sim-forge.gi
 cd $CLONE && git config user.name wyattsheu && git config user.email wyattsheu@gmail.com && git pull -q --rebase || true
 mkdir -p $STAGE
 
-EXC=(--exclude '__pycache__' --exclude '*.pyc' --exclude 'out_*/' --exclude 'runs/' --exclude 'videos/' --exclude 'soft/' --exclude 'rect/' --exclude 'img/' --exclude 'data/' --exclude 'logs/' --exclude '*.mp4' --exclude '*.stdout' --exclude '*.tgz' --exclude 'wrap_sim.py.before_*' --exclude 'wrap_sim_old.py' --exclude 'wrap_sim_crease.py' --exclude 'wrap_vol.py.before_*' --exclude 'before/' --exclude 'over*/' --exclude 'under/' --exclude 'phys_scene*/' --exclude '*_bad/' --exclude 'lidcheck/' --exclude 'mb*/' --exclude 'dm_*/' --exclude 'fin*/' --exclude 'sh4*/' --exclude 'v[1-4]*/' --exclude 'cr_*/' --exclude 'w_res*/' --exclude '[pqrstu]_*/' --exclude 't[235]_*/' --exclude 'p[0-3]_*/' --exclude 'v3b_*/' --exclude 'v4[abc]_*/' --exclude 'out_c*/' --exclude 'damp/' --exclude 'speed/' --exclude 'variants/*/')
+EXC=(--exclude '__pycache__' --exclude '*.pyc' --exclude 'out_*/' --exclude 'runs/' --exclude 'videos/' --exclude 'soft/' --exclude 'rect/' --exclude 'img/' --exclude 'data/' --exclude 'logs/' --exclude '*.mp4' --exclude '*.stdout' --exclude '*.tgz' --exclude 'wrap_sim.py.before_*' --exclude 'wrap_sim_old.py' --exclude 'wrap_sim_crease.py' --exclude 'wrap_vol.py.before_*' --exclude 'before/' --exclude 'over*/' --exclude 'under/' --exclude 'phys_scene*/' --exclude '*_bad/' --exclude 'lidcheck/' --exclude 'mb*/' --exclude 'dm_*/' --exclude 'fin*/' --exclude 'sh4*/' --exclude 'v[1-4]*/' --exclude 'cr_*/' --exclude 'w_res*/' --exclude '[pqrstu]_*/' --exclude 't[235]_*/' --exclude 'p[0-3]_*/' --exclude 'v3b_*/' --exclude 'v4[abc]_*/' --exclude 'out_c*/' --exclude 'robust/' --exclude 'drag/' --exclude 'damp/' --exclude 'speed/' --exclude 'variants/*/')
 
 # work/:腳本、素材、文件、測試、中間狀態 npz(小)
 rsync -a --delete "${EXC[@]}" --exclude 'MOVED.txt' $H/work/ $STAGE/work/
@@ -25,6 +25,8 @@ rsync -a --delete "${EXC[@]}" $H/vol/ $STAGE/vol/
 for f in carton_w131.usd carton_w131.meta.json; do [ -L $STAGE/vol/$f ] && { rm -f $STAGE/vol/$f; cp -L $H/vol/$f $STAGE/vol/$f; } || true; done
 [ -d $H/arm ] && rsync -a --delete "${EXC[@]}" $H/arm/ $STAGE/arm/
 [ -d $H/arm/data ] && rsync -a --delete --exclude "*.log" $H/arm/data/ $STAGE/arm/data/   # URDF + 軌跡(1.5 MB),clone 即可跑
+# drag/robust/speed/damp:只留 .md .sh .py .csv .txt(大檔 npz/mp4 排除)  # drag_small
+for d in drag robust speed damp; do [ -d $H/vol/$d ] && rsync -a -m --include "*/" --include "*.md" --include "*.sh" --include "*.py" --include "*.csv" --include "*.txt" --include "*.json" --exclude "*" $H/vol/$d/ $STAGE/vol/$d/; done
 # 原始交接文件
 mkdir -p $STAGE/docs/handoff_20260929
 cp $H/*.md $STAGE/docs/handoff_20260929/ 2>/dev/null || true
