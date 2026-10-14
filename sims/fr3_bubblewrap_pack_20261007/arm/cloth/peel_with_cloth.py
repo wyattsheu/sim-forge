@@ -14,6 +14,8 @@ HERE = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, HERE)
 import load_cloth as LC
 ap = argparse.ArgumentParser(); LC.add_args(ap)
 ap.add_argument("--traj", default=os.path.join(LC.ROOT, "arm", "data", "peel_traj_v2_pinch_fx1_g1_psi15_o260"))
+ap.add_argument("--u", type=int, default=45, help="--traj v3 時:抓點 u×100")
+ap.add_argument("--flap", default="yn")
 ap.add_argument("--settle", type=float, default=0.5)
 ap.add_argument("--lift_mm", type=float, default=10.0)
 ap.add_argument("--out_mm", type=float, default=0.0)
@@ -27,6 +29,9 @@ ap.add_argument("--gvert", type=int, default=None, help="改抓 yn 自由邊頂�
 ap.add_argument("--guard", type=float, default=2.3)
 ap.add_argument("--no_video", action="store_true")
 a = ap.parse_args()
+V3 = a.traj == "v3"
+if V3:
+    a.traj = os.path.join(LC.ROOT, "arm", "data", "peel_traj_v3_%s_u%02d" % (a.flap, a.u)); a.lift_mm = 0.0; a.out_mm = 0.0
 TAG = "peel_with_cloth" + (("_" + a.tag) if a.tag else "")
 from isaacsim import SimulationApp
 app = SimulationApp({"headless": True})
@@ -64,11 +69,14 @@ VC.kin_box(st, PROXY, (0.020, 0.020, 0.004), (0, 0, 1.0), collide=False, visible
 IF = json.load(open(os.path.join(LC.VOL, "soft", "s2", "iface.json")))
 G1 = np.array(IF["grasps"][0]["pos"]["S"]) * 1e-3; V1 = IF["grasps"][0]["v"]
 SOUT = np.array(IF["grasps"][0]["edge_out_s"]["S"])
-SIDE = np.array(IF["side"] * 2); YN = SIDE == "yn"
-XF_NOM = (-71.5 - 20.0) * 1e-3
-XF_MEAS = float(np.mean([e["S"][0] for f_ in IF["folds"] if tuple(f_["pair"]) == ("base", "yn") for e in f_["ends"]])) * 1e-3
+FLAP = a.flap if V3 else "yn"; EYS = -1.0 if FLAP == "yn" else 1.0
+SIDE = np.array(IF["side"] * 2); YN = SIDE == FLAP
+XF_NOM = (EYS * 71.5 - 20.0) * 1e-3
+XF_MEAS = float(np.mean([e["S"][0] for f_ in IF["folds"] if tuple(f_["pair"]) == ("base", FLAP) for e in f_["ends"]])) * 1e-3
 P("抓取點 #1 v%d S %s mm;yn 頂點 %d;折線 x_S 名義 %.1f / 實測 %.1f mm" % (V1, (G1 * 1e3).round(1).tolist(), YN.sum(), XF_NOM * 1e3, XF_MEAS * 1e3))
 Z = np.load(a.traj + ".npz"); J = json.load(open(a.traj + ".json")); FPS = int(Z["fps"])
+if V3:
+    V1 = max((J["grasp_v"], J["grasp_v"] + 1296), key=lambda v: C["S0"][v, 2]); P("v3 軌跡 %s:%s 片 u=%.2f 抓點 v%d S %s mm,φ%d ψ%d t%+d" % (os.path.basename(a.traj), FLAP, J["u"], V1, (C["S0"][V1] * 1e3).round(1).tolist(), J["phi"], J["psi"], J["tsg"]))
 segs = [s for s in J["segments"] if s["name"].startswith("b") and not s["name"].startswith("b0")]
 def fr(t): return int(round(t * FPS))
 SEG = {s["name"].split()[0]: (fr(s["t0"]), fr(s["t1"])) for s in segs}
@@ -185,8 +193,8 @@ VIS = UsdGeom.Mesh.Define(st, "/World/cloth_vis"); VIS.CreateFaceVertexIndicesAt
 VIS.CreateDoubleSidedAttr(True); VIS.CreateDisplayColorAttr([Gf.Vec3f(0.2, 0.7, 0.95)])
 def upd_vis(Pc): VIS.GetPointsAttr().Set(Vt.Vec3fArray([Gf.Vec3f(*map(float, p)) for p in Pc]))
 Pb = C["PLATE"].pts(); upd_vis(Pb)
-YNIN = YN & (Pb[:, 0] > XF_MEAS)       # 起始在折線內側的 yn 頂點(分母)
-def cross(Pc, xf): return 100.0 * float((Pc[YNIN, 0] < xf).sum()) / max(1, YNIN.sum())
+YNIN = YN & (EYS * (Pb[:, 0] - XF_MEAS) < 0)       # 起始在折線內側的 yn 頂點(分母)
+def cross(Pc, xf): return 100.0 * float((EYS * (Pc[YNIN, 0] - xf) > 0).sum()) / max(1, YNIN.sum())
 r = C["measure"](Pb); P("settle 後:位移 %.2f mm 反轉 %d 互穿 %d 穿杯 %d;yn 分母 %d" % (r["disp"], r["inv"], r["pen"], r["inmug"], YNIN.sum()))
 MX = SingleXFormPrim("/World/cloth_mug", name="mugx"); mug_p0 = np.array(MX.get_world_pose()[0])
 wr = None
