@@ -7,6 +7,7 @@ _s = {"f": 0, "opened": -1, "done": False}
 
 
 def _log(m): carb.log_warn("[handoff] " + m)
+_hlog = _log      # kept: click_to_ros.py etc. are exec'd into these globals and redefine _log
 
 
 def _on_update(_e):
@@ -26,21 +27,25 @@ def _on_update(_e):
             from omni.physxui.scripts.physxViewportOverlays import PhysxUIMouseInteraction
             inst = get_physicsui_instance()
             if inst is not None:
-                inst.mouse_interaction_override_toggle(PhysxUIMouseInteraction.ENABLED); _log("滑鼠拖曳免 Shift")
+                inst.mouse_interaction_override_toggle(PhysxUIMouseInteraction.ENABLED); _log("mouse dragging without Shift")
         except Exception as e:
-            _log("免 Shift 設定失敗(改用 Shift + 左鍵):%s" % e)
+            _log("could not enable no-Shift dragging (use Shift + left-drag): %s" % e)
         if CLICK:
             p = os.path.join(SIM, "click_to_ros.py")
             try:
                 exec(compile(open(p).read(), p, "exec"), globals())
             except Exception as e:
-                _log("click_to_ros.py 載入失敗:%s" % e)
-        if os.environ.get("LID_LATCH", "1") == "1" and not CREASE_MODE:
-            p = os.path.join(SIM, "lid_latch.py")
+                _log("click_to_ros.py failed to load: %s" % e)
+        # flap model: plastic = elastic-plastic crease (default, docs/CREASE_MECHANICS.md); latch = old open/shut
+        # latch; spring = USD drive only (LID_LATCH=0 also means spring, for old command lines)
+        lid_mode = os.environ.get("LID_MODE", "spring" if os.environ.get("LID_LATCH", "1") == "0" else "plastic")
+        if not CREASE_MODE and lid_mode in ("plastic", "latch"):
+            p = os.path.join(SIM, "crease_plastic.py" if lid_mode == "plastic" else "lid_latch.py")
             try:
                 exec(compile(open(p).read(), p, "exec"), globals())
+                _hlog("flap model: %s (%s)" % (lid_mode, os.path.basename(p)))
             except Exception as e:
-                _log("lid_latch.py 載入失敗:%s" % e)
+                _hlog("%s failed to load: %s" % (os.path.basename(p), e))
         _log("READY"); _s["done"] = True
 
 

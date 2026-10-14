@@ -51,8 +51,28 @@ ap.add_argument("--mug_rest", type=float, default=0.0)
 ap.add_argument("--pad", type=float, default=0.02, help="m; 0 = no pad")
 # carton feel in the UI (2026-10-07): weaker lid spring so a mouse can open lids (+ lid_latch.py keeps them open),
 # damped base so force-mode mouse grab doesn't overshoot when lifting
-ap.add_argument("--lid_stiff", type=float, default=0.012, help="N*m/deg; scene_final_ui.usd has 0.056 (mouse only reached 15 deg)")
-ap.add_argument("--lid_damp", type=float, default=0.003)
+# wall / lid pads (2026-10-07): thick invisible colliders on the OUTSIDE of the 3 mm walls and lids so wrap vertices
+# can't step through the cardboard in one physics step during violent motion. They collide ONLY with the wrap
+# (collision group), have ~zero mass, and are guide purpose: arm / gripper / table / mug / mouse pick are unaffected.
+ap.add_argument("--wall_pad", type=float, default=0.02, help="m, thickness outside each wall; 0 = none")
+ap.add_argument("--lid_pad", type=float, default=0.02, help="m, thickness on the outer face of the lids in --lid_pad_lids; 0 = none")
+ap.add_argument("--lid_pad_lids", default="fyp,fyn", help="only the OUTER (upper) flaps: a pad on fxp/fxn overlaps fyp/fyn and pops all lids open")
+# lid feel (2026-10-09): the flaps had an authored diagonal inertia 0.006 kg*m^2 PLUS joint armature 0.006 (~180x the
+# physical ~7e-5 of a 15 g flap) -- a leftover from the old explicit-torque crease (k 3.5 N*m/rad) that needed it to stay
+# stable. With the implicit PhysX drive it only makes the lids feel immovable. Defaults below follow parcel-forge
+# carton_v1 (crease 0.42 N*m/rad per metre of crease, inertia from geometry).
+ap.add_argument("--lid_stiff", type=float, default=-1.0, help="N*m/deg for every crease; <0 = from --lid_stiff_per_m (old value 0.012)")
+ap.add_argument("--lid_stiff_per_m", type=float, default=-1.0, help="N*m/rad per metre of crease width; <0 = crease_my_per_m / spring-back (carton_v1 used 0.42)")
+# elastic-plastic crease (sim/crease_plastic.py reads these from the joints): literature, see docs/CREASE_MECHANICS.md
+ap.add_argument("--crease_my_per_m", type=float, default=0.25, help="N*m/m yield / plateau moment per metre of crease (Nagasawa 2019: Mp1 0.244 N*m/m)")
+ap.add_argument("--crease_springback_deg", type=float, default=45.0, help="elastic spring-back after a fold (Nagasawa 2019: 90 deg fold releases to ~44-46 deg)")
+ap.add_argument("--articulation", type=int, default=1, help="1 = make the carton (base + 4 flaps) one articulation: needed for crease angles past 180 deg "
+                "(maximal-coordinate revolute joints wrap at +-180 and the limit then throws the flap round)")
+ap.add_argument("--lid_limits", default="-275,5", help="crease joint limits deg 'lower,upper' (opening is negative; -270 = folded down the outside of the wall)")
+ap.add_argument("--lid_damp_ratio", type=float, default=0.5, help="drive damping as a fraction of critical (old: 0.003 N*m*s/deg fixed)")
+ap.add_argument("--lid_armature", type=float, default=2e-4, help="kg*m^2 joint armature (old 0.006)")
+ap.add_argument("--lid_inertia", default="auto", help="'auto' = from geometry; 'keep' = authored 0.006")
+ap.add_argument("--pad_mass", type=float, default=1e-6, help="kg for the floor pad (it weighed 0.24 kg at density 200 = 2/3 of the carton)")
 ap.add_argument("--base_damp", default="2,2", help="carton base linear,angular damping; '' = keep")
 a = ap.parse_args()
 os.environ.setdefault("OMNI_KIT_ALLOW_ROOT", "1")
@@ -62,7 +82,8 @@ from isaacsim import SimulationApp
 sim = SimulationApp({"headless": True, "extra_args": ["--/persistent/physics/enableDeformableBeta=true"]})
 import carb, omni.physx.bindings._physx as pxb
 _s = carb.settings.get_settings()
-_s.set(pxb.SETTING_ENABLE_DEFORMABLE_BETA, True)          # exactly as wrap_sim.py
+if hasattr(pxb, "SETTING_ENABLE_DEFORMABLE_BETA"):   # 5.x; in 6.x these deformables are the default
+    _s.set(pxb.SETTING_ENABLE_DEFORMABLE_BETA, True)          # exactly as wrap_sim.py
 _s.set_bool("/physics/updateToUsd", True)
 _s.set_bool("/physics/updateVelocitiesToUsd", True)
 import numpy as np, trimesh, omni.usd, omni.timeline
@@ -271,10 +292,105 @@ if a.pad > 0:
     UsdPhysics.FilteredPairsAPI.Apply(pad.GetPrim()).CreateFilteredPairsRel().SetTargets(tgt)
     P("pad %.0f mm under base, filtered vs %s" % (a.pad*1e3, [str(x) for x in tgt]))
 
+# -- wall / lid pads: collide only with the wrap
+if a.wall_pad > 0 or a.lid_pad > 0:
+    rbc = UsdGeom.BBoxCache(Usd.TimeCode.Default(), ["default", "render", "guide", "proxy"])
+    def rel(prim, anc):
+        r = rbc.ComputeRelativeBound(prim, anc).ComputeAlignedRange(); return np.array(r.GetMin()), np.array(r.GetMax())
+    basep = st.GetPrimAtPath(BASE)
+    blo, bhi = rel(st.GetPrimAtPath(BASE + "/bottom"), basep)
+    cav = (blo + bhi) / 2                                    # cavity centre (base frame)
+    pads = []
+    def add_pad(parent, name, lo, hi):
+        c = UsdGeom.Cube.Define(st, parent + "/" + name); c.CreateSizeAttr(1.0)
+        c.AddTranslateOp().Set(Gf.Vec3d(*map(float, (lo + hi) / 2))); c.AddScaleOp().Set(Gf.Vec3f(*map(float, hi - lo)))
+        c.CreatePurposeAttr(UsdGeom.Tokens.guide)
+        UsdPhysics.CollisionAPI.Apply(c.GetPrim())
+        q = PhysxSchema.PhysxCollisionAPI.Apply(c.GetPrim()); q.CreateContactOffsetAttr(0.001); q.CreateRestOffsetAttr(0.0)
+        UsdPhysics.MassAPI.Apply(c.GetPrim()).CreateMassAttr(1e-6)     # don't change the carton's mass / COM
+        pads.append(c.GetPath())
+    if a.wall_pad > 0:
+        T = a.wall_pad
+        for w in ("wxp", "wxn", "wyp", "wyn"):
+            lo, hi = rel(st.GetPrimAtPath(BASE + "/" + w), basep)
+            ax = int(np.argmin((hi - lo)[:2]))                  # wall normal (x or y in base frame)
+            o = 1 - ax                                          # along-wall axis
+            out = 1.0 if (lo[ax] + hi[ax]) / 2 > cav[ax] else -1.0
+            plo, phi = lo.copy(), hi.copy()
+            if out > 0: plo[ax], phi[ax] = hi[ax], hi[ax] + T
+            else:       plo[ax], phi[ax] = lo[ax] - T, lo[ax]
+            plo[o] -= T; phi[o] += T                            # cover the corners
+            plo[2] = blo[2] - max(a.pad, 0.0)                   # down to the floor pad's bottom
+            add_pad(BASE, "pad_" + w, plo, phi)
+    if a.lid_pad > 0:
+        T = a.lid_pad
+        for n in [x for x in a.lid_pad_lids.split(",") if x]:
+            lp = st.GetPrimAtPath(PK + "/Box/" + n)
+            lo, hi = rel(st.GetPrimAtPath(PK + "/Box/" + n + "/geo"), lp)
+            ax = int(np.argmin(hi - lo))                        # plate normal in lid frame
+            Tl = np.array(UsdGeom.Xformable(lp).ComputeLocalToWorldTransform(Usd.TimeCode.Default()), float).T
+            Tb = np.array(UsdGeom.Xformable(basep).ComputeLocalToWorldTransform(Usd.TimeCode.Default()), float).T
+            cw = Tb[:3, :3] @ cav + Tb[:3, 3]
+            cl = np.linalg.inv(Tl[:3, :3]) @ (cw - Tl[:3, 3])    # cavity centre in lid frame
+            out = 1.0 if (lo[ax] + hi[ax]) / 2 > cl[ax] else -1.0
+            plo, phi = lo.copy(), hi.copy()
+            if out > 0: plo[ax], phi[ax] = hi[ax], hi[ax] + T
+            else:       plo[ax], phi[ax] = lo[ax] - T, lo[ax]
+            add_pad(PK + "/Box/" + n, "pad_outer", plo, phi)
+    # pads collide with the wrap only. invertFilteredGroups is not honoured by Isaac Sim 6.0 (pads hit the table),
+    # so filter the pads against an "everything except wrap and pads" group instead; it includes every top-level
+    # prim, so grippers / objects added to the scene later are filtered too.
+    gp = UsdPhysics.CollisionGroup.Define(st, PK + "/cg_pads")
+    gp.GetCollidersCollectionAPI().CreateIncludesRel().SetTargets(pads)
+    go = UsdPhysics.CollisionGroup.Define(st, PK + "/cg_not_wrap")
+    oc = go.GetCollidersCollectionAPI()
+    oc.CreateIncludesRel().SetTargets([q.GetPath() for q in st.GetPseudoRoot().GetChildren()])
+    oc.CreateExcludesRel().SetTargets([Sdf.Path(WRAP)] + pads)
+    gp.CreateFilteredGroupsRel().SetTargets([go.GetPath()])
+    # groups alone did not stop pad <-> flap contacts (lids popped open / stopped at ~100 deg against the wall
+    # pads), so also filter every pad against every flap body explicitly
+    _lidb = [Sdf.Path(PK + "/Box/" + n) for n in ("fxp", "fxn", "fyp", "fyn")]
+    for _pp in pads:
+        _own = str(_pp).split("/")[-2]
+        _t = [b for b in _lidb if b.name != _own] + ([Sdf.Path(BASE)] if _own != "base" else [])   # a lid pad faces the wall at 270 deg
+        UsdPhysics.FilteredPairsAPI.Apply(st.GetPrimAtPath(_pp)).CreateFilteredPairsRel().SetTargets(_t)
+    P("pads (wrap-only collision group, mass 1e-6 each): wall %.0f mm, lid %.0f mm -> %s" % (a.wall_pad*1e3, a.lid_pad*1e3, [str(x) for x in pads]))
+
 for _n in ("fxp", "fxn", "fyp", "fyn"):
-    _d = UsdPhysics.DriveAPI.Get(st.GetPrimAtPath(PK + "/Box/crease_" + _n), "angular")
-    _d.GetStiffnessAttr().Set(a.lid_stiff); _d.GetDampingAttr().Set(a.lid_damp)
-P("lid drives: stiffness %g N*m/deg damping %g" % (a.lid_stiff, a.lid_damp))
+    _lp = st.GetPrimAtPath(PK + "/Box/" + _n); _g = st.GetPrimAtPath(PK + "/Box/" + _n + "/geo")
+    _sc = _g.GetAttribute("xformOp:scale").Get()              # cube size 2: half extents (x = half width, y = reach/2, z = t)
+    _w, _L, _t = 2*float(_sc[0]), 2*float(_sc[1]), 2*float(_sc[2])
+    _dens = float(_lp.GetAttribute("physics:density").Get() or 200.0)
+    _m = _dens * _w * _L * _t
+    if a.lid_inertia == "auto":
+        for _at in ("physics:diagonalInertia", "physics:principalAxes"):
+            if _lp.HasAttribute(_at): _lp.RemoveProperty(_at)
+    _I = _m * _L * _L / 3.0 + a.lid_armature                 # about the hinge, + armature
+    _my = a.crease_my_per_m * _w                                                     # N*m
+    _k = (a.lid_stiff * 180/math.pi if a.lid_stiff > 0 else
+          a.lid_stiff_per_m * _w if a.lid_stiff_per_m > 0 else _my / math.radians(a.crease_springback_deg))   # N*m/rad
+    _c = a.lid_damp_ratio * 2.0 * math.sqrt(_k * _I)                                  # N*m*s/rad
+    _j = st.GetPrimAtPath(PK + "/Box/crease_" + _n)
+    _d = UsdPhysics.DriveAPI.Get(_j, "angular")
+    _d.GetStiffnessAttr().Set(_k * math.pi/180); _d.GetDampingAttr().Set(_c * math.pi/180)   # USD angular drive is per degree
+    PhysxSchema.PhysxJointAPI.Apply(_j).CreateArmatureAttr().Set(a.lid_armature)
+    _lo, _hi = [float(v) for v in a.lid_limits.split(",")]
+    UsdPhysics.RevoluteJoint(_j).GetLowerLimitAttr().Set(_lo); UsdPhysics.RevoluteJoint(_j).GetUpperLimitAttr().Set(_hi)
+    _j.CreateAttribute("crease:yieldMoment", Sdf.ValueTypeNames.Float).Set(_my)      # read by sim/crease_plastic.py
+    _j.CreateAttribute("crease:width", Sdf.ValueTypeNames.Float).Set(_w)
+    P("lid %s: width %.0f mm reach %.0f mm mass %.1f g | k %.4f N*m/rad (%.5f /deg) c %.5f N*m*s/rad | I_hinge %.2e (armature %.0e) | "
+      "gravity torque flat %.4f N*m | yield %.4f N*m (tip force %.2f N), spring-back %.0f deg | limits %s"
+      % (_n, _w*1e3, _L*1e3, _m*1e3, _k, _k*math.pi/180, _c, _I, a.lid_armature, _m*9.81*_L/2, _my, _my/_L, math.degrees(_my/_k), a.lid_limits))
+if a.articulation:
+    _bx = st.GetPrimAtPath(PK + "/Box")
+    UsdPhysics.ArticulationRootAPI.Apply(_bx)
+    _pa = PhysxSchema.PhysxArticulationAPI.Apply(_bx)
+    _pa.CreateEnabledSelfCollisionsAttr(True)            # flaps rest on / fold against the walls
+    _pa.CreateSolverPositionIterationCountAttr(32); _pa.CreateSolverVelocityIterationCountAttr(8)   # carton_v1
+    P("carton is an articulation (root %s): crease angles 0..270 deg" % _bx.GetPath())
+if a.pad > 0 and a.pad_mass > 0:
+    UsdPhysics.MassAPI.Apply(st.GetPrimAtPath(BASE + "/pad_collider")).CreateMassAttr(a.pad_mass)
+    P("floor pad mass %g kg" % a.pad_mass)
 if a.base_damp:
     _ld, _ad = [float(v) for v in a.base_damp.split(",")]
     _bp = PhysxSchema.PhysxRigidBodyAPI.Apply(st.GetPrimAtPath(BASE))
