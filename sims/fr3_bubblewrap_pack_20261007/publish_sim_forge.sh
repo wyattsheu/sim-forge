@@ -24,6 +24,7 @@ for f in carton_w131.usd carton_w131.meta.json; do rm -f $STAGE/work/$f; cp -L $
 rsync -a --delete "${EXC[@]}" $H/vol/ $STAGE/vol/
 for f in carton_w131.usd carton_w131.meta.json; do [ -L $STAGE/vol/$f ] && { rm -f $STAGE/vol/$f; cp -L $H/vol/$f $STAGE/vol/$f; } || true; done
 [ -d $H/arm ] && rsync -a --delete "${EXC[@]}" $H/arm/ $STAGE/arm/
+[ -d $H/arm/data ] && rsync -a --delete --exclude "*.log" $H/arm/data/ $STAGE/arm/data/   # URDF + 軌跡(1.5 MB),clone 即可跑
 # 原始交接文件
 mkdir -p $STAGE/docs/handoff_20260929
 cp $H/*.md $STAGE/docs/handoff_20260929/ 2>/dev/null || true
