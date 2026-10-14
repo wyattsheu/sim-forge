@@ -76,6 +76,7 @@ ap.add_argument("--second", type=int, default=1, help="1 = yn 掀完接著掀 yp
 ap.add_argument("--gcam_focal", type=float, default=2.8, help="抓取段相機 focal(Camera API 單位,x10 = mm)")
 ap.add_argument("--grasp_attach", type=int, default=0, help="1 = 夾爪閉合完成那步把指間 yn 片頂點 VtxXformAttachment 綁到上指,張開時 RemovePrim")
 ap.add_argument("--attach_pad_mm", type=float, default=16.0, help="綁定挑點:指面足跡(夾爪框 t/u)半寬外擴到這個 mm")
+ap.add_argument("--attach_nlo_mm", type=float, default=-1.0, help="綁定挑點的 n 下限(指間中面以下幾 mm;<0 = 同上限 間距/2+4);n<0 的頂點綁到下指")
 ap.add_argument("--attach_layer", choices=["both", "top"], default="both", help="both = 指間上下層都綁;top = 只綁 n>0(上指側)")
 a = ap.parse_args()
 if a.tuck == 0:
@@ -769,6 +770,8 @@ if a.grasp:
         return offw, Pw, Pw - offw, MW - offw, mp
     def g_frame_now(t):
         pu, Ru = g_pose("up", t); pl_, _ = g_pose("lo", t)
+        if a.grasp_attach:
+            pl_ = pu - Ru @ [0, 0, GFS[2] + GAPG]
         return (pu + pl_) / 2, Ru
     def g_between(Pw, t):
         gc, Rg = g_frame_now(t)
@@ -796,7 +799,15 @@ if a.grasp:
                  "OK" if r["ok"] else "NG"))
         okr = [r for r in rows if r["ok"]]
         rk = a.grasp_rank if sd == "yn" else 1
-        if okr:
+        ATT_MODE = bool(a.grasp_attach)
+        ab = [r for r in rows if r["ok_a"] and r["ok_b"] and r["kind"] == "tip"]
+        if ATT_MODE and ab:
+            xs = [r["flat"][0] for r in rows if r["kind"] == "tip"]
+            lo_x, hi_x = min(xs), max(xs)
+            mid_ = [r for r in ab if r["flat"][0] - lo_x >= 40 and hi_x - r["flat"][0] >= 40] or ab
+            pick = min(mid_, key=lambda r: abs(r["flat"][0] - (lo_x + hi_x) / 2))
+            why = "綁定模式:自由邊中段(邊 flat x %.0f~%.0f,選 x=%.0f;只檢 a/b,跳過 c)" % (lo_x, hi_x, pick["flat"][0])
+        elif okr:
             pick = rows[min(rk, len(okr)) - 1]; why = "合格第 %d 名" % min(rk, len(okr))
         else:
             pick = max(rows, key=lambda r: r["gap"]); why = "★ 沒有合格點 → 退而求其次:下方空隙最大"
@@ -822,7 +833,12 @@ if a.grasp:
         up_f = lo_f + R0 @ [0, 0, GFS[2] + GAPG]
         up_pre = up_f + R0 @ [0, 0, 0.012]; up_above = up_pre + [0, 0, 0.06]
         W_ = lambda x: np.asarray(x) + offw
-        if a.pick_mode == "jaw":
+        if a.pick_mode == "jaw" and a.grasp_attach:
+            pc = p + R0 @ [0, -0.012, 0]
+            lo_lift = pc - R0 @ [0, 0, GAPG / 2 + GFS[2] / 2]      # 虛擬下指(不動,停在 park):只用來定夾爪框
+            pl_extra = dict(lo_lift=lo_lift)
+            P("  [%s] 綁定模式:下指不插入(停 park);上指從 +z 降到邊上方,指面中心在邊內 12mm %s" % (sd, np.round(pc * 1e3, 1)))
+        elif a.pick_mode == "jaw":
             # 下指(20x20x8)本身挑角:足跡起點 u∈[+7,+27](= grasp_points (b) 檢查的下指掃掠)、頂面在布底下 3mm,沿 −u 伸進 pin,再上抬
             if slope >= a.steep_deg:
                 lift = 0.0
@@ -935,16 +951,23 @@ if a.grasp:
         pl["ev"]["grip"] = dict(n=len(G_), n25=int(_m25.sum()))
         if a.grasp_attach:
             pad = a.attach_pad_mm / 1e3
-            ma = (np.abs(L_[:, 0]) < pad) & (np.abs(L_[:, 1]) < pad) & (np.abs(L_[:, 2]) <= GAPG / 2 + 0.004) & (GSIDE2 == sd)
+            nlo = a.attach_nlo_mm / 1e3 if a.attach_nlo_mm >= 0 else GAPG / 2 + 0.004
+            ma = (np.abs(L_[:, 0]) < pad) & (np.abs(L_[:, 1]) < pad) & (L_[:, 2] <= GAPG / 2 + 0.004) & (L_[:, 2] >= -nlo) & (GSIDE2 == sd)
             if a.attach_layer == "top":
                 ma &= L_[:, 2] > 0
             AV = np.where(ma)[0]
             pu_, Ru_ = g_pose("up", t)
             loc = (Pw[AV] - pu_) @ Ru_
             scp = "/World/gatt_%s" % sd
-            if len(AV):
-                VC.attach_vtx(st, scp, "/World/plate", "/World/plate", GPATH["up"], AV, loc, P=P)
-            pl["att"] = dict(scope=scp, vids=AV, n=len(AV), on=bool(len(AV)), loc0=loc.copy())
+            AVu = AV if a.attach_nlo_mm < 0 else AV[L_[AV, 2] >= 0]
+            AVl = np.array([], int) if a.attach_nlo_mm < 0 else AV[L_[AV, 2] < 0]
+            if len(AVu):
+                VC.attach_vtx(st, scp, "/World/plate", "/World/plate", GPATH["up"], AVu, (Pw[AVu] - pu_) @ Ru_, P=P)
+            if len(AVl):
+                pl_, Rl_ = g_pose("lo", t)
+                VC.attach_vtx(st, scp + "_lo", "/World/plate", "/World/plate", GPATH["lo"], AVl, (Pw[AVl] - pl_) @ Rl_, P=P)
+            P("  [%s] 綁到上指 %d / 下指 %d(n 範圍 [%.1f, %.1f] mm)" % (sd, len(AVu), len(AVl), -nlo * 1e3, (GAPG / 2 + 0.004) * 1e3))
+            pl["att"] = dict(scope=scp, vids=AV, n=len(AV), on=bool(len(AV)), loc0=loc.copy(), lo=bool(len(AVl)))
             pl["ev"]["grip"]["n_att"] = len(AV)
             P("★ t=%.2f [%s] 綁住 %d 個頂點(%s;足跡半寬 %.0fmm、|n|<=%.1fmm、層 %s);指間非 %s 頂點(未綁)%d"
               % (t, sd, len(AV), sd, pad * 1e3, (GAPG / 2 + 0.004) * 1e3, a.attach_layer, sd,
@@ -998,14 +1021,14 @@ if a.grasp:
                 Pf = {k_: Pf[k_] + [0, 0, dz] for k_ in Pf}
             return Pf, Rf, th
         TP0 = t; TP1 = TP0 + a.peel_t
-        for k_ in ("up", "lo"):
+        for k_ in (("up",) if a.grasp_attach else ("up", "lo")):
             g_fn(k_, TP0, a.peel_t, lambda w, k_=k_: (at(w)[0][k_] + offw, at(w)[1]))
         if not np.all(np.isfinite([r0, th0, th1, Rr])):
             raise RuntimeError("弧線參數 nan: r0=%s th0=%s th1=%s Rr=%s" % (r0, th0, th1, Rr))
         Pf1, Rf1, th_e = at(1.0)
         n_e, u_e = Rf1[:, 2], Rf1[:, 1]
         TR = TP1 + GT["peel_hold"]
-        for k_, sgn in (("up", 1.0), ("lo", -1.0)):
+        for k_, sgn in ((("up", 1.0),) if a.grasp_attach else (("up", 1.0), ("lo", -1.0))):
             p1 = Pf1[k_] + offw
             g_lin(k_, TR, GT["rel_open"], p1 + sgn * n_e * 0.010)
             g_lin(k_, TR + GT["rel_open"], GT["rel_slide"], p1 + sgn * n_e * 0.010 + u_e * 0.030)
@@ -1091,6 +1114,7 @@ if a.grasp:
             g_grip_and_arc(pl, t)
         if pl.get("att", {}).get("on") and t >= pl["TR"] - 1e-6:
             st.RemovePrim(Sdf.Path(pl["att"]["scope"])); pl["att"]["on"] = False
+            if pl["att"].get("lo"): st.RemovePrim(Sdf.Path(pl["att"]["scope"] + "_lo"))
             P("★ t=%.2f [%s] 張開:RemovePrim %s(釋放 %d 頂點)" % (t, pl["sd"], pl["att"]["scope"], pl["att"]["n"]))
         for nm_, tt_ in (("peel_1_3", pl.get("TP0", 1e9) + a.peel_t / 3), ("peel_2_3", pl.get("TP0", 1e9) + 2 * a.peel_t / 3),
                          ("peeled", pl.get("TP1", 1e9)), ("held", pl.get("TR", 1e9) - 1e-3), ("released", S0 + G_SHEET - 0.05)):
@@ -1216,7 +1240,8 @@ for fr in range(NFR):
         if a.grasp and GS["plans"] and tcur >= TG0:
             _pl = GS["plans"][-1]; g_line(_pl, g_metrics(_pl, tcur, Pp), r)
             if _pl.get("att", {}).get("on") and r["lr"][1] > 2.3:
-                st.RemovePrim(Sdf.Path(_pl["att"]["scope"])); _pl["att"]["on"] = False; _pl["ev"]["lr_guard"] = tcur
+                st.RemovePrim(Sdf.Path(_pl["att"]["scope"])); _pl["att"]["on"] = False
+                if _pl["att"].get("lo"): st.RemovePrim(Sdf.Path(_pl["att"]["scope"] + "_lo")); _pl["ev"]["lr_guard"] = tcur
                 P("★ t=%.2f [%s] 守衛:邊長比最大 %.3f > 2.3 → RemovePrim %s 放手" % (tcur, _pl["sd"], r["lr"][1], _pl["att"]["scope"]))
     # 階段快照
     for nm_, tt_ in [("fold_" + FOLD_ORDER[1], FT[FOLD_ORDER[2]][0] - 1e-6), ("after_move", T_OPEN0 - 1e-6),
