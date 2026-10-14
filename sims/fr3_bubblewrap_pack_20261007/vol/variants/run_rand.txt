@@ -1,0 +1,3 @@
+[08:43] r7_00 box 開跑(GPU 15726 MiB)
+   → nolog  0s
+[08:43] r7_01 box 開跑(GPU 15726 MiB)
