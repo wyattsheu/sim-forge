@@ -83,6 +83,25 @@ ap.add_argument("--grasp_attach", type=int, default=0, help="1 = 夾爪閉合完
 ap.add_argument("--attach_pad_mm", type=float, default=16.0, help="綁定挑點:指面足跡(夾爪框 t/u)半寬外擴到這個 mm")
 ap.add_argument("--attach_nlo_mm", type=float, default=-1.0, help="綁定挑點的 n 下限(指間中面以下幾 mm;<0 = 同上限 間距/2+4);n<0 的頂點綁到下指")
 ap.add_argument("--attach_layer", choices=["both", "top"], default="both", help="both = 指間上下層都綁;top = 只綁 n>0(上指側)")
+ap.add_argument("--attach_mask_own", type=int, default=0, help="[drag] 1 = 綁定時排除被 xp/xn 等他片壓住(over)的 yn 頂點;2 = 再排除緊貼他片上方(under)的;0 = 舊行為")
+ap.add_argument("--attach_mask_r_mm", type=float, default=16.0, help="[drag] layer_order 鄰域半徑 mm")
+ap.add_argument("--attach_mask_dz_mm", type=float, default=2.0, help="[drag] layer_order 層高差門檻 mm")
+ap.add_argument("--lift_first_mm", type=float, default=0.0, help="[drag] 夾好後先直線拉起這麼多 mm 再轉弧(0 = 舊行為)")
+ap.add_argument("--lift_first_t", type=float, default=1.0, help="[drag] 拉起用時 s")
+ap.add_argument("--lift_first_dir", choices=["z", "n"], default="z", help="[drag] z = 世界垂直;n = 上指法線")
+ap.add_argument("--attach_stiff", type=float, default=0.0, help="[drag] 夾持綁定 omniphysics:stiffness(每頂點 N/m);0 = 舊無限剛度")
+ap.add_argument("--hold_others", type=int, default=0, help="[drag] 1 = 綁定 yn/yp 那一步同時把他片(xp/xn)靠折線側釘到不碰撞 kinematic 錨(PPT 第二隻手),放手後移除;0 = 舊行為")
+ap.add_argument("--hold_pad_mm", type=float, default=24.0, help="[drag] 他片在 flat 座標從該片折線往內延伸幾 mm 都釘(耳朵區一定包含)")
+ap.add_argument("--hold_mode", choices=["attach", "pad"], default="attach", help="[drag] attach = VtxXformAttachment 釘住;pad = 壓板(未實作)")
+ap.add_argument("--hold_sides", default="xp,xn", help="[drag] 要釘的片,逗號分隔")
+ap.add_argument("--hold_layer", choices=["both", "top"], default="both", help="[drag] both = TOP+BOT 兩層;top = 只釘上層")
+ap.add_argument("--hold_rel_s", type=float, default=0.5, help="[drag] TR(放手開始)後幾秒移除釘住")
+ap.add_argument("--attach_damp", type=float, default=0.0, help="[drag] 夾持綁定 omniphysics:damping(每頂點 N·s/m);-1 = 自動臨界 2*sqrt(k*m_vtx)")
+ap.add_argument("--attach_proxy", type=int, default=0, help="[drag] 1 = 上指綁定改綁到動態代理 /World/gfing/upx(D6 drive 掛在上指,力上限 proxy_fmax);0 = 舊行為")
+ap.add_argument("--proxy_k", type=float, default=500.0, help="[drag] 代理 drive 剛度 N/m")
+ap.add_argument("--proxy_c", type=float, default=-1.0, help="[drag] 代理 drive 阻尼 N·s/m;-1 = 2*sqrt(k*m_proxy)")
+ap.add_argument("--proxy_fmax", type=float, default=0.5, help="[drag] 代理 drive maxForce N(每軸);布抗力超過就讓代理落後")
+ap.add_argument("--proxy_m", type=float, default=0.005, help="[drag] 代理質量 kg")
 a = ap.parse_args()
 if a.tuck == 0:
     a.squeeze_t = 0.0
@@ -507,6 +526,30 @@ if a.grasp:
         GVIS[k_].set(GPARK[k_])
     P("★ --grasp 1:kinematic 指 rod %s / 上下指 %s mm,指面摩擦 %.1f(rod 0.5),cont 1 / rest 0;停在 %s"
       % (GRS*1e3, GFS*1e3, a.ffric, GPARK["rod"]))
+    if a.attach_proxy:                                                        # [drag] 力限代理:動態剛體 upx 以 D6 drive 掛在上指
+        GPATH["upx"] = "/World/gfing/upx"
+        _px = VC.kin_box(st, GPATH["upx"], [0.004] * 3, GPARK["up"], collide=False, visible=False)
+        UsdPhysics.RigidBodyAPI(_px).GetKinematicEnabledAttr().Set(False)
+        PhysxSchema.PhysxRigidBodyAPI.Apply(_px).CreateDisableGravityAttr(True)
+        _pm = UsdPhysics.MassAPI.Apply(_px); _pm.CreateMassAttr(float(a.proxy_m)); _pm.CreateDiagonalInertiaAttr(Gf.Vec3f(1e-7, 1e-7, 1e-7))
+        PROXY_C = a.proxy_c if a.proxy_c >= 0 else 2 * np.sqrt(a.proxy_k * a.proxy_m)
+        _j = UsdPhysics.Joint.Define(st, "/World/gfing/upx_joint")
+        _j.CreateBody0Rel().SetTargets([Sdf.Path(GPATH["up"])]); _j.CreateBody1Rel().SetTargets([Sdf.Path(GPATH["upx"])])
+        _j.CreateLocalPos0Attr(Gf.Vec3f(0, 0, 0)); _j.CreateLocalPos1Attr(Gf.Vec3f(0, 0, 0))
+        _j.CreateLocalRot0Attr(Gf.Quatf(1, 0, 0, 0)); _j.CreateLocalRot1Attr(Gf.Quatf(1, 0, 0, 0))
+        _j.CreateCollisionEnabledAttr(False); _j.CreateBreakForceAttr(float("inf")); _j.CreateBreakTorqueAttr(float("inf"))
+        for _ax in ("rotX", "rotY", "rotZ"):
+            _l = UsdPhysics.LimitAPI.Apply(_j.GetPrim(), _ax); _l.CreateLowAttr(1.0); _l.CreateHighAttr(-1.0)
+        for _ax in ("transX", "transY", "transZ"):
+            _d = UsdPhysics.DriveAPI.Apply(_j.GetPrim(), _ax); _d.CreateTypeAttr("force"); _d.CreateTargetPositionAttr(0.0)
+            _d.CreateStiffnessAttr(float(a.proxy_k)); _d.CreateDampingAttr(float(PROXY_C)); _d.CreateMaxForceAttr(float(a.proxy_fmax))
+        P("★ --attach_proxy 1:上指綁定改綁 %s(動態、無碰撞、無重力、m %.3f kg);D6 drive k %g N/m c %g N·s/m maxForce %g N(每軸)"
+          % (GPATH["upx"], a.proxy_m, a.proxy_k, PROXY_C, a.proxy_fmax))
+    if a.hold_others:                                                         # [drag] 釘他片用的不碰撞 kinematic 錨(永不移動)
+        if a.hold_mode != "attach": raise NotImplementedError("--hold_mode pad 未實作(耳朵被 yn 尖端罩住、側向無空間)")
+        HOLD_ANC = np.array([3.0, 3.4, 1.0])
+        VC.kin_box(st, "/World/ghold/anc", [0.004] * 3, HOLD_ANC, collide=False, visible=False)
+        P("★ --hold_others 1:他片 %s 釘到 /World/ghold/anc(不碰撞、停在 %s);pad %.0f mm 層 %s;TR+%.1fs 放開" % (a.hold_sides, HOLD_ANC, a.hold_pad_mm, a.hold_layer, a.hold_rel_s))
 
 # ── 相機 / 燈 [ws] ───────────────────────────────────────────────────
 FPS = a.fps
@@ -550,15 +593,27 @@ if a.grasp:
     _gpi = {GPATH[k_]: i_ for i_, k_ in enumerate(GKEYS)}
     GF_ORD = np.array([_gpi[p_] for p_ in GFV.prim_paths]); GF_IDX = np.arange(GFV.count, dtype=np.int32)
     P("抓取指 rigid body view:%d 個" % GFV.count)
+    if a.attach_proxy:                                                    # [drag] 代理另開 view(不能進 kinematic view)
+        GPXV = world.physics_sim_view.create_rigid_body_view([GPATH["upx"]])
+        def g_proxy_pose():
+            _t = GPXV.get_transforms(); _t = _t.numpy() if hasattr(_t, "numpy") else np.asarray(_t); _t = _t[0]
+            return _t[:3].astype(float), np.array([_t[6], _t[3], _t[4], _t[5]], float)
 if a.fast_pts:                                        # [speed] tensor 直讀 sim 節點
     _usd_pts = PLATE.pts
-    PLV = world.physics_sim_view.create_volume_deformable_body_view("/World/plate")
-    _NPL = len(FLAT)
+    import omni.physics.tensors as _opt                # numpy 前端拿不到 GPU deformable 資料 → 另開 warp 前端
+    _NPL = len(FLAT); _FP = {}
     def _fast_pts():
-        return np.asarray(PLV.get_simulation_nodal_positions(), dtype=float).reshape(-1, 3)[:_NPL]
-    _d = np.abs(_fast_pts() - _usd_pts()).max()
-    P("[fast_pts] volume deformable view count %d, max_nodes %d (USD %d);起始 max|tensor-USD| = %.3g m"
-      % (PLV.count, PLV.max_simulation_nodes_per_body, _NPL, _d))
+        if "v" not in _FP:                             # 第一次量測時(已跑過 step)才建 view
+            _WSV = _opt.create_simulation_view("warp"); _WSV.set_subspace_roots("/")
+            v = _WSV.create_volume_deformable_body_view("/World/plate")
+            P("[fast_pts] view count %d max_sim_nodes %d sim_elems %d (USD pts %d)"
+              % (v.count, v.max_simulation_nodes_per_body, v.max_simulation_elements_per_body, _NPL))
+            if v.max_simulation_nodes_per_body < _NPL:
+                P("[fast_pts] ★ view 無節點(此版 omni.physics.tensors 對 /World/plate 回 max_sim_nodes 0;numpy/torch/warp 皆同)→ 退回 USD"); _FP["v"] = None
+            else:
+                _FP["v"] = v; _FP["sv"] = _WSV
+        if _FP["v"] is None: return _usd_pts()
+        return _FP["v"].get_simulation_nodal_positions().numpy().astype(float).reshape(-1, 3)[:_NPL]
     PLATE.pts = _fast_pts
 
 # ── 時間表 ───────────────────────────────────────────────────────────
@@ -590,7 +645,8 @@ G_TPICK = GT["rod_above"] + GT["rod_down"] + GT["rod_in"] + GT["rod_lift"] + GT[
 G_TLOIN = G_TPICK + GT["lo_above"] + GT["lo_down"] + GT["lo_in"]                                        # 7.1 張口兩指插到位
 G_TJAW = G_TLOIN + GT["close"]                                                                          # 7.9 合好 → rod 撤
 G_TGRIP = G_TJAW + GT["rod_out"] + GT["rod_up"] + GT["grip_hold"] + 0.4                                 # 9.7 登記夾到的點、開始掀
-G_SHEET = G_TGRIP + a.peel_t + GT["peel_hold"] + GT["rel_open"] + GT["rel_slide"] + GT["rel_up"] + 0.3
+G_LF = a.lift_first_t if a.lift_first_mm > 0 else 0.0                                                  # [drag] 先拉起
+G_SHEET = G_TGRIP + G_LF + a.peel_t + GT["peel_hold"] + GT["rel_open"] + GT["rel_slide"] + GT["rel_up"] + 0.3
 G_SEQ = (["yn", "yp"] if a.second else ["yn"]) if a.grasp else []
 TG0 = T_END_ALL + 1.0
 if a.grasp and a.until == "all":
@@ -626,7 +682,7 @@ def phase(t):
             ("grip hold", G_TGRIP)] if a.pick_mode == "jaw" else [("open jaws in", G_TLOIN), ("close jaws", G_TJAW), ("rod out / grip hold", G_TGRIP)])
     for nm_, tt_ in [("pick: %s to corner" % _pf, GT["rod_above"] + GT["rod_down"]), ("pick: %s insert" % _pf, GT["rod_above"] + GT["rod_down"] + GT["rod_in"]),
                      ("pick: lift corner", G_TPICK)] + _sq + [
-                     ("PEEL arc", G_TGRIP + a.peel_t), ("hold peeled", G_TGRIP + a.peel_t + GT["peel_hold"])]:
+                     ("LIFT first", G_TGRIP + G_LF), ("PEEL arc", G_TGRIP + G_LF + a.peel_t), ("hold peeled", G_TGRIP + G_LF + a.peel_t + GT["peel_hold"])]:
         if r_ < tt_: return "%s %s" % (sd, nm_)
     return "%s release" % sd
 
@@ -971,23 +1027,53 @@ if a.grasp:
             ma = (np.abs(L_[:, 0]) < pad) & (np.abs(L_[:, 1]) < pad) & (L_[:, 2] <= GAPG / 2 + 0.004) & (L_[:, 2] >= -nlo) & (GSIDE2 == sd)
             if a.attach_layer == "top":
                 ma &= L_[:, 2] > 0
+            if a.attach_mask_own:                                             # [drag] 排除被他片壓住的頂點
+                import layer_order as LO
+                _Mm = GPL.mid(Pl) * 1e3; _idx, _over, _who, _under = LO.analyze(_Mm, GSIDE2[:N1], sd, r=a.attach_mask_r_mm, dz=a.attach_mask_dz_mm)
+                _bad = np.zeros(N1, bool); _bad[_idx] = _over if a.attach_mask_own == 1 else (_over | (np.array(_under) != ""))
+                _ma0 = ma.copy(); ma = ma & ~_bad[np.arange(len(ma)) % N1]
+                _rm = np.where(_ma0 & ~ma)[0]; _pos = {v_: k_ for k_, v_ in enumerate(_idx)}
+                P("  [%s] 綁定遮罩 own=%d r=%.0f dz=%.0f:候選 %d → 排除被壓/貼他片 %d → 綁 %d(壓住者 %s;貼在 %s 上)"
+                  % (sd, a.attach_mask_own, a.attach_mask_r_mm, a.attach_mask_dz_mm, int(_ma0.sum()), len(_rm), int(ma.sum()),
+                     dict(zip(*np.unique([_who[_pos[q % N1]] for q in _rm] or ["-"], return_counts=True))),
+                     dict(zip(*np.unique([_under[_pos[q % N1]] for q in _rm] or ["-"], return_counts=True)))))
+                pl["mask_removed"] = int(len(_rm))
+                if ma.sum() == 0:
+                    ma = _ma0; P("  [%s] ★ 遮罩後 0 點 → 退回不遮罩" % sd)
             AV = np.where(ma)[0]
             pu_, Ru_ = g_pose("up", t)
             loc = (Pw[AV] - pu_) @ Ru_
             scp = "/World/gatt_%s" % sd
             AVu = AV if a.attach_nlo_mm < 0 else AV[L_[AV, 2] >= 0]
             AVl = np.array([], int) if a.attach_nlo_mm < 0 else AV[L_[AV, 2] < 0]
-            if len(AVu):
-                VC.attach_vtx(st, scp, "/World/plate", "/World/plate", GPATH["up"], AVu, (Pw[AVu] - pu_) @ Ru_, P=P)
+            _astf = a.attach_stiff if a.attach_stiff > 0 else float("inf")
+            _adamp = a.attach_damp if a.attach_damp >= 0 else 2 * np.sqrt(a.attach_stiff * a.areal * WX * WY / len(Pw))
+            if len(AVu) and a.attach_proxy:                               # [drag] 綁到代理(以代理當下 pose 算 local)
+                _pp, _pq = g_proxy_pose(); _pR = Ru_                       # 旋轉被 joint 鎖住 = 上指旋轉
+                P("  [%s] 代理 upx 位置 %s mm(上指目標 %s;落後 %.2f mm)" % (sd, np.round((_pp - offw) * 1e3, 1), np.round((pu_ - offw) * 1e3, 1), np.linalg.norm(_pp - pu_) * 1e3))
+                VC.attach_vtx(st, scp, "/World/plate", "/World/plate", GPATH["upx"], AVu, (Pw[AVu] - _pp) @ _pR, P=P, stiff=_astf, damp=_adamp)
+            elif len(AVu):
+                VC.attach_vtx(st, scp, "/World/plate", "/World/plate", GPATH["up"], AVu, (Pw[AVu] - pu_) @ Ru_, P=P, stiff=_astf, damp=_adamp)
             if len(AVl):
                 pl_, Rl_ = g_pose("lo", t)
-                VC.attach_vtx(st, scp + "_lo", "/World/plate", "/World/plate", GPATH["lo"], AVl, (Pw[AVl] - pl_) @ Rl_, P=P)
-            P("  [%s] 綁到上指 %d / 下指 %d(n 範圍 [%.1f, %.1f] mm)" % (sd, len(AVu), len(AVl), -nlo * 1e3, (GAPG / 2 + 0.004) * 1e3))
+                VC.attach_vtx(st, scp + "_lo", "/World/plate", "/World/plate", GPATH["lo"], AVl, (Pw[AVl] - pl_) @ Rl_, P=P, stiff=_astf, damp=_adamp)
+            P("  [%s] 綁到上指 %d / 下指 %d(n 範圍 [%.1f, %.1f] mm)stiff=%s damp=%g" % (sd, len(AVu), len(AVl), -nlo * 1e3, (GAPG / 2 + 0.004) * 1e3, _astf, _adamp))
             pl["att"] = dict(scope=scp, vids=AV, n=len(AV), on=bool(len(AV)), loc0=loc.copy(), lo=bool(len(AVl)))
             pl["ev"]["grip"]["n_att"] = len(AV)
             P("★ t=%.2f [%s] 綁住 %d 個頂點(%s;足跡半寬 %.0fmm、|n|<=%.1fmm、層 %s);指間非 %s 頂點(未綁)%d"
               % (t, sd, len(AV), sd, pad * 1e3, (GAPG / 2 + 0.004) * 1e3, a.attach_layer, sd,
                  int(((np.abs(L_[:, 0]) < pad) & (np.abs(L_[:, 1]) < pad) & (np.abs(L_[:, 2]) <= GAPG / 2 + 0.004) & (GSIDE2 != sd)).sum())))
+        if a.hold_others:                                                     # [drag] 釘住他片靠折線側(含耳朵)
+            hs = [x_ for x_ in a.hold_sides.split(",") if x_]
+            mh = np.isin(GSIDE2, hs) & (sg * FLAT[:, 1] >= CY - a.hold_pad_mm / 1e3)
+            if a.hold_layer == "top": mh &= np.arange(len(mh)) >= N1
+            HV = np.where(mh)[0]
+            if len(HV):
+                VC.attach_vtx(st, "/World/ghold_%s" % sd, "/World/plate", "/World/plate", "/World/ghold/anc", HV, Pw[HV] - HOLD_ANC, P=P)
+            pl["hold"] = dict(scope="/World/ghold_%s" % sd, vids=HV, n=len(HV), on=bool(len(HV)), P0=Pw[HV].copy())
+            P("★ t=%.2f [%s] 壓住(釘)他片 %d 點(%s;flat 折線內 %.0f mm;層 %s;z %.0f~%.0f mm;模式 %s)"
+              % (t, sd, len(HV), dict(zip(*np.unique(GSIDE2[HV], return_counts=True))) if len(HV) else {}, a.hold_pad_mm, a.hold_layer,
+                 (Pw[HV, 2].min() - offw[2]) * 1e3 if len(HV) else np.nan, (Pw[HV, 2].max() - offw[2]) * 1e3 if len(HV) else np.nan, a.hold_mode))
         SNAP["g_%s_grip" % sd] = (Pw.copy(), mug_world()[2].copy(), measure(t)[0])
         col_i = v % (a.nxy + 1)
         hy, hz, hfy, ym, zm, nc = GPL.hinge(Pl, sd, col_i)
@@ -1005,8 +1091,15 @@ if a.grasp:
             Lflat = float(np.median(np.abs(GF2[np.asarray(pl["att"]["vids"]) % N1, 1] - hfy)))
         Lmat = max(Lcur, Lflat)
         Rr = a.arc_k * (Lmat - 0.0075)
-        gc0 = (pl["lo_f"] + pl["up_f"]) / 2; R0 = pl["R0"]
-        o_ = {"up": pl["up_f"] - gc0, "lo": pl["lo_f"] - gc0}
+        up_f, lo_f, R0 = pl["up_f"], pl["lo_f"], pl["R0"]; TP0 = t
+        if a.lift_first_mm > 0:                                               # [drag] 先直線拉起再轉弧
+            dl = (np.array([0, 0, 1.0]) if a.lift_first_dir == "z" else R0[:, 2]) * a.lift_first_mm / 1e3
+            for k_ in (("up",) if a.grasp_attach else ("up", "lo")):
+                g_lin(k_, t, a.lift_first_t, pl[k_ + "_f"] + dl + offw, R0)
+            up_f, lo_f = up_f + dl, lo_f + dl; TP0 = t + a.lift_first_t
+            P("  [%s] 先沿 %s 拉起 %.0f mm(%.1f s)再轉弧" % (sd, a.lift_first_dir, a.lift_first_mm, a.lift_first_t))
+        gc0 = (lo_f + up_f) / 2
+        o_ = {"up": up_f - gc0, "lo": lo_f - gc0}
         Ba, Bz = -sg * hy, hz
         Ea, Ez = -(IY + 0.0015), CBOX["top_y"] + T / 2 + 0.002
         a0, z0 = -sg * gc0[1] - Ba, gc0[2] - Bz; r0 = float(np.hypot(a0, z0)); th0 = float(np.arctan2(z0, a0))
@@ -1036,7 +1129,7 @@ if a.grasp:
                 dz = max(0.0, zclear - cs[m_, 2].min())
                 Pf = {k_: Pf[k_] + [0, 0, dz] for k_ in Pf}
             return Pf, Rf, th
-        TP0 = t; TP1 = TP0 + a.peel_t
+        TP1 = TP0 + a.peel_t
         for k_ in (("up",) if a.grasp_attach else ("up", "lo")):
             g_fn(k_, TP0, a.peel_t, lambda w, k_=k_: (at(w)[0][k_] + offw, at(w)[1]))
         if not np.all(np.isfinite([r0, th0, th1, Rr])):
@@ -1089,13 +1182,22 @@ if a.grasp:
         r["oth_max"] = float(d_[o_].max()) * 1e3
         r["oth_side"] = {s_: int(((GSIDE2 == s_) & (d_ > 0.010)).sum()) for s_ in pl["osides"]}
         r["mug_d"] = float(np.linalg.norm(mug_world()[0] - pl["mug0"])) * 1e3
+        if a.attach_proxy:                                                    # [drag] 代理落後上指目標 mm
+            r["lag"] = float(np.linalg.norm(g_proxy_pose()[0] - g_pose("up", t)[0])) * 1e3
+        if pl.get("hold") is not None:                                        # [drag] 追加欄位
+            hv = pl["hold"]["vids"]; of_ = o_.copy(); of_[hv] = False
+            r["hold_n"] = int(pl["hold"]["n"]); r["hold_on"] = bool(pl["hold"]["on"])
+            r["oth_pct_free"] = 100.0 * int((d_[of_] > 0.010).sum()) / max(1, int(of_.sum()))
+            r["hold_d"] = float(np.linalg.norm(Pw[hv] - pl["hold"]["P0"], axis=1).max()) * 1e3 if len(hv) else float("nan")
         return r
 
     def g_line(pl, r, rm):
         P("  G[%s] t=%6.2f %-26s 上指 (%6.1f,%6.1f,%6.1f) 下指 (%6.1f,%6.1f,%6.1f) | 夾到 %2d | 滑動 中位 %s 最大 %s | %s 越過折線 %3.0f%%(實測彎折 %3.0f%%;整片 %3.0f%%)| 他片 >10mm %4d(%.1f%%)最大 %5.1f | 杯位移 %.1f | 自穿 %d 穿杯 %d 反轉 %d"
           % (pl["sd"], r["t"], phase(r["t"]), *r["up"], *r["lo"], r["ngrip"], "%.1f" % r["slip"] if np.isfinite(r["slip"]) else "-",
              "%.1f" % r["slip_max"] if np.isfinite(r["slip_max"]) else "-", pl["sd"], 100 * r["cross"], 100 * r["cross_h"], 100 * r["cross_all"],
-             r["oth_n10"], r["oth_pct"], r["oth_max"], r["mug_d"], rm["pen"], rm["inmug"], rm["inv"]))
+             r["oth_n10"], r["oth_pct"], r["oth_max"], r["mug_d"], rm["pen"], rm["inmug"], rm["inv"])
+          + (" | 壓住 %d 他片(扣壓住) %.1f%% 釘點位移 %.1f" % (r["hold_n"], r["oth_pct_free"], r["hold_d"]) if "hold_n" in r else "")
+          + (" | 代理落後 %.1f" % r["lag"] if "lag" in r else ""))
         GS["rows"].append(dict(sd=pl["sd"], **{k_: (v_.tolist() if isinstance(v_, np.ndarray) else v_) for k_, v_ in r.items()},
                                pen=rm["pen"], inmug=rm["inmug"], inv=rm["inv"]))
 
@@ -1132,6 +1234,9 @@ if a.grasp:
             st.RemovePrim(Sdf.Path(pl["att"]["scope"])); pl["att"]["on"] = False
             if pl["att"].get("lo"): st.RemovePrim(Sdf.Path(pl["att"]["scope"] + "_lo"))
             P("★ t=%.2f [%s] 張開:RemovePrim %s(釋放 %d 頂點)" % (t, pl["sd"], pl["att"]["scope"], pl["att"]["n"]))
+        if pl.get("hold", {}).get("on") and t >= pl["TR"] + a.hold_rel_s - 1e-6:   # [drag] 放開他片
+            st.RemovePrim(Sdf.Path(pl["hold"]["scope"])); pl["hold"]["on"] = False; pl["hold"]["t_rel"] = t
+            P("★ t=%.2f [%s] 放開他片:RemovePrim %s(%d 點)" % (t, pl["sd"], pl["hold"]["scope"], pl["hold"]["n"]))
         for nm_, tt_ in (("peel_1_3", pl.get("TP0", 1e9) + a.peel_t / 3), ("peel_2_3", pl.get("TP0", 1e9) + 2 * a.peel_t / 3),
                          ("peeled", pl.get("TP1", 1e9)), ("held", pl.get("TR", 1e9) - 1e-3), ("released", S0 + G_SHEET - 0.05)):
             if nm_ not in ev and t >= tt_:
@@ -1152,6 +1257,8 @@ L1 = ("VOLUME sheet %.0fx%.0fx%.0fmm n%d | E=%.0e nu=%.2f %.2fkg/m2 mu=%.1f | mu
 L2 = ("solver %d dt 1/%.0f cont %.1f rest %.2f self on | ldamp %g edamp %g | tip=top+lay*(T+1)+2mm %s%s | move %s | carton w131%s"
       % (a.solver, 1/a.dt, a.cont*1e3, a.rest*1e3, a.ldamp, a.edamp, ("extra " + a.tip_extra + " ") if a.tip_extra else "",
          ("slow " + a.slow) if a.slow else "", a.movebox, " | REST=folded" if a.rest_npz else ""))
+if a.attach_stiff > 0: L2 += " | astiff %g" % a.attach_stiff
+if a.attach_proxy: L2 += " | proxy k%g fmax%g" % (a.proxy_k, a.proxy_fmax)
 def stamp(rgb, t, ph_):
     im = Image.fromarray(rgb[:, :, :3]); d = ImageDraw.Draw(im); Wd, Hh = im.size
     d.rectangle([0, Hh-58, Wd, Hh], fill=(16, 16, 18))
@@ -1263,6 +1370,9 @@ for fr in range(NFR):
                 st.RemovePrim(Sdf.Path(_pl["att"]["scope"])); _pl["att"]["on"] = False
                 if _pl["att"].get("lo"): st.RemovePrim(Sdf.Path(_pl["att"]["scope"] + "_lo")); _pl["ev"]["lr_guard"] = tcur
                 P("★ t=%.2f [%s] 守衛:邊長比最大 %.3f > 2.3 → RemovePrim %s 放手" % (tcur, _pl["sd"], r["lr"][1], _pl["att"]["scope"]))
+                if _pl.get("hold", {}).get("on"):                               # [drag] 守衛時也放開他片
+                    st.RemovePrim(Sdf.Path(_pl["hold"]["scope"])); _pl["hold"]["on"] = False; _pl["ev"]["hold_guard"] = tcur
+                    P("★ t=%.2f [%s] 守衛:同時 RemovePrim %s 放開他片 %d 點" % (tcur, _pl["sd"], _pl["hold"]["scope"], _pl["hold"]["n"]))
     # 階段快照
     for nm_, tt_ in [("fold_" + FOLD_ORDER[1], FT[FOLD_ORDER[2]][0] - 1e-6), ("after_move", T_OPEN0 - 1e-6),
                      ("before_move", T_MOVE0 - 1e-6), ("end", T_END_ALL - 1e-6)]:
@@ -1404,6 +1514,13 @@ if a.grasp:
              100 * (1 - h["rm"]["cov"]), 100 * (1 - rl["rm"]["cov"]), "PASS" if allok else "FAIL"))
         P("  [%s] ATTACH 綁 %s 點 | 越線 名義 %.0f%% / 實測彎折 %.0f%%(掀完停 2s)→ 放手後 名義 %.0f%% / 實測 %.0f%%"
           % (sd, ev["grip"].get("n_att", "-"), 100 * h["cross"], 100 * h.get("cross_h", np.nan), 100 * rl["cross"], 100 * rl.get("cross_h", np.nan)))
+        if pl.get("hold") is not None:                                        # [drag]
+            hv = pl["hold"]["vids"]; _hsd = dict(zip(*np.unique(GSIDE2[hv], return_counts=True))) if len(hv) else {}
+            P("  [%s] HOLD 釘 %d 點(%s)| 他片 全部 held %.1f%% / released %.1f%% | 他片(扣壓住) held %.1f%% / released %.1f%% | 釘住點放開後最大位移 %.1f mm | 守衛 %s"
+              % (sd, pl["hold"]["n"], _hsd, h["oth_pct"], rl["oth_pct"], h.get("oth_pct_free", np.nan), rl.get("oth_pct_free", np.nan),
+                 rl.get("hold_d", np.nan), "有 t=%.2f" % ev["hold_guard"] if "hold_guard" in ev else "無"))
+            pk = dict(pk, hold=dict(n=pl["hold"]["n"], sides=_hsd, oth_free_held=h.get("oth_pct_free"), oth_free_rel=rl.get("oth_pct_free"),
+                                    hold_d_rel=rl.get("hold_d"), guard=ev.get("hold_guard")))
         GSUM.append(dict(sd=sd, v=pl["v"], pick=pk, grip=ev["grip"]["n"], slip_med=slip_med, slip_max=slip_mx, cross=h["cross"],
                          cross_rel=rl["cross"], oth_n10=h["oth_n10"], oth_pct=h["oth_pct"], oth_max=h["oth_max"], mug=mugmax, pen=pen_mx,
                          inmug=inm_mx, inv=inv_mx, cov0=pl["cov0"], cov_held=h["rm"]["cov"], cov_rel=rl["rm"]["cov"], ok=ok, PASS=allok,

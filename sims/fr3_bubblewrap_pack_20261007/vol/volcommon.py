@@ -245,7 +245,8 @@ def attach_auto(st, scope_path, body_path, rigid_path, overlap=0.0, P=print):
     return ok
 
 
-def attach_vtx(st, scope_path, body_path, src0_path, rigid_path, vids, local_pos, P=print):
+def attach_vtx(st, scope_path, body_path, src0_path, rigid_path, vids, local_pos, P=print,
+               stiff=float("inf"), damp=0.0):
     """surface 版那套:Scope(PhysxAutoDeformableAttachmentAPI)+ 子 prim OmniPhysicsVtxXformAttachment。
     src0 指到 volume 的 simulation mesh。"""
     sc = st.DefinePrim(scope_path, "Scope")
@@ -259,14 +260,14 @@ def attach_vtx(st, scope_path, body_path, src0_path, rigid_path, vids, local_pos
          sc.CreateRelationship("physxAutoDeformableAttachment:" + rn)).SetTargets([Sdf.Path(tg)])
     ch = st.DefinePrim(scope_path + "/vtx_xform_attachment", "OmniPhysicsVtxXformAttachment")
     sa(ch, "omniphysics:attachmentEnabled", True, Sdf.ValueTypeNames.Bool)
-    sa(ch, "omniphysics:damping", 0.0, Sdf.ValueTypeNames.Float)
-    sa(ch, "omniphysics:stiffness", float("inf"), Sdf.ValueTypeNames.Float)
+    sa(ch, "omniphysics:damping", float(damp), Sdf.ValueTypeNames.Float)
+    sa(ch, "omniphysics:stiffness", float(stiff), Sdf.ValueTypeNames.Float)
     sa(ch, "omniphysics:vtxIndicesSrc0", Vt.IntArray([int(v) for v in vids]), Sdf.ValueTypeNames.IntArray)
     sa(ch, "omniphysics:localPositionsSrc1", Vt.Vec3fArray([Gf.Vec3f(*map(float, p)) for p in local_pos]),
        Sdf.ValueTypeNames.Point3fArray)
     for rn, tg in [("src0", src0_path), ("src1", rigid_path)]:
         (ch.GetRelationship("omniphysics:" + rn) or ch.CreateRelationship("omniphysics:" + rn)).SetTargets([Sdf.Path(tg)])
-    P("VtxXformAttachment %s:%d 個頂點,src0=%s src1=%s" % (scope_path, len(vids), src0_path, rigid_path))
+    P("VtxXformAttachment %s:%d 個頂點,src0=%s src1=%s stiff=%s damp=%g" % (scope_path, len(vids), src0_path, rigid_path, stiff, damp))
     return True
 
 

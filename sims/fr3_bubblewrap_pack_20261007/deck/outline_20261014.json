@@ -1,0 +1,1368 @@
+{
+ "meta": {
+  "title": "Progress Report",
+  "date": "2026.10.14",
+  "advisor": "Prof. Huang Ching-Chun",
+  "student": "Wyatt Sheu"
+ },
+ "summary": {
+  "rows": [
+   [
+    "Project Progress",
+    "逆物流 Demo:volume 泡泡紙包材 + 紙箱 + 杯子 + 雙臂場景;夾布 = 摩擦 + 合指綁定"
+   ],
+   [
+    "Research Progress",
+    "NONE"
+   ],
+   [
+    "Paper Study",
+    "夾布建模文獻快查:SoftGym、FlingBot、Isaac Lab #4628、NVIDIA forum 312694"
+   ],
+   [
+    "Other Tasks",
+    "sim-forge repo、測試集、RUNS.csv 122 列、demo 一鍵產生"
+   ]
+  ],
+  "tasks": [
+   "✅ 包材定為 volume,surface 當對照",
+   "✅ 綁定式抓取:整包 yn 越線 100% / 放手後 62%",
+   "✅ 布載入雙臂場景;代理方塊綁定",
+   "🔄 手臂 v3 u0.60:掀 64~68%、放手後 56~66%",
+   "🛠️ 指頭插布 18 mm",
+   "🔄 他片被拖 20~50%:三條解法進行中",
+   "✅ 顫抖根因 + 阻尼掃描;速度掃描",
+   "✅ sim-forge 更新、demo 總集"
+  ]
+ },
+ "slides": [
+  {
+   "role": "project_summary",
+   "title": "Project",
+   "subtitle": "volume 定案 → 夾布 = 摩擦 + 綁定 → 整包掀開 → 手臂 + 布 → 卡點",
+   "bullets": [
+    {
+     "text": "Goal:雙臂開箱 → 掀泡泡紙 → 夾出馬克杯;我負責 3D 模型(包材、紙箱、杯子、雙臂場景)",
+     "level": 0
+    },
+    {
+     "text": "本週:包材定為 volume;抓取改「摩擦 + 合指時綁定」",
+     "level": 1
+    },
+    {
+     "text": "Status:代理夾爪整包掀開 100% / 放手後 62%;手臂 + 布 64~68%",
+     "level": 0
+    },
+    {
+     "text": "卡點:指頭插布 18 mm、他片被拖 20~50%、掀開未到 80%",
+     "level": 0
+    }
+   ],
+   "notes": "這份報告涵蓋 10/7 到 10/14。前面九張快速回顧上週以前的根因、surface 定案與 volume 版,讓沒跟上的同學有脈絡。主體是本週:為什麼包材定為 volume、夾布怎麼建模、整包掀開做到什麼程度、手臂和布放進同一個模擬之後的結果。之後是三個卡點、布顫抖的阻尼掃描與速度掃描,最後是工程交付與下一步。所有數字都來自 log 或 json,量不到的地方會直接寫未量。"
+  },
+  {
+   "role": "project_why",
+   "title": "交接時:包裹比杯子高 70 mm,蓋不上",
+   "bullets": [
+    {
+     "text": "杯子躺平 107×133×93;Sep 27 版壓實後 163 mm,148 個頂點高過箱口",
+     "level": 0
+    },
+    {
+     "text": "交接懷疑碰撞偏移量;thickness 10→4 層間距沒變",
+     "level": 1
+    },
+    {
+     "text": "先做量尺 layer_gap.py:杯頂上方幾層、每層幾 mm",
+     "level": 1
+    }
+   ],
+   "bignum": {
+    "items": [
+     {
+      "value": "163 mm",
+      "label": "交接時包裹高",
+      "sub": "杯子 93 mm"
+     },
+     {
+      "value": "48 mm",
+      "label": "布頂離杯頂",
+      "sub": "4~5 層,每層 8.6 mm"
+     },
+     {
+      "value": "512",
+      "label": "布自穿模(次)",
+      "sub": "壓實後"
+     }
+    ]
+   },
+   "notes": "交接時的包裹是用 surface deformable 零厚度膜做的,四折壓實後 163 mm,比杯子高 70 mm,放進定版紙箱 148 個頂點高過箱口,蓋子蓋不上。交接文件的懷疑方向是碰撞偏移量,但它自己量過 surfaceThickness 從 10 改 4 層間距沒變。我第一步是寫 layer_gap.py,在杯頂上方打 336 個取樣點數層數與層間距,之後所有判斷都靠它。"
+  },
+  {
+   "role": "project_pipeline",
+   "title": "流程:模擬折疊建包裹,開箱反過來",
+   "flow": {
+    "steps": [
+     "攤平的布",
+     "四折包杯",
+     "入箱",
+     "關蓋",
+     "搬箱",
+     "開蓋",
+     "夾爪掀包材"
+    ],
+    "highlight": 7
+   },
+   "bullets": [
+    {
+     "text": "每一折:整條邊綁 kinematic 錨點,沿兩段圓弧拉到杯頂;前一折留著,下一折蓋上去",
+     "level": 0
+    },
+    {
+     "text": "量測不看畫面:逐頂點比對內腔、邊級別穿杯、自穿模、層間距、邊長比",
+     "level": 1
+    }
+   ],
+   "notes": "流程照交接的設計:布攤平、四條邊依序用錨點沿圓弧折上去、整包放進紙箱、關蓋、搬箱、開蓋,最後要用夾爪把包材掀開。這一輪新增的是搬箱、開蓋和掀包材三段。紅色的最後一步是現在正在做、還沒成功的。"
+  },
+  {
+   "role": "project_results",
+   "title": "根因:尖端被釘在空中,不是碰撞參數",
+   "video": {
+    "src": "figs/01_baseline_press.mp4",
+    "caption": "交接版壓實:壓到 138 放開彈回 163(15 s)",
+    "source": "ours",
+    "autoplay": true,
+    "loop": true
+   },
+   "bullets": [
+    {
+     "text": "終點寫死:杯頂 +12 mm + 每折 8 mm;attachment 無窮硬",
+     "level": 0
+    },
+    {
+     "text": "壓實段釘 4 個錨;拿掉 → 壓住 138 → 117",
+     "level": 1
+    },
+    {
+     "text": "偏移量縮 2.5 倍,層間距 5.46 → 5.44 沒動",
+     "level": 1
+    },
+    {
+     "text": "attachment 可 RemovePrim 放掉;原結論是量測假象",
+     "level": 1
+    }
+   ],
+   "notes": "影片是交接版的壓實段:壓板壓到 138 mm,一放開彈回 163,等於沒壓。根因在錨點幾何:每一折的尖端被無窮硬的 attachment 釘在杯頂上方 12 mm 加每折 8 mm 的高度,壓實段還另外釘 4 個錨。偏移量縮 2.5 倍層間距完全沒變,證明不是碰撞參數。另外用最小探針證明 attachment 在模擬中可以 RemovePrim 放掉,原作者說放不掉是三個錨點同邊一起升被鄰居撐住的假象。"
+  },
+  {
+   "role": "project_results",
+   "title": "排除的六條路:每條都有數字",
+   "matrix": {
+    "rows": [
+     [
+      "contactOffset",
+      "5 → 2 mm",
+      "自穿模 13 → 104 → 2403(互穿)",
+      "✗"
+     ],
+     [
+      "restOffset",
+      "1 → 0.2 mm",
+      "層間距減半,自穿模 ×2,出生時就多 200",
+      "✗"
+     ],
+     [
+      "solver / CCD",
+      "64 → 128,colIter ×2,CCD",
+      "自穿模 3726;CCD 無效",
+      "✗"
+     ],
+     [
+      "bend",
+      "4 → 1",
+      "回彈 24 → 35 mm 更差",
+      "✗"
+     ],
+     [
+      "網格",
+      "34 → 50",
+      "層間距 4.4 → 6.6",
+      "✗"
+     ],
+     [
+      "摺痕定型",
+      "rest shape := 壓扁狀態",
+      "放開照樣 117 → 134",
+      "✗"
+     ]
+    ],
+    "highlight_row": 0,
+    "header": [
+     "旋鈕",
+     "改法",
+     "結果",
+     "判定"
+    ]
+   },
+   "notes": "這六條是交接文件列的旋鈕加上我們想到的,每條都實跑過。縮 contactOffset 看起來層變貼,其實是偵測距離變短讓布層直接互穿,自穿模爆到兩三千。只縮 restOffset 層間距減半但自穿模翻倍,而且出生時就多 200 次,代表貼近有一半是互穿。解算迭代、CCD、降 bend、網格加密都沒幫助。最後把 rest shape 設成壓扁的狀態還是彈回 134,證明回彈不是彎曲彈性,是自碰撞間距。這張表的價值是之後不用再走回頭路。"
+  },
+  {
+   "role": "project_results",
+   "title": "surface 定案:越線疊合,thin 是反例",
+   "video": {
+    "src": "figs/26_tipover_vs_thin.mp4",
+    "caption": "左 tip_over 40(第一個乾淨改善)/ 右 thin(反例:自穿模爆)(15 s)",
+    "source": "ours",
+    "autoplay": true,
+    "loop": true
+   },
+   "bullets": [
+    {
+     "text": "tip_over 40 mm 兩片真的疊:自穿模 13/257/512 → 2/55/144",
+     "level": 0
+    },
+    {
+     "text": "thick 4 mm 乾淨;放手路線翻掉,放棄",
+     "level": 1
+    },
+    {
+     "text": "布 586 → 400:體積 4.9 → 3.1 倍;折序 x→y;杯口 +y 杯耳 +x",
+     "level": 1
+    }
+   ],
+   "notes": "surface 版最後定案是三個各自驗證過乾淨的改動:尖端越過中線 40 mm 讓兩片真的疊起來,自穿模三段降一個量級;surfaceThickness 4 mm;布從 586 縮到 400。放手路線放掉錨點後第二段的折邊會翻回去,所有變體都比不放手差,放棄。折序改成先折左右、後折前後,外層是前後,符合 PPT 先開前後。順帶抓到 selfcheck 對杯子方位的前提跟實際 STL 不符,照字面套會 PASS 但杯口在 x 軸,patch 多加一個 Rz(−90)。 影片左邊是 tip_over 40 的版本,是第一個乾淨的改善;右邊是把膜做薄的反例,自穿模直接爆掉,說明縮厚度這條路走不通。"
+  },
+  {
+   "role": "project_results",
+   "title": "入箱 0 超出 → 關蓋 → 搬箱 → 開蓋",
+   "video": {
+    "src": "figs/03_surf_box_move_open.mp4",
+    "caption": "搬箱(+y 200、抬 100)→ 原地開蓋確認箱內(16 s)",
+    "source": "ours",
+    "autoplay": true,
+    "loop": true
+   },
+   "bullets": [
+    {
+     "text": "四折完直接入箱,箱壁與蓋子當壓板:布 0 / 杯 0 超出,關蓋後 122 mm",
+     "level": 0
+    },
+    {
+     "text": "搬箱相對位移 2.5 mm;搬前後超出相同",
+     "level": 1
+    },
+    {
+     "text": "修三個 bug:缺 meta、reset 時蓋子關著、杯子平移重算",
+     "level": 1
+    }
+   ],
+   "notes": "入箱段原本從來沒真正跑過:USD 檔名推不到 meta,蓋子沒動但階段名照印;補 meta 之後定版紙箱 USD 預設是關的,world.reset 時蓋子已經壓在包裹上;杯子入箱平移被多算一次。三個修掉之後,四折完不壓實直接入箱、讓箱壁和蓋子當壓板,布和杯子超出內腔都是 0,關蓋後高 122 mm。搬箱加了 --movebox,包裹相對箱子只滑 2.5 mm,原地開蓋後看得到包裹完整。"
+  },
+  {
+   "role": "project_results",
+   "title": "volume 版:互穿 ≤ 8、同指令可重現",
+   "video": {
+    "src": "figs/28_tuck0_vs_tuck1.mp4",
+    "caption": "左 tuck 0 角落翹耳 / 右 tuck 1 收耳後入箱(E 2e3,15 s)",
+    "source": "ours",
+    "autoplay": true,
+    "loop": true
+   },
+   "bullets": [
+    {
+     "text": "手寫 35×35×1 四面體;層間距 = 板厚 + 2×rest = 5.0 mm",
+     "level": 0
+    },
+    {
+     "text": "穿杯 0、反轉 0、自互穿 ≤ 8(surface 97~156)",
+     "level": 1
+    },
+    {
+     "text": "同指令兩次 bbox 差 ≤ 2 mm;solver 128、dt 1/240",
+     "level": 1
+    }
+   ],
+   "notes": "第二階段把包材改成有真實厚度的 volume deformable。三支探針確認薄板建得起來、折得過去、兩層疊的間距就是板厚加兩倍 restOffset。整合成 wrap_vol.py 一次模擬跑完全程。相對 surface 的最大好處是互穿從上百降到個位數,而且同指令重跑兩次關蓋前 bbox 差不到 2 mm,surface 版同參數兩次會差到折邊滑開。代價是 solver 要 128 迭代、時間步 1/240,實跑約實時的 5 倍。 影片左右對照收耳 off 與 on:不收耳時四個角翹起來,收耳後才能乾淨入箱,所以定案參數 tuck 1。"
+  },
+  {
+   "role": "project_results",
+   "title": "軟度掃描:E 2e3 留箱內,但撐滿內腔",
+   "video": {
+    "src": "figs/05_vol_move_open.mp4",
+    "caption": "s2(E 2e3):搬箱 → 開蓋,布頂 129 < 箱口 131,覆蓋 93%(15 s)",
+    "source": "ours",
+    "autoplay": true,
+    "loop": true
+   },
+   "bullets": [
+    {
+     "text": "E 2e4 → 2e3:開蓋後布頂 207 → 129 mm,覆蓋 73 → 93%",
+     "level": 0
+    },
+    {
+     "text": "E 1e3 布被拉長;板變薄反而更彈(單層鎖死)",
+     "level": 1
+    },
+    {
+     "text": "關蓋後 y 一律 223 = 內腔;角落耳朵要側板壓",
+     "level": 1
+    }
+   ],
+   "notes": "第一版 E 2e4 的板太硬,角落翹成鬱金香、開蓋後彈出箱外。掃六組軟度後 E 2e3 是唯一可用的窗口:開蓋後布留在箱內、俯視覆蓋 93%,再軟一階布就被拉長。一個反直覺的發現是板做薄反而更彈,因為厚度方向只有一層四面體會數值上變硬,所以要調軟只能調楊氏模數。沒解掉的是包裹撐滿內腔:不管軟硬、不管布縮到 436 還是 500,關蓋後 y 都是 223,來源是放錨後的彈性回彈。"
+  },
+  {
+   "role": "project_insight",
+   "title": "決定:包材用 volume,surface 當對照",
+   "subtitle": "判準:夾得住、掀得開;外觀正確;物理正確(少量穿模可)",
+   "matrix": {
+    "header": [
+     "軸",
+     "surface(零厚度膜)",
+     "volume(4 mm 板)",
+     "勝"
+    ],
+    "rows": [
+     [
+      "夾得住",
+      "可,間隙只 1.5~2 mm",
+      "可,間隙 2~5 mm,翻面 100%",
+      "volume"
+     ],
+     [
+      "穿模(自穿/穿杯/入箱)",
+      "97~156 / 0 / 0",
+      "≤ 8 / 0 / 0",
+      "volume"
+     ],
+     [
+      "重現性",
+      "同參數差 6 mm",
+      "關蓋前 ≤ 2 mm",
+      "volume"
+     ],
+     [
+      "外觀",
+      "包得密;開蓋後彈起",
+      "角落翹耳;開蓋後 93% 留箱內",
+      "各有缺"
+     ],
+     [
+      "計算",
+      "2~3 分/段",
+      "4 分全程",
+      "surface"
+     ]
+    ],
+    "highlight_col": 3,
+    "col_widths": [
+     1.6,
+     2.2,
+     2.4,
+     0.8
+    ]
+   },
+   "notes": "這是 DECISION_phase3 的決定,判準是使用者 10/7 定的三項。volume 在夾持、穿模、重現性三軸勝出,這三項是驗收時最能說清楚的。surface 唯一贏的是計算速度,所以保留當快速對照與掃參數工具。外觀兩邊各有缺,volume 角落會翹、會撐滿內腔,但開蓋後布能留在箱內。另一個理由是手臂接觸需要實體厚度,surface 的夾持窗口只有 2 mm,對手臂控制太苛。正式參數是 E 2e3、厚 4 mm、500×500、solver 128、dt 1/240。"
+  },
+  {
+   "role": "project_why",
+   "title": "夾布建模查文獻:主流是綁定,不是純摩擦",
+   "subtitle": "3 輪搜尋、未逐篇細讀(LIT_grasp_20261014)",
+   "cards": {
+    "items": [
+     {
+      "title": "SoftGym / FlingBot",
+      "bullets": [
+       "球形 picker,啟動時綁閾值內最近粒子",
+       "關閉即釋放;沒有真實夾爪幾何"
+      ]
+     },
+     {
+      "title": "NVIDIA forum 312694",
+      "bullets": [
+       "deformable 純摩擦能夾起但撐不住",
+       "官方:摩擦不夠改 attachment"
+      ],
+      "highlight": true
+     },
+     {
+      "title": "Isaac Lab #4628",
+      "bullets": [
+       "deformable 直接 attach 到 articulation 實質不支援(Sim 5.1)",
+       "改由 kinematic actuator 驅動"
+      ]
+     },
+     {
+      "title": "查不到",
+      "bullets": [
+       "疊層只抓單層的模擬做法",
+       "指面要蓋幾個頂點",
+       "surface vs volume 抓取比較"
+      ]
+     }
+    ]
+   },
+   "notes": "上週整包上純摩擦只夾到 3 個頂點,所以本週先查文獻別人怎麼在模擬裡夾布。SoftGym 和 FlingBot 都是用 picker 綁定最近的粒子,完全不建夾爪幾何。NVIDIA 論壇上有人遇到跟我們一樣的狀況,官方回覆就是摩擦不夠改 attachment。Isaac Lab 4628 則說明 deformable 不能直接綁 articulation,這決定了後面手臂場景要用代理方塊。從疊層只抓最外面一片,文獻查不到現成做法,是我們自己做的。"
+  },
+  {
+   "role": "project_pipeline",
+   "title": "hybrid:摩擦接觸 + 合指時綁定",
+   "subtitle": "只綁最外層 yn,上下兩層都綁;邊長比 > 2.3 自動放手",
+   "flow": {
+    "steps": [
+     {
+      "label": "摩擦接觸",
+      "sub": "μ 0.8",
+      "detail": [
+       "指面照常碰撞"
+      ]
+     },
+     {
+      "label": "合指",
+      "sub": "間距 4.5 mm",
+      "detail": [
+       "完成那一格才綁"
+      ]
+     },
+     {
+      "label": "挑點",
+      "sub": "pad 24 mm",
+      "detail": [
+       "只挑 yn 最外層",
+       "上下兩層都綁"
+      ]
+     },
+     {
+      "label": "綁定",
+      "sub": "VtxXformAttachment",
+      "detail": [
+       "綁到指 / 代理方塊"
+      ]
+     },
+     {
+      "label": "弧線掀",
+      "sub": "--arc2 1",
+      "detail": [
+       "繞過箱壁頂角"
+      ]
+     },
+     {
+      "label": "放手",
+      "sub": "守衛 2.3",
+      "detail": [
+       "邊長比超標自動放"
+      ]
+     }
+    ],
+    "highlight": 3
+   },
+   "notes": "做法是保留摩擦接觸,但在夾爪合指完成的那一格,把指面足跡外擴 24 mm、指間中面帶內的頂點綁到手指上。只挑 yn 最外層那一片的頂點,靠 layer_order.py 依折序歸屬;上下兩層都綁,因為只綁上層時下層會被拖、四面體拉長。綁定是無限剛度,拉過頭會撕布,所以加了守衛:邊長比超過 2.3 自動放手。grip_attach README 原本推薦 pad 16,整包時改 24。"
+  },
+  {
+   "role": "project_results",
+   "title": "單片探針:摩擦夾持 vs 綁定夾持",
+   "layout": "figure-bottom",
+   "video": {
+    "src": "figs/25_probe_fric_vs_attach.mp4",
+    "caption": "G1 單片夾懸出邊:左 純摩擦 / 右 綁定(pad 16、both、間隙 4)(11 s)",
+    "source": "ours",
+    "autoplay": true,
+    "loop": true
+   },
+   "bullets": [
+    {
+     "text": "綁定 both:滑動 ≤ 0.14 mm、邊長比 1.67~1.81;top-only 滑 0.2~0.7 mm",
+     "level": 0
+    },
+    {
+     "text": "G2a 疊層翻 180°:無重物 100% / 98%,釋放後 100%",
+     "level": 1
+    }
+   ],
+   "notes": "整包之前先在單片與兩片疊層上驗證綁定。左邊是純摩擦,右邊是綁定。綁上下兩層時滑動不到 0.14 mm,邊長比 1.67 到 1.81;只綁上層會滑 0.2 到 0.7 mm 且下層被拉長。G2a 兩片疊起來只綁上片翻 180 度,無重物時翻面 100% 和 98%,釋放後 100%。釋放本身乾淨,沒有黏住或彈飛。"
+  },
+  {
+   "role": "project_results",
+   "title": "整包掀開的四次嘗試:每次只改一件事",
+   "matrix": {
+    "header": [
+     "run",
+     "改動",
+     "yn 綁點",
+     "越線",
+     "放手後"
+    ],
+    "rows": [
+     [
+      "out_g",
+      "純摩擦",
+      "夾到 3",
+      "23%",
+      "1%"
+     ],
+     [
+      "out_ga",
+      "綁定,抓角尖",
+      "1",
+      "5%",
+      "0%"
+     ],
+     [
+      "out_ga2",
+      "抓自由邊中段",
+      "12",
+      "71%",
+      "1%"
+     ],
+     [
+      "out_ga3",
+      "+ 弧線翻到箱外(--arc2 1)",
+      "12",
+      "100%",
+      "62%"
+     ]
+    ],
+    "highlight_row": 4,
+    "col_widths": [
+     1.1,
+     2.6,
+     1,
+     0.9,
+     0.9
+    ]
+   },
+   "notes": "這張表是整包掀 yn 片的四次嘗試。純摩擦只夾到 3 點,越線 23%。改綁定但抓角尖,指間只有 1 點,越線 5%。改抓自由邊中段,綁到 12 點、越線 71%,但放手後只剩 1%,整片彈回。最後一步把弧線終點改成繞過箱壁頂角翻到箱外,越線 100%、放手後 62%。所以兩個關鍵是抓的位置和弧線終點,不是綁定參數。"
+  },
+  {
+   "role": "project_results",
+   "title": "失敗一:摩擦只夾 3 點、角尖只綁 1 點",
+   "layout": "figure-bottom",
+   "video": {
+    "src": "figs/20_friction_vs_corner.mp4",
+    "caption": "左 純摩擦(夾到 3 點,越線 23%)/ 右 綁定抓角尖(綁 1 點,越線 5%)(15 s)",
+    "source": "ours",
+    "autoplay": true,
+    "loop": true
+   },
+   "bullets": [
+    {
+     "text": "結論:要抓 yn 自由邊中段(邊參數 0.3~0.6),不抓角尖",
+     "level": 0
+    }
+   ],
+   "notes": "左邊是純摩擦,手指合上後布從指間滑出,只有 3 個頂點在指間,越線 23%。右邊已經換成綁定,但抓的是角尖,角尖在指間只有 1 到 2 個頂點,綁 1 點等於沒抓,越線 5%。這兩支證明問題不只是摩擦不夠,抓的位置也錯。改抓自由邊中段後綁到 12 點。"
+  },
+  {
+   "role": "project_results",
+   "title": "失敗二:停在箱內放手 → 整片彈回",
+   "layout": "figure-bottom",
+   "video": {
+    "src": "figs/21_inbox_vs_arc2.mp4",
+    "caption": "左 out_ga2 箱內放手(放手後 1%)/ 右 out_ga3 繞過箱壁翻出(放手後 62%)(15 s)",
+    "source": "ours",
+    "autoplay": true,
+    "loop": true
+   },
+   "bullets": [
+    {
+     "text": "弧線終點要繞過箱壁頂角翻到箱外(--arc2 1),靠箱壁撐住",
+     "level": 0
+    }
+   ],
+   "notes": "左右兩邊綁點一樣都是 12 點,差別只在弧線終點。左邊停在箱內放手,材料是純彈性,放手後整片彈回,只剩 1% 越線。右邊把弧線繞過箱壁頂角翻到箱外,布掛在箱壁上撐住,放手後還有 62%。這也呼應卡點:材料沒有塑性,只能靠幾何讓它留在掀開的位置。"
+  },
+  {
+   "role": "project_results",
+   "title": "out_ga3:yn 越線 100%、放手後 62%",
+   "bignum": {
+    "items": [
+     {
+      "value": "12 點",
+      "label": "yn 綁定",
+      "sub": "上下兩層"
+     },
+     {
+      "value": "100%",
+      "label": "越線",
+      "sub": "放手後 62%"
+     },
+     {
+      "value": "0.2 mm",
+      "label": "夾持中滑動最大",
+      "sub": "判準 < 2"
+     },
+     {
+      "value": "2.9 mm",
+      "label": "杯位移最大",
+      "sub": "穿杯 0"
+     }
+    ]
+   },
+   "bullets": [
+    {
+     "text": "代理夾爪(kinematic 方塊),不是手臂;全程自穿 ≤ 5、反轉 ≤ 5",
+     "level": 0
+    }
+   ],
+   "notes": "這是代理夾爪下的最好結果。yn 綁 12 點、上下兩層,越線 100%,放手後 62%,高於判準 50%。夾持中頂點滑動中位 0.1、最大 0.2 mm,杯子最多被推 2.9 mm,布完全沒有穿杯。要強調這裡的夾爪是兩個 kinematic 方塊,不是手臂,所以沒有手臂可達性的限制。全程 wall 639 秒、模擬 86.3 秒。"
+  },
+  {
+   "role": "project_results",
+   "title": "影片:out_ga3 掀 yn 片",
+   "layout": "figure-full",
+   "video": {
+    "src": "figs/13_vol_grasp_yn.mp4",
+    "caption": "out_ga3 t 52~67 s:合指 → 綁 12 點 → 弧線翻出箱壁 → 放手(15 s)",
+    "source": "ours",
+    "autoplay": true,
+    "loop": true
+   },
+   "notes": "這是 out_ga3 掀 yn 片的關鍵 15 秒。53 秒合指、綁定,接著沿弧線往外翻,繞過箱壁頂角,62.6 秒停留,65 秒放手。注意放手後 yn 片掛在箱壁外沒有彈回。也可以看到旁邊的 xp、xn 片被一起帶動,這就是下一張的他片拖動問題。"
+  },
+  {
+   "role": "project_results",
+   "title": "沒過:他片被拖 20%、yp 只 73%",
+   "layout": "figure-right",
+   "video": {
+    "src": "figs/14_vol_grasp_yp.mp4",
+    "caption": "out_ga3 yp 片:綁 8 點,越線 73% / 放手後 67%(14 s)",
+    "source": "ours",
+    "autoplay": true,
+    "loop": true
+   },
+   "bullets": [
+    {
+     "text": "yn 他片 >10 mm:20.0%(判準 < 5%)",
+     "level": 0
+    },
+    {
+     "text": "xp 138、xn 202 點,最大 103.5 mm",
+     "level": 1
+    },
+    {
+     "text": "yp:綁 8 點,越線 73%、放手後 67%",
+     "level": 0
+    },
+    {
+     "text": "他片 23.2%;實測彎折只 40%",
+     "level": 1
+    }
+   ],
+   "notes": "out_ga3 整體判定仍是 FAIL,原因兩個。第一是掀 yn 時其他片超過 10 mm 位移的頂點佔 20%,判準是 5%,主要是 xp 和 xn 被拖。第二是 yp 只綁到 8 點,名義越線 73%,但實測彎折只有 40%,代表 yp 是整片被抬起,而不是沿折線翻過去。影片是 yp 那一段。"
+  },
+  {
+   "role": "project_results",
+   "title": "手臂 + 布同一模擬:載入雙臂場景",
+   "layout": "figure-bottom",
+   "video": {
+    "src": "figs/15_arm_load_cloth.mp4",
+    "caption": "dry_with_cloth:布載入雙臂場景後乾跑(11 s)",
+    "source": "ours",
+    "autoplay": true,
+    "loop": true
+   },
+   "bullets": [
+    {
+     "text": "arm/cloth/load_cloth.py 把 volume 包裹載入雙臂場景",
+     "level": 0
+    },
+    {
+     "text": "手臂場景 peel 參數:E 2e4、μ 0.8、solver 128、dt 1/240",
+     "level": 1
+    },
+    {
+     "text": "手臂是 6 軸 follower,不是 FR3",
+     "level": 0
+    }
+   ],
+   "notes": "本週第二條線是把布和手臂放進同一個模擬。load_cloth.py 把 wrap_vol 產出的包裹狀態載入雙臂場景,先做乾跑確認不炸。注意手臂場景 peel 的 json 參數是 E 2e4,跟代理夾爪線的 2e3 不一樣,這是兩條線目前不一致的地方。手臂還是 6 軸 follower 而不是 FR3。"
+  },
+  {
+   "role": "project_pipeline",
+   "title": "不能綁 gripper → 綁代理方塊",
+   "diagram": {
+    "direction": "TB",
+    "nodes": [
+     {
+      "id": "ik",
+      "text": "Lula IK",
+      "kind": "process"
+     },
+     {
+      "id": "tcp",
+      "text": "TCP",
+      "kind": "process"
+     },
+     {
+      "id": "px",
+      "text": "代理方塊",
+      "kind": "process",
+      "accent": true
+     },
+     {
+      "id": "att",
+      "text": "Attachment",
+      "kind": "process"
+     },
+     {
+      "id": "cl",
+      "text": "布 yn",
+      "kind": "terminator"
+     }
+    ],
+    "edges": [
+     {
+      "from": "ik",
+      "to": "tcp"
+     },
+     {
+      "from": "tcp",
+      "to": "px",
+      "label": "每格跟隨"
+     },
+     {
+      "from": "px",
+      "to": "att"
+     },
+     {
+      "from": "att",
+      "to": "cl"
+     }
+    ],
+    "caption": "放手:attachmentEnabled = False(RemovePrim 會讓程序無訊息結束)"
+   },
+   "bullets": [
+    {
+     "text": "Isaac Lab #4628:不能直接綁 follower_*_gripper_*",
+     "level": 0
+    },
+    {
+     "text": "RemovePrim 在手臂場景程序無訊息結束 → 改 attachmentEnabled=False",
+     "level": 0
+    }
+   ],
+   "notes": "手臂場景遇到兩個 Isaac Sim 限制。第一,attachment 不能直接綁到 articulation 的 gripper link,這跟 Isaac Lab 4628 一致,所以做一個沒有碰撞的 kinematic 代理方塊,每一格跟著 TCP 走,attachment 綁在方塊上。第二,在 wrap_vol 單獨跑時用 RemovePrim 放手正常,但在手臂場景 RemovePrim 會讓程序直接結束、沒有任何錯誤訊息,所以改成把 attachmentEnabled 設成 False。"
+  },
+  {
+   "role": "project_results",
+   "title": "失敗 r1:夾持軸平行布邊 → 綁 0 點",
+   "layout": "figure-bottom",
+   "video": {
+    "src": "figs/22_arm_r1_bind0.mp4",
+    "caption": "r1:足跡內 68 點,指間中面帶內 0 點(15 s)",
+    "source": "ours",
+    "autoplay": true,
+    "loop": true
+   },
+   "bullets": [
+    {
+     "text": "指間沒有布:足跡內 68 點,|n| 全在 −139.8 ~ −6.2 mm",
+     "level": 0
+    },
+    {
+     "text": "下降穿入 8.66 mm;yn 越線 1.4%",
+     "level": 1
+    },
+    {
+     "text": "教訓:夾持軸必須垂直布面",
+     "level": 0
+    }
+   ],
+   "notes": "r1 是第一次手臂 + 布掀開。夾持軸和布邊切線平行,兩指之間根本沒有布,足跡內雖然有 68 個點,但法向距離都在指間帶外,選中 0 點。結果 yn 越線只有 1.4%。這支證明夾持方向是第一個要對的東西。"
+  },
+  {
+   "role": "project_results",
+   "title": "r2:放寬高度帶,掀 56~60%",
+   "layout": "figure-bottom",
+   "video": {
+    "src": "figs/16_arm_peel_r2.mp4",
+    "caption": "r2:v2 軌跡,高度帶放寬 14 mm(12 s)",
+    "source": "ours",
+    "autoplay": true,
+    "loop": true
+   },
+   "bullets": [
+    {
+     "text": "釋放前 yn 越線 名義 59.8% / 實測 55.9%",
+     "level": 0
+    },
+    {
+     "text": "他片 29%;下降穿入 6.9 mm;滑動 max 1.28 mm",
+     "level": 1
+    },
+    {
+     "text": "放手後越線:未量到",
+     "level": 0
+    }
+   ],
+   "notes": "r2 沿用 v2 乾跑軌跡,把綁定的高度帶放寬 14 mm,終於綁得到點。釋放前 yn 名義越線 59.8%、實測 55.9%,但他片被拖 29%,而且指頭下降時插進布 6.9 mm。這次放手後的越線沒有量到。"
+  },
+  {
+   "role": "project_results",
+   "title": "失敗 r3:數值 Jacobian 修正 → 發散",
+   "layout": "figure-bottom",
+   "video": {
+    "src": "figs/23_arm_r3_ik.mp4",
+    "caption": "r3:手臂亂走,yn 越線最後 6.7%(15 s)",
+    "source": "ours",
+    "autoplay": true,
+    "loop": true
+   },
+   "bullets": [
+    {
+     "text": "用數值 Jacobian 修 72 mm 平移,發散",
+     "level": 0
+    },
+    {
+     "text": "yn 名義 4.2% → 6.7%;自穿 122",
+     "level": 1
+    },
+    {
+     "text": "教訓:改用 Lula IK 重解整條軌跡",
+     "level": 0
+    }
+   ],
+   "notes": "r3 想把夾持位置修正 72 mm,用數值 Jacobian 去改關節角,結果發散,手臂亂走,yn 越線只有 4 到 7%,布的自穿到 122。這支是反面教材,之後整條軌跡改用 Lula IK 重新解,不要在原軌跡上做小修正。 這支影片留在簡報裡,是要提醒之後改軌跡時一律整條重解。"
+  },
+  {
+   "role": "project_pipeline",
+   "title": "v3:Lula IK 重解,夾持軸垂直布面",
+   "flow": {
+    "steps": [
+     {
+      "label": "鉸點",
+      "sub": "yn 實測折線",
+      "detail": [
+       "箱底 y −71.4"
+      ]
+     },
+     {
+      "label": "垂直下降",
+      "sub": "自由邊外 8~24 mm",
+      "detail": [
+       "自由邊外 8~24 mm"
+      ]
+     },
+     {
+      "label": "水平滑入",
+      "sub": "8 mm 到布中面",
+      "detail": [
+       "8 mm 到布中面"
+      ]
+     },
+     {
+      "label": "合指 + 綁",
+      "sub": "pad 24",
+      "detail": [
+       "pad 24"
+      ]
+     },
+     {
+      "label": "弧線",
+      "sub": "R 143 掃到 100°",
+      "detail": [
+       "R 143 掃到 100°"
+      ]
+     },
+     {
+      "label": "翻出",
+      "sub": "牆外 20 / 牆頂 +40",
+      "detail": [
+       "牆外 20 / 牆頂 +40"
+      ]
+     }
+    ],
+    "highlight": 3
+   },
+   "bullets": [
+    {
+     "text": "可達性掃描 210 組 φ×ψ×偏移,參數 u 沿自由邊",
+     "level": 0
+    }
+   ],
+   "notes": "v3 全部用 Lula IK 重解。鉸點用 yn 實測的折線,不是理論折線。抓法是在自由邊外 8 到 24 mm 垂直下降,再水平滑入 8 mm 到布中面才合指,讓夾持軸垂直布面。之後半徑 143 mm 掃到 100 度,再直線到牆外 20 mm、牆頂上 40 mm。為了找可達又不撞的姿態,掃了 210 組 φ、ψ 和偏移的組合。u 是沿自由邊的位置參數。"
+  },
+  {
+   "role": "project_results",
+   "title": "u0.45 綁 1 點;u0.60 綁 18~24 點",
+   "layout": "figure-bottom",
+   "video": {
+    "src": "figs/24_u45_vs_u60.mp4",
+    "caption": "左 u0.45:指頭把布壓下去,綁 1 點,越線 26% / 右 u0.60:越線 64~68%(15 s)",
+    "source": "ours",
+    "autoplay": true,
+    "loop": true
+   },
+   "bullets": [
+    {
+     "text": "u0.45:越線 26%、放手後 2%、他片 79%",
+     "level": 0
+    },
+    {
+     "text": "u0.60:放手後 56~66%,他片 16~52%(兩次差很大)",
+     "level": 0
+    }
+   ],
+   "notes": "同一套 v3 方法,只差抓取位置。u0.45 時指頭下降把布壓下去,指間只剩 1 點,越線 26%、放手後 2%。u0.60 綁到 18 到 24 點,越線 64 到 68%,放手後 56 到 66%,這是手臂線目前最好的結果。但兩次跑他片拖動一次 52% 一次 16%,差很大,代表結果對初始條件很敏感。"
+  },
+  {
+   "role": "project_results",
+   "title": "手臂線五次跑:最好 u0.60,仍未全過",
+   "matrix": {
+    "header": [
+     "run",
+     "yn 越線",
+     "放手後",
+     "他片拖動",
+     "下降穿入"
+    ],
+    "rows": [
+     [
+      "out_ga3(代理夾爪)",
+      "100%",
+      "62%",
+      "20% ✗",
+      "–"
+     ],
+     [
+      "r2",
+      "56~60%",
+      "未量到",
+      "29% ✗",
+      "6.9 mm ✗"
+     ],
+     [
+      "v3 u0.45",
+      "26%",
+      "2%",
+      "79% ✗",
+      "綁 1 點 ✗"
+     ],
+     [
+      "v3 u0.60",
+      "64~68%",
+      "56~66% ✓",
+      "16~52% ✗",
+      "18 mm ✗"
+     ],
+     [
+      "v3 yp u0.40",
+      "21%",
+      "22%",
+      "52% ✗",
+      "綁 5 點 ✗"
+     ]
+    ],
+    "highlight_row": 4,
+    "col_widths": [
+     2,
+     1.1,
+     1.1,
+     1.2,
+     1.2
+    ]
+   },
+   "notes": "這張表是 INTERFACE 第 5 節的數據。代理夾爪是上限參考。手臂線 v3 u0.60 是最好的一組,放手後越線過了 50% 的判準,但他片拖動和下降穿入都沒過。yp 片 u0.40 只綁 5 點,而且 IK 的最小奇異值 0.015,接近奇異姿態。"
+  },
+  {
+   "role": "project_insight",
+   "title": "卡點一:指頭盒插進皺布 18 mm",
+   "subtitle": "210 組姿態沒有一組不插",
+   "bignum": {
+    "items": [
+     {
+      "value": "60 mm",
+      "label": "指頭盒高",
+      "sub": "盒 36×70×60 mm"
+     },
+     {
+      "value": "18 mm",
+      "label": "下降穿入",
+      "sub": "v3 u0.60"
+     },
+     {
+      "value": "0 / 210",
+      "label": "不插布的姿態",
+      "sub": "φ×ψ×偏移"
+     }
+    ]
+   },
+   "notes": "第一個卡點是幾何。follower gripper 的指頭是 36×70×60 mm 的盒子,而包裹開蓋後 yn 自由邊是皺的,指頭要下到布中面高度,一定會碰到旁邊皺起來的布。v3 u0.60 下降時插進布 18 mm。210 組姿態掃描裡沒有任何一組能完全不插。所以要嘛換細指頭,要嘛先撥布,這是下一步的選項。"
+  },
+  {
+   "role": "project_insight",
+   "title": "卡點二:他片被拖 20~50%",
+   "subtitle": "機制:綁定無限剛度,翻 yn 時把相連的 xp/xn 扯動",
+   "cards": {
+    "items": [
+     {
+      "title": "有限剛度綁定",
+      "bullets": [
+       "attachment stiffness 設有限值",
+       "拉太緊就滑,不硬扯",
+       "進行中"
+      ]
+     },
+     {
+      "title": "掀前壓住 xp/xn",
+      "bullets": [
+       "模擬第二隻手",
+       "PPT 的雙手分工",
+       "進行中"
+      ],
+      "highlight": true
+     },
+     {
+      "title": "只綁上層 + 縮 pad",
+      "bullets": [
+       "先垂直抽出再翻",
+       "減少連帶",
+       "進行中"
+      ]
+     }
+    ]
+   },
+   "notes": "第二個卡點是他片拖動,代理夾爪 20%,手臂 16 到 52%,判準是 5%。機制是綁定剛度無限,yn 和 xp、xn 在角落是同一張布連著的,翻 yn 時把相鄰片整片扯起來。現在平行跑三條解法:有限剛度綁定、掀之前用第二隻手壓住 xp 和 xn、以及只綁上層加縮小 pad 並先垂直抽出。三條結果今天還沒出來,所以都標進行中,沒有數字。"
+  },
+  {
+   "role": "project_insight",
+   "title": "卡點三:手臂掀開 64%,未到 80%",
+   "matrix": {
+    "header": [
+     "判準",
+     "目標",
+     "代理夾爪 out_ga3",
+     "手臂 v3 u0.60"
+    ],
+    "rows": [
+     [
+      "yn 越線",
+      "≥ 80%",
+      "100% ✓",
+      "64~68% ✗"
+     ],
+     [
+      "放手後",
+      "≥ 50%",
+      "62% ✓",
+      "56~66% ✓"
+     ],
+     [
+      "滑動",
+      "< 2 mm",
+      "0.2 mm ✓",
+      "未量"
+     ],
+     [
+      "他片拖動",
+      "< 5%",
+      "20% ✗",
+      "16~52% ✗"
+     ],
+     [
+      "穿杯",
+      "0",
+      "0 ✓",
+      "0 ✓"
+     ]
+    ],
+    "highlight_row": 1
+   },
+   "notes": "把判準和兩條線並排。代理夾爪除了他片拖動都過了。手臂線放手後和穿杯過了,越線只有 64 到 68%,沒到 80%。手臂線的滑動 json 裡有 slip 欄位 1.76 和 3.19,但口徑跟代理夾爪的頂點滑動是否相同沒確認,所以表上寫未量。"
+  },
+  {
+   "role": "project_results",
+   "title": "顫抖:volume 布一直抖,根因三個",
+   "layout": "figure-bottom",
+   "video": {
+    "src": "figs/18_damp_compare.mp4",
+    "caption": "四折段:左 edamp 0(抓取鏈)/ 右 edamp 0.02(15 s)",
+    "source": "ours",
+    "autoplay": true,
+    "loop": true
+   },
+   "bullets": [
+    {
+     "text": "根因:阻尼 0 + 自碰撞層間互推 + E 2e3 太軟",
+     "level": 0
+    },
+    {
+     "text": "edamp 0.02:停留顫抖 RMS 0.358 → 0.213 mm/格(−40%),自穿 0",
+     "level": 0
+    }
+   ],
+   "notes": "使用者看影片發現 volume 布一直在抖。根因有三個疊在一起:阻尼設 0、自碰撞時上下層互相推、E 2e3 本身很軟。用每格頂點位移 RMS 量顫抖,四折停留段 base 是 0.358 mm 每格,edamp 0.02 降到 0.213,約少 40%,自穿從 9 降到 0。影片左右是同一段四折,左邊沒阻尼,右邊 edamp 0.02。"
+  },
+  {
+   "role": "project_results",
+   "title": "阻尼掃描:edamp 0.02 最平衡",
+   "matrix": {
+    "header": [
+     "組",
+     "停留 RMS",
+     "自穿 max",
+     "邊長比 max",
+     "折到位"
+    ],
+    "rows": [
+     [
+      "base(0/0)",
+      "0.358",
+      "9",
+      "1.72",
+      "是"
+     ],
+     [
+      "edamp 0.02",
+      "0.213",
+      "0",
+      "1.83",
+      "是"
+     ],
+     [
+      "edamp 0.05",
+      "0.162",
+      "2",
+      "2.19",
+      "局部拉扯"
+     ],
+     [
+      "edamp 0.2",
+      "0.265",
+      "8",
+      "3.44",
+      "勉強"
+     ],
+     [
+      "edamp 0.5",
+      "0.330",
+      "16",
+      "4.90",
+      "否"
+     ],
+     [
+      "ldamp 5",
+      "0.332",
+      "9",
+      "2.03",
+      "是"
+     ]
+    ],
+    "highlight_row": 2,
+    "caption": "停留 RMS:每格頂點位移 mm/格(1/30 s);DAMPING.md"
+   },
+   "notes": "十組短跑掃描。edamp 0.05 顫抖最低,但邊長比最大到 2.19、有局部拉扯。edamp 0.02 顫抖少 40%、自穿 0、邊長比最接近 base,是最平衡的一組。edamp 0.2 布已經嚴重變形,0.5 以上錨點到位但布跟不上,折不上去。ldamp 線性阻尼幾乎沒幫助,靜置段顫抖反而變大。"
+  },
+  {
+   "role": "project_insight",
+   "title": "阻尼傷抓取鏈:抓取維持 0",
+   "notes": "加阻尼後跑完整鏈,抓取段明顯變差。edamp 0.05 越線 59%、放手後 0%;edamp 0.02 夾持中滑了 84 mm、越線 0%。而且時間幾乎加倍。各只跑一次,分不出是阻尼本身還是初始條件改變後混沌發散。結論是抓取鏈維持阻尼 0,只有做折疊、入箱的展示影片時用 edamp 0.02。",
+   "bignum": {
+    "items": [
+     {
+      "value": "100%",
+      "label": "edamp 0:yn 越線",
+      "sub": "放手後 62%"
+     },
+     {
+      "value": "59%",
+      "label": "edamp 0.05:yn 越線",
+      "sub": "放手後 0%"
+     },
+     {
+      "value": "0%",
+      "label": "edamp 0.02:yn 越線",
+      "sub": "夾持中滑 84 mm"
+     }
+    ]
+   },
+   "bullets": [
+    {
+     "text": "加阻尼後完整鏈 wall 639 → 約 1160 s;各只跑一次",
+     "level": 0
+    }
+   ]
+  },
+  {
+   "role": "project_results",
+   "title": "速度:dt 1/120 最有效",
+   "matrix": {
+    "header": [
+     "設定",
+     "折疊段 wall/sim",
+     "整鏈 wall/sim",
+     "整鏈 yn 越線 / 放手後"
+    ],
+    "rows": [
+     [
+      "基準(dt 1/240、solver 128)",
+      "7.04",
+      "7.4",
+      "100% / 62%"
+     ],
+     [
+      "渲染 640",
+      "6.94",
+      "未量",
+      "未量"
+     ],
+     [
+      "dt 1/120",
+      "4.37",
+      "5.76",
+      "100% / 0%"
+     ],
+     [
+      "dt 1/120 + solver 64",
+      "3.36",
+      "6.02",
+      "59% / 0%"
+     ],
+     [
+      "solver 64",
+      "4.93",
+      "7.90",
+      "40% / 0%"
+     ]
+    ],
+    "highlight_row": 3,
+    "caption": "倍數 = wall ÷ sim(越小越快);vol/speed/*/wrap_vol.log"
+   },
+   "notes": "速度用 wall 除以 sim 時間表示,越小越快。基準整鏈 639 秒跑 86.3 秒模擬,7.4 倍;折疊段 7.04 倍。降渲染解析度幾乎沒差,瓶頸在物理。dt 從 1/240 改 1/120,折疊段到 4.37 倍、整鏈 5.76 倍。dt 1/120 加 solver 64 折疊段最快 3.36 倍,但整鏈反而 6.02、掀開退到 59%。solver 64 單獨整鏈越線退到 40%,不可用。另外 GPU 上有一個不是我們的串流 kit 在搶資源,整鏈數字可能受影響。"
+  },
+  {
+   "role": "project_results",
+   "title": "失敗:dt 1/120 放手後全彈回",
+   "layout": "figure-right",
+   "video": {
+    "src": "figs/19_dt120_release.mp4",
+    "caption": "a_dt120 yn 段:越線 100% → 放手後 0%(15 s)",
+    "source": "ours",
+    "autoplay": true,
+    "loop": true
+   },
+   "bullets": [
+    {
+     "text": "yn 綁 14 點,越線 100%,放手後 0%",
+     "level": 0
+    },
+    {
+     "text": "他片 52.3%(基準 20.0%)",
+     "level": 1
+    },
+    {
+     "text": "速度品質要整鏈驗,不能只看折疊段",
+     "level": 0
+    }
+   ],
+   "notes": "dt 1/120 的整鏈 yn 越線還是 100%,但放手後是 0%,整片彈回,而且他片被拖 52%,遠比基準的 20% 差。所以單看越線會誤判 dt 1/120 可用,實際上放手後的結果不能接受。速度改動一定要跑整條鏈、看放手後的數字才能定。"
+  },
+  {
+   "role": "project_insight",
+   "title": "工程:clone 即跑、測試集、demo",
+   "cards": {
+    "items": [
+     {
+      "title": "GitHub",
+      "bullets": [
+       "wyattsheu/sim-forge",
+       "sims/fr3_bubblewrap_pack_20261007",
+       "USD、手臂 URDF、軌跡都進"
+      ]
+     },
+     {
+      "title": "測試集",
+      "bullets": [
+       "run_checks.py:10 個 check 函式、23 個檢查項",
+       "RUNS.csv 122 列"
+      ],
+      "highlight": true
+     },
+     {
+      "title": "Demo",
+      "bullets": [
+       "work/videos/demo/DEMO_1~5 + DEMO_ALL",
+       "make_demo_videos.sh 一鍵產生",
+       "DEMO_ALL 263.8 s"
+      ]
+     }
+    ]
+   },
+   "notes": "工程面的交付。所有程式、USD、手臂 URDF 和軌跡都推到 sim-forge 的 sims 資料夾,clone 下來照 README 就能跑。測試集 run_checks.py 有 10 個 check 函式、共 23 個檢查項,RUNS.csv 記了 122 次模擬。demo 影片分五段加一支總集,總長 263.8 秒,用 make_demo_videos.sh 一個指令重產。"
+  },
+  {
+   "role": "project_insight",
+   "title": "困難總表:哪裡卡、為什麼、現在怎樣",
+   "matrix": {
+    "header": [
+     "卡點",
+     "原因",
+     "狀態"
+    ],
+    "rows": [
+     [
+      "純摩擦夾不住",
+      "網格粗 + 無塑性",
+      "✅ 摩擦 + 合指綁定"
+     ],
+     [
+      "放手彈回",
+      "材料純彈性",
+      "✅ 弧線翻到箱外(62%)"
+     ],
+     [
+      "gripper 不能綁",
+      "Isaac Lab #4628",
+      "✅ kinematic 代理方塊"
+     ],
+     [
+      "指頭插布 18 mm",
+      "指頭盒 36×70×60",
+      "🛠️ 細指頭 / 撥布"
+     ],
+     [
+      "他片拖動 20~50%",
+      "綁定無限剛度",
+      "🔄 三條解法進行中"
+     ],
+     [
+      "掀開 64% < 80%",
+      "手臂可達性 + 皺布",
+      "🔄 進行中"
+     ],
+     [
+      "布顫抖",
+      "阻尼 0 + 自碰撞 + 軟",
+      "✅ 展示用 edamp 0.02"
+     ],
+     [
+      "材料無塑性",
+      "PhysX deformable 無塑性",
+      "❌ 仍無解"
+     ]
+    ],
+    "highlight_row": 5,
+    "col_widths": [
+     1.6,
+     1.8,
+     2
+    ]
+   },
+   "notes": "把本週的卡點排在一起。前三項本週解掉:綁定、弧線翻出、代理方塊。顫抖對展示影片有解,但抓取鏈不能加阻尼。還開著的是指頭插布、他片拖動和掀開幅度,其中他片拖動是現在最優先的。材料沒有塑性這項目前沒有解法,只能靠箱壁、第二隻手這類幾何手段讓布留在位置上。"
+  },
+  {
+   "role": "project_conclusion",
+   "title": "Conclusion",
+   "subtitle": "下一步:壓他片 → 細指頭或撥布 → 雙手分工 → 掀開 80%",
+   "table": [
+    "他片拖動:有限剛度 / 第二隻手壓 xp、xn / 只綁上層 三條結果出來後選一條",
+    "指頭插布:換細指頭或先撥布,重掃可達性",
+    "雙手分工:左手壓、右手掀,對齊 PPT",
+    "目標:手臂線 yn 越線 ≥ 80%、他片 < 5%",
+    "材料塑性仍無解:持續找 PhysX 替代(Newton deformable 預計 Sim 6.0)",
+    "持續:RUNS.csv、測試集、sim-forge 跟著更新"
+   ],
+   "notes": "下一步照優先序。第一是他片拖動,三條平行解法結果出來就選一條接進手臂線。第二是指頭插布,換細指頭或先撥布。第三是雙手分工,第二隻手壓住相鄰片,這也可能同時解他片拖動。目標是手臂線越線到 80%、他片低於 5%。材料塑性目前無解,文獻提到 Newton deformable 後端預計 Lab 3.0 或 Sim 6.0。"
+  }
+ ]
+}
