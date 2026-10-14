@@ -94,7 +94,12 @@ ap.add_argument("--hold_others", type=int, default=0, help="[drag] 1 = 綁定 yn
 ap.add_argument("--hold_pad_mm", type=float, default=24.0, help="[drag] 他片在 flat 座標從該片折線往內延伸幾 mm 都釘(耳朵區一定包含)")
 ap.add_argument("--hold_mode", choices=["attach", "pad"], default="attach", help="[drag] attach = VtxXformAttachment 釘住;pad = 壓板(未實作)")
 ap.add_argument("--hold_sides", default="xp,xn", help="[drag] 要釘的片,逗號分隔")
-ap.add_argument("--hold_layer", choices=["both", "top"], default="both", help="[drag] both = TOP+BOT 兩層;top = 只釘上層")
+ap.add_argument("--hold_layer", choices=["both", "top", "topfree"], default="both", help="[drag] both = TOP+BOT 兩層;top = 只釘上層")
+ap.add_argument("--hold_min_d_mm", type=float, default=0.0, help="[drag2] 釘點離本片綁定頂點(世界 xy)至少這麼遠;0 = 不限")
+ap.add_argument("--guard_hold", type=float, default=0.0, help="[drag2] 釘住期間守衛邊長比門檻(>0 才生效,否則 2.3)")
+ap.add_argument("--lift_first_out_mm", type=float, default=0.0, help="[drag2] 先拉起時同時往箱外(本片外側 y)抽這麼多 mm")
+ap.add_argument("--arc2_ext_mm", type=float, default=0.0, help="[drag2] 弧線終點後再往箱外(本片外側 y)直線延伸 mm;0 = 舊行為")
+ap.add_argument("--arc2_ext_t", type=float, default=1.0, help="[drag2] 延伸用時 s")
 ap.add_argument("--hold_rel_s", type=float, default=0.5, help="[drag] TR(放手開始)後幾秒移除釘住")
 ap.add_argument("--attach_damp", type=float, default=0.0, help="[drag] 夾持綁定 omniphysics:damping(每頂點 N·s/m);-1 = 自動臨界 2*sqrt(k*m_vtx)")
 ap.add_argument("--attach_proxy", type=int, default=0, help="[drag] 1 = 上指綁定改綁到動態代理 /World/gfing/upx(D6 drive 掛在上指,力上限 proxy_fmax);0 = 舊行為")
@@ -663,7 +668,8 @@ G_TLOIN = G_TPICK + GT["lo_above"] + GT["lo_down"] + GT["lo_in"]                
 G_TJAW = G_TLOIN + GT["close"]                                                                          # 7.9 合好 → rod 撤
 G_TGRIP = G_TJAW + GT["rod_out"] + GT["rod_up"] + GT["grip_hold"] + 0.4                                 # 9.7 登記夾到的點、開始掀
 G_LF = a.lift_first_t if a.lift_first_mm > 0 else 0.0                                                  # [drag] 先拉起
-G_SHEET = G_TGRIP + G_LF + a.peel_t + GT["peel_hold"] + GT["rel_open"] + GT["rel_slide"] + GT["rel_up"] + 0.3
+G_EXT = a.arc2_ext_t if a.arc2_ext_mm > 0 else 0.0                                                # [drag2]
+G_SHEET = G_TGRIP + G_LF + G_EXT + a.peel_t + GT["peel_hold"] + GT["rel_open"] + GT["rel_slide"] + GT["rel_up"] + 0.3
 G_SEQ = (["yn", "yp"] if a.second else ["yn"]) if a.grasp else []
 TG0 = T_END_ALL + 1.0
 if a.grasp and a.until == "all":
@@ -1084,6 +1090,17 @@ if a.grasp:
             hs = [x_ for x_ in a.hold_sides.split(",") if x_]
             mh = np.isin(GSIDE2, hs) & (sg * FLAT[:, 1] >= CY - a.hold_pad_mm / 1e3)
             if a.hold_layer == "top": mh &= np.arange(len(mh)) >= N1
+            if a.hold_layer == "topfree":                                     # [drag2] 只取上層、且 layer_order 判定沒被別片壓住
+                import layer_order as LO
+                _Mm = GPL.mid(Pl) * 1e3; _free = np.zeros(len(mh), bool)
+                for _s in hs:
+                    _i, _o, _, _ = LO.analyze(_Mm, GSIDE2[:N1], _s, r=a.attach_mask_r_mm, dz=a.attach_mask_dz_mm)
+                    _free[_i[~_o] + N1] = True
+                mh &= _free
+            if a.hold_min_d_mm > 0 and pl.get("att", {}).get("n", 0) > 0:      # [drag2] 離綁定區
+                _A = Pw[np.asarray(pl["att"]["vids"]), :2]
+                _d = np.min(np.linalg.norm(Pw[:, None, :2] - _A[None], axis=2), axis=1)
+                mh &= _d >= a.hold_min_d_mm / 1e3
             HV = np.where(mh)[0]
             if len(HV):
                 VC.attach_vtx(st, "/World/ghold_%s" % sd, "/World/plate", "/World/plate", "/World/ghold/anc", HV, Pw[HV] - HOLD_ANC, P=P)
@@ -1111,6 +1128,7 @@ if a.grasp:
         up_f, lo_f, R0 = pl["up_f"], pl["lo_f"], pl["R0"]; TP0 = t
         if a.lift_first_mm > 0:                                               # [drag] 先直線拉起再轉弧
             dl = (np.array([0, 0, 1.0]) if a.lift_first_dir == "z" else R0[:, 2]) * a.lift_first_mm / 1e3
+            dl = dl + np.array([0, sg * a.lift_first_out_mm / 1e3, 0])       # [drag2] 往箱外抽(lift_first_out_mm=0 不變)
             for k_ in (("up",) if a.grasp_attach else ("up", "lo")):
                 g_lin(k_, t, a.lift_first_t, pl[k_ + "_f"] + dl + offw, R0)
             up_f, lo_f = up_f + dl, lo_f + dl; TP0 = t + a.lift_first_t
@@ -1153,6 +1171,11 @@ if a.grasp:
             raise RuntimeError("弧線參數 nan: r0=%s th0=%s th1=%s Rr=%s" % (r0, th0, th1, Rr))
         Pf1, Rf1, th_e = at(1.0)
         n_e, u_e = Rf1[:, 2], Rf1[:, 1]
+        if a.arc2_ext_mm > 0:                                                 # [drag2] 弧線終點再往箱外延伸
+            Pf1 = {k_: Pf1[k_] + np.array([0, sg * a.arc2_ext_mm / 1e3, 0]) for k_ in Pf1}
+            for k_ in (("up",) if a.grasp_attach else ("up", "lo")):
+                g_lin(k_, TP1, a.arc2_ext_t, Pf1[k_] + offw, Rf1)
+            P("  [%s] 弧線終點再往箱外延伸 %.0f mm(%.1f s)" % (sd, a.arc2_ext_mm, a.arc2_ext_t)); TP1 = TP1 + a.arc2_ext_t
         TR = TP1 + GT["peel_hold"]
         for k_, sgn in ((("up", 1.0),) if a.grasp_attach else (("up", 1.0), ("lo", -1.0))):
             p1 = Pf1[k_] + offw
@@ -1383,7 +1406,8 @@ for fr in range(NFR):
         P(s_)
         if a.grasp and GS["plans"] and tcur >= TG0:
             _pl = GS["plans"][-1]; g_line(_pl, g_metrics(_pl, tcur, Pp), r)
-            if _pl.get("att", {}).get("on") and r["lr"][1] > 2.3:
+            _gth = a.guard_hold if (a.guard_hold > 0 and _pl.get("hold", {}).get("on")) else 2.3   # [drag2]
+            if _pl.get("att", {}).get("on") and r["lr"][1] > _gth:
                 st.RemovePrim(Sdf.Path(_pl["att"]["scope"])); _pl["att"]["on"] = False
                 if _pl["att"].get("lo"): st.RemovePrim(Sdf.Path(_pl["att"]["scope"] + "_lo")); _pl["ev"]["lr_guard"] = tcur
                 P("★ t=%.2f [%s] 守衛:邊長比最大 %.3f > 2.3 → RemovePrim %s 放手" % (tcur, _pl["sd"], r["lr"][1], _pl["att"]["scope"]))

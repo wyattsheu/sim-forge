@@ -15,3 +15,29 @@ TypeError: dict() got multiple values for keyword argument 'fold_order'
 [07:16] o_xnynxpyp box 開跑(GPU 13125 MiB)
    → FAIL 邊長比[0.47,2.32] 235s
 [07:20] o_xnynypxp box 開跑(GPU 13125 MiB)
+   → FAIL 邊長比[0.49,1.71] 223s
+[07:23] o_xnypxpyn box 開跑(GPU 13035 MiB)
+   → FAIL 邊長比[0.55,1.76] 239s
+[07:27] o_xnypynxp box 開跑(GPU 6430 MiB)
+   → FAIL 邊長比[0.50,1.64] 148s
+[07:30] o_xpxnynyp box 開跑(GPU 6430 MiB)
+   → PASS  184s
+[07:33] o_xpxnypyn box 開跑(GPU 6430 MiB)
+   → FAIL 邊長比[0.51,1.66] 153s
+[07:35] o_xpynxnyp box 開跑(GPU 6430 MiB)
+   → PASS  187s
+[07:39] o_xpynypxn box 開跑(GPU 6430 MiB)
+   → PASS  199s
+[07:42] o_xpypxnyn box 開跑(GPU 6430 MiB)
+   → FAIL 超出內腔31(x0/y0/口31);邊長比[0.55,2.14] 184s
+[07:45] o_xpypynxn box 開跑(GPU 6430 MiB)
+   → FAIL 邊長比[0.36,1.61] 165s
+[07:48] o_ynxnxpyp box 開跑(GPU 6430 MiB)
+   → FAIL 邊長比[0.53,1.66] 181s
+[07:51] o_ynxnypxp box 開跑(GPU 6430 MiB)
+   → PASS  192s
+[07:54] o_ynxpxnyp box 開跑(GPU 6430 MiB)
+   → FAIL 超出內腔5(x0/y0/口5) 168s
+[07:57] o_ynxpypxn box 開跑(GPU 6430 MiB)
+   → PASS  177s
+[08:00] o_ynypxnxp box 開跑(GPU 6430 MiB)

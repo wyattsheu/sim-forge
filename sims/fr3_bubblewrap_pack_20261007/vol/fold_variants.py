@@ -68,6 +68,7 @@ def parse(log):
     if r.get("infeasible"): fail.append("infeasible(" + r["infeasible"] + ")")
     if r["inv_max"] > 0: fail.append("反轉%d" % r["inv_max"])
     if not (0.5 <= r["edge_lo"] and r["edge_hi"] <= 1.65): fail.append("邊長比[%.2f,%.2f]" % (r["edge_lo"], r["edge_hi"]))
+    r["phys_pass"] = int(not [x for x in fail if not x.startswith("邊長比")])   # 不看邊長比(預設組本身就 0.57/1.56)
     r["fail"] = ";".join(fail); r["status"] = "PASS" if not fail else "FAIL"
     return r
 
@@ -85,7 +86,7 @@ def outer_layer(npz, CX, CY, moff, snap="snap_fold_end"):
         pct[sd] = round(100 * over.mean(), 1) if len(idx) else np.nan
     return min(pct, key=lambda k: pct[k]), pct
 
-COLS = ["id", "status", "fail", "fold_order", "class", "first", "outer_by_order", "outer_layer", "over_pct",
+COLS = ["id", "status", "phys_pass", "fail", "fold_order", "class", "first", "outer_by_order", "outer_layer", "over_pct",
         "sheet_x_mm", "sheet_y_mm", "mug_off_mm", "mug_yaw_deg", "tip_over_mm", "margin", "wall", "tuck", "fold_span", "fold_hold", "young", "seed",
         "CX", "CY", "no_reach", "infeasible", "out", "out_x", "out_y", "out_hi", "mugpen_max", "self_max", "inv_max", "edge_lo", "edge_hi", "fold_bbox", "pre_bbox",
         "wall_s", "full_status"]
