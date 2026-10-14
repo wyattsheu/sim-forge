@@ -891,8 +891,8 @@ if a.grasp:
         for c in cs:
             Rc, _ = GPL.frame(Pl, c["v"]); c["gap"] = GPL.gap_below(Pl, MUGl, c["v"], Rc, BOXL) * 1e3
             c["sup"] = c["gap"] <= 15.0
-        cs.sort(key=lambda c: (c["press"], not c["sup"], -c["n_att"], c["dmid"]))
-        P("\n★ t=%.2f [%s] 抓點候選表(state;自由邊 %d 點;排序 = 沒被壓 > 有支撐(空隙<=15) > 預估綁點多 > 近中段)" % (t, sd, len(cs)))
+        cs.sort(key=lambda c: (c["press"], not c["sup"], c["n_att"] < 8, c["dmid"], -c["n_att"]))   # v2:綁點夠(>=8)就取近中段(v1 取綁點最多 → 選到 flat x 207 的角,綁 27 但只掀 25%)
+        P("\n★ t=%.2f [%s] 抓點候選表(state v2;自由邊 %d 點;排序 = 沒被壓 > 有支撐(空隙<=15) > 預估綁>=8 > 近中段 > 綁點多)" % (t, sd, len(cs)))
         for k_, c in enumerate(cs):
             P("   CAND #%d v%-4d flat x %5.0f 位置 (%6.1f,%6.1f,%6.1f) 預估綁 %2d(窗上方 %2d)| 窗內 %2d 點被壓 %2d(%s)%s | 下方空隙 %5.1f %s"
               % (k_ + 1, c["v"], c["flat_x"], *c["p"], c["n_att"], c["n_above"], c["n_win"], c["n_press"], c["who"], " 壓住" if c["press"] else "", c["gap"], "" if c["sup"] else "沒支撐"))

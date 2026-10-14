@@ -1,1 +1,40 @@
 [09:35] r7_08 full 開跑(GPU 6361 MiB)
+   → FAIL 邊長比[0.46,1.74] 371s
+[09:41] r7_11 full 開跑(GPU 12080 MiB)
+   → PASS  361s
+o_xnxpynyp PASS  yp
+o_xnxpypyn PASS  yn
+o_xnynxpyp FAIL 邊長比[0.47,2.32] yp
+o_xnynypxp FAIL 邊長比[0.49,1.71] xp
+o_xnypxpyn FAIL 邊長比[0.55,1.76] yn
+o_xnypynxp FAIL 邊長比[0.50,1.64] xp
+o_xpxnynyp PASS  yp
+o_xpxnypyn FAIL 邊長比[0.51,1.66] yn
+o_xpynxnyp PASS  yp
+o_xpynypxn PASS  xn
+o_xpypxnyn FAIL 超出內腔31(x0/y0/口31);邊長比[0.55,2.14] yn
+o_xpypynxn FAIL 邊長比[0.36,1.61] xn
+o_ynxnxpyp FAIL 邊長比[0.53,1.66] yp
+o_ynxnypxp PASS  xp
+o_ynxpxnyp FAIL 超出內腔5(x0/y0/口5) yp
+o_ynxpypxn PASS  xn
+o_ynypxnxp FAIL 邊長比[0.54,1.65] xp
+o_ynypxpxn FAIL 邊長比[0.49,1.53] xp
+o_ypxnxpyn FAIL 超出內腔3(x0/y0/口3);邊長比[0.50,1.89] yn
+o_ypxnynxp FAIL 反轉3;邊長比[0.28,1.79] xp
+o_ypxpxnyn FAIL 邊長比[0.52,2.28] yn
+o_ypxpynxn FAIL 邊長比[0.44,1.59] xn
+o_ypynxnxp PASS  xn
+o_ypynxpxn PASS  xn
+r7_00 FAIL 超出內腔321(x14/y313/口14);反轉1;邊長比[0.45,1.53] xp
+r7_01 FAIL 超出內腔236(x26/y201/口11) yp
+r7_02 FAIL 超出內腔386(x11/y365/口65) xn
+r7_03 FAIL 超出內腔411(x0/y411/口0) yn
+r7_04 FAIL 超出內腔58(x0/y58/口0) xn
+r7_05 FAIL 超出內腔2(x0/y0/口2);邊長比[0.51,1.66] xn
+r7_06 FAIL 超出內腔259(x0/y224/口35) yn
+r7_07 FAIL 超出內腔265(x0/y265/口0) xp
+r7_08 FAIL 邊長比[0.47,1.67] yp
+r7_09 FAIL 超出內腔9(x0/y0/口9);infeasible(xp);邊長比[0.46,1.64] xn
+r7_10 FAIL 超出內腔218(x0/y218/口0);邊長比[0.53,2.49] xn
+r7_11 FAIL 邊長比[0.56,1.67] xn
