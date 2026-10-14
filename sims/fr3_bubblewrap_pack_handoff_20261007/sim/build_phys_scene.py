@@ -63,7 +63,7 @@ ap.add_argument("--lid_pad_lids", default="fyp,fyn", help="only the OUTER (upper
 # carton_v1 (crease 0.42 N*m/rad per metre of crease, inertia from geometry).
 ap.add_argument("--lid_stiff", type=float, default=-1.0, help="N*m/deg for every crease; <0 = from --lid_stiff_per_m (old value 0.012)")
 ap.add_argument("--lid_stiff_per_m", type=float, default=-1.0, help="N*m/rad per metre of crease width; <0 = crease_my_per_m / spring-back (carton_v1 used 0.42)")
-# elastic-plastic crease (sim/crease_plastic.py reads these from the joints): literature, see docs/CREASE_MECHANICS.md
+# elastic-plastic crease (sim/crease_plastic.py reads these from the joints): literature, see sims/carton_plastic_crease_20261009/docs/CREASE_MECHANICS.md
 ap.add_argument("--crease_my_per_m", type=float, default=0.25, help="N*m/m yield / plateau moment per metre of crease (Nagasawa 2019: Mp1 0.244 N*m/m)")
 ap.add_argument("--crease_springback_deg", type=float, default=45.0, help="elastic spring-back after a fold (Nagasawa 2019: 90 deg fold releases to ~44-46 deg)")
 ap.add_argument("--articulation", type=int, default=1, help="1 = make the carton (base + 4 flaps) one articulation: needed for crease angles past 180 deg "

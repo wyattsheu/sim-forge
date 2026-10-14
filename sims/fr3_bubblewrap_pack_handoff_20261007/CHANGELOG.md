@@ -135,3 +135,24 @@ arm scene, carton, `mug.stl`, `open_in_ui.sh`, `open_in_webrtc.sh`, `crease_hold
   30.6 deg; carry test B lifts the upper flaps ~15 deg and the 1.5 m/s shake flings one to 73 deg (softer creases + wrap pushing).
 - New: `sim/crease_test.py` (crease bending-tester protocol, CSV + video), `sim/plot_crease.py`, `sim/run_crease_matrix.sh`,
   `docs/CREASE_MECHANICS.md` + `docs/img/*.png`; `verify_phys_scene.py --lid_model`, `lid_test.py ... plastic`.
+
+## 2026-10-14 co7b carton replaces the drive-based crease; wrap solver iterations 64 -> 8
+- The lids now behave like the carton of the dual-arm opening run co7b (`manip_fr3/handoff_20261008/deliver_co7b_20261013/co7b_full_open`).
+  Its `scene_final_phys.usd` is byte-identical to this one, so geometry and size are unchanged; the difference is run-time physics,
+  ported from its `co3_arm_open.py` into `sim/crease_co7b.py` (default; loaded before Play by both launchers):
+  crease drives zeroed, `crease_physics.py` ElastoplasticCrease applied as hinge torque every physics step (reaction on the base),
+  k 3.2 / My0 0.60 / H 0.85 / c 0.33 / clip 3.0 all x0.1 (`CREASE_SCALE`), front / back flaps pre-opened 50 / 60 deg (`CREASE_PRESET`).
+- Bubble wrap `solverPositionIterationCount` 64 -> 8 at load time (`WRAP_ITERS`). The scene file still says 64.
+- The previous model (`crease_plastic.py`, drive as the elastic part) is archived with its write-up, figures, slides and tests in
+  `sims/carton_plastic_crease_20261009` (`git mv` of docs/, crease_test.py, plot_crease.py, run_crease_matrix.sh);
+  `LID_MODE=plastic` still loads it here. `crease_plastic.py` re-attaches after a stage reload instead of raising every step.
+- New `sim/co7b_check.py`; `verify_phys_scene.py --lid_model co7b` (default).
+- Measured (Isaac Sim 5.1, headless, GPU shared with other jobs at ~95 %):
+  - settle 2 s: flaps hold 49 / 59 deg (preset 50 / 60), sides -1.5 deg, carton 0.0 mm, wrap through walls 0.
+  - flaps pushed in PPT order to 162 / 162 / 157 / 156 deg and released: rest 120.7 / 120.7 / 116.2 / 115.6 deg, formula
+    (k X - My0)/(k + H) 119.7 / 119.7 / 115.6 / 114.9 -> within 0.9 deg (co7b K1 < 3; co7b itself rested at 122.5-125.1 after 166-168).
+    Carton moved up to 17.8 mm while a flap was pushed (the test puts the push reaction on the base; co7b holds the carton
+    with the left hand), 2.4 mm at the end.
+  - shake S (0.08 m, 3 Hz): wrap verts through the side walls max 87 with 8 iterations, 200 with 64 -> fewer iterations do not
+    make poke-through worse. Both are well above the 10-15 in docs/CREASE_MECHANICS.md, which was measured on a rebuilt scene.
+  - frame time (headless, 2 physics steps per frame): 275 ms with 64 iterations, 132 ms with 8.

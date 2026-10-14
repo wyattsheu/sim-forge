@@ -1,7 +1,7 @@
 #!/bin/bash
 # full test matrix for docs/CREASE_MECHANICS.md (sequential: GPU memory is shared with other jobs)
 #   SCENE=<built scene> ./run_crease_matrix.sh      optional comparisons: OLD_SCENE=<pre-2026-10-09 scene> SPRING_SCENE=<spring-only scene>
-cd "$(dirname "$0")"; mkdir -p ../videos; export OMNI_KIT_ACCEPT_EULA=YES; PY=~/env_isaaclab/bin/python; L=../logs; V=../videos; mkdir -p logs; N=${SCENE:-../scene_final_phys.usd}
+cd "$(dirname "$0")"; mkdir -p ../videos; export OMNI_KIT_ACCEPT_EULA=YES; PY=${PY:-/isaac-sim/python.sh}; L=../logs; V=../videos; mkdir -p logs; N=${SCENE:-../../fr3_bubblewrap_pack_handoff_20261007/scene_final_phys.usd}
 run(){ echo "== $*"; "$@" > $L/matrix_last.stdout 2>&1 || echo "   (exit $?)"; grep -m2 "Traceback" $L/matrix_last.stdout; }
 run $PY crease_test.py $N --lid fyp --track 90 --cycles 3 --empty
 [ -f "$OLD_SCENE" ] && run $PY crease_test.py $OLD_SCENE --lid fyp --track 90 --model latch --empty --out logs/crease_fyp_90_oldlatch_empty

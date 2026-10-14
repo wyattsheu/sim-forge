@@ -19,6 +19,8 @@ CREASE = os.environ.get("HANDOFF_CREASE", "0") == "1"
 CREASE_MODE = CREASE
 SIM = os.environ.get("HANDOFF_SIM", "")
 NO_PLAY = os.environ.get("HANDOFF_NO_PLAY", "0") == "1"
+# flap model: co7b = the carton of the dual-arm opening run co7b (default since 2026-10-14, sim/crease_co7b.py)
+LID_MODE = os.environ.get("LID_MODE", "spring" if os.environ.get("LID_LATCH", "1") == "0" else "co7b")
 DELAY = 180
 _s = {"f": 0, "opened": False, "done": False}
 _st = carb.settings.get_settings()
@@ -89,6 +91,13 @@ def _on_update(_e):
     elif f == DELAY and _s["opened"]:
         _camera()
         _s["no_shift"] = _mouse_drag()
+        if not CREASE_MODE and LID_MODE == "co7b":       # co7b authors drives / presets / wrap iterations: before Play
+            p = os.path.join(SIM, "crease_co7b.py")
+            try:
+                exec(compile(open(p).read(), p, "exec"), globals())
+                _hlog("flap model: co7b (crease_co7b.py)")
+            except Exception as e:
+                _hlog("crease_co7b.py failed to load: %s" % e)
         if CREASE:
             p = os.path.join(SIM, "crease_hold_ui.py")
             exec(compile(open(p).read(), p, "exec"), globals())
@@ -106,14 +115,13 @@ def _on_update(_e):
                 exec(compile(open(p).read(), p, "exec"), globals())
             except Exception as e:
                 _log("click_to_ros.py failed to load: %s" % e)
-        # flap model: plastic = elastic-plastic crease (default, docs/CREASE_MECHANICS.md); latch = old open/shut
-        # latch; spring = USD drive only (LID_LATCH=0 also means spring, for old command lines)
-        lid_mode = os.environ.get("LID_MODE", "spring" if os.environ.get("LID_LATCH", "1") == "0" else "plastic")
-        if not CREASE_MODE and lid_mode in ("plastic", "latch"):
-            p = os.path.join(SIM, "crease_plastic.py" if lid_mode == "plastic" else "lid_latch.py")
+        # older flap models (loaded after Play): plastic = drive-based elastic-plastic crease (archived in
+        # sims/carton_plastic_crease_20261009); latch = open/shut latch; spring = USD drive only
+        if not CREASE_MODE and LID_MODE in ("plastic", "latch"):
+            p = os.path.join(SIM, "crease_plastic.py" if LID_MODE == "plastic" else "lid_latch.py")
             try:
                 exec(compile(open(p).read(), p, "exec"), globals())
-                _hlog("flap model: %s (%s)" % (lid_mode, os.path.basename(p)))
+                _hlog("flap model: %s (%s)" % (LID_MODE, os.path.basename(p)))
             except Exception as e:
                 _hlog("%s failed to load: %s" % (os.path.basename(p), e))
         _s["done"] = True

@@ -1,7 +1,7 @@
 # crease_plastic.py — elastic-plastic crease for the four carton flaps (default lid model since 2026-10-09).
 #
 # Corrugated / folding-carton creases are not springs. Measured moment-angle curves (Nagasawa et al. 2019,
-# Beex & Peerlings 2009, Mentrasti et al. 2013; see docs/CREASE_MECHANICS.md) show:
+# Beex & Peerlings 2009, Mentrasti et al. 2013; see sims/carton_plastic_crease_20261009/docs/CREASE_MECHANICS.md) show:
 #   1. a short elastic range, then a yield / peak moment where the creased plies delaminate and bulge,
 #   2. a nearly constant (plateau) moment while the fold keeps going,
 #   3. on release a large but partial spring-back (folded to 90 deg, a fresh crease comes back to ~45 deg),
@@ -91,11 +91,18 @@ def crease_angles():
 
 def _on_step(dt):
     if "lids" not in _C:
-        try: _setup()
+        try: _setup(); _C.pop("waiting", None)
         except Exception as e:
-            print("[crease] not ready yet:", e); return
+            if not _C.get("waiting"): print("[crease] not ready yet:", e)
+            _C["waiting"] = True; return
     _C["t"] += dt
-    for n, raw in zip(_C["order"], _raw_angles()):
+    try: raw_angles = _raw_angles()
+    except Exception as e:                                      # stage reloaded / Stop+Play: the tensor view is invalidated
+        if not _C.get("lost"): print("[crease] physics view lost (%s); re-attaching on the next step" % e)
+        for k in ("lids", "base", "order", "rel0", "par"): _C.pop(k, None)
+        _C["lost"] = True; return
+    _C.pop("lost", None)
+    for n, raw in zip(_C["order"], raw_angles):
         p = _C["par"][n]
         if p["last_q"] is None: p["theta"] = raw
         else:                                                   # unwrap: continuous angle through +-180

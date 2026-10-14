@@ -36,11 +36,12 @@ def _on_update(_e):
                 exec(compile(open(p).read(), p, "exec"), globals())
             except Exception as e:
                 _log("click_to_ros.py failed to load: %s" % e)
-        # flap model: plastic = elastic-plastic crease (default, docs/CREASE_MECHANICS.md); latch = old open/shut
-        # latch; spring = USD drive only (LID_LATCH=0 also means spring, for old command lines)
-        lid_mode = os.environ.get("LID_MODE", "spring" if os.environ.get("LID_LATCH", "1") == "0" else "plastic")
-        if not CREASE_MODE and lid_mode in ("plastic", "latch"):
-            p = os.path.join(SIM, "crease_plastic.py" if lid_mode == "plastic" else "lid_latch.py")
+        # flap model: co7b = the carton of the dual-arm opening run co7b (default since 2026-10-14; Play is not pressed
+        # yet, so its drive / preset / wrap-iteration changes land on the stopped stage); plastic = drive-based
+        # elastic-plastic crease (archived in sims/carton_plastic_crease_20261009); latch = open/shut latch; spring = drive only
+        lid_mode = os.environ.get("LID_MODE", "spring" if os.environ.get("LID_LATCH", "1") == "0" else "co7b")
+        if not CREASE_MODE and lid_mode in ("co7b", "plastic", "latch"):
+            p = os.path.join(SIM, {"co7b": "crease_co7b.py", "plastic": "crease_plastic.py", "latch": "lid_latch.py"}[lid_mode])
             try:
                 exec(compile(open(p).read(), p, "exec"), globals())
                 _hlog("flap model: %s (%s)" % (lid_mode, os.path.basename(p)))
