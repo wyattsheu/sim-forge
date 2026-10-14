@@ -95,6 +95,7 @@ ap.add_argument("--hold_pad_mm", type=float, default=24.0, help="[drag] 他片�
 ap.add_argument("--hold_mode", choices=["attach", "pad"], default="attach", help="[drag] attach = VtxXformAttachment 釘住;pad = 壓板(未實作)")
 ap.add_argument("--hold_sides", default="xp,xn", help="[drag] 要釘的片,逗號分隔")
 ap.add_argument("--hold_layer", choices=["both", "top", "topfree"], default="both", help="[drag] both = TOP+BOT 兩層;top = 只釘上層")
+ap.add_argument("--hold_region", choices=["ear", "own"], default="ear", help="[drag2] ear = 舊:靠本片(yn/yp)折線內 pad;own = 他片自己折線(|flat x|<=CX+pad)那一帶")
 ap.add_argument("--hold_min_d_mm", type=float, default=0.0, help="[drag2] 釘點離本片綁定頂點(世界 xy)至少這麼遠;0 = 不限")
 ap.add_argument("--guard_hold", type=float, default=0.0, help="[drag2] 釘住期間守衛邊長比門檻(>0 才生效,否則 2.3)")
 ap.add_argument("--lift_first_out_mm", type=float, default=0.0, help="[drag2] 先拉起時同時往箱外(本片外側 y)抽這麼多 mm")
@@ -1089,6 +1090,7 @@ if a.grasp:
         if a.hold_others:                                                     # [drag] 釘住他片靠折線側(含耳朵)
             hs = [x_ for x_ in a.hold_sides.split(",") if x_]
             mh = np.isin(GSIDE2, hs) & (sg * FLAT[:, 1] >= CY - a.hold_pad_mm / 1e3)
+            if a.hold_region == "own": mh = np.isin(GSIDE2, hs) & (np.abs(FLAT[:, 0]) <= CX + a.hold_pad_mm / 1e3)   # [drag2]
             if a.hold_layer == "top": mh &= np.arange(len(mh)) >= N1
             if a.hold_layer == "topfree":                                     # [drag2] 只取上層、且 layer_order 判定沒被別片壓住
                 import layer_order as LO
