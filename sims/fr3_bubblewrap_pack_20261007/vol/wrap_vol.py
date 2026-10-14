@@ -108,6 +108,9 @@ ap.add_argument("--arc2_margin_mm", type=float, default=5.0, help="[peel3] centr
 ap.add_argument("--arc2_cl_t", type=float, default=3.0, help="[peel3] centroid 時間上限 s(之後固定再停 1 s)")
 ap.add_argument("--arc2_cl_max_mm", type=float, default=80.0, help="[peel3] centroid 夾爪最多越壁 mm(w=1)")
 ap.add_argument("--arc2_cl_down_mm", type=float, default=30.0, help="[peel3] centroid w=1 時往下 mm")
+ap.add_argument("--arc2_lay", type=int, default=0, help="[peel4] 1 = 越壁段後夾爪往下到 箱外指頭最低點 = 打開的蓋頂 + 2mm(放寬舊的 +T+2),讓片躺到蓋上再停再放手;放手改成先往箱外抽出再抬起")
+ap.add_argument("--arc2_lay_t", type=float, default=1.0, help="[peel4] 往下用時 s(之後照舊停 peel_hold 再放手)")
+ap.add_argument("--arc2_er_stop", type=float, default=0.0, help="[peel4] 越壁(閉環)/往下段邊長比 > 此值就凍結夾爪;0 = 舊行為")
 ap.add_argument("--arc2_over_t", type=float, default=1.5, help="[peel] 越過用時 s")
 ap.add_argument("--arc_grow_max_mm", type=float, default=0.0, help="[peel] 弧半徑最多比夾爪起始離彎折處距離 r0 大這麼多 mm(片被他片壓住/材料皺著時不硬拉長);0 = 舊行為")
 ap.add_argument("--release_press_mm", type=float, default=0.0, help="[peel] 放手前末端再往下壓 mm(箱壁外側貼住);0 = 舊行為")
@@ -689,6 +692,7 @@ G_TGRIP = G_TJAW + GT["rod_out"] + GT["rod_up"] + GT["grip_hold"] + 0.4         
 G_LF = a.lift_first_t if a.lift_first_mm > 0 else 0.0                                                  # [drag] 先拉起
 G_EXT = a.arc2_ext_t if a.arc2_ext_mm > 0 else 0.0                                                # [drag2]
 G_EXT += (a.arc2_cl_t + 1.0 if a.arc2_target == "centroid" else a.arc2_over_t if a.arc2_over_mm > 0 else 0.0) + (0.5 if a.release_press_mm > 0 else 0.0) + a.release_settle_s   # [peel]
+G_EXT += a.arc2_lay_t if a.arc2_lay else 0.0                                                      # [peel4]
 G_RT = 4.0                                                                                             # [robust] 每次重夾:抬 0.5 + 移 0.8 + 降 0.8 + 合 0.8 + 停 0.7 + 餘
 G_SHEET = G_RT * a.grasp_retry + G_TGRIP + G_LF + G_EXT + a.peel_t + GT["peel_hold"] + GT["rel_open"] + GT["rel_slide"] + GT["rel_up"] + 0.3
 G_SEQ = (["yn", "yp"] if a.second else ["yn"]) if a.grasp else []
@@ -1288,6 +1292,21 @@ if a.grasp:
             P("  [%s] [peel] 越過箱壁外緣 %.1f mm(要求 %.0f;材料長 %.1f − 鉸點到頂角 %.1f − 5)轉到 180°(%.1f s);終點夾爪中心 y=%.1f z=%.1f mm"
               % (sd, Dm * 1e3, a.arc2_over_mm, Lmat * 1e3, BE * 1e3, a.arc2_over_t, ((Pf1["up"] + Pf1["lo"]) / 2)[1] * 1e3, ((Pf1["up"] + Pf1["lo"]) / 2)[2] * 1e3))
             TP1 = TP1 + (a.arc2_cl_t + 1.0 if CLm else a.arc2_over_t)
+            if a.arc2_lay:                                                    # [peel4] 沿箱壁外側往下,讓片躺到打開的蓋上
+                zlay = zclear - T                                             # 箱外指頭最低點下限:蓋頂 + 2mm(舊:+T+2)
+                def layf(w, P0=(Pf1, Rf1)):
+                    Pq, Rq_ = pl["cl"]["over"](pl["cl"]["wf"]) if CLm else P0; cs = np.array([Pq[k_] + c_ @ Rq_.T for k_ in Pq for c_ in corners])
+                    m_ = pl["sg"] * cs[:, 1] > IY - 0.003; dz = (cs[m_, 2].min() - zlay) if m_.any() else 0.0
+                    if pl.get("lay", {}).get("stop") is not None: w = min(w, pl["lay"]["stop"])
+                    return {k_: Pq[k_] - np.array([0, 0, max(0.0, dz) * w]) for k_ in Pq}, Rq_
+                pl["lay"] = dict(T0=TP1, stop=None, f=layf)
+                for k_ in (("up",) if a.grasp_attach else ("up", "lo")):
+                    g_fn(k_, TP1, a.arc2_lay_t, lambda w, k_=k_: (layf(w)[0][k_] + offw, layf(w)[1]))
+                Pf1, Rf1 = layf(1.0); n_e, u_e = Rf1[:, 2], Rf1[:, 1]
+                P("  [%s] [peel4] 往下貼蓋:箱外指頭最低點下限 蓋頂 %.1f + 2 = %.1f mm(舊 %.1f);預計夾爪中心 z %.1f → %.1f(%.1f s,再停 %.1f s 放手;邊長比 > %.2f 凍結)"
+                  % (sd, (zclear - T - 0.002) * 1e3, zlay * 1e3, zclear * 1e3, ((over(1.0)[0]["up"] + over(1.0)[0]["lo"]) / 2)[2] * 1e3,
+                     ((Pf1["up"] + Pf1["lo"]) / 2)[2] * 1e3, a.arc2_lay_t, GT["peel_hold"], a.arc2_er_stop))
+                TP1 = TP1 + a.arc2_lay_t
         if a.release_press_mm > 0 or a.release_settle_s > 0:                  # [peel] 放手前下壓 + 停
             if a.release_press_mm > 0:
                 Pf1 = {k_: Pf1[k_] - np.array([0, 0, a.release_press_mm / 1e3]) for k_ in Pf1}
@@ -1297,6 +1316,14 @@ if a.grasp:
             P("  [%s] [peel] 放手前下壓 %.0f mm 再停 %.1f s" % (sd, a.release_press_mm, a.release_settle_s)); TP1 = TP1 + a.release_settle_s
         TR = TP1 + GT["peel_hold"]
         for k_, sgn in ((("up", 1.0),) if a.grasp_attach else (("up", 1.0), ("lo", -1.0))):
+            if "lay" in pl:                                                   # [peel4] 放手:從(凍結的)貼蓋位置先往箱外抽 40mm 再抬
+                def relL(w, k_=k_, ph=0):
+                    Pq, Rq_ = pl["lay"]["f"](1.0); p1 = Pq[k_] + offw; B = p1 + np.array([0, pl["sg"] * 0.040, 0]); C = B + [0, 0, 0.08]
+                    return (p1 if ph == 0 else (p1 + (B - p1) * w) if ph == 1 else (B + (C - B) * w)), Rq_
+                g_fn(k_, TR, GT["rel_open"], lambda w, f=relL: f(w, ph=0))
+                g_fn(k_, TR + GT["rel_open"], GT["rel_slide"], lambda w, f=relL: f(w, ph=1))
+                g_fn(k_, TR + GT["rel_open"] + GT["rel_slide"], GT["rel_up"], lambda w, f=relL: f(w, ph=2))
+                continue
             if "cl" in pl:                                                    # [peel3] 放手從凍結位置出發
                 def relf(w, k_=k_, sgn=sgn, ph=0):
                     Pq, Rq_ = pl["cl"]["over"](pl["cl"]["wf"]); p1 = Pq[k_] + offw; n_, u_ = Rq_[:, 2], Rq_[:, 1]
@@ -1557,11 +1584,21 @@ for fr in range(NFR):
             _why = None
             if _sg * _cy >= _edge + a.arc2_margin_mm / 1e3: _why = "達標"
             elif not _pl.get("att", {}).get("on"): _why = "守衛/已放"
+            elif a.arc2_er_stop > 0 and LOGR and LOGR[-1]["lr"][1] > a.arc2_er_stop: _why = "邊長比 %.3f > %.2f" % (LOGR[-1]["lr"][1], a.arc2_er_stop)   # [peel4]
             elif _w >= 1.0: _why = "時間上限"
             P("  [peel3] t=%.2f [%s] 質心 y=%.1f mm(壁外緣 %.1f − %.0f)| 夾爪 y=%.1f z=%.1f 越壁 %.1f mm w=%.2f | 邊長比 %.3f%s"
               % (tcur, _pl["sd"], _cy * 1e3, -_sg * _edge * 1e3, a.arc2_margin_mm, _g[1] * 1e3, _g[2] * 1e3, _over * 1e3, _w,
                  LOGR[-1]["lr"][1] if LOGR else float("nan"), (" → 停(%s)" % _why) if _why else ""))
             if _why: _c["stop"] = _w; _c["wf"] = _w
+    if a.grasp and GS["plans"] and "lay" in GS["plans"][-1]:                 # [peel4] 往下段:每 0.25s 印,邊長比過門檻凍結
+        _pl = GS["plans"][-1]; _L = _pl["lay"]
+        if _L["T0"] - 1e-9 <= tcur <= _L["T0"] + a.arc2_lay_t + GT["peel_hold"] + 1e-6 and tcur >= _L.get("next", _L["T0"]) - 1e-6:
+            _L["next"] = tcur + 0.25; _wl = ss(min(1.0, (tcur - _L["T0"]) / a.arc2_lay_t)); _g = g_pose("up", tcur)[0] - g_offw()
+            _cy = float((PLATE.pts() - g_offw())[GSIDE2 == _pl["sd"], 1].mean()); _lr = LOGR[-1]["lr"][1] if LOGR else float("nan")
+            _st = ""
+            if _L["stop"] is None and a.arc2_er_stop > 0 and _lr > a.arc2_er_stop and _wl < 1.0:
+                _L["stop"] = _wl; _st = " → 凍結(邊長比 > %.2f)" % a.arc2_er_stop
+            P("  [peel4] t=%.2f [%s] 往下 w=%.2f 上指 y=%.1f z=%.1f | 質心 y=%.1f | 邊長比 %.3f%s" % (tcur, _pl["sd"], _wl, _g[1] * 1e3, _g[2] * 1e3, _cy * 1e3, _lr, _st))
     # 階段快照
     for nm_, tt_ in [("fold_" + FOLD_ORDER[1], FT[FOLD_ORDER[2]][0] - 1e-6), ("after_move", T_OPEN0 - 1e-6),
                      ("before_move", T_MOVE0 - 1e-6), ("end", T_END_ALL - 1e-6)]:
