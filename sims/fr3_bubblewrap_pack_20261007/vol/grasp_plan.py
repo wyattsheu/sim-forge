@@ -160,6 +160,47 @@ def matlen(Pl, v, sd, yh, zh):
     h = col[np.argmin(d)]
     return float(abs(F2[v, 1] - F2[h, 1])), int(h), float(d.min())
 
+def hinge_state(Pl, sd, col_i, zfloor, r_mm=16., dz_mm=2., tol=0.006):
+    """[peel2] 彎折處偵測 nan 時:用頂點狀態找實際彎折線。夾點那欄(沒有就 |flat x|<CX 各欄)由折線往尖端走,
+    頂點「著地」= 中面離箱底 < tol + 半厚,或 layer_order 下面有他片(under);取連續著地段的最前緣頂點。
+    回傳 (y, z, flat_y, 著地點數) 或 None。"""
+    import layer_order as LO
+    NX, F2, CX, CY, ii = S["NX"], S["F2"], S["CX"], S["CY"], S["ii"]
+    M = mid(Pl); sg = -1.0 if sd == "yn" else 1.0
+    idx, over, who, under = LO.analyze(M * 1e3, S["SIDE"], sd, r=r_mm, dz=dz_mm)
+    UN = np.zeros(len(M), bool); UN[idx] = np.array([u != "" for u in under])
+    thk = np.linalg.norm(Pl[len(M):2 * len(M)] - Pl[:len(M)], axis=1) if len(Pl) >= 2 * len(M) else np.full(len(M), 0.004)
+    ground = (M[:, 2] - thk / 2 - zfloor < tol) | UN
+    def front(i):
+        col = np.where((ii == i) & (sg * F2[:, 1] > CY - 1e-9))[0]
+        if not len(col): return None
+        col = col[np.argsort(sg * F2[col, 1])]
+        g = ground[col]
+        if not g.any(): return None
+        k0 = int(np.argmax(g)); k = k0
+        while k + 1 < len(col) and g[k + 1]: k += 1
+        return col[k], int(g.sum())
+    r = front(col_i) if col_i is not None else None
+    if r is None:
+        fr = [front(i) for i in range(NX + 1) if abs(F2[i, 0]) <= CX]
+        fr = [x for x in fr if x is not None]
+        if not fr: return None
+        hs = np.array([x[0] for x in fr]); k = np.argsort(M[hs, 1] * sg)[len(hs) // 2]
+        r = (hs[k], fr[k][1])
+    h, n = r
+    return float(M[h, 1]), float(M[h, 2]), float(F2[h, 1]), n
+
+def site_filter(cs, xmax_mm=0., walltop=0, iy=None, ztop=None):
+    """[peel2] 排除位置 |x|(箱局部)>= xmax_mm、與已在箱壁頂上(|y| > 內壁 iy 且 z > 壁頂 ztop − 10mm)的候選。回傳 (留下, [(候選, 原因)])"""
+    keep, rej = [], []
+    for c in cs:
+        why = []
+        if xmax_mm > 0 and abs(c["p"][0]) >= xmax_mm: why.append("位置 |x| %.1f >= %.0f" % (abs(c["p"][0]), xmax_mm))
+        if walltop and iy is not None and abs(c["p"][1]) > iy * 1e3 and c["p"][2] > ztop * 1e3 - 10:
+            why.append("箱壁頂上 y %.1f(內壁 %.1f)z %.1f > 壁頂 %.1f − 10" % (c["p"][1], iy * 1e3, c["p"][2], ztop * 1e3))
+        (rej.append((c, ";".join(why))) if why else keep.append(c))
+    return keep, rej
+
 def site_candidates(Pl, sd, gap, pad, nk=7, r_mm=16., dz_mm=2., press_frac=0.3, chord=1, x_margin=0.040):
     """[robust] --grasp_site state:在片 sd 的自由邊(layer_order 的 TOP 邊,j=0/NX 那排)沿邊等距取 nk 個候選,
     對每個候選照 wrap_vol 綁定模式的夾爪框(邊內 12mm、指沿 t 置中於 v 與鄰點之間)離線算

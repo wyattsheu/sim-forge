@@ -115,6 +115,9 @@ ap.add_argument("--proxy_fmax", type=float, default=0.5, help="[drag] 代理 dri
 ap.add_argument("--grasp_site", choices=["design", "state"], default="design", help="[robust] design = 舊行為(自由邊中段);state = 夾前用實際頂點狀態在自由邊取候選,選預估綁點最多、沒被他片壓住、下方有支撐的")
 ap.add_argument("--grasp_retry", type=int, default=0, help="[robust] 合指後綁點 < --grasp_retry_min 就張開、換下一個候選重夾,最多 N 次;0 = 舊行為")
 ap.add_argument("--grasp_retry_min", type=int, default=6, help="[robust] 重夾門檻(綁點數)")
+ap.add_argument("--site_xmax_mm", type=float, default=0.0, help="[peel2] state 候選排除位置 |x|(箱局部)>= 此值;0 = 舊行為")
+ap.add_argument("--site_exclude_walltop", type=int, default=0, help="[peel2] 1 = 排除已在箱壁頂上(|y| > 內壁、z > 壁頂 − 10mm)的候選")
+ap.add_argument("--hinge_from_state", type=int, default=0, help="[peel2] 1 = 彎折處偵測 nan 時用頂點狀態(箱底/下層接觸最前緣)求實際彎折,不退名義折線")
 ap.add_argument("--grasp_site_k", type=int, default=7, help="[robust] state 模式沿自由邊取幾個候選")
 ap.add_argument("--fold_order", default="xp,xn,yp,yn", help="[variants] 折序,四片任意排列;預設 = 舊行為")
 ap.add_argument("--mug_off_mm", default="0,0", help="[variants] 杯子(佔位中心)相對布中心偏 dx,dy mm;實作 = 布反向平移")
@@ -897,6 +900,10 @@ if a.grasp:
         for c in cs:
             Rc, _ = GPL.frame(Pl, c["v"]); c["gap"] = GPL.gap_below(Pl, MUGl, c["v"], Rc, BOXL) * 1e3
             c["sup"] = c["gap"] <= 15.0
+        if a.site_xmax_mm > 0 or a.site_exclude_walltop:
+            cs, rej = GPL.site_filter(cs, a.site_xmax_mm, a.site_exclude_walltop, IY, CBOX["top_y"])
+            for c, why in rej:
+                P("   [peel2] 排除候選 v%d flat x %.0f 位置 (%.1f,%.1f,%.1f):%s" % (c["v"], c["flat_x"], *c["p"], why))
         cs.sort(key=lambda c: (c["press"], not c["sup"], c["n_att"] < 8, c["dmid"], -c["n_att"]))   # v2:綁點夠(>=8)就取近中段(v1 取綁點最多 → 選到 flat x 207 的角,綁 27 但只掀 25%)
         P("\n★ t=%.2f [%s] 抓點候選表(state v2;自由邊 %d 點;排序 = 沒被壓 > 有支撐(空隙<=15) > 預估綁>=8 > 近中段 > 綁點多)" % (t, sd, len(cs)))
         for k_, c in enumerate(cs):
@@ -1171,6 +1178,11 @@ if a.grasp:
         SNAP["g_%s_grip" % sd] = (Pw.copy(), mug_world()[2].copy(), measure(t)[0])
         col_i = v % (a.nxy + 1)
         hy, hz, hfy, ym, zm, nc = GPL.hinge(Pl, sd, col_i)
+        if not (np.isfinite(hy) and np.isfinite(hz)) and a.hinge_from_state:
+            _hs = GPL.hinge_state(Pl, sd, col_i, BOXL["ZFLOOR"], r_mm=a.attach_mask_r_mm, dz_mm=a.attach_mask_dz_mm)
+            if _hs is not None:
+                hy, hz, hfy = _hs[0], _hs[1], _hs[2]
+                P("  [%s] [peel2] 彎折處偵測 nan(欄數 %d)→ 頂點狀態求實際彎折 y=%.1f z=%.1f mm flat y=%.1f(著地 %d 點)" % (sd, nc, hy * 1e3, hz * 1e3, hfy * 1e3, _hs[3]))
         if not (np.isfinite(hy) and np.isfinite(hz)):
             P("  [%s] ★ 彎折處偵測 nan(欄數 %d)→ 用名義折線 y=%+.1f z=106.0 mm" % (sd, nc, sg * CY * 1e3))
             hy, hz = sg * CY, 0.106
@@ -1185,6 +1197,7 @@ if a.grasp:
             Lflat = float(np.median(np.abs(GF2[np.asarray(pl["att"]["vids"]) % N1, 1] - hfy)))
         Lmat = max(Lcur, Lflat)
         Rr = a.arc_k * (Lmat - 0.0075)
+        if a.hinge_from_state: P("  [%s] [peel2] 鉸點 y=%.1f z=%.1f mm flat y=%.1f;材料長 現在 %.1f / flat %.1f → %.1f mm" % (sd, hy * 1e3, hz * 1e3, hfy * 1e3, Lcur * 1e3, Lflat * 1e3, Lmat * 1e3))
         up_f, lo_f, R0 = pl["up_f"], pl["lo_f"], pl["R0"]; TP0 = t
         if a.lift_first_mm > 0:                                               # [drag] 先直線拉起再轉弧
             dl = (np.array([0, 0, 1.0]) if a.lift_first_dir == "z" else R0[:, 2]) * a.lift_first_mm / 1e3
