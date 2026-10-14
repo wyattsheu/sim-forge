@@ -39,7 +39,7 @@ cat_ $O/DEMO_3_grasp_probes.mp4 $T/t3.mp4 $T/p1.mp4 $T/p2.mp4 $T/p3.mp4 $T/p4.mp
 title $T/t4.mp4 "6 軸雙臂：開蓋 + 掀包材乾跑 → 有布 → 綁定掀"
 seg $T/a1.mp4 $R/arm/videos/arm_peel_dry_v2.mp4 0 20 "0:20:雙臂乾跑 v2（無布）"
 seg $T/a2.mp4 $R/arm/cloth/videos/dry_with_cloth.mp4 0 15 "0:15:手臂 + 布 乾跑"
-seg $T/a3.mp4 $R/arm/cloth/videos/peel_with_cloth_r3.mp4 0 0 "0:99:手臂真掀（綁定）"
+seg $T/a3.mp4 $R/arm/cloth/videos/peel_v3_best.mp4 0 0 "0:99:手臂真掀 v3（Lula 重解，綁定 24 點，掀 64%，放手留 56%）"
 cat_ $O/DEMO_4_arm.mp4 $T/t4.mp4 $T/a1.mp4 $T/a2.mp4 $T/a3.mp4
 
 title $T/t5.mp4 "整包掀開：surface vs volume"
@@ -57,7 +57,7 @@ cat_ $O/DEMO_ALL.mp4 $O/DEMO_1_surface_pipeline.mp4 $T/black.mp4 $O/DEMO_2_volum
  row DEMO_1_surface_pipeline.mp4 "work/videos/DEMO_new_order_sheet400.mp4；標題 0-2；折疊 2-32、入箱關蓋 32-48、搬箱 48-58、開蓋 58-64"
  row DEMO_2_volume_pipeline.mp4 "vol/videos/VOL_soft_best.mp4；標題 0-2；四折 2-16、收耳 16-19、入箱關蓋 19-29、搬箱 29-37、開蓋 37-47"
  row DEMO_3_grasp_probes.mp4 "deck/figs/11、12 side_by_side；g1a_best_p16_both_g4；g2ab_G2a_noW（各 ≤12 s，標題 2 s）"
- row DEMO_4_arm.mp4 "arm_peel_dry_v2（0-20s）；dry_with_cloth（15s）；peel_with_cloth_r3（存在才納入）"
+ row DEMO_4_arm.mp4 "arm_peel_dry_v2（0-20s）；dry_with_cloth（15s）；peel_v3_best（v3 u0.60）"
  row DEMO_5_wrap_peel.mp4 "SURF_grasp_attach（來源僅 19 s，故取全段）；vol/grasp/out_ga2/wrap.mp4（存在才納入，取最後 35s）"
  row DEMO_ALL.mp4 "A~E 串接，段間 1 s 黑幕"; } > $O/DEMO_INDEX.md
 rm -rf $T; ls -l $O

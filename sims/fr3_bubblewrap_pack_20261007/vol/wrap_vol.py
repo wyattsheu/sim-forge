@@ -31,6 +31,8 @@ ap.add_argument("--tex_mm", type=float, default=200.0)
 ap.add_argument("--thick_mm", type=float, default=4.0)
 ap.add_argument("--nxy", type=int, default=35)
 ap.add_argument("--young", type=float, default=2e3, help="楊氏模數 Pa;2e3 = 官方值(soft/s2、out_ga3),2e4 為舊預設")
+ap.add_argument("--ldamp", type=float, default=0.0, help="physxDeformableBody:linearDamping(0 = 舊行為)")
+ap.add_argument("--edamp", type=float, default=0.0, help="physxDeformableMaterial:elasticityDamping(0 = 舊行為)")
 ap.add_argument("--poisson", type=float, default=0.45)
 ap.add_argument("--areal", "--areal_density", dest="areal", type=float, default=0.1, help="面密度 kg/m²")
 ap.add_argument("--fric", type=float, default=0.8)
@@ -56,6 +58,9 @@ ap.add_argument("--until", choices=["fold", "box", "move", "all"], default="all"
 ap.add_argument("--rest_npz", default="", help="restShapePoints = 這個 npz 的 fold_end tet 頂點(points 仍平)")
 ap.add_argument("--cam_ref", type=float, default=0.586)
 ap.add_argument("--meas_dt", type=float, default=0.5)
+ap.add_argument("--vid_every", type=int, default=1, help="[speed] 每 N 個渲染幀才真的 render+讀回+編碼一次(量測不變;1 = 舊行為)")
+ap.add_argument("--vid_res", default="1280x720", help="[speed] 相機解析度 WxH")
+ap.add_argument("--fast_pts", type=int, default=0, help="[speed] 1 = PhysX tensor volume deformable view 直接讀 sim 節點,取代 USD points")
 ap.add_argument("--fps", type=int, default=30)
 ap.add_argument("--tuck", type=int, default=1, help="1 = 四折後側板收耳(預設);0 = 不收耳(等同 --squeeze_t 0)")
 ap.add_argument("--grasp", type=int, default=0, help="1 = 開蓋 hold 之後同一次模擬續跑:挑角 → 夾 → 沿弧線掀 yn(再掀 yp)")
@@ -192,7 +197,8 @@ if a.rest_npz:
     REST_NPZ = np.load(a.rest_npz)["fold_end_tet"]
 info = VC.build_plate(st, "/World/plate", WX, T, ZB, "manual", nxy=a.nxy, nz=1, youngs=a.young, poisson=a.poisson,
                       areal=a.areal, fric=a.fric, cont=a.cont, rest=a.rest, solver=a.solver, self_coll=True,
-                      self_filter=2*a.rest, P=P, size_y=WY)
+                      self_filter=2*a.rest, ldamp=a.ldamp, edamp=a.edamp, P=P, size_y=WY)
+P("阻尼 ldamp=%g edamp=%g" % (a.ldamp, a.edamp))
 PLATE = VC.Mesh(st, "/World/plate")
 FLAT = PLATE.pts().copy(); TETS = PLATE.tets()
 N1 = (a.nxy + 1) ** 2
@@ -504,7 +510,7 @@ if a.grasp:
 
 # ── 相機 / 燈 [ws] ───────────────────────────────────────────────────
 FPS = a.fps
-cam = Camera(prim_path="/World/cam", resolution=(1280, 720))
+cam = Camera(prim_path="/World/cam", resolution=tuple(int(v) for v in a.vid_res.lower().split("x")))
 cam.set_focal_length(4.0)
 _gl = st.GetPrimAtPath("/World/defaultGroundPlane/SphereLight")
 if _gl.IsValid():
@@ -544,6 +550,16 @@ if a.grasp:
     _gpi = {GPATH[k_]: i_ for i_, k_ in enumerate(GKEYS)}
     GF_ORD = np.array([_gpi[p_] for p_ in GFV.prim_paths]); GF_IDX = np.arange(GFV.count, dtype=np.int32)
     P("抓取指 rigid body view:%d 個" % GFV.count)
+if a.fast_pts:                                        # [speed] tensor 直讀 sim 節點
+    _usd_pts = PLATE.pts
+    PLV = world.physics_sim_view.create_volume_deformable_body_view("/World/plate")
+    _NPL = len(FLAT)
+    def _fast_pts():
+        return np.asarray(PLV.get_simulation_nodal_positions(), dtype=float).reshape(-1, 3)[:_NPL]
+    _d = np.abs(_fast_pts() - _usd_pts()).max()
+    P("[fast_pts] volume deformable view count %d, max_nodes %d (USD %d);起始 max|tensor-USD| = %.3g m"
+      % (PLV.count, PLV.max_simulation_nodes_per_body, _NPL, _d))
+    PLATE.pts = _fast_pts
 
 # ── 時間表 ───────────────────────────────────────────────────────────
 T_SET = 0.5
@@ -1133,8 +1149,8 @@ try: FONT = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSansMono.
 except Exception: FONT = ImageFont.load_default()
 L1 = ("VOLUME sheet %.0fx%.0fx%.0fmm n%d | E=%.0e nu=%.2f %.2fkg/m2 mu=%.1f | mug %.0fx%.0fx%.0f | fold %s"
       % (WX*1e3, WY*1e3, T*1e3, a.nxy, a.young, a.poisson, a.areal, a.fric, *(ME*1e3), "-".join(FOLD_ORDER)))
-L2 = ("solver %d dt 1/%.0f cont %.1f rest %.2f self on | tip=top+lay*(T+1)+2mm %s%s | move %s | carton w131%s"
-      % (a.solver, 1/a.dt, a.cont*1e3, a.rest*1e3, ("extra " + a.tip_extra + " ") if a.tip_extra else "",
+L2 = ("solver %d dt 1/%.0f cont %.1f rest %.2f self on | ldamp %g edamp %g | tip=top+lay*(T+1)+2mm %s%s | move %s | carton w131%s"
+      % (a.solver, 1/a.dt, a.cont*1e3, a.rest*1e3, a.ldamp, a.edamp, ("extra " + a.tip_extra + " ") if a.tip_extra else "",
          ("slow " + a.slow) if a.slow else "", a.movebox, " | REST=folded" if a.rest_npz else ""))
 def stamp(rgb, t, ph_):
     im = Image.fromarray(rgb[:, :, :3]); d = ImageDraw.Draw(im); Wd, Hh = im.size
@@ -1145,7 +1161,7 @@ def stamp(rgb, t, ph_):
     d.text((Wd-424, 8), "t=%5.2fs  %s" % (t, ph_), fill=(255,)*3, font=FONT)
     return np.array(im)
 
-writer = imageio.get_writer(os.path.join(a.out, "wrap.mp4"), fps=FPS, quality=7, macro_block_size=1)
+writer = imageio.get_writer(os.path.join(a.out, "wrap.mp4"), fps=max(1, round(FPS / a.vid_every)), quality=7, macro_block_size=1)
 SPF = int(round(1.0 / (FPS * a.dt)))                 # 每個渲染幀幾個物理步
 NFR = int(round(T_END * FPS))
 ME_EVERY = int(round(a.meas_dt * FPS))
@@ -1157,6 +1173,7 @@ EV = {}
 t0w = time.time(); step = 0; tcur = 0.0; nan = False
 P("渲染 %d fps,每幀 %d 物理步;共 %d 幀" % (FPS, SPF, NFR))
 for fr in range(NFR):
+    _vid = (fr % a.vid_every == 0) or fr == NFR - 1 or fr in KEYF.values()
     for k in range(SPF):
         step += 1; tcur = step * a.dt
         # ── 事件 ──
@@ -1207,19 +1224,22 @@ for fr in range(NFR):
         drive(tcur)
         if a.grasp and tcur >= TG0 - 1e-9:
             g_events(tcur); g_drive(tcur)
-        world.step(render=(k == SPF - 1))
+        world.step(render=(k == SPF - 1) and _vid)
     # ── 渲染幀 ──
     Pp = PLATE.pts()
     if not np.isfinite(Pp).all():
         P("★ NaN t=%.3f" % tcur); nan = True; break
-    VISPTS.Set(Vt.Vec3fArray.FromNumpy(Pp.astype(np.float32)))
+    if a.fast_pts and fr in (5, ME_EVERY * 8):            # [speed] 驗證 tensor 與 USD 一致
+        P("[fast_pts] t=%.2f max|tensor-USD| = %.3g m" % (tcur, np.abs(Pp - _usd_pts()).max()))
+    if _vid:
+        VISPTS.Set(Vt.Vec3fArray.FromNumpy(Pp.astype(np.float32)))
     if a.grasp and tcur >= TG0 - 1e-9:
         g_vis(tcur)
-    rgb = cam.get_rgba()
+    rgb = cam.get_rgba() if _vid else None
     ph_ = phase(tcur)
     if rgb is not None and rgb.size:
         img = stamp(rgb, tcur, ph_)
-        writer.append_data(img)
+        if fr % a.vid_every == 0: writer.append_data(img)
         for kname, kf in KEYF.items():
             if fr == kf:
                 Image.fromarray(img).save(os.path.join(a.out, "key_%s.png" % kname))
