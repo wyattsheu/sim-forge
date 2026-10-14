@@ -1,0 +1,63 @@
+# 最終方案:surface 還是 volume、要輸出哪個版本、折法多樣性怎麼做(2026-10-14)
+
+所有數字出自 `work/`、`vol/`、`arm/` 的 log(見各節出處);「待驗」= 今天還在跑。
+
+## 1. 結論:包材用 volume,surface 只留作對照與快速篩選
+
+| 需求 | surface(零厚度膜) | volume(4 mm 四面體板) | 勝 |
+|---|---|---|---|
+| 外觀:有厚度、折邊圓角 | 無厚度,靠 surfaceThickness 假厚;層間距 4.3~5.6 mm 是自碰撞撐出來的 | 真厚度 4 mm,層間距 = 厚度 | volume |
+| 入箱 0 超出、關蓋、搬箱、開蓋 | ✓(DEMO_1) | ✓(DEMO_2,互穿 ≤ 8,可重現 ≤ 2 mm) | 平手 |
+| 包起來的體積 | 3.1× 杯子(sheet 400) | 撐滿內腔(E 2e3 才留得住) | surface 略勝,但都不是「貼身」 |
+| 夾得住(綁定後) | 綁 9~11 點,yn 掀 73~78% | 綁 12 點,yn 掀 100%、放手後 62% | volume |
+| 掀一片不扯整張 | 整張被拖 99%(片重疊 51%) | 他片被拖 20%(三方案壓低中,待驗) | volume |
+| 手臂場景能載入、能掀 | 未做 | 載入 OK,v3 掀 64~68%、放手後 56~66% | volume |
+| 速度(整鏈 86 s 模擬) | 約 5 分鐘 | 10.7 分鐘(7.4× 實時);dt 1/120 快到 5.8× 但放手後回彈 0%,不能用 | surface |
+| 折痕留形(塑性) | 無(restBendAngles 可寫但沒定型) | 無(schema 無塑性) | 都沒有 |
+| 顫抖 | 小(有 sleep) | 明顯;edamp 0.02 可降 40% 但傷抓取鏈 | surface |
+
+理由:使用者的終點是「手臂夾緊、掀開、正確外觀與物理」。這三項 volume 都比 surface 好或持平,surface 唯一的優勢是快,而快可以用「surface 先篩參數、volume 出正式結果」補。
+
+## 2. 要輸出的版本(正式版 = 這組,不要再隨手改)
+
+- 程式:`vol/wrap_vol.py`(單程式整鏈),`vol/volcommon.py`、`vol/vol_pen.py`、`vol/layer_order.py`、`vol/grasp_plan.py`。
+- 物理:`--young 2e3 --poisson 0.45 --thick_mm 4 --areal 0.1 --fric 0.8 --cont 0.002 --rest 0.0005 --solver 128 --dt 1/240 --ldamp 0 --edamp 0`(阻尼 0;展示折疊影片可 `--edamp 0.02`)。
+- 幾何:`--sheet_mm 500 --nxy 35 --tip_over_mm 30 --tuck 1`,紙箱 `carton_w131.usd`(270×230×131,內腔 264×224)。
+- 抓取:`--grasp 1 --grasp_attach 1 --attach_pad_mm 24 --attach_layer both --arc2 1 --arc_k 0.8 --peel_t 6 --gap_mm 4 --clear_mm 6 --steep_deg 45 --second 1`。
+- 重現指令:`vol/grasp/out_ga3/wrap_vol.log` 第 2 行的 args;影片 `vol/videos/VOL_grasp_attach.mp4`。
+- 輸出格式(給手臂端 / 下游):每個 snapshot 的 `wrap.npz`(sheet、mug、tets、TOP/BOT 層索引)+ `wrap_vol.log` 的判讀表 + `cloth_iface.py` 的介面(OFF、NX/CX/CY、snap_t、lid_deg);手臂端綁定介面見 `arm/INTERFACE.md` §5。
+- 驗收:`work/tests/run_checks.py`(10 函式 23 項)+ 判準:入箱 0 超出、穿杯 0、邊長比 0.95~1.05、yn 越線 ≥ 80%、放手後 ≥ 50%、他片 < 5%。
+
+待驗後可能併入正式版:他片三方案(`vol/DRAG.md`)、速度(`vol/SPEED.md`,目前只有「渲染降頻」是安全的,物理放寬都傷掀開)。
+
+## 3. 折法多樣性:怎麼用隨機產生很多種折法
+
+目的:下游(手臂拆包、資料集)要看到不同的包法,不是只有一種「先左右後前後」。
+
+### 3.1 可變的維度(都在 wrap_vol.py 既有幾何上,不用新物理)
+| 維度 | 現狀 | 隨機範圍 | 旗標 |
+|---|---|---|---|
+| 折序 | 固定 xp,xn,yp,yn | 4! = 24 種,先分兩類:x 先(y 在外層,PPT 要求)/ y 先;同軸兩片誰先 | `--fold_order xp,xn,yp,yn` |
+| 哪片在最外層 | yn | 四片任一 | 由折序決定 |
+| 布大小 / 長寬比 | 500 正方 | 420~560;長方 0.8~1.25 | `--sheet_x_mm --sheet_y_mm` |
+| 杯子在布上的位置 | 正中 | 偏 ±30 mm(四片長度不等 → 越線量不同) | `--mug_off_mm dx,dy`(新) |
+| 杯子方位 | 躺平,杯口 +x | 繞 z 轉 0/90/180/270 + ±10° | `--mug_yaw_deg`(新) |
+| 尖端越線量 | 30 | 10~45 | `--tip_over_mm` |
+| 佔位 / 折線位置 | margin 12、wall 6 | margin 8~20、wall 3~10 | `--margin --wall` |
+| 收耳 | on | on/off | `--tuck` |
+| 折速 / 停留 | 3 s / 0.5 s | 2~4 / 0.2~1(影響皺褶) | `--fold_span --fold_hold` |
+| 材質 | E 2e3 | 1.5e3~3e3(皺褶軟硬) | `--young` |
+
+不做的(另一條線):斜角/對角折(SIDEPICK 要重寫)、捲筒式包法、兩張布。
+
+### 3.2 實作
+1. `vol/wrap_vol.py` 加 `--fold_order`、`--mug_off_mm`、`--mug_yaw_deg`、`--seed`;`FOLD_ORDER` 從旗標來,`plan_ends()` 的「已疊層數」計算已經是依順序推算,直接可用;`UORDER` 自動反序。
+2. `vol/fold_variants.py`:`--n N --seed S` 從 3.1 的範圍抽樣 N 組,寫 `variants/<id>/cmd.sh` + `params.json`;`--run` 逐一跑(一次一個,GPU 門檻 20 GB),用 `--until box`(折 + 入箱,約 4 分鐘)篩,通過判準(入箱 0 超出、穿杯 0、自穿 < 20、邊長比 0.9~1.1)的才跑整鏈。
+3. 結果進 `vol/variants/VARIANTS.csv`(每列 = 一組參數 + 判讀),`layer_order.py` 標出最外層是哪片,給手臂端選抓取片。
+4. 驗收:24 種折序各跑一次 `--until box`,統計通過率;隨機 30 組看分佈。
+5. 文件 `vol/FOLD_DIVERSITY.md`:通過率表、失敗模式、每種折序的最外層片、影片拼貼(`videos/VARIANTS_grid.mp4`)。
+
+### 3.3 風險
+- 折序改成 y 先時,x 片的錨點選取(`vids` 的 |y| ≤ CY 規則)要對調軸,程式裡用 `ax` 推導即可,但要驗。
+- 杯子偏位後 `SIDEPICK` 的角落歸屬以佔位中心算,折線也要跟著偏。
+- 隨機組合可能讓尖端打不到杯頂(布太小);`plan_ends()` 要加檢查並在 params 標 infeasible。

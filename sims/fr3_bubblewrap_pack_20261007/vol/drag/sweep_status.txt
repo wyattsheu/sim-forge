@@ -1,1 +1,3 @@
 START drag/finite_stiff_proxy_f0.5 Wed Oct 14 06:21:50 UTC 2026
+DONE drag/finite_stiff_proxy_f0.5 exit 0 Wed Oct 14 06:43:53 UTC 2026
+START drag/finite_stiff_proxy_f0.2 Wed Oct 14 06:43:53 UTC 2026

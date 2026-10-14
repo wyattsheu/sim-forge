@@ -9,7 +9,7 @@
   "rows": [
    [
     "Project Progress",
-    "逆物流 Demo:volume 泡泡紙包材 + 紙箱 + 杯子 + 雙臂場景;夾布 = 摩擦 + 合指綁定"
+    "3D 模型建構完成(雙臂場景 + 紙箱 + 泡泡紙 + 杯子);逆物流 Demo:volume 泡泡紙包材 + 紙箱 + 杯子 + 雙臂場景;夾布 = 摩擦 + 合指綁定"
    ],
    [
     "Research Progress",
@@ -25,17 +25,336 @@
    ]
   ],
   "tasks": [
+   "✅ 3D 模型建構完成:scene_final_phys.usd,紙箱摺痕對齊文獻與 co7b",
    "✅ 包材定為 volume,surface 當對照",
    "✅ 綁定式抓取:整包 yn 越線 100% / 放手後 62%",
    "✅ 布載入雙臂場景;代理方塊綁定",
    "🔄 手臂 v3 u0.60:掀 64~68%、放手後 56~66%",
    "🛠️ 指頭插布 18 mm",
    "🔄 他片被拖 20~50%:三條解法進行中",
-   "✅ 顫抖根因 + 阻尼掃描;速度掃描",
-   "✅ sim-forge 更新、demo 總集"
+   "✅ 顫抖根因 + 阻尼 / 速度掃描;sim-forge、demo 總集"
   ]
  },
  "slides": [
+  {
+   "role": "project_results",
+   "title": "3D 模型建構完成:一個檔案就能開",
+   "layout": "figure-bottom",
+   "figure": {
+    "src": "figs/m3d_overview.png",
+    "caption": "scene_final_phys.usd(RTX 渲染);右下兩張隱藏了外層",
+    "source": "ours"
+   },
+   "notes": "先講結論:逆物流情境的 3D 模型已經建完,交付在 sim-forge 的 fr3_bubblewrap_pack_handoff_20261007。整個場景是一個 USD 檔 scene_final_phys.usd,裡面有雙臂工作站、紙箱、泡泡紙包裹和馬克杯,每個物件都有物理,不是只有外觀。左邊是場景全貌,紙箱放在兩隻手臂中間。右邊四張依序是關著的紙箱、蓋子推開後、把紙箱藏起來看包裹、再把包材藏起來看杯子;杯子在包裹裡是側躺的,這是模擬包裝的結果。接下來幾張逐一說明每個物件怎麼建、參數從哪裡來、驗證到什麼程度。",
+   "bullets": [
+    {
+     "text": "雙臂工作站 + 紙箱 + 泡泡紙 + 馬克杯,全部有物理;clone 下來直接用",
+     "level": 0
+    }
+   ]
+  },
+  {
+   "role": "project_pipeline",
+   "title": "四個物件,各自的物理模型",
+   "layout": "figure-bottom",
+   "matrix": {
+    "header": [
+     "物件",
+     "幾何",
+     "物理模型",
+     "關鍵參數"
+    ],
+    "rows": [
+     [
+      "雙臂工作站",
+      "stationary_ai 原場景,手臂與桌子不動",
+      "articulation",
+      "紙箱在兩臂正中,離夾爪 68.7 mm"
+     ],
+     [
+      "紙箱",
+      "270 × 230 × 134 mm,3 mm 板,四片蓋",
+      "剛體 + 摺痕關節(每步施力矩)",
+      "降伏 0.12 N·m,回彈 45°,重複摺變軟"
+     ],
+     [
+      "泡泡紙",
+      "1225 頂點 / 2312 三角形",
+      "surface deformable",
+      "E 2e4 Pa,厚 4 mm,μ 0.8,≈ 65 g"
+     ],
+     [
+      "馬克杯",
+      "高 93 mm,側躺在包裹內",
+      "剛體",
+      "0.32 kg,μ 0.9,外形凸台 + 把手 13 球"
+     ],
+     [
+      "物理場景",
+      "PhysicsScene",
+      "GPU dynamics,TGS",
+      "120 Hz,迭代 8 / 1;包材迭代 8"
+     ]
+    ],
+    "highlight_row": 2,
+    "col_widths": [
+     1.2,
+     2.6,
+     2.2,
+     2.8
+    ]
+   },
+   "notes": "這張是整個模型的規格表,每一列是一個物件。雙臂工作站沿用原本的 stationary_ai 場景,手臂和桌子完全沒改,只把原本的紙箱換成我們的包裹,位置對齊原紙箱中心,離四根夾爪指頭都是 68.7 mm。紙箱是剛體加四個摺痕關節,摺痕的力學是我們自己的模型,下一張細講。泡泡紙是 surface deformable,1225 個頂點,材料參數從模擬開發階段沿用。杯子是剛體,碰撞體貼著外形做。物理場景是 120 Hz、TGS 求解器、GPU dynamics,包材的求解迭代從 64 降到 8,畫面快了一倍。",
+   "bullets": [
+    {
+     "text": "數字都來自 USD、build 腳本或量測 log",
+     "level": 0
+    }
+   ]
+  },
+  {
+   "role": "project_results",
+   "title": "紙箱:四片蓋,摺痕會降伏、會回彈",
+   "layout": "figure-right",
+   "bullets": [
+    {
+     "text": "箱 270 × 230 × 134 mm,3 mm 板",
+     "level": 0
+    },
+    {
+     "text": "上蓋 17.4 g、下蓋 15.1 g",
+     "level": 1
+    },
+    {
+     "text": "摺痕 = 每步施加的力矩",
+     "level": 0
+    },
+    {
+     "text": "降伏 0.12 N·m,回彈 45°",
+     "level": 1
+    },
+    {
+     "text": "重複摺疊會變軟",
+     "level": 1
+    },
+    {
+     "text": "前後蓋預開 50° / 60°(配合 co7b)",
+     "level": 0
+    }
+   ],
+   "figure": {
+    "src": "figs/m3d_carton.png",
+    "caption": "四片蓋推開後(俯視);箱內是泡泡紙包裹",
+    "source": "ours"
+   },
+   "notes": "紙箱的幾何沿用 make_carton_P 產生的 Box B,外尺寸 270 乘 230 乘 134 mm,板厚 3 mm,密度 200,所以上蓋 17.4 克、下蓋 15.1 克。下蓋長 115 mm,兩片之間留 34 mm 的縫,這是真實 RSC 紙箱內側短翼不對接的樣子。摺痕不是彈簧,是彈塑性:每個物理步依照蓋子現在的角度算出力矩施加上去,超過降伏彎矩 0.12 N·m 就留下永久折痕,放手會回彈 45 度,重複摺會變軟。前後蓋預開 50 和 60 度,是為了跟手臂開箱流程 co7b 用同一個紙箱。"
+  },
+  {
+   "role": "project_results",
+   "title": "摺痕驗證:165° → 123°,90° → 43°",
+   "layout": "figure-right",
+   "bullets": [
+    {
+     "text": "前後蓋推到 165°:停 122.9° / 123.5°",
+     "level": 0
+    },
+    {
+     "text": "co7b 手臂實跑 122.5~125.1°",
+     "level": 1
+    },
+    {
+     "text": "全關推到 89°:停 43.0°",
+     "level": 0
+    },
+    {
+     "text": "文獻 43~46°(Nagasawa 2019)",
+     "level": 1
+    },
+    {
+     "text": "模型預測 vs 模擬 ≤ 0.3°",
+     "level": 0
+    },
+    {
+     "text": "co7b 原定律:90° 停 63°,越摺越硬",
+     "level": 1
+    }
+   ],
+   "figure": {
+    "src": "figs/m3d_crease.png",
+    "caption": "放手後停的角度 vs 推到的角度;實線含蓋子重力",
+    "source": "ours(co7b_check.py)"
+   },
+   "notes": "這張是摺痕的驗證。我們有兩個參考:一個是 co7b,也就是雙臂開箱流程實際跑出來的結果,蓋子推到 166 到 168 度、放手停在 122 到 125 度;另一個是文獻,Nagasawa 2019 的紙板摺痕試驗,摺到 90 度放手會彈回到 43 到 46 度。原本 co7b 的摺痕定律只對得上第一個,90 度會停在 63 度,而且摺越深越硬,跟文獻相反。現在的參數兩個都對得上:165 度停 123 度,90 度停 43 度,模擬和模型預測差不到 0.3 度。參數是先把重力算進去做準靜態掃描選出來的,因為蓋子本身的重量會讓它下垂好幾度。"
+  },
+  {
+   "role": "project_results",
+   "title": "泡泡紙:模擬折出來的形狀當靜止形狀",
+   "layout": "figure-right",
+   "bullets": [
+    {
+     "text": "surface deformable,1225 頂點",
+     "level": 0
+    },
+    {
+     "text": "E 2e4 Pa、厚 4 mm、μ 0.8、65 g",
+     "level": 1
+    },
+    {
+     "text": "靜止形狀 = 包好的形狀",
+     "level": 0
+    },
+    {
+     "text": "箱底 20 mm 隱形墊片",
+     "level": 0
+    },
+    {
+     "text": "交付版是 surface;volume 見後面",
+     "level": 0
+    }
+   ],
+   "figure": {
+    "src": "figs/m3d_package.png",
+    "caption": "把紙箱隱藏後的包裹",
+    "source": "ours"
+   },
+   "notes": "泡泡紙的形狀不是手畫的,是用模擬把攤平的布四折包住杯子、再放進箱子得到的結果,存成 states/box.npz,每個頂點都檢查過在紙箱內腔裡。把這個包好的形狀直接設成 deformable 的靜止形狀,所以折痕不會一播放就彈開。材料是 surface deformable,楊氏模數 2e4 Pa、厚 4 mm、摩擦 0.8,大約 65 克。箱底下面另外墊了一塊 20 mm 厚的隱形碰撞體,避免布一步穿過 3 mm 的箱底,它和桌面之間設成不碰撞,所以紙箱還是拖得動。要注意交付的場景用的是 surface 包材,後面報告的 volume 包材是下一版的方向。"
+  },
+  {
+   "role": "project_results",
+   "title": "馬克杯:剛體,碰撞體貼外形",
+   "layout": "figure-right",
+   "bullets": [
+    {
+     "text": "剛體 0.32 kg,μ 0.9",
+     "level": 0
+    },
+    {
+     "text": "碰撞體 = 外形疊凸台 + 把手 13 球",
+     "level": 0
+    },
+    {
+     "text": "球半徑 10 mm,沿把手中心線",
+     "level": 1
+    },
+    {
+     "text": "包裝後杯子位移 11.5 mm(剛體平移)",
+     "level": 0
+    },
+    {
+     "text": "靜置:紙箱 0 mm、布不穿牆",
+     "level": 0
+    }
+   ],
+   "figure": {
+    "src": "figs/m3d_mug.png",
+    "caption": "把紙箱和包材都隱藏後的杯子(側躺)",
+    "source": "ours"
+   },
+   "notes": "杯子是 0.32 公斤的剛體,摩擦 0.9。GPU 上的凸包有頂點數上限,所以杯身用一圈一圈的凸台疊起來貼著外形,把手用 13 顆半徑 10 mm 的球沿中心線排,這樣杯子內部是空的,布可以塞進杯口。整個包裝流程下來,杯子相對紙箱只平移了 11.5 mm,沒有穿模。靜置測試裡,紙箱位移 0 mm,布穿出側牆 0 個頂點。"
+  },
+  {
+   "role": "project_pipeline",
+   "title": "互動:滑鼠拖拉、Ctrl+點擊送 ROS 2",
+   "flow": {
+    "steps": [
+     {
+      "label": "open_in_webrtc.sh",
+      "sub": "或 open_in_ui.sh",
+      "detail": [
+       "--check 只印偵測結果",
+       "port 被佔用自動換"
+      ]
+     },
+     {
+      "label": "開場景",
+      "sub": "scene_final_phys.usd",
+      "detail": [
+       "載入紙箱摺痕模型",
+       "包材迭代設 8",
+       "約 20 s 出現 READY"
+      ]
+     },
+     {
+      "label": "按 Play",
+      "sub": "WebRTC 自動按",
+      "detail": [
+       "120 Hz 物理",
+       "WebRTC 版自動按"
+      ]
+     },
+     {
+      "label": "滑鼠拖",
+      "sub": "力量式 70",
+      "detail": [
+       "拖紙箱、推蓋子",
+       "不用按 Shift"
+      ]
+     },
+     {
+      "label": "Ctrl + 點擊",
+      "sub": "取 3D 座標",
+      "detail": [
+       "PointStamped",
+       "/clicked_point",
+       "frame = world"
+      ]
+     }
+    ],
+    "highlight": 5
+   },
+   "notes": "交付包不只是一個 USD 檔,還有啟動腳本。open_in_webrtc.sh 會自動找 Isaac Sim 裝在哪裡,binary、Docker 或 pip 版都可以,找不到可以指定路徑,加 --check 只印偵測結果不啟動。啟動後會開場景、載入摺痕模型、把包材迭代設成 8,然後自動按 Play。使用者可以直接用滑鼠左鍵拖紙箱、推蓋子,不用按 Shift。最後一步是給手臂用的:Ctrl 加左鍵點場景上任何一點,那個 3D 座標會以 geometry_msgs/PointStamped 發到 ROS 2 的 /clicked_point,frame 是 world,手臂那邊直接訂閱就能拿到目標點。",
+   "bullets": [
+    {
+     "text": "一行指令開場景;Isaac 位置自動偵測(binary / Docker / pip)",
+     "level": 0
+    },
+    {
+     "text": "交付:sim-forge / sims / fr3_bubblewrap_pack_handoff_20261007",
+     "level": 1
+    }
+   ]
+  },
+  {
+   "role": "project_insight",
+   "title": "還沒解決的三件事",
+   "cards": {
+    "items": [
+     {
+      "title": "甩動時布穿牆",
+      "bullets": [
+       "0.08 m、3 Hz 甩動:87 頂點穿出側牆",
+       "迭代 64 反而 200,不是迭代問題",
+       "這份 USD 沒有牆外墊片(build 有,未重建)"
+      ],
+      "highlight": true
+     },
+     {
+      "title": "蓋子慣量偏大",
+      "bullets": [
+       "USD 是舊版:0.006 + armature 0.006",
+       "約真實 15 g 蓋子的 180 倍",
+       "重建要重驗 co7b 手臂路徑"
+      ]
+     },
+     {
+      "title": "GPU 共用",
+      "bullets": [
+       "同時兩個 Isaac → PhysX 顯存不足",
+       "迭代 8:每幀 275 → 132 ms",
+       "實驗要排隊、一次一個"
+      ]
+     }
+    ]
+   },
+   "notes": "最後誠實講還沒解決的三件事。第一是劇烈甩動時布會穿出側牆,0.08 公尺、3 Hz 的八字甩動有 87 個頂點穿出去,而且把包材迭代調回 64 反而變成 200,所以不是迭代數的問題。我查了 USD,這份場景只有箱底墊片,build 腳本裡的牆外墊片沒有進來,因為交付的場景還沒用新參數重建,這是最可能的原因;靜置時是 0。第二是現在這份 USD 是舊版建置,蓋子的慣量寫死 0.006 再加 armature 0.006,大約是真實蓋子的 180 倍,手感偏重;重建場景可以修,但 co7b 的手臂路徑要重新驗證。第三是 GPU 是大家共用的,兩個 Isaac 同時跑會讓 PhysX 顯存不足、物理直接停掉,所以實驗要排隊。",
+   "layout": "figure-bottom",
+   "bullets": [
+    {
+     "text": "模型能用,但這三點會影響手臂實驗",
+     "level": 0
+    }
+   ]
+  },
   {
    "role": "project_summary",
    "title": "Project",
