@@ -156,3 +156,20 @@ arm scene, carton, `mug.stl`, `open_in_ui.sh`, `open_in_webrtc.sh`, `crease_hold
   - shake S (0.08 m, 3 Hz): wrap verts through the side walls max 87 with 8 iterations, 200 with 64 -> fewer iterations do not
     make poke-through worse. Both are well above the 10-15 in docs/CREASE_MECHANICS.md, which was measured on a rebuilt scene.
   - frame time (headless, 2 physics steps per frame): 275 ms with 64 iterations, 132 ms with 8.
+
+## 2026-10-14 (pm) co7b carton: literature spring-back + softening, gravity-aware check (`CREASE_LAW=soft`, default)
+- Why: co7b's law (hardening H, k 0.32) rests at 63 deg after a 90 deg fold (literature 43-46) and gets stiffer on deeper
+  folds (literature: softer on refolds). Plain k = My0 / 45 deg with co7b's My0 0.06 let gravity win (flap weight torque
+  0.0094 / 0.0085 N*m): side flaps sagged 6.5 deg into the box and 165 rested at 133.
+- New default: yield 0.12 N*m, k = yield / 45 deg (0.153 N*m/rad), H 0, yield x max(0.5, exp(-0.03 kappa)), c 0.033
+  (`SofteningCrease` in crease_co7b.py; crease_physics.py untouched). Picked by a quasi-static sweep with gravity.
+  `CREASE_LAW=co7b` = co7b's coefficients exactly. Env: `CREASE_MY0`, `CREASE_SPRINGBACK_DEG`, `CREASE_SOFTENING`.
+- `co7b_check.py` now predicts the rest angle from the model's own plastic set plus the gravity sag (the old formula
+  ignored gravity, about 1 deg with k 0.32 but 5 deg with a softer k).
+- Measured (co7b_check.py, Isaac Sim 5.1 headless, shared GPU):
+  - back / front pushed to 164.6 deg: rest 122.9 / 123.5 deg (co7b's arm run 122.5-125.1); sides to 159 / 158: 118.4 / 117.5;
+    every rest within 0.3 deg of the model + gravity. Settling: sides sag 3.2 deg (was 6.5 with My0 0.06), fyp 50 -> 47.8.
+  - closed front flap folded to 89.4 deg: rests at 43.0 deg (literature 43-46; co7b law 63).
+  - carton moved up to 19.2 mm while flaps were pushed (the test puts the push reaction on the base; co7b holds the carton).
+- Running two Isaac jobs at once on the shared GPU ran PhysX out of memory (kernels fail, flaps frozen at their start
+  angles): run checks one at a time.

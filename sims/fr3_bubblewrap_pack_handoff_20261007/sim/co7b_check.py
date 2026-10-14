@@ -6,7 +6,8 @@
 Loads crease_co7b.py the way the launchers do (before Play), lets the scene settle, then opens the flaps one by one in
 the PPT order (back, front, right, left): a torque about the flap's hinge (P-control on a reference ramping at --rate deg/s, reaction on the carton base so
 only the crease is measured) pushes it to --push deg, holds 1 s, releases, waits 3 s.
-Checks (co7b K1 / K3): rest angle within 3 deg of (k X - My0) / (k + H) with X = the angle actually reached;
+Checks (co7b K1 / K3): rest angle within 3 deg of the model's prediction for X = the angle actually reached
+(the model's own plastic set after the push, plus the elastic sag under the flap's weight);
 carton base moved < 10 mm; wrap verts through the side walls; flaps keep their preset while settling.
 Env WRAP_ITERS / CREASE_SCALE / CREASE_PRESET are passed through to crease_co7b.py.
 """
@@ -85,7 +86,7 @@ P("settle %.1f s: angles %s -> %s (deg, open +); base moved max %.1f mm; wrap th
   % (a.settle, {n: round(v, 1) for n, v in A0.items()}, {n: round(v, 1) for n, v in A1.items()}, mx, tw))
 ok_all = True; MX = mx; TW = tw
 for n in a.order.split(","):
-    before = angles(); S.update(lid=n, tgt=a.push, ref=before[n], on=True, peak=0.0)
+    before = angles(); before_set = {m: v[1] for m, v in co7b_angles().items()}; S.update(lid=n, tgt=a.push, ref=before[n], on=True, peak=0.0)
     t0 = S["t"]
     while S["t"] - t0 < 10.0 and angles()[n] < a.push - 0.5:
         m_, t_ = run(0.1); MX = max(MX, m_); TW = max(TW, t_)
@@ -93,12 +94,15 @@ for n in a.order.split(","):
     m_, t_ = run(1.0); MX = max(MX, m_); TW = max(TW, t_)
     S["on"] = False; X = S["peak"]
     m_, t_ = run(3.0); MX = max(MX, m_); TW = max(TW, t_)
-    after = angles(); R = after[n]; pred = rest_after(X)
+    after = angles(); R = after[n]; my_now = co7b_yield(n)
+    pset = co7b_angles()[n][1]; pred = rest_with_gravity(pset, n)          # the model's plastic set + gravity sag
+    qs = predict_rest(X, n, before_set[n])                                  # quasi-static expectation for this push
     others = {m: round(after[m] - before[m], 1) for m in after if m != n}
     ok = abs(R - pred) < 3.0
     ok_all &= ok
-    P("%s: pushed to %.1f deg in %.1f s, released -> rest %.1f deg, formula %.1f (diff %+.1f) %s | other flaps changed %s"
-      % (n, X, reach_t, R, pred, R - pred, "OK" if ok else "FAIL", others))
+    P("%s: pushed to %.1f deg in %.1f s, released -> rest %.1f deg (spring-back %.1f) | plastic set %.1f + gravity -> %.1f (diff %+.1f) %s | quasi-static %.1f%s | other flaps changed %s"
+      % (n, X, reach_t, R, X - R, pset, pred, R - pred, "OK" if ok else "FAIL", qs,
+         "" if my_now is None else " | yield now %.4f N*m (%.0f%% of My0)" % (my_now, 100*my_now/CO7B["my0"]), others))
 TBn = base_T()
 P("===== base moved max %.1f mm (co7b K3 < 10) | wrap through side walls max %d | rest-angle check %s ====="
   % (MX, TW, "PASS" if ok_all else "FAIL"))
