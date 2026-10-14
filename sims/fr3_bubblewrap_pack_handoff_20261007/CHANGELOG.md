@@ -173,3 +173,22 @@ arm scene, carton, `mug.stl`, `open_in_ui.sh`, `open_in_webrtc.sh`, `crease_hold
   - carton moved up to 19.2 mm while flaps were pushed (the test puts the push reaction on the base; co7b holds the carton).
 - Running two Isaac jobs at once on the shared GPU ran PhysX out of memory (kernels fail, flaps frozen at their start
   angles): run checks one at a time.
+
+## 2026-10-14 (evening) scene patched: wall / lid pads, real flap inertia, carton mass; crease damping per flap
+- `sim/patch_scene.py` (pxr only, idempotent) writes into `scene_final_phys.usd` the three build_phys_scene.py fixes the
+  delivered file never got (it was not rebuilt since 10-07): 20 mm wall pads + fyp / fyn outer pads (wrap-only collision,
+  filtered against every flap); flap inertia from geometry (authored 0.006 kg*m^2 removed, ~180x a real flap) and armature
+  0.006 -> 2e-4; floor pad mass 0.24 kg -> 1e-6 (carton base 0.352 -> 0.110 kg). No full rebuild: that would also make the
+  carton an articulation and rewrite limits / drives.
+- `crease_co7b.py`: crease damping = 0.6 x critical per flap from its geometric inertia (`CREASE_DAMP_RATIO`), 0.0038-0.0039
+  N*m*s/rad. co7b's c 0.033 assumed the 0.006 inertia; with the real one c dt / I would be ~4 and the explicit torque unstable.
+  On an unpatched USD (authored inertia present) co7b's c is kept.
+- `co7b_check.py --diag`: contact report on the released flap + its angle trace.
+- Measured (Isaac Sim 5.1 headless, one job at a time):
+  - shake S (0.08 m, 3 Hz): wrap through side walls max 18, 0 at the end (before: 87); lids move 12-14 deg at most.
+  - rest A 8 s: carton 0.00 mm / 0.03 deg, mug 0.04 mm, wrap through walls 0.
+  - back / front pushed to 166.6 / 166.2 deg rest at 125.2 / 125.1 (co7b arm run 122.5-125.1); side flaps to 159-163 rest at
+    118.9-122.6; closed flap folded to 90.7 rests at 44.4 (literature 43-46). Every rest within 0.2 deg of model + gravity.
+  - known: a side flap pushed past ~169 deg can come to rest on the idle arm's gripper fingers (contact report: the released
+    side flaps touch follower_{left,right}_gripper_*), e.g. 170 -> 145.7 instead of 130. A scene contact, not the crease.
+  - the 20 mm carton motion in co7b_check comes from the test putting the push reaction on the base (co7b holds the carton).

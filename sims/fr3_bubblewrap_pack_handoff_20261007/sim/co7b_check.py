@@ -20,6 +20,7 @@ ap.add_argument("--order", default="fyn,fyp,fxp,fxn")
 ap.add_argument("--settle", type=float, default=2.0)
 ap.add_argument("--rate", type=float, default=30.0, help="deg/s the push reference moves at")
 ap.add_argument("--log", default="")
+ap.add_argument("--diag", action="store_true", help="print the colliders overlapping each flap after release")
 a = ap.parse_args()
 os.environ.setdefault("OMNI_KIT_ALLOW_ROOT", "1")
 from isaacsim import SimulationApp
@@ -52,6 +53,21 @@ def wrap_base(TB):
 def through_wall(pb): return int(np.sum(((np.abs(pb[:, 0]) > 0.136) | (np.abs(pb[:, 1]) > 0.116)) & (pb[:, 2] < 0.134)))
 TB0 = xfw(BASE)
 
+if a.diag:
+    from pxr import PhysxSchema
+    from omni.physx import get_physx_simulation_interface
+    from pxr import PhysicsSchemaTools
+    for _n in LIDN: PhysxSchema.PhysxContactReportAPI.Apply(st.GetPrimAtPath(BOX + "/" + _n)).CreateThresholdAttr().Set(0.0)
+    def _on_contact(headers, data):
+        if not S.get("released"): return
+        for h in headers:
+            a0 = str(PhysicsSchemaTools.intToSdfPath(h.actor0)); a1 = str(PhysicsSchemaTools.intToSdfPath(h.actor1))
+            c0 = str(PhysicsSchemaTools.intToSdfPath(h.collider0)); c1 = str(PhysicsSchemaTools.intToSdfPath(h.collider1))
+            for me, other in ((a0, c1), (a1, c0)):
+                fl = me.rsplit("/", 1)[-1]
+                if me.startswith(BOX + "/f") and fl == S["lid"]:
+                    d = CONTACTS.setdefault(fl, {}); d[other] = d.get(other, 0) + 1
+    _csub = get_physx_simulation_interface().subscribe_contact_report_events(_on_contact)
 tl = omni.timeline.get_timeline_interface(); tl.play()
 S = dict(t=0.0, lid=None, tgt=0.0, ref=0.0, on=False, peak=0.0)
 def base_T():
@@ -79,6 +95,11 @@ def run(sec):
             TB = base_T(); mx = max(mx, np.linalg.norm(TB[:3, 3] - TB0[:3, 3])*1e3); tw = max(tw, through_wall(wrap_base(TB)))
     return mx, tw
 def angles(): return {n: v[0] for n, v in co7b_angles().items()}
+CONTACTS = {}
+def diag(n):
+    """Contacts on flap n during the 3 s after release (PhysX contact report) + its angle trace."""
+    c = sorted(CONTACTS.get(n, {}).items(), key=lambda kv: -kv[1])
+    P("  diag %s: contacts after release (partner: steps) %s | angle trace %s" % (n, c[:8], [round(v, 1) for v in S.get("trace", [])][::6]))
 
 run(0.2); A0 = angles()
 mx, tw = run(a.settle); A1 = angles()
@@ -92,9 +113,12 @@ for n in a.order.split(","):
         m_, t_ = run(0.1); MX = max(MX, m_); TW = max(TW, t_)
     reach_t = S["t"] - t0
     m_, t_ = run(1.0); MX = max(MX, m_); TW = max(TW, t_)
-    S["on"] = False; X = S["peak"]
-    m_, t_ = run(3.0); MX = max(MX, m_); TW = max(TW, t_)
+    S["on"] = False; X = S["peak"]; S["released"] = True; S["trace"] = []
+    for _ in range(30):
+        m_, t_ = run(0.1); MX = max(MX, m_); TW = max(TW, t_); S["trace"].append(angles()[n])
+    S["released"] = False
     after = angles(); R = after[n]; my_now = co7b_yield(n)
+    if a.diag: diag(n)
     pset = co7b_angles()[n][1]; pred = rest_with_gravity(pset, n)          # the model's plastic set + gravity sag
     qs = predict_rest(X, n, before_set[n])                                  # quasi-static expectation for this push
     others = {m: round(after[m] - before[m], 1) for m in after if m != n}

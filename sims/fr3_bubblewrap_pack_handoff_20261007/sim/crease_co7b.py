@@ -7,7 +7,7 @@
 #     about each flap's hinge axis, with the equal and opposite torque on the carton base
 #   * crease law CREASE_LAW=soft (default since 2026-10-14 pm): no hardening (H 0), My0 0.12 N*m, k = My0 / 45 deg
 #     (spring-back 45 deg, Nagasawa 2019), mild softening with accumulated plastic rotation kappa
-#     (yield x max(0.5, exp(-0.03 kappa)), repeated folds get softer as in the literature), c 0.033 as co7b.
+#     (yield x max(0.5, exp(-0.03 kappa)), repeated folds get softer as in the literature); damping 0.6 x critical per flap (CREASE_DAMP_RATIO; explicit torque needs c dt / I < 2).
 #     Picked with gravity included (flap weight torque 0.0094 / 0.0085 N*m upper / lower) so that, quasi-static:
 #     fold a closed flap to 90 deg -> rests at 43.5 (literature 43-46); push the pre-opened back / front flap to 165 ->
 #     123.4 / 123.6 (co7b's arm run: 122.5-125.1); side flaps sag 3 deg at rest. My0 0.06 with k = My0 / 45 deg let
@@ -45,6 +45,7 @@ SOFTENING = float(os.environ.get("CREASE_SOFTENING", "0.03"))                   
 MIN_YIELD = float(os.environ.get("CREASE_MIN_YIELD", "0.5"))                      # floor of the softened yield, fraction of My0
 if LAW == "soft":
     CO7B.update(my0=MY0_SOFT, k=MY0_SOFT / SPRINGBACK, h=0.0)
+DAMP_RATIO = float(os.environ.get("CREASE_DAMP_RATIO", "0.6"))   # crease damping as a fraction of critical, per flap
 MGR = dict(fyp=0.00941, fyn=0.00941, fxp=0.00852, fxn=0.00852)   # flap weight torque about the hinge, N*m (carton.meta.json, density 200)
 PRESET = dict(fyp=50.0, fyn=60.0, fxp=0.0, fxn=0.0)
 for _kv in [x for x in os.environ.get("CREASE_PRESET", "").split(",") if "=" in x]:
@@ -140,13 +141,25 @@ def _prepare():
         else:
             ori = [o for o in ops if o.GetOpType() == UsdGeom.XformOp.TypeOrient][0]; q = ori.Get()
             ori.Set(type(q)(Gf.Quatd(q) * Gf.Rotation(Gf.Vec3d(1, 0, 0), -PRESET[n]).GetQuat()))
+    # crease damping: the torque is explicit, so c dt / I must stay well below 2. co7b's c 0.033 was tuned on flaps
+    # with an authored inertia 0.006 kg*m^2; patch_scene.py gives them their real inertia (~7e-5 about the hinge),
+    # where c 0.033 would make c dt / I ~ 4 (unstable). So c = DAMP_RATIO * 2 sqrt(k I) per flap, I from geometry.
+    _K["c"] = {}
+    for n in LIDN:
+        lp = st.GetPrimAtPath(BOX + "/" + n); di = lp.GetAttribute("physics:diagonalInertia")
+        if di and di.IsAuthored():                       # old, unpatched USD: keep co7b's damping
+            _K["c"][n] = CO7B["c"]; continue
+        sc = st.GetPrimAtPath(BOX + "/" + n + "/geo").GetAttribute("xformOp:scale").Get()
+        wd, L, t = 2*float(sc[0]), 2*float(sc[1]), 2*float(sc[2])
+        I = float(lp.GetAttribute("physics:density").Get() or 200.0) * wd * L * t * L * L / 3.0
+        _K["c"][n] = DAMP_RATIO * 2.0 * math.sqrt(CO7B["k"] * I)
     w = st.GetPrimAtPath(PK + "/Wrap").GetAttribute("physxDeformableBody:solverPositionIterationCount")
     if WRAP_ITERS and w: w.Set(WRAP_ITERS)
     print("[co7b] crease law %s: k %.4f N*m/rad My0 %.3f N*m H %.3f c %.3f clip %.1f%s; preset %s; wrap iterations %s; "
-          "expected (quasi-static, gravity): closed fold 90 -> %.1f, back / front / side pushed to 165 -> %.1f / %.1f / %.1f deg"
+          "damping %s N*m*s/rad; expected (quasi-static, gravity): closed fold 90 -> %.1f, back / front / side pushed to 165 -> %.1f / %.1f / %.1f deg"
           % (LAW, CO7B["k"], CO7B["my0"], CO7B["h"], CO7B["c"], CO7B["clip"],
              " softening %.2f/rad floor %.2f" % (SOFTENING, MIN_YIELD) if LAW == "soft" else " (x%.2f)" % SCALE,
-             PRESET, w.Get() if w else "-", predict_rest(90, "fyp", 0.0), predict_rest(165, "fyn"), predict_rest(165, "fyp"), predict_rest(165, "fxp")))
+             PRESET, w.Get() if w else "-", {n: round(v, 4) for n, v in _K["c"].items()}, predict_rest(90, "fyp", 0.0), predict_rest(165, "fyn"), predict_rest(165, "fyp"), predict_rest(165, "fxp")))
 
 
 def _setup():
@@ -157,6 +170,7 @@ def _setup():
     base = RigidPrim(prim_paths_expr=BASE, name="co7b_base_" + tag); base.initialize()
     order = [str(p).rsplit("/", 1)[-1] for p in lids.prim_paths]
     cr = SofteningCrease(len(order), "cpu", **CO7B) if LAW == "soft" else ElastoplasticCrease(len(order), "cpu", **CO7B)
+    cr.c = torch.tensor([_K["c"][n] for n in order], dtype=torch.float32)
     cr.reset(torch.arange(len(order)), torch.tensor([math.radians(PRESET.get(n, 0.0)) for n in order], dtype=torch.float32))
     _K.update(lids=lids, base=base, order=order, cr=cr, last=[None]*len(order), tq=np.zeros(len(order)), ang=np.zeros(len(order)))
 
@@ -185,7 +199,7 @@ def _on_step(dt):
     try: ang, rate, axes = _lid_state()
     except Exception as e:                                      # stage reloaded / Stop+Play: the tensor view is invalidated
         if not _K.get("lost"): print("[co7b] physics view lost (%s); re-attaching on the next step" % e)
-        for k in ("lids", "base", "order", "cr", "last"): _K.pop(k, None)
+        for k in ("lids", "base", "order", "cr", "last"): _K.pop(k, None)   # rel0 / c stay (from _prepare)
         _K["lost"] = True; return
     _K.pop("lost", None)
     tq = _K["cr"].step(torch.tensor(ang, dtype=torch.float32), torch.tensor(rate, dtype=torch.float32)).numpy()

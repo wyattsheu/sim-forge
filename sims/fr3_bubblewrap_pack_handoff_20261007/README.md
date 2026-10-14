@@ -270,7 +270,8 @@ sim/                            simulation and tools — flat folder, run script
   crease_physics.py               elastoplastic crease model (yield + hardening)
   crease_hold_ui.py               for the UI Script Editor: crease torques + PhysicsScene fix (§3.4)
   crease_co7b.py                  ★ co7b carton: crease torques, presets, wrap iterations (§3.4); loaded by both launchers
-  co7b_check.py                   opens the four flaps one by one, checks rest angles vs the formula, carton motion, wrap
+  co7b_check.py                   opens the four flaps one by one, checks rest angles vs the formula, carton motion, wrap (--diag: contacts)
+  patch_scene.py                  wall / lid pads, real flap inertia, floor pad mass into scene_final_phys.usd (pxr only, idempotent)
   crease_plastic.py               previous lid model, drive-based elastic-plastic (LID_MODE=plastic; archive: ../carton_plastic_crease_20261009)
   lid_latch.py                    old lid model: latch open / closed past a threshold (LID_MODE=latch)
   click_to_ros.py                 Ctrl + click → 3D point → ROS 2 /clicked_point (§9); loaded by both launchers
@@ -432,7 +433,7 @@ cd sim && /isaac-sim/python.sh build_phys_scene.py     # writes ../scene_final_p
 |---|---|
 | Wrap `/World/Packed/Wrap` | **Surface deformable** (1225 vertices, 2312 triangles). Rest shape = the wrapped shape (`restShapePoints` = points, `restBendAnglesDefault = restShapeDefault`), so the folds don't spring open. Young's modulus 2e4 Pa, Poisson 0.45, thickness 4 mm, bend stiffness 4, friction 0.8, density 100 (≈ 65 g), self-collision on, 64 solver iterations in the file (the launchers set 8, `WRAP_ITERS`), contact / rest offset 5 / 1 mm |
 | Mug `/World/Packed/Mug` | **Dynamic rigid body**, 0.32 kg, friction 0.9. Collider = stacked convex frusta following the outer profile + 13 spheres (r = 10 mm) along the handle |
-| Carton | Unchanged geometry. Base gets linear / angular damping 2 / 2 (force-mode mouse drag would otherwise overshoot). An invisible 20 mm pad collider under the 3 mm floor stops wrap vertices poking through; it is **filtered against `tabletop_link` and `frame_link`** (before 2026-10-07 pm it was not, and the carton was pinned to the table) |
+| Carton | Unchanged geometry. Base gets linear / angular damping 2 / 2 (force-mode mouse drag would otherwise overshoot). (2026-10-14, `sim/patch_scene.py`) invisible 20 mm pads outside the four walls and on the outer face of fyp / fyn collide with the wrap only; flap inertia from geometry (was 0.006 kg·m², ~180× too high), armature 2e-4; floor pad mass 1e-6 kg, so the base weighs 0.110 kg (was 0.352). An invisible 20 mm pad collider under the 3 mm floor stops wrap vertices poking through; it is **filtered against `tabletop_link` and `frame_link`** (before 2026-10-07 pm it was not, and the carton was pinned to the table) |
 | Lid creases | (2026-10-09) Spring drive **0.42 N·m/rad per metre of crease** like parcel-forge `carton_v1` (lower flaps 0.092, upper 0.110 N·m/rad), damping 0.5 × critical, armature 2e-4, flap inertia from geometry. Before: 0.012 N·m/deg (0.69 N·m/rad) and an authored flap inertia 0.006 + armature 0.006 (~180× a real 15 g flap), so arm and mouse could barely move them. Upward pull at the flap edge: 0.34 N → 10°, 0.78 N → 30° (before 1.5 N → 10°, 3 N → 21°). (2026-10-10) Elastic-plastic: yield 0.25 N·m/m × crease width, k = yield / 45°, carton is an articulation with limits −275…+5° — see [CREASE_MECHANICS.md](../carton_plastic_crease_20261009/docs/CREASE_MECHANICS.md). (2026-10-14) co7b carton at run time: drives zeroed, torque crease (yield 0.12 N·m, spring-back 45°, softening 0.03), presets 50° / 60° (§3.4) |
 | PhysicsScene | 120 Hz TGS, 8 / 1 iterations, GPU dynamics + GPU broadphase, deformable contact capacity 4 M, collision stack 128 MB |
 | Bake | Settled in the file before saving: 2 s with the mug held still, then 4 s free; the settled shape written into both points and rest shape, velocities zeroed |
@@ -804,7 +805,8 @@ sim/                            模擬與工具 —— 平鋪資料夾,在裡面
   crease_physics.py               彈塑性摺痕模型(降伏 + 硬化)
   crease_hold_ui.py               UI 的 Script Editor 用:摺痕力矩 + PhysicsScene 修正(§3.4)
   crease_co7b.py                  ★ co7b 紙箱:摺痕力矩、預開、包材迭代(§3.4);兩支啟動腳本都會載入
-  co7b_check.py                   一片一片開四片蓋子,檢查停的角度 vs 公式、箱子位移、包材
+  co7b_check.py                   一片一片開四片蓋子,檢查停的角度 vs 公式、箱子位移、包材(--diag:接觸)
+  patch_scene.py                  把牆外 / 蓋子墊片、真實蓋子慣量、箱底墊片質量寫進 scene_final_phys.usd(只需 pxr,可重複執行)
   crease_plastic.py               之前的蓋子模型,drive 版彈塑性(LID_MODE=plastic;存檔:../carton_plastic_crease_20261009)
   lid_latch.py                    舊的蓋子模型:過門檻就閂在開 / 關(LID_MODE=latch)
   click_to_ros.py                 Ctrl + 點擊 → 3D 座標 → ROS 2 /clicked_point(§9);兩支啟動腳本都會載入
@@ -966,7 +968,7 @@ cd sim && /isaac-sim/python.sh build_phys_scene.py     # 寫出 ../scene_final_p
 |---|---|
 | 包材 `/World/Packed/Wrap` | **Surface deformable**(1225 個頂點、2312 個三角形)。靜止形狀 = 包好的形狀(`restShapePoints` = points,`restBendAnglesDefault = restShapeDefault`),摺痕不會彈開。楊氏模數 2e4 Pa、Poisson 0.45、厚度 4 mm、彎曲剛性 4、摩擦 0.8、密度 100(約 65 g)、自碰撞開、檔案裡解算 64 次(啟動腳本設成 8,`WRAP_ITERS`)、contact / rest offset 5 / 1 mm |
 | 杯子 `/World/Packed/Mug` | **動態剛體**,0.32 kg,摩擦 0.9。碰撞體 = 沿外型疊起來的凸台 + 把手上 13 顆球(半徑 10 mm) |
-| 紙箱 | 幾何不變。箱底加線性 / 角阻尼 2 / 2(不然力量式滑鼠拖曳會衝過頭)。3 mm 箱底下方有一塊看不見的 20 mm 墊片碰撞體,擋住包材頂點穿出箱底;它**對 `tabletop_link`、`frame_link` 不碰撞**(10-07 下午之前沒有過濾,紙箱被卡死在桌上) |
+| 紙箱 | 幾何不變。箱底加線性 / 角阻尼 2 / 2(不然力量式滑鼠拖曳會衝過頭)。(2026-10-14,`sim/patch_scene.py`)四面箱壁外和 fyp / fyn 外側加 20 mm 隱形墊片,只跟包材碰撞;蓋子慣量改由幾何計算(原本寫死 0.006 kg·m²,約真實的 180 倍)、armature 2e-4;箱底墊片質量 1e-6 kg,箱體 0.110 kg(原本 0.352)。3 mm 箱底下方有一塊看不見的 20 mm 墊片碰撞體,擋住包材頂點穿出箱底;它**對 `tabletop_link`、`frame_link` 不碰撞**(10-07 下午之前沒有過濾,紙箱被卡死在桌上) |
 | 蓋子摺痕 | (2026-10-09)彈簧 drive 改成跟 parcel-forge `carton_v1` 一樣 **每公尺摺痕 0.42 N·m/rad**(下層蓋 0.092、上層蓋 0.110 N·m/rad),阻尼取臨界阻尼的 0.5 倍,armature 2e-4,蓋子慣量由幾何計算。原本:0.012 N·m/deg(0.69 N·m/rad),而且蓋子寫死慣量 0.006 再加 armature 0.006(約真實 15 g 蓋子的 180 倍),所以手臂和滑鼠幾乎拉不動。在蓋子邊緣往上拉:0.34 N → 10°、0.78 N → 30°(原本 1.5 N → 10°、3 N 只到 21°)。(2026-10-10)改為彈塑性:降伏 0.25 N·m/m × 摺痕寬度、k = 降伏 / 45°,紙箱改成 articulation、限位 −275…+5°,見 [CREASE_MECHANICS.md](../carton_plastic_crease_20261009/docs/CREASE_MECHANICS.md)。(2026-10-14)執行時改用 co7b 紙箱:drive 歸零、力矩式摺痕(降伏 0.12 N·m、回彈 45°、軟化 0.03)、預開 50° / 60°(§3.4) |
 | PhysicsScene | 120 Hz TGS、迭代 8 / 1、GPU dynamics + GPU broadphase、deformable 接觸容量 4 M、碰撞堆疊 128 MB |
 | 沉降 | 存檔前先沉降:杯子固定 2 秒,再放開 4 秒;沉降後的形狀同時寫進 points 和靜止形狀,速度歸零 |
