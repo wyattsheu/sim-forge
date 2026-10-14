@@ -1195,6 +1195,11 @@ for L in LIDS:
 mugx = SingleXFormPrim("/World/mug", name="mugx")
 if a.grasp:
     GX = {k_: SingleXFormPrim("/World/gf_" + k_, name="gf_" + k_) for k_ in GPARK}
+    # ★ r1:只用 set_world_pose 改 USD,kinematic 指在 PhysX 裡一直停在場外 (3,3,1),綁定那步把整張布拉過去。改用 kinematic target
+    GKEYS = list(GPARK)
+    GFV = world.physics_sim_view.create_rigid_body_view(["/World/gf_" + k_ for k_ in GKEYS])
+    _gpi = {"/World/gf_" + k_: i_ for i_, k_ in enumerate(GKEYS)}
+    GF_ORD = np.array([_gpi[p_] for p_ in GFV.prim_paths]); GF_IDX = np.arange(GFV.count, dtype=np.int32)
 MOVEB = None
 if MOVE is not None:
     assert a.carton and LIDS, "--movebox 需要 --carton(且讀得到 meta、建得出四片蓋)"
@@ -1324,7 +1329,7 @@ if a.grasp:
     GII = np.arange(len(GFLAT)) % (nx+1); GJJ = np.arange(len(GFLAT)) // (nx+1)
     GF = {k_: [] for k_ in GPARK}; GLAST = {k_: (GPARK[k_].copy(), np.eye(3)) for k_ in GPARK}
     GS = dict(ev={}, plan=None, done=set())
-    GX = {}
+    # (GX 在 world.reset 後建;r1/r2 這裡又設成 {} 把它蓋掉 → 指從沒動過)
     def rq(Rm_):
         x_, y_, z_, w_ = _Rot.from_matrix(Rm_).as_quat(); return np.array([w_, x_, y_, z_])
     def g_lin(k_, t0, dur, pos, Rm_=None):
@@ -1342,9 +1347,12 @@ if a.grasp:
         return cur if cur is not None else (GPARK[k_], np.eye(3))
     def g_drive(t):
         if not GX: return
-        for k_ in GPARK:
-            p_, R_ = g_pose(k_, t)
-            GX[k_].set_world_pose(position=p_, orientation=rq(R_))
+        D = np.zeros((len(GKEYS), 7), np.float32)
+        for i_, k_ in enumerate(GKEYS):
+            p_, R_ = g_pose(k_, t); q_ = rq(R_)
+            D[i_, :3] = p_; D[i_, 3:6] = q_[1:]; D[i_, 6] = q_[0]
+            GX[k_].set_world_pose(position=p_, orientation=q_)      # 只為畫面(USD);物理走下面的 kinematic target
+        GFV.set_kinematic_targets(D[GF_ORD], GF_IDX)
     def g_mug():
         mp_, mq_ = mugx.get_world_pose(); w_, x_, y_, z_ = [float(v) for v in mq_]
         Rm_ = _Rot.from_quat([x_, y_, z_, w_]).as_matrix()
@@ -1373,10 +1381,10 @@ if a.grasp:
             vin = v + (nx+1) if GJJ[v] == 0 else (v + 1 if GII[v] == 0 else v - 1)
             u3 = Sl[v] - Sl[vin]; uh = np.array([u3[0], u3[1], 0.0])
             if np.linalg.norm(uh) < 1e-6: continue
-            uh /= np.linalg.norm(uh); tt = np.cross([0, 0, 1.0], uh); R0 = np.stack([tt, uh, [0, 0, 1.0]], 1)
+            uh /= np.linalg.norm(uh); tt = np.cross(uh, [0, 0, 1.0]);   # 右手系 [t,u,n] R0 = np.stack([tt, uh, [0, 0, 1.0]], 1)
             fd = np.linalg.norm(GFLAT - GFLAT[v], axis=1); other = fd > 0.045
             hr = np.linalg.norm(Sl[:, :2] - p[:2], axis=1)
-            na = int((other & (hr < 0.030) & (Sl[:, 2] > p[2] + 0.0005)).sum())
+            na = int((other & (GSIDE != "yn") & (hr < 0.030) & (Sl[:, 2] > p[2] + 0.0005)).sum())   # r1:yn 自己的皺褶不算「被壓」(400mm 布 yn 尖端是皺的)
             # (c) 下方空隙:下指足跡(以 p 往內 7.5mm 為中心 20x20)內、比 p 低的他處布 / 杯頂點
             L = (Sl - p) @ R0; Lm = (Ml - p) @ R0
             fp = (np.abs(L[:, 0]) < 0.010) & (L[:, 1] > -0.0175) & (L[:, 1] < 0.0025) & other & (L[:, 2] < 0)
@@ -1392,7 +1400,7 @@ if a.grasp:
             r["ok_a"] = na == 0; r["ok_b"] = sum(r["b"]) == 0; r["ok_c"] = gap >= 0.006
             r["ok"] = r["ok_a"] and r["ok_b"] and r["ok_c"]
             rows.append(r)
-        rows.sort(key=lambda r: (-int(r["ok"]), -(int(r["ok_a"]) + int(r["ok_b"])), -r["gap"], -r["dwall"]))
+        rows.sort(key=lambda r: (-int(r["ok"]), -int(r["ok_b"] and r["ok_c"]), r["a"], -r["gap"], -r["dwall"]))   # 沒全過:先要指進得去、再挑上方被壓最少
         P("\n★ t=%.2f [grasp] yn 抓取點即時排名:%d 候選,(a) %d /(b) %d /(c) %d / 全過 %d"
           % (t, len(rows), sum(r["ok_a"] for r in rows), sum(r["ok_b"] for r in rows), sum(r["ok_c"] for r in rows), sum(r["ok"] for r in rows)))
         for k_, r in enumerate(rows[:6]):
@@ -1450,6 +1458,9 @@ if a.grasp:
         for rn, tg in [("src0", "/World/sheet"), ("src1", "/World/gf_up")]:
             (ch.GetRelationship("omniphysics:" + rn) or ch.CreateRelationship("omniphysics:" + rn)).SetTargets([Sdf.Path(tg)])
         nother = int((m_ & (GSIDE != "yn")).sum())
+        _tr = GFV.get_transforms(); _tr = _tr.numpy() if hasattr(_tr, "numpy") else np.asarray(_tr)
+        for i_, pth_ in enumerate(GFV.prim_paths):
+            P("  [grasp] PhysX 實際 %s %s mm" % (pth_, np.round((_tr[i_, :3] - bo)*1e3, 1)))
         P("\n★ t=%.2f [grasp] 綁定 %d 個 yn 頂點(足跡半寬 %.0fmm、|n|<=%.1fmm);同範圍非 yn 頂點(不綁)%d;指面之間(20x20、間距 %.1fmm)頂點 %d"
           % (t, len(AV), pad*1e3, hn*1e3, nother, a.g_gap_mm, nbet))
         # 弧線:鉸點 = 夾點那欄實測彎折處

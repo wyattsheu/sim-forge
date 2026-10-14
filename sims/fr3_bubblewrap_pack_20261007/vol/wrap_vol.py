@@ -944,7 +944,7 @@ if a.grasp:
             scp = "/World/gatt_%s" % sd
             if len(AV):
                 VC.attach_vtx(st, scp, "/World/plate", "/World/plate", GPATH["up"], AV, loc, P=P)
-            pl["att"] = dict(scope=scp, vids=AV, n=len(AV), on=bool(len(AV)))
+            pl["att"] = dict(scope=scp, vids=AV, n=len(AV), on=bool(len(AV)), loc0=loc.copy())
             pl["ev"]["grip"]["n_att"] = len(AV)
             P("★ t=%.2f [%s] 綁住 %d 個頂點(%s;足跡半寬 %.0fmm、|n|<=%.1fmm、層 %s);指間非 %s 頂點(未綁)%d"
               % (t, sd, len(AV), sd, pad * 1e3, (GAPG / 2 + 0.004) * 1e3, a.attach_layer, sd,
@@ -952,12 +952,18 @@ if a.grasp:
         SNAP["g_%s_grip" % sd] = (Pw.copy(), mug_world()[2].copy(), measure(t)[0])
         col_i = v % (a.nxy + 1)
         hy, hz, hfy, ym, zm, nc = GPL.hinge(Pl, sd, col_i)
+        if not (np.isfinite(hy) and np.isfinite(hz)):
+            P("  [%s] ★ 彎折處偵測 nan(欄數 %d)→ 用名義折線 y=%+.1f z=106.0 mm" % (sd, nc, sg * CY * 1e3))
+            hy, hz = sg * CY, 0.106
+        if not np.isfinite(hfy): hfy = sg * CY
         M = GPL.mid(Pl)
         col = np.where((GPL.S["ii"] == col_i) & (sg * GF2[:, 1] > CY - 1e-9))[0]
         col = col[np.argsort(sg * GF2[col, 1])]
         kb = int(np.argmin(np.abs(GF2[col, 1] - hfy))) if np.isfinite(hfy) else 0
         seg = col[kb:]; Lcur = float(np.linalg.norm(np.diff(M[seg], axis=0), axis=1).sum()) if len(seg) > 1 else float("nan")
         Lflat = float(abs(GF2[v, 1] - hfy))
+        if a.grasp_attach and pl.get("att", {}).get("n", 0) > 0:
+            Lflat = float(np.median(np.abs(GF2[pl["att"]["vids"], 1] - hfy)))
         Lmat = max(Lcur, Lflat)
         Rr = a.arc_k * (Lmat - 0.0075)
         gc0 = (pl["lo_f"] + pl["up_f"]) / 2; R0 = pl["R0"]
@@ -994,6 +1000,8 @@ if a.grasp:
         TP0 = t; TP1 = TP0 + a.peel_t
         for k_ in ("up", "lo"):
             g_fn(k_, TP0, a.peel_t, lambda w, k_=k_: (at(w)[0][k_] + offw, at(w)[1]))
+        if not np.all(np.isfinite([r0, th0, th1, Rr])):
+            raise RuntimeError("弧線參數 nan: r0=%s th0=%s th1=%s Rr=%s" % (r0, th0, th1, Rr))
         Pf1, Rf1, th_e = at(1.0)
         n_e, u_e = Rf1[:, 2], Rf1[:, 1]
         TR = TP1 + GT["peel_hold"]
@@ -1019,7 +1027,15 @@ if a.grasp:
         gc, Rg = g_frame_now(t)
         r["up"] = (g_pose("up", t)[0] - offw) * 1e3; r["lo"] = (g_pose("lo", t)[0] - offw) * 1e3
         Gn, L_ = g_between(Pw, t); r["ngrip"] = len(Gn)
-        if "G" in pl and len(pl["G"]) and pl.get("TP0") is not None and t <= pl["TR"] + 1e-6:
+        att = pl.get("att")
+        if att is not None:
+            r["ngrip"] = att["n"]
+        if att is not None and att["n"] and pl.get("TP0") is not None and t <= pl["TR"] + 1e-6:
+            pu_, Ru_ = g_pose("up", t)
+            dd = np.linalg.norm((Pw[att["vids"]] - pu_) @ Ru_ - att["loc0"], axis=1)
+            r["slip"] = float(np.median(dd)) * 1e3; r["slip_max"] = float(dd.max()) * 1e3
+            pl["slip"].append((t, r["slip"], r["slip_max"]))
+        elif "G" in pl and len(pl["G"]) and pl.get("TP0") is not None and t <= pl["TR"] + 1e-6:
             dd = np.linalg.norm(L_[pl["G"]] - pl["rel0"], axis=1)
             r["slip"] = float(np.median(dd)) * 1e3; r["slip_max"] = float(dd.max()) * 1e3
             pl["slip"].append((t, r["slip"], r["slip_max"]))
@@ -1328,7 +1344,7 @@ if a.grasp:
         mugmax = max([r["mug_d"] for r in GS["rows"] if r["sd"] == sd] + [h["mug_d"]])
         allr = [r for r in GS["rows"] if r["sd"] == sd]
         pen_mx = max([r["pen"] for r in allr] + [0]); inm_mx = max([r["inmug"] for r in allr] + [0]); inv_mx = max([r["inv"] for r in allr] + [0])
-        ok = dict(grip=ev["grip"]["n"] >= 6, slip=(slip_med < 10.0), cross=h["cross"] >= 0.8, oth=h["oth_pct"] < 5.0, mug=mugmax < 5.0, inmug=inm_mx == 0)
+        ok = dict(grip=ev["grip"].get("n_att", ev["grip"]["n"]) >= 6, slip=(slip_med < 10.0), cross=h["cross"] >= 0.8, oth=h["oth_pct"] < 5.0, mug=mugmax < 5.0, inmug=inm_mx == 0)
         allok = all(ok.values())
         P("  [%s] 抓取點 v%d 位置 (%.1f,%.1f,%.1f) 坡度 %.1f° 空隙 %.1f | 挑角後 z %.1f→%.1f 空隙 %.1f→%.1f 相鄰層 >10mm %d(最大 %.1f)"
           % (sd, pl["v"], *pl["pick"]["p"], pl["pick"]["slope"], pl["pick"]["gap"], pk.get("z0", np.nan), pk.get("z1", np.nan),
