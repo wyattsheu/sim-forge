@@ -101,6 +101,10 @@ ap.add_argument("--attach_proxy", type=int, default=0, help="[drag] 1 = 上指�
 ap.add_argument("--proxy_k", type=float, default=500.0, help="[drag] 代理 drive 剛度 N/m")
 ap.add_argument("--proxy_c", type=float, default=-1.0, help="[drag] 代理 drive 阻尼 N·s/m;-1 = 2*sqrt(k*m_proxy)")
 ap.add_argument("--proxy_fmax", type=float, default=0.5, help="[drag] 代理 drive maxForce N(每軸);布抗力超過就讓代理落後")
+ap.add_argument("--fold_order", default="xp,xn,yp,yn", help="[variants] 折序,四片任意排列;預設 = 舊行為")
+ap.add_argument("--mug_off_mm", default="0,0", help="[variants] 杯子(佔位中心)相對布中心偏 dx,dy mm;實作 = 布反向平移")
+ap.add_argument("--mug_yaw_deg", type=float, default=0.0, help="[variants] 杯子繞 z 轉幾度(佔位 = 轉後 AABB)")
+ap.add_argument("--seed", type=int, default=0, help="[variants] 隨機種子(記錄用)")
 ap.add_argument("--proxy_m", type=float, default=0.005, help="[drag] 代理質量 kg")
 a = ap.parse_args()
 if a.tuck == 0:
@@ -113,7 +117,11 @@ WX = (a.sheet_x_mm or a.sheet_mm) / 1e3; WY = (a.sheet_y_mm or a.sheet_mm) / 1e3
 WA = (WX, WY)                      # 依軸取邊長
 W = max(WX, WY)                    # 只用在側板起始位置等「夠大就好」的地方
 MOVE = np.array([float(x) for x in a.movebox.split(",")])
-FOLD_ORDER = ["xp", "xn", "yp", "yn"]          # [ws] 唯一來源:先左右、後前後(前後在外層)
+FOLD_ORDER = [x.strip() for x in a.fold_order.split(",")]   # [variants] 從 --fold_order;預設 xp,xn,yp,yn
+assert sorted(FOLD_ORDER) == ["xn", "xp", "yn", "yp"], "--fold_order 要是 xp,xn,yp,yn 的排列"
+MOFF = np.array([float(x) for x in a.mug_off_mm.split(",")]) / 1e3   # [variants] 杯子相對布中心
+SC = -MOFF                                     # [variants] 布中心(杯子/佔位/箱子留在原點)
+np.random.seed(a.seed)
 UORDER = list(reversed(FOLD_ORDER))
 
 def kv(s):
@@ -202,6 +210,7 @@ V = V @ Ry(-np.pi/2).T @ Rx(np.pi/2).T @ Rz(-np.pi/2).T      # 基準姿態:杯�
 _Rm = np.array([[-1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, -1.0]])
 V = V @ _Rm.T
 V -= (V.max(0) + V.min(0)) / 2.0
+if a.mug_yaw_deg: V = V @ Rz(np.radians(a.mug_yaw_deg)).T; V -= (V.max(0) + V.min(0)) / 2.0   # [variants]
 ME = V.max(0) - V.min(0); hx, hy, H2 = ME / 2.0
 MUG_VOL = float(np.prod(ME))
 P("杯子躺平 %.0f x %.0f x %.0f mm;杯口 +y、杯耳 +x;watertight=%s" % (*(ME*1e3), m_.is_watertight))
@@ -216,7 +225,7 @@ if a.rest_npz:
     REST_NPZ = np.load(a.rest_npz)["fold_end_tet"]
 info = VC.build_plate(st, "/World/plate", WX, T, ZB, "manual", nxy=a.nxy, nz=1, youngs=a.young, poisson=a.poisson,
                       areal=a.areal, fric=a.fric, cont=a.cont, rest=a.rest, solver=a.solver, self_coll=True,
-                      self_filter=2*a.rest, ldamp=a.ldamp, edamp=a.edamp, P=P, size_y=WY)
+                      self_filter=2*a.rest, ldamp=a.ldamp, edamp=a.edamp, P=P, size_y=WY, cx=float(SC[0]), cy=float(SC[1]))
 P("阻尼 ldamp=%g edamp=%g" % (a.ldamp, a.edamp))
 PLATE = VC.Mesh(st, "/World/plate")
 FLAT = PLATE.pts().copy(); TETS = PLATE.tets()
@@ -294,9 +303,12 @@ SIDES = {}
 for sd in FOLD_ORDER:
     ax = 0 if sd[0] == "x" else 1; sg = 1.0 if sd[1] == "p" else -1.0
     C = CX if ax == 0 else CY
-    outer = np.abs(FLAT[:, ax] - sg * WA[ax] / 2) < 1e-6
-    picked = np.array([v for v in np.where(outer)[0] if sidepick(fx_[v], fy_[v]) == sd])
-    if sd in FOLD_ORDER[:2]:
+    EDGE = SC[ax] + sg * WA[ax] / 2              # [variants] 布邊位置(布可能偏)
+    outer = np.abs(FLAT[:, ax] - EDGE) < 1e-6
+    picked = np.array([v for v in np.where(outer)[0] if sidepick(fx_[v], fy_[v]) == sd], int)
+    _k = FOLD_ORDER.index(sd)
+    _bar = not any(SIDES_AX != ax for SIDES_AX in [0 if q[0] == "x" else 1 for q in FOLD_ORDER[:_k]])   # [variants] 另一軸都還沒折 = 整根桿
+    if _bar:
         # 先折的兩邊:整條邊,不含角落(角落 SIDEPICK 歸 y)
         # 先折的兩邊:SIDEPICK 歸本邊的最外圈,再只留 |y| <= CY(杯子 y 範圍 + margin + wall)。
         # ★ 實測(out_v400_fold 第 1、2 版):照 SIDEPICK 抓到 |y|<=177 時,4mm 板的 x 折邊兩端(角落區)被桿釘在
@@ -306,7 +318,7 @@ for sd in FOLD_ORDER:
         # 後折的兩邊:只抓前兩折期間仍貼地的那段(|另一軸| <= 對方折線),等同 surface 版 floor_edges
         Co = CX if ax == 1 else CY
         vids = picked[np.abs(FLAT[picked, 1 - ax]) <= Co - 0.25 * DXY[1 - ax]]
-    SIDES[sd] = dict(ax=ax, sg=sg, C=C, R=WA[ax]/2 - C, vids=vids, k=FOLD_ORDER.index(sd))
+    SIDES[sd] = dict(ax=ax, sg=sg, C=C, R=sg*EDGE - C, vids=vids, k=_k, bar=_bar)
     P("錨 %s:最外圈 %d 點中 SIDEPICK 歸本邊 %d,綁 %d 點(上下兩層)" % (sd, int(outer.sum()), len(picked), len(vids)))
 
 # 終點:尖端底面停在 杯頂 + 已疊層數 x (T+1mm) + 2mm;已疊層數 = 先前折的 flap 頂面範圍與本折重疊者
@@ -372,15 +384,17 @@ def yarc(S_, cur, u):
 
 ANC = []          # 每個 kinematic 錨:x 邊一根桿;y 邊每一欄一個(上下兩點)
 for sd, S_ in SIDES.items():
-    if S_["ax"] == 0:
-        ctr = np.zeros(3); ctr[0] = S_["sg"] * WX / 2; ctr[2] = Z0
+    _ax = S_["ax"]; _o = 1 - _ax
+    if S_["bar"]:
+        ctr = np.zeros(3); ctr[_ax] = SC[_ax] + S_["sg"] * WA[_ax] / 2; ctr[2] = Z0
         groups = [(sd, ctr, S_["vids"])]
     else:
         groups = []
-        cols = np.unique(np.round(FLAT[S_["vids"], 0], 6))
+        cols = np.unique(np.round(FLAT[S_["vids"], _o], 6))
         for ci, cx_ in enumerate(cols):
-            vv = S_["vids"][np.abs(FLAT[S_["vids"], 0] - cx_) < 1e-6]
-            groups.append(("%s_c%02d" % (sd, ci), np.array([cx_, S_["sg"] * WY / 2, Z0]), vv))
+            vv = S_["vids"][np.abs(FLAT[S_["vids"], _o] - cx_) < 1e-6]
+            _c = np.zeros(3); _c[_o] = cx_; _c[_ax] = SC[_ax] + S_["sg"] * WA[_ax] / 2; _c[2] = Z0
+            groups.append(("%s_c%02d" % (sd, ci), _c, vv))
     for nm_, ctr, vv in groups:
         pth = "/World/bars/" + nm_
         VC.kin_box(st, pth, [0.004, 0.004, 0.004], ctr, collide=False, visible=False)
@@ -392,20 +406,23 @@ P("錨:%d 個 kinematic 錨體(x 邊各 1 根桿;y 邊每欄 1 個,共 %d 欄),�
 
 def anchor_pose(A, t):
     sd = A["side"]; S_ = SIDES[sd]
-    if S_["ax"] == 0:
+    _ax = S_["ax"]; _o = 1 - _ax
+    _rot = lambda ax_, sg_: [0, -sg_, 0] if ax_ == 0 else [sg_, 0, 0]   # [variants] 繞折線轉的軸
+    if S_["bar"]:
         t0, sp_ = FT[sd]; u = ss((t - t0)/sp_)
         al, z, ang = xmap(S_, S_["R"], u)
-        p = np.array([S_["sg"]*al, 0.0, z])
-        return p, qaxis([0, -S_["sg"], 0], ang)
+        p = np.zeros(3); p[_ax] = S_["sg"]*al; p[2] = z
+        return p, qaxis(_rot(_ax, S_["sg"]), ang)
     # y 邊的一欄:先跟著 x 折(若這欄在 x 折邊上 = 角落『耳朵』),再做自己的 y 折
-    cx_ = A["c0"][0]
-    sdx = "xp" if cx_ > 0 else "xn"; Sx = SIDES[sdx]
-    s = abs(cx_) - CX
+    cx_ = A["c0"][_o]
+    sdx = ("xy"[_o]) + ("p" if cx_ > 0 else "n"); Sx = SIDES[sdx]
+    s = abs(cx_) - Sx["C"]
     def xstate(tt):
-        if s <= 0: return np.array([cx_, A["c0"][1], Z0]), QI
+        if s <= 0: return A["c0"].copy(), QI
         t0x, spx = FT[sdx]; ux = ss((tt - t0x)/spx)
         al, z, ang = xmap(Sx, s, ux)
-        return np.array([Sx["sg"]*al, A["c0"][1], z]), qaxis([0, -Sx["sg"], 0], ang)
+        q_ = A["c0"].copy(); q_[_o] = Sx["sg"]*al; q_[2] = z
+        return q_, qaxis(_rot(_o, Sx["sg"]), ang)
     t0, sp_ = FT[sd]
     if t < t0:
         return xstate(t)
@@ -414,15 +431,15 @@ def anchor_pose(A, t):
     cur, qx = A["ystart"]
     u = ss((t - t0)/sp_)
     al, z, ang = yarc(S_, cur, u)
-    p = np.array([cur[0], S_["sg"]*al, z])
-    return p, qmul(qaxis([S_["sg"], 0, 0], ang), qx)
+    p = cur.copy(); p[_ax] = S_["sg"]*al; p[2] = z
+    return p, qmul(qaxis(_rot(_ax, S_["sg"]), ang), qx)
 
 # ── 收耳朵用的四面側板(kinematic、不可見):四折完從外面收到紙箱內腔 −squeeze_mm ────
 PADS = []
 PAD_H = 0.16
 for nm_, ax_, sg_ in (("pxp", 0, 1), ("pxn", 0, -1), ("pyp", 1, 1), ("pyn", 1, -1)):
     sz = [W + 0.12, W + 0.12, PAD_H]; sz[ax_] = 0.010
-    c_ = np.zeros(3); c_[ax_] = sg_ * (W/2 + 0.03 + 0.005); c_[2] = PAD_H/2 + 0.0005
+    c_ = np.zeros(3); c_[ax_] = sg_ * (W/2 + float(np.abs(MOFF).max()) + 0.03 + 0.005); c_[2] = PAD_H/2 + 0.0005
     pr_ = VC.kin_box(st, "/World/pads/" + nm_, sz, c_, collide=True, visible=False)
     _pc = PhysxSchema.PhysxCollisionAPI.Apply(st.GetPrimAtPath("/World/pads/%s/geom" % nm_))
     _pc.CreateContactOffsetAttr(0.002); _pc.CreateRestOffsetAttr(0.0005)

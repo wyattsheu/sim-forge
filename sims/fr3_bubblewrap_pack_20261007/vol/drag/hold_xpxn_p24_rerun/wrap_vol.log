@@ -542,3 +542,4 @@ t= 86.30 yp release               bbox 263x223x126 | 自穿    0 | 布穿杯   0
   [yp] ATTACH 綁 20 點 | 越線 名義 0% / 實測彎折 0%(掀完停 2s)→ 放手後 名義 0% / 實測 0%
   [yp] HOLD 釘 308 點({'xn': 154, 'xp': 154})| 他片 全部 held 40.6% / released 33.0% | 他片(扣壓住) held 40.5% / released 31.8% | 釘住點放開後最大位移 64.3 mm | 守衛 有 t=76.53
   抓取段明細 → drag/hold_xpxn_p24_rerun/grasp.json
+npz → drag/hold_xpxn_p24_rerun/wrap.npz
