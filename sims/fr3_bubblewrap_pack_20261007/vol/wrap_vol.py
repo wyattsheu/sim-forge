@@ -103,6 +103,7 @@ ap.add_argument("--arc2_ext_mm", type=float, default=0.0, help="[drag2] 弧線�
 ap.add_argument("--arc2_ext_t", type=float, default=1.0, help="[drag2] 延伸用時 s")
 ap.add_argument("--arc2_over_mm", type=float, default=0.0, help="[peel] 弧線終點後夾爪中心再越過箱壁外緣這麼多 mm,同時轉到 180°(片翻過箱壁躺到外側);上限 = 材料長 − 鉸點到箱壁頂角 − 5mm;0 = 舊行為")
 ap.add_argument("--arc2_over_t", type=float, default=1.5, help="[peel] 越過用時 s")
+ap.add_argument("--arc_grow_max_mm", type=float, default=0.0, help="[peel] 弧半徑最多比夾爪起始離彎折處距離 r0 大這麼多 mm(片被他片壓住/材料皺著時不硬拉長);0 = 舊行為")
 ap.add_argument("--release_press_mm", type=float, default=0.0, help="[peel] 放手前末端再往下壓 mm(箱壁外側貼住);0 = 舊行為")
 ap.add_argument("--release_settle_s", type=float, default=0.0, help="[peel] 下壓後再停 s 才放手;0 = 舊行為")
 ap.add_argument("--hold_rel_s", type=float, default=0.5, help="[drag] TR(放手開始)後幾秒移除釘住")
@@ -1198,6 +1199,9 @@ if a.grasp:
         Ea, Ez = -(IY + 0.0015), CBOX["top_y"] + T / 2 + 0.002
         a0, z0 = -sg * gc0[1] - Ba, gc0[2] - Bz; r0 = float(np.hypot(a0, z0)); th0 = float(np.arctan2(z0, a0))
         BE = float(np.hypot(Ea - Ba, Ez - Bz)); th1 = float(np.arctan2(Ez - Bz, Ea - Ba))
+        if a.arc_grow_max_mm > 0 and Rr > r0 + a.arc_grow_max_mm / 1e3:       # [peel]
+            P("  [%s] [peel] 弧半徑 %.1f → %.1f mm(r0 %.1f + %.0f)" % (sd, Rr * 1e3, (r0 + a.arc_grow_max_mm / 1e3) * 1e3, r0 * 1e3, a.arc_grow_max_mm))
+            Rr = r0 + a.arc_grow_max_mm / 1e3
         R2 = Rr - BE; two = (R2 > 0.012) and bool(a.arc2)
         if th0 >= th1:
             th1 = th0
