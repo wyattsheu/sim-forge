@@ -1,3 +1,73 @@
 [08:43] r7_00 box 開跑(GPU 15726 MiB)
    → nolog  0s
 [08:43] r7_01 box 開跑(GPU 15726 MiB)
+   → FAIL 超出內腔236(x26/y201/口11) 188s
+[08:46] r7_02 box 開跑(GPU 15726 MiB)
+   → nolog  0s
+[08:46] r7_03 box 開跑(GPU 15726 MiB)
+   → nolog  0s
+[08:46] r7_04 box 開跑(GPU 15726 MiB)
+   → nolog  0s
+[08:46] r7_05 box 開跑(GPU 15726 MiB)
+   → FAIL 超出內腔2(x0/y0/口2);邊長比[0.51,1.66] 197s
+[08:49] r7_06 box 開跑(GPU 6429 MiB)
+   → FAIL 超出內腔259(x0/y224/口35) 176s
+[08:52] r7_07 box 開跑(GPU 6429 MiB)
+   → nolog  0s
+[08:52] r7_08 box 開跑(GPU 6429 MiB)
+   → nolog  0s
+[08:52] r7_09 box 開跑(GPU 6429 MiB)
+   → FAIL 超出內腔9(x0/y0/口9);infeasible(xp);邊長比[0.46,1.64] 161s
+[08:55] r7_10 box 開跑(GPU 6429 MiB)
+   → nolog  0s
+[08:55] r7_11 box 開跑(GPU 6429 MiB)
+   → nolog  0s
+o_xnxpynyp PASS  yp
+o_xnxpypyn PASS  yn
+o_xnynxpyp FAIL 邊長比[0.47,2.32] yp
+o_xnynypxp FAIL 邊長比[0.49,1.71] xp
+o_xnypxpyn FAIL 邊長比[0.55,1.76] yn
+o_xnypynxp FAIL 邊長比[0.50,1.64] xp
+o_xpxnynyp PASS  yp
+o_xpxnypyn FAIL 邊長比[0.51,1.66] yn
+o_xpynxnyp PASS  yp
+o_xpynypxn PASS  xn
+o_xpypxnyn FAIL 超出內腔31(x0/y0/口31);邊長比[0.55,2.14] yn
+o_xpypynxn FAIL 邊長比[0.36,1.61] xn
+o_ynxnxpyp FAIL 邊長比[0.53,1.66] yp
+o_ynxnypxp PASS  xp
+o_ynxpxnyp FAIL 超出內腔5(x0/y0/口5) yp
+o_ynxpypxn PASS  xn
+o_ynypxnxp FAIL 邊長比[0.54,1.65] xp
+o_ynypxpxn FAIL 邊長比[0.49,1.53] xp
+o_ypxnxpyn FAIL 超出內腔3(x0/y0/口3);邊長比[0.50,1.89] yn
+o_ypxnynxp FAIL 反轉3;邊長比[0.28,1.79] xp
+o_ypxpxnyn FAIL 邊長比[0.52,2.28] yn
+o_ypxpynxn FAIL 邊長比[0.44,1.59] xn
+o_ypynxnxp PASS  xn
+o_ypynxpxn PASS  xn
+r7_00 nolog  
+r7_01 FAIL 超出內腔236(x26/y201/口11) yp
+r7_02 nolog  
+r7_03 nolog  
+r7_04 nolog  
+r7_05 FAIL 超出內腔2(x0/y0/口2);邊長比[0.51,1.66] xn
+r7_06 FAIL 超出內腔259(x0/y224/口35) yn
+r7_07 nolog  
+r7_08 nolog  
+r7_09 FAIL 超出內腔9(x0/y0/口9);infeasible(xp);邊長比[0.46,1.64] xn
+r7_10 nolog  
+r7_11 nolog  
+[09:04] r7_00 box 開跑(GPU 6362 MiB)
+   → FAIL 超出內腔321(x14/y313/口14);反轉1;邊長比[0.45,1.53] 143s
+[09:07] r7_02 box 開跑(GPU 6362 MiB)
+   → FAIL 超出內腔386(x11/y365/口65) 180s
+[09:10] r7_03 box 開跑(GPU 6361 MiB)
+   → FAIL 超出內腔411(x0/y411/口0) 141s
+[09:12] r7_04 box 開跑(GPU 6361 MiB)
+   → FAIL 超出內腔58(x0/y58/口0) 177s
+[09:15] r7_07 box 開跑(GPU 6361 MiB)
+   → FAIL 超出內腔265(x0/y265/口0) 150s
+[09:17] r7_08 box 開跑(GPU 6361 MiB)
+   → FAIL 邊長比[0.47,1.67] 182s
+[09:20] r7_10 box 開跑(GPU 708 MiB)

@@ -22,7 +22,7 @@ def cls(o):
 def write(vid, prm):
     d = os.path.join(VD, vid); os.makedirs(d, exist_ok=True)
     json.dump(prm, open(os.path.join(d, "params.json"), "w"), indent=1, ensure_ascii=False)
-    args = " ".join("--%s %s" % (k, v) for k, v in prm.items() if not k.startswith("_"))
+    args = " ".join("--%s=%s" % (k, v) for k, v in prm.items() if not k.startswith("_"))
     open(os.path.join(d, "cmd.sh"), "w").write(
         "#!/bin/bash\n# %s\ncd %s\nUNTIL=${UNTIL:-box}; OUT=${OUT:-%s/%s/box}\n%s wrap_vol.py %s --until $UNTIL --out $OUT\n"
         % (vid, HERE, VD, vid, PY, args))
