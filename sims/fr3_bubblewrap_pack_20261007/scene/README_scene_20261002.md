@@ -8,13 +8,14 @@
 
 > **This is the delivered handoff.** Clone it and you can open the scene, press Play, interact with the mouse,
 > re-run the simulation, and regenerate every video.
-> **New:** in `scene_final_phys.usd` the bubble wrap and the mug have real physics (§2, §8.6).
+> **New (2026-10-07 pm):** `scene_final_phys.usd` has real physics on the wrap and mug, you can drag the carton and
+> open the lids with the mouse, and **Ctrl + click** publishes the clicked 3D point to ROS 2 for the arm (§9). History: `CHANGELOG.md`.
 > The development history (experiments, 122 logged runs, volume-deformable work, tests) lives in
 > [`sims/fr3_bubblewrap_pack_20261007`](../fr3_bubblewrap_pack_20261007). You don't need it to use this package.
 
 | | |
 |---|---|
-| **Version** | handoff_20261007 — scene and simulation from 2026-10-02; added 2026-10-07: UI / WebRTC usage, a Play fix, and a physics version of the package (`scene_final_phys.usd`) |
+| **Version** | handoff_20261007 — scene and simulation from 2026-10-02; added 2026-10-07: UI / WebRTC usage, a Play fix, a physics version of the package (`scene_final_phys.usd`), mouse-draggable carton and lids, click → ROS 2 |
 | **Tested on** | Isaac Sim 5.1.0, RTX 5090, NVIDIA driver 580 |
 | **Get it** | git: this folder (videos excluded — run `./make_videos.sh`) · tarball: `handoff_20261007.tgz` (videos included) |
 
@@ -28,7 +29,8 @@
 6. [Files](#6-files)
 7. [Scripts: which run where](#7-scripts-which-run-where)
 8. [Technical reference](#8-technical-reference)
-9. [Known issues](#9-known-issues)
+9. [Click a point → ROS 2 (target for the arm)](#9-click-a-point--ros-2-target-for-the-arm)
+10. [Known issues](#10-known-issues)
 
 ---
 
@@ -42,9 +44,11 @@
 
 Once the viewport is up:
 
-1. Press **▶ Play** (left toolbar).
+1. Press **▶ Play** (left toolbar) — the WebRTC launcher presses it for you.
 2. **Alt + left-drag** to orbit the camera.
-3. **Shift + left-drag** on the carton or a lid to pull it around.
+3. **Left-drag** the carton to slide it; drag a lid up past ~25° and it swings open and stays (both launch scripts
+   enable no-Shift force-mode dragging; started any other way, hold **Shift**).
+4. **Ctrl + left-click** anywhere → that 3D point is published to ROS 2 `/clicked_point` (§9).
 
 ---
 
@@ -52,7 +56,7 @@ Once the viewport is up:
 
 | File | Wrap and mug | Use it for | What happens on Play |
 |---|---|---|---|
-| **`scene_final_phys.usd`** | **Real physics:** wrap = surface deformable, mug = rigid body | **Default for both launch scripts.** Interaction with the package | Carton 0.12 mm, wrap settles within 3 s (max 13.3 mm, mean 4.3 mm), mug 0.13 mm (§8.6) |
+| **`scene_final_phys.usd`** | **Real physics:** wrap = surface deformable, mug = rigid body | **Default for both launch scripts.** Drag the carton, open lids, poke the package | See the measured table in §8.6 |
 | `scene_final_ui.usd` | Static meshes (no physics) | The most stable interactive scene; carton and lids only | Carton 0.00 mm, lids ≤ 0.75° |
 | `scene_final.usd` | Static meshes (no physics) | The canonical deliverable; headless scripts; the elastoplastic crease (§3.4) | ⚠️ Pressed directly in the UI, **the carton sinks 48 mm into the table** |
 
@@ -109,15 +113,21 @@ Details and measurements: [§8.2](#82-the-play-fix-in-scene_final_uiusd).
 
 | Input | Effect |
 |---|---|
-| **Shift + left-drag** | Grab a rigid body and drag it |
+| **Left-drag** (no Shift when started by `open_in_ui.sh` / `open_in_webrtc.sh`; otherwise **Shift + left-drag**) | Grab a rigid body and drag it |
 | **Shift + left double-click** | Push it |
 
-Grab strength is under the Physics settings → **Mouse Interaction** (Grab Force Coeff, Push Acceleration).
+The launch scripts set **force-mode** grabbing (`/physics/forceGrab=true`, `/physics/pickingForce=70`). Measured 2026-10-07:
+the default joint-mode grab moves a 0.35 kg body only ~14 mm for a 150 mm drag whatever the force setting; force mode at 100
+follows a 150 mm slide within 5 mm, but lifting the carton by a wall at 100 flips it over; at 70 it lifts without flipping (tilt ≈ 26°).
+400 and above is unstable (the carton flies off). In the GUI these live under Physics settings → **Mouse Interaction**
+(Mouse Grab With Force / Mouse Grab Force Coeff); `MOUSE_PICKING_FORCE=100 ./open_in_ui.sh` changes the default.
+
+Lifting a box by one wall tips it (it pivots on the far bottom edge) — that is physics, not a bug. Slide it on the table, or lift gently.
 
 | Object | Prim | Can you grab it? |
 |---|---|---|
 | Carton body (floor + 4 walls) | `/World/Packed/Box/base` | ✅ rigid body |
-| Four lids | `/World/Packed/Box/{fxp,fxn,fyp,fyn}` | ✅ rigid bodies, hinged to the base by crease joints |
+| Four lids | `/World/Packed/Box/{fxp,fxn,fyp,fyn}` | ✅ rigid bodies on crease joints. Drag a lid up past ~25° → `lid_latch.py` flips it open and it stays; push it back below ~12° → it closes. Open the upper pair (fyp / fyn) first; the lower pair is underneath |
 | Bubble wrap | `/World/Packed/Wrap` | `scene_final_phys.usd`: surface deformable — collides with the carton, lids and mug; grabbing the wrap itself is not yet tested · other scenes: ❌ static mesh (lids pass through it) |
 | Mug | `/World/Packed/Mug` | `scene_final_phys.usd`: ✅ rigid body (0.32 kg) · other scenes: ❌ static mesh |
 | Arms | `/World/stationary_ai` | Drive the joints instead (§3.5) |
@@ -127,9 +137,12 @@ In `scene_final_ui.usd` and `scene_final.usd` the wrap and mug are the simulatio
 
 ### 3.4 Real elastoplastic creases (lids stay where you bend them)
 
-In `scene_final_ui.usd` the creases are springs: bend a lid open and it springs back to 0°.
-To get the real behaviour — bend past the yield moment and the lid stays at its new angle —
-open **`scene_final.usd`** and run `sim/crease_hold_ui.py`:
+By default the creases are weak springs plus `lid_latch.py` (a lid pulled past ~25° latches open; pushed back past ~20° it closes).
+The real cardboard behaviour — bend past the yield moment and the lid stays at exactly that angle — is `sim/crease_hold_ui.py`.
+It works on any of the three scenes (it zeroes the spring drives while attached and restores them on `crease_stop()`;
+don't run `lid_latch.py` at the same time). `./open_in_webrtc.sh --crease` loads it for you. Measured with the mouse at force 100:
+the upper lids reach ~40° while pulled and stay at ~20–25° after release — the mouse cannot exceed the 0.6 N·m yield by much,
+so for fully-open lids use the latch mode or push with the arm. To run it by hand:
 
 **Point-and-click**
 
@@ -147,11 +160,12 @@ p = "/your/path/sim/crease_hold_ui.py"; exec(compile(open(p).read(), p, "exec"))
 
 Then press Play. The script
 
-- tunes the PhysicsScene (same values as `scene_final_ui.usd`), so the carton doesn't sink, and
+- tunes the PhysicsScene (same values as `scene_final_ui.usd`), so the carton doesn't sink,
+- zeroes the lid spring drives for as long as it is attached, and
 - applies `ElastoplasticCrease.step()` to all four lids on every physics step
   (k = 3.2, My0 = 0.60, H = 0.85, c = 0.33, clip = 3.0 — same as `wrap_sim.py`), with +τ on each lid and −τ on the base.
 
-Run `crease_stop()` to detach it. Don't run it on `scene_final_ui.usd` — the spring drives and crease torques would add up.
+Run `crease_stop()` to detach it (the spring drives come back).
 
 ### 3.5 Moving the arms
 
@@ -187,7 +201,8 @@ WEBRTC_NO_PLAY=1 ./open_in_webrtc.sh             # load, but don't press Play
 ```
 
 - Wait for `[handoff] READY` in `logs/webrtc.log` (about 20 s), then connect.
-- **In this mode you don't need Shift** — a plain left-drag grabs the carton or a lid.
+- **In this mode you don't need Shift** — a plain left-drag grabs the carton or a lid (force mode, `pickingForce` 70).
+- `click_to_ros.py` (§9) and `lid_latch.py` are loaded too (`CLICK_TO_ROS=0` / `LID_LATCH=0` to skip).
 - Defaults: IP `140.96.68.42` (this server), signalling port 49100. **On another machine, set `WEBRTC_IP`.**
 
 ### 4.2 From the UI
@@ -242,8 +257,9 @@ README.md                       this document (English + 繁體中文)
 scene_final.usd                 ★ the deliverable: dual-arm workstation + carton + wrapped mug (single file, 14 MB)
 scene_final_ui.usd              same scene + tuned PhysicsScene + lid spring drives, for the UI (§2)
 scene_final_phys.usd            scene_final_ui.usd + physics on the wrap (deformable) and mug (rigid body) (§8.6)
-open_in_ui.sh                   open in the local Isaac Sim UI
-open_in_webrtc.sh               open over WebRTC (--stop to stop)
+CHANGELOG.md                    what changed when (one entry per commit)
+open_in_ui.sh                   open in the local Isaac Sim UI (loads sim/ui_boot.py)
+open_in_webrtc.sh               open over WebRTC (--stop to stop; loads sim/webrtc_boot.py)
 make_videos.sh                  regenerate videos/
 videos/                         videos (tarball only; regenerate with make_videos.sh)
 sim/                            simulation and tools — flat folder, run scripts from inside it
@@ -251,11 +267,16 @@ sim/                            simulation and tools — flat folder, run script
   grip_common.py                  shared parts for wrap_sim.py
   crease_physics.py               elastoplastic crease model (yield + hardening)
   crease_hold_ui.py               for the UI Script Editor: crease torques + PhysicsScene fix (§3.4)
-  webrtc_boot.py                  boot script for open_in_webrtc.sh (kit --exec)
+  lid_latch.py                    lids latch open / closed when dragged past a threshold (§3.3); loaded by both launchers
+  click_to_ros.py                 Ctrl + click → 3D point → ROS 2 /clicked_point (§9); loaded by both launchers
+  ros_click_listener.py           receiver example for the arm side (plain ROS 2 python, run outside Isaac)
+  ui_boot.py                      boot script for open_in_ui.sh (kit --exec): open scene, mouse settings, load the two scripts above
+  webrtc_boot.py                  boot script for open_in_webrtc.sh (kit --exec): same, plus camera, auto-Play
   scene_physics_check.py          physics check + video, through isaacsim.core World
   ui_path_check.py                physics check through the same Play path the UI uses (§8.2)
   build_phys_scene.py             build scene_final_phys.usd from scene_final_ui.usd (§8.6)
   verify_phys_scene.py            tests A / B / Bm / C for scene_final_phys.usd (§8.6)
+  lid_test.py                     can the lids be pulled open with the mouse (§8.6)
   orbit_video.py                  orbit video (render only)
   run_demo.sh                     run the four simulation stages and stitch DEMO.mp4
   make_carton_P.py, make_definitive.sh   carton generator
@@ -276,7 +297,11 @@ build/
 
 | Script | What it is | How to run it |
 |---|---|---|
-| `sim/crease_hold_ui.py` | Crease torques + PhysicsScene fix | ✅ **The only one you run inside the UI** (§3.4) |
+| `sim/crease_hold_ui.py` | Crease torques + PhysicsScene fix | ✅ Inside the UI (Script Editor), §3.4 |
+| `sim/lid_latch.py` | Lids latch open / closed | ✅ Inside the UI; auto-loaded by the launchers (§3.3) |
+| `sim/click_to_ros.py` | Ctrl + click → ROS 2 point | ✅ Inside the UI; auto-loaded by the launchers (§9) |
+| `sim/ros_click_listener.py` | ROS 2 subscriber example | Outside Isaac: `source /opt/ros/jazzy/setup.bash && python3 ros_click_listener.py` |
+| `sim/ui_boot.py` | GUI boot script | Started by `open_in_ui.sh` via `kit --exec` |
 | `sim/webrtc_boot.py` | WebRTC boot script | Started by `open_in_webrtc.sh` via `kit --exec` |
 | `sim/crease_physics.py` | Crease model (library) | Imported by the other scripts |
 | `sim/grip_common.py` | Shared simulation parts (library) | Imported by `wrap_sim.py` |
@@ -285,6 +310,7 @@ build/
 | `sim/ui_path_check.py` | UI-path Play check | Terminal (§8.2) |
 | `sim/build_phys_scene.py` | Build `scene_final_phys.usd` | Terminal (§8.6) |
 | `sim/verify_phys_scene.py` | Physics-package tests | Terminal (§8.6) |
+| `sim/lid_test.py` | Lid-opening test | Terminal (§8.6) |
 | `sim/orbit_video.py` | Orbit video | Terminal (§5) |
 | `sim/make_carton_P.py` | Carton generator | Terminal, called by `make_definitive.sh` |
 | `build/build_full_scene.py` | Rebuild the scene | Terminal (§8.5) |
@@ -388,59 +414,113 @@ The rebuilt file again has **no** PhysicsScene and no crease drives. For UI use,
 
 ### 8.6 The physics package (`scene_final_phys.usd`)
 
-Built by `sim/build_phys_scene.py` from `scene_final_ui.usd`. Everything else (arms, carton, crease drives, 120 Hz TGS solver) is unchanged.
-
-| Part | How it is modelled |
-|---|---|
-| Wrap `/World/Packed/Wrap` | **Surface deformable** (1225 vertices, 2312 triangles). Rest shape = the wrapped shape (`restShapePoints` = points, `restBendAnglesDefault = restShapeDefault`), so the folds don't spring open. Material: Young's modulus 2e4 Pa, Poisson 0.45, thickness 4 mm, bend stiffness 4, friction 0.8, density 100 (≈ 65 g). Self-collision on, 64 solver iterations, contact / rest offset 5 / 1 mm, sleep settings as in `wrap_sim.py` |
-| Mug `/World/Packed/Mug` | **Dynamic rigid body**, 0.32 kg, friction 0.9. Collider = stacked convex frusta following the outer profile + 13 spheres (r = 10 mm) along the handle |
-| Carton | Unchanged, plus an invisible 20 mm pad collider under the 3 mm floor (child of the base), so wrap vertices can't poke through the floor |
-| PhysicsScene | GPU dynamics + GPU broadphase, deformable contact capacity 4 M, collision stack 128 MB |
-| Bake | Settled in the file before saving: 2 s with the mug held still, then 4 s free; the settled shape was written into both points and rest shape, velocities zeroed |
-
-Why this works: a surface deformable's rest shape must be authored before Play (changing it during Play has no effect),
-and the rest shape removes the bending spring-back but not gravity — every part of the wrap has to be supported, here by the mug and the carton floor.
-
-**Tests** (UI path: open the file → Play; numbers in `sim/logs/verify_scene_final_phys_<test>.txt`):
-
-```bash
-cd sim
-/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test A    # rest 8 s, nothing touched
-/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test B    # carry: carton moved +0.20 m y / +0.10 m z over 3 s, hold 2 s
-/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test Bm   # same carry, done with a simulated mouse drag
-/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test C    # 3 N pressing lid fxn down onto the wrap for 3 s
-```
-
-Test A on the shipped file (2026-10-07):
-
-| Measure | Result |
-|---|---|
-| Carton displacement / tilt | 0.12 mm / 0.07° |
-| Wrap relative to carton | max 13.3 mm, mean 4.3 mm — **reached by 3 s, then no further change** |
-| Mug relative to carton | 0.13 mm |
-| Vertices outside the cavity (1 mm tolerance) | wrap 4 / 1225 (same as at the start), mug 0 |
-| NaN / explosion | none |
-| Lid angles | ≤ 2.1° |
-
-Tests B, Bm and C have not been run on this file yet.
-
-**Rebuild** (≈ 2 min; the defaults reproduce the shipped file — GPU deformables are not deterministic, so numbers vary slightly):
+Built by `sim/build_phys_scene.py` from `scene_final_ui.usd` (≈ 2 min; defaults reproduce the shipped file; GPU deformables are not deterministic, so numbers vary slightly):
 
 ```bash
 cd sim && /isaac-sim/python.sh build_phys_scene.py     # writes ../scene_final_phys.usd, log in ../logs/build_phys.log
 ```
 
+| Part | How it is modelled |
+|---|---|
+| Wrap `/World/Packed/Wrap` | **Surface deformable** (1225 vertices, 2312 triangles). Rest shape = the wrapped shape (`restShapePoints` = points, `restBendAnglesDefault = restShapeDefault`), so the folds don't spring open. Young's modulus 2e4 Pa, Poisson 0.45, thickness 4 mm, bend stiffness 4, friction 0.8, density 100 (≈ 65 g), self-collision on, 64 solver iterations, contact / rest offset 5 / 1 mm |
+| Mug `/World/Packed/Mug` | **Dynamic rigid body**, 0.32 kg, friction 0.9. Collider = stacked convex frusta following the outer profile + 13 spheres (r = 10 mm) along the handle |
+| Carton | Unchanged geometry. Base gets linear / angular damping 2 / 2 (force-mode mouse drag would otherwise overshoot). An invisible 20 mm pad collider under the 3 mm floor stops wrap vertices poking through; it is **filtered against `tabletop_link` and `frame_link`** (before 2026-10-07 pm it was not, and the carton was pinned to the table) |
+| Lid creases | Spring drives stiffness **0.012 N·m/deg**, damping 0.003 (was 0.056: the mouse could only open a lid 15°). Gravity sag ≈ 1°. `lid_latch.py` adds the open / closed latch at run time |
+| PhysicsScene | 120 Hz TGS, 8 / 1 iterations, GPU dynamics + GPU broadphase, deformable contact capacity 4 M, collision stack 128 MB |
+| Bake | Settled in the file before saving: 2 s with the mug held still, then 4 s free; the settled shape written into both points and rest shape, velocities zeroed |
+
+Why this works: a surface deformable's rest shape must be authored before Play (changing it during Play has no effect),
+and the rest shape removes the bending spring-back but not gravity — every part of the wrap has to be supported, here by the mug and the carton floor.
+
+**Tests** (UI path: open the file → Play → act; numbers in `sim/logs/verify_scene_final_phys_<test>.txt`):
+
+```bash
+cd sim
+/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test A    # rest 8 s, nothing touched
+/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test B    # carry: base servoed +0.10 m x / +0.10 m z over 3 s, hold 2 s (like a gripper)
+/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test Bm   # same target, but by a simulated mouse drag on the +x wall (force 70)
+/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test C    # 3 N pressing lid fxn down onto the wrap for 3 s
+```
+
+| Test | Carton drift / tilt | Wrap rel. to carton | Mug rel. to carton | Outside cavity (1 mm tol.) | Note |
+|---|---|---|---|---|---|
+| A — rest 8 s | 0.00 mm / 0.04° | max 14.4, mean 5.6 mm | 0.03 mm | wrap 5, mug 0 | wrap settles by ~3 s, then stops |
+| B — servoed carry +0.10 x / +0.10 z | reached (100, 0, 90) mm, tilt 1.0° | max 29.1, mean 8.1 mm | 0.02 mm | wrap 5, mug 0 | **package carried**; this is what a gripper holding the box does |
+| Bm — mouse drag, force 40, same target | reached (135, -0, 49) mm, tilt 25.1° | max 84.9, mean 21.2 mm | 8.1 mm | wrap 7, mug 5 | lifts by one wall → tips, package stays |
+| Bm — mouse drag, force 70, same target | reached (137, -0, 50) mm, tilt 26.0° | max 85.9, mean 21.2 mm | 8.1 mm | wrap 7, mug 5 | launcher default |
+| Bm — mouse drag, force 100, same target | reached (132, -63, 234) mm, tilt 126.7° | max 140.2, mean 89.4 mm | 86.2 mm | wrap 17, mug 0 | **flips over**, package spills |
+| C — 3 N on lid fxn for 3 s | 0.00 mm / 0.04° | max 17.7, mean 5.9 mm | 0.03 mm | wrap 5, mug 0 | lid stops on the wrap at 12.3° (max 12.3°), back to 2.6° after release — **lids collide with the wrap** |
+
+**Lids pulled up 15 cm with the mouse (force 100), upper lids fyp / fyn** (`sim/lid_test.py`, 2026-10-07):
+
+| Mode | While pulled | 2 s after release | What it means |
+|---|---|---|---|
+| **default**: spring 0.012 + `lid_latch.py` | fyp 74°, fyn 72° | fyp 172°, fyn 172° | flips open at the threshold and stays (measured with threshold 30°; shipped 25° / close 12°). Lower lids: fxp 43° → open, fxn reached 29° |
+| spring 0.012 only (`LID_LATCH=0`) | fyp 37°, fyn 37° | fyp 0°, fyn 0° | springs back closed |
+| `crease_hold_ui.py` (elastoplastic) | fyp 42°, fyn 37° | fyp 25°, fyn 20° | stays where the yield left it (mouse can't pass the 0.6 N·m yield by much) |
+
+Lower lids (fxp / fxn) cannot be pulled while the upper pair is closed on top of them — open the upper pair first.
+
 ---
 
-## 9. Known issues
+## 9. Click a point → ROS 2 (target for the arm)
+
+`sim/click_to_ros.py` turns a mouse click in the viewport into a ROS 2 message, so whoever drives the arm can pick a target
+by clicking on the carton (or anything else) in the UI or in the WebRTC stream. Both launch scripts load it automatically.
+
+**How to use:** press Play (or not — picking works either way), hold **Ctrl**, left-click on an object. A small red sphere
+(`/World/ClickMarker`) marks the point and the console prints it. Clicking on empty sky publishes nothing.
+
+**Interface / 接口**
+
+| | |
+|---|---|
+| Topic | `/clicked_point` — `geometry_msgs/msg/PointStamped` — `header.frame_id = "world"` (Isaac world frame: Z-up, metres, same frame as the USD) |
+| Topic | `/clicked_prim` — `std_msgs/msg/String` — the USD prim that was hit, e.g. `/World/Packed/Box/fyp/geo` |
+| QoS | reliable, **transient_local**, depth 1 → a subscriber that starts later immediately receives the last click |
+| Node | `isaac_click_publisher` (Isaac's internal rclpy, ROS 2 jazzy, `rmw_fastrtps_cpp`, `ROS_DOMAIN_ID` = whatever the shell has, default 0) |
+| Env knobs | `CLICK_TOPIC`, `CLICK_PRIM_TOPIC`, `CLICK_FRAME`, `CLICK_MODIFIER` = `ctrl` (default) / `alt` / `none`, `CLICK_TO_ROS=0` disables loading |
+| Code | `sim/click_to_ros.py` — `_on_click` (viewport gesture → pixel) → `viewport_api.request_query` (pixel → prim + world point) → `_publish` |
+
+**Receiving (arm side)** — any machine on the same network / domain with ROS 2 jazzy:
+
+```bash
+source /opt/ros/jazzy/setup.bash
+ros2 topic echo /clicked_point                     # quick check
+python3 sim/ros_click_listener.py                  # example node; put the arm call in on_point()
+```
+
+**Where the arms are** (world frame, from `stationary_ai_carton_scene_flat.usd`), if you need to express the point in an arm base frame:
+
+| Link | position (m) | orientation quat (w, x, y, z) |
+|---|---|---|
+| `follower_left_base_link` | (−0.0200, +0.4575, 0.0391) | (−0.7071, 0, 0, 0.7071) = −90° about z |
+| `follower_right_base_link` | (−0.0200, −0.4575, 0.0391) | (0.7071, 0, 0, 0.7071) = +90° about z |
+| `tabletop_link` | (0, 0, 0) | identity (table top surface at z = 0.020 m) |
+
+The carton sits at world (−0.020, 0, 0.020…0.154) m. For joint states / TF of the arms use the ROS 2 OmniGraph nodes of `isaacsim.ros2.bridge` (enabled at startup on Linux).
+
+**How ROS 2 is set up inside Isaac** (both launch scripts do this): Isaac's internal jazzy libraries and rclpy (built for Kit's python 3.11)
+are used; the system `/opt/ros/jazzy` (python 3.12) is removed from `PYTHONPATH` / `LD_LIBRARY_PATH` for the Kit process only,
+because mixing the two made `rclpy` fail to import inside Kit. Messages still reach system ROS 2 (verified with `ros2 topic echo`).
+
+Verified 2026-10-07 inside Kit (headless, UI path): `request_query` at the screen centre returned `/World/Packed/Box/base/wyn`
+at (0.0950, 0.0950, 0.0950) m, and the system `ros2 topic echo /clicked_point` received exactly that message.
+The mouse gesture itself (Ctrl + click in the viewport) could not be exercised headless — please confirm it once in the UI / WebRTC.
+
+---
+
+## 10. Known issues
 
 | # | Issue | Impact | What to do |
 |---|---|---|---|
-| 1 | `scene_final.usd` has no PhysicsScene; the UI's default is too weak | Carton sinks 48 mm on Play in the UI | Use `scene_final_ui.usd` or `crease_hold_ui.py` (§2, §8.2) |
+| 1 | `scene_final.usd` has no PhysicsScene; the UI's default is too weak | Carton sinks 48 mm on Play in the UI | Use `scene_final_ui.usd` / `scene_final_phys.usd` or `crease_hold_ui.py` (§2, §8.2) |
 | 2 | In `scene_final_ui.usd` / `scene_final.usd` the wrap and mug are static meshes | Can't be grabbed; dragging the carton leaves them behind; lids pass through | Use `scene_final_phys.usd` (§8.6) |
 | 2a | `scene_final_phys.usd` needs deformables enabled at startup | Opened without it, the wrap doesn't simulate | Use the launch scripts, or §3.1 step 0 |
-| 2b | `scene_final_phys.usd`: only the rest test (A) has been measured | Carrying the carton (B / Bm), pressing a lid onto the wrap (C) and mouse-dragging the wrap are not yet verified | Run `verify_phys_scene.py --test B / Bm / C` (§8.6) |
-| 2c | Lids reported hard to pull open with the mouse | Not yet diagnosed | Open the upper lids (fyp / fyn) before the lower ones; report what you see |
+| 2b | Lifting the carton by one wall with the mouse tips it (pivots on the far bottom edge; measured tilt ≈ 25°) | Package shifts, may fall out if tipped far | Slide it on the table; lift gently; or servo the base like test B (tilt 1°) — a gripper holding both walls behaves like B |
+| 2c | Mouse grab force 100 flips the carton when lifting by a wall; ≥ 400 is unstable (carton flies off) | — | Keep `pickingForce` ≤ 70 for lifting (launcher default 70); 100 is fine for sliding |
+| 2d | Mouse-dragging the wrap itself is untested | — | Drag the carton or the mug instead |
+| 2e | `crease_hold_ui.py` + mouse: lids reach ~40° and stay at ~20–25° (mouse can't exceed the 0.6 N·m yield) | Lids won't fully open in crease mode | Use the default latch mode, or open lids with `lids_open()` |
 | 3 | `crease_physics.py` **defaults** (k=3.5, My0=0.85, H=0.55, c=0.28, clip=3.6) differ from the values actually used (k=3.2, My0=0.60, H=0.85, c=0.33, clip=3.0) | Using the defaults won't reproduce the videos or numbers | Always pass the coefficients to `ElastoplasticCrease(...)` explicitly; keep c ≤ 0.4 (higher blows up numerically) |
 | 4 | Log on Play: `angle limit ... clamped to ±180 degrees` (crease_*) | None | USD says ±185°, PhysX D6 caps at ±180°; the lids only move a few degrees |
 | 5 | Log on Play: `PhysX error: ... foundLostAggregatePairsCapacity to 3418` | May miss contacts with default settings | `scene_final_ui.usd` and `crease_hold_ui.py` raise it to 8192; the error no longer appears |
@@ -456,13 +536,14 @@ cd sim && /isaac-sim/python.sh build_phys_scene.py     # writes ../scene_final_p
 # 繁體中文
 
 > **這是交出去的 handoff。** clone 下來就能開場景、按 Play、用滑鼠互動、重跑模擬、重新產生所有影片。
-> **新增:** `scene_final_phys.usd` 裡的氣泡布和杯子有真正的物理(§2、§8.6)。
+> **新增(10-07 下午):** `scene_final_phys.usd` 的包材和杯子有真正的物理,紙箱和蓋子用滑鼠拉得動、拉得開,
+> **Ctrl + 點擊**會把點到的 3D 座標發佈到 ROS 2 給手臂(§9)。修改紀錄見 `CHANGELOG.md`。
 > 開發過程(實驗、122 次模擬紀錄、volume deformable、測試集)在
 > [`sims/fr3_bubblewrap_pack_20261007`](../fr3_bubblewrap_pack_20261007),使用這份交付包不需要看那邊。
 
 | | |
 |---|---|
-| **版本** | handoff_20261007 —— 2026-10-02 的場景與模擬;2026-10-07 新增:UI / WebRTC 用法、按 Play 的修正、有物理的包裹版本(`scene_final_phys.usd`) |
+| **版本** | handoff_20261007 —— 2026-10-02 的場景與模擬;2026-10-07 新增:UI / WebRTC 用法、按 Play 的修正、有物理的包裹版本(`scene_final_phys.usd`)、滑鼠拖紙箱與蓋子、點擊 → ROS 2 |
 | **測試環境** | Isaac Sim 5.1.0、RTX 5090、NVIDIA driver 580 |
 | **取得方式** | git:這個資料夾(不含影片,執行 `./make_videos.sh` 產生)· 壓縮檔:`handoff_20261007.tgz`(含影片) |
 
@@ -476,7 +557,8 @@ cd sim && /isaac-sim/python.sh build_phys_scene.py     # writes ../scene_final_p
 6. [檔案](#6-檔案)
 7. [腳本:哪支在哪裡跑](#7-腳本哪支在哪裡跑)
 8. [技術參考](#8-技術參考)
-9. [已知問題](#9-已知問題)
+9. [點擊取座標 → ROS 2(給手臂的目標點)](#9-點擊取座標--ros-2給手臂的目標點)
+10. [已知問題](#10-已知問題)
 
 ---
 
@@ -490,9 +572,11 @@ cd sim && /isaac-sim/python.sh build_phys_scene.py     # writes ../scene_final_p
 
 畫面出來後:
 
-1. 按 **▶ Play**(左側工具列)。
+1. 按 **▶ Play**(左側工具列)—— WebRTC 啟動腳本會自動按。
 2. **Alt + 左鍵拖曳**:旋轉視角。
-3. **Shift + 左鍵拖曳**:抓住紙箱或蓋子拖動。
+3. **左鍵拖曳**紙箱就能推著走;把蓋子往上拉超過約 25°,它會自己翻開並停住(兩支啟動腳本都開了免 Shift 的力量式拖曳;
+   用其他方式啟動的話要按住 **Shift**)。
+4. **Ctrl + 左鍵**點任何地方 → 那個 3D 點會發佈到 ROS 2 的 `/clicked_point`(§9)。
 
 ---
 
@@ -500,7 +584,7 @@ cd sim && /isaac-sim/python.sh build_phys_scene.py     # writes ../scene_final_p
 
 | 檔案 | 包材與杯子 | 用途 | 按 Play 的結果 |
 |---|---|---|---|
-| **`scene_final_phys.usd`** | **有物理:** 包材是 surface deformable、杯子是剛體 | **兩支啟動腳本的預設值。** 要跟包裹互動就用這個 | 紙箱 0.12 mm,包材 3 秒內穩定(最大 13.3 mm、平均 4.3 mm),杯子 0.13 mm(§8.6) |
+| **`scene_final_phys.usd`** | **有物理:** 包材是 surface deformable、杯子是剛體 | **兩支啟動腳本的預設值。** 拖紙箱、開蓋子、戳包裹 | 實測表見 §8.6 |
 | `scene_final_ui.usd` | 靜態 mesh(沒有物理) | 最穩的互動場景;只動紙箱和蓋子 | 紙箱 0.00 mm,蓋子 ≤ 0.75° |
 | `scene_final.usd` | 靜態 mesh(沒有物理) | 正式交付檔;給 headless 腳本用;彈塑性摺痕(§3.4) | ⚠️ 在 UI 直接按 Play,**紙箱會陷進桌面 48 mm** |
 
@@ -557,15 +641,20 @@ cd sim && /isaac-sim/python.sh build_phys_scene.py     # writes ../scene_final_p
 
 | 操作 | 效果 |
 |---|---|
-| **Shift + 左鍵拖曳** | 抓住剛體拖動 |
+| **左鍵拖曳**(用 `open_in_ui.sh` / `open_in_webrtc.sh` 啟動時不用 Shift;其他方式啟動要 **Shift + 左鍵拖曳**) | 抓住剛體拖動 |
 | **Shift + 左鍵雙擊** | 推一下 |
 
-抓取力道在 Physics 設定 → **Mouse Interaction**(Grab Force Coeff、Push Acceleration)。
+啟動腳本會把抓取設成**力量式**(`/physics/forceGrab=true`、`/physics/pickingForce=70`)。2026-10-07 實測:
+預設的關節式抓取,不管力道設多大,拖 15 cm 只能讓 0.35 kg 的物體動約 1.4 cm;力量式 100 在桌上推 15 cm 誤差 5 mm 內,
+但抓箱壁往上提會整箱翻掉;70 提起來只翹約 26°、不翻。400 以上會不穩(紙箱飛走)。
+GUI 裡在 Physics 設定 → **Mouse Interaction**(Mouse Grab With Force / Mouse Grab Force Coeff);`MOUSE_PICKING_FORCE=100 ./open_in_ui.sh` 可以改預設值。
+
+抓著一面箱壁往上提,箱子會以另一側的底邊為支點翹起來 —— 這是物理,不是 bug。在桌上推著走,或輕輕提。
 
 | 物件 | Prim | 抓得到嗎 |
 |---|---|---|
 | 紙箱本體(箱底 + 四面牆) | `/World/Packed/Box/base` | ✅ 剛體 |
-| 四片蓋子 | `/World/Packed/Box/{fxp,fxn,fyp,fyn}` | ✅ 剛體,用摺痕關節接在箱體上 |
+| 四片蓋子 | `/World/Packed/Box/{fxp,fxn,fyp,fyn}` | ✅ 剛體,用摺痕關節接在箱體上。往上拉超過約 25° → `lid_latch.py` 讓它翻開並停住;壓回 12° 以下 → 關上。先開上層(fyp / fyn),下層在它們底下 |
 | 氣泡布 | `/World/Packed/Wrap` | `scene_final_phys.usd`:surface deformable,會跟紙箱、蓋子、杯子碰撞;直接抓包材還沒測過 · 其他場景:❌ 靜態 mesh(蓋子會穿過去) |
 | 馬克杯 | `/World/Packed/Mug` | `scene_final_phys.usd`:✅ 剛體(0.32 kg)· 其他場景:❌ 靜態 mesh |
 | 手臂 | `/World/stationary_ai` | 改用關節 drive 控制(§3.5) |
@@ -575,9 +664,11 @@ cd sim && /isaac-sim/python.sh build_phys_scene.py     # writes ../scene_final_p
 
 ### 3.4 真正的彈塑性摺痕(蓋子折到哪就停在哪)
 
-`scene_final_ui.usd` 裡的摺痕是彈簧:把蓋子拉開,放手後會彈回 0°。
-要真實的行為(超過降伏力矩後,蓋子停在新的角度),
-請開 **`scene_final.usd`**,再執行 `sim/crease_hold_ui.py`:
+預設的摺痕是弱彈簧 + `lid_latch.py`(拉超過約 25° 就閂在開的位置;壓回 12° 以下就關)。
+真正的紙板行為 —— 超過降伏力矩後,蓋子就停在那個角度 —— 是 `sim/crease_hold_ui.py`。
+三個場景檔都能用(掛上時會把彈簧 drive 歸零,`crease_stop()` 時還原;不要和 `lid_latch.py` 同時用)。
+`./open_in_webrtc.sh --crease` 會自動載入。用滑鼠(力道 100)實測:上層蓋拉著時約 40°,放手後停在約 20–25° ——
+滑鼠的力矩只比 0.6 N·m 的降伏值大一點點,所以要完全打開請用預設的閂鎖模式,或用手臂推。手動執行:
 
 **用滑鼠點選**
 
@@ -596,10 +687,11 @@ p = "/你的路徑/sim/crease_hold_ui.py"; exec(compile(open(p).read(), p, "exec
 接著按 Play。這支腳本會:
 
 - 調整 PhysicsScene(數值同 `scene_final_ui.usd`),紙箱不會下陷;
+- 掛著的期間把蓋子的彈簧 drive 歸零;
 - 每個物理步對四片蓋子套用 `ElastoplasticCrease.step()`
   (k = 3.2、My0 = 0.60、H = 0.85、c = 0.33、clip = 3.0,同 `wrap_sim.py`),蓋子受 +τ、箱體受 −τ。
 
-執行 `crease_stop()` 可以停掉。不要在 `scene_final_ui.usd` 上跑這支 —— 彈簧 drive 和摺痕力矩會疊在一起。
+執行 `crease_stop()` 可以停掉(彈簧 drive 會還原)。
 
 ### 3.5 控制手臂
 
@@ -635,7 +727,8 @@ WEBRTC_NO_PLAY=1 ./open_in_webrtc.sh             # 載入但不自動 Play
 ```
 
 - 等 `logs/webrtc.log` 出現 `[handoff] READY`(約 20 秒)再連線。
-- **這個模式不用按 Shift**,直接左鍵拖曳就能抓紙箱或蓋子。
+- **這個模式不用按 Shift**,直接左鍵拖曳就能抓紙箱或蓋子(力量式,`pickingForce` 70)。
+- 也會載入 `click_to_ros.py`(§9)和 `lid_latch.py`(`CLICK_TO_ROS=0` / `LID_LATCH=0` 可以不載)。
 - 預設 IP `140.96.68.42`(這台伺服器)、signaling port 49100。**換機器時請設定 `WEBRTC_IP`。**
 
 ### 4.2 從 UI 啟動
@@ -690,8 +783,9 @@ README.md                       本文件(English + 繁體中文)
 scene_final.usd                 ★ 交付檔:雙臂工作站 + 紙箱 + 包好的馬克杯(單一檔案,14 MB)
 scene_final_ui.usd              同一場景 + 調好的 PhysicsScene + 蓋子彈簧 drive,給 UI 用(§2)
 scene_final_phys.usd            scene_final_ui.usd + 包材(deformable)與杯子(剛體)的物理(§8.6)
-open_in_ui.sh                   在本機 Isaac Sim UI 開啟
-open_in_webrtc.sh               用 WebRTC 開啟(--stop 停止)
+CHANGELOG.md                    什麼時候改了什麼(一個 commit 一條)
+open_in_ui.sh                   在本機 Isaac Sim UI 開啟(載入 sim/ui_boot.py)
+open_in_webrtc.sh               用 WebRTC 開啟(--stop 停止;載入 sim/webrtc_boot.py)
 make_videos.sh                  重新產生 videos/
 videos/                         影片(只在壓縮檔裡;用 make_videos.sh 產生)
 sim/                            模擬與工具 —— 平鋪資料夾,在裡面執行腳本
@@ -699,11 +793,16 @@ sim/                            模擬與工具 —— 平鋪資料夾,在裡面
   grip_common.py                  wrap_sim.py 的共用零件
   crease_physics.py               彈塑性摺痕模型(降伏 + 硬化)
   crease_hold_ui.py               UI 的 Script Editor 用:摺痕力矩 + PhysicsScene 修正(§3.4)
-  webrtc_boot.py                  open_in_webrtc.sh 的開機腳本(kit --exec)
+  lid_latch.py                    蓋子拉過門檻就閂在開 / 關的位置(§3.3);兩支啟動腳本都會載入
+  click_to_ros.py                 Ctrl + 點擊 → 3D 座標 → ROS 2 /clicked_point(§9);兩支啟動腳本都會載入
+  ros_click_listener.py           手臂那端的接收範例(一般的 ROS 2 python,在 Isaac 外面跑)
+  ui_boot.py                      open_in_ui.sh 的開機腳本(kit --exec):開場景、滑鼠設定、載入上面兩支
+  webrtc_boot.py                  open_in_webrtc.sh 的開機腳本(kit --exec):同上,外加視角與自動 Play
   scene_physics_check.py          物理驗證 + 影片(走 isaacsim.core World)
   ui_path_check.py                物理驗證(走跟 UI 一樣的 Play 路徑,§8.2)
   build_phys_scene.py             從 scene_final_ui.usd 建出 scene_final_phys.usd(§8.6)
   verify_phys_scene.py            scene_final_phys.usd 的測試 A / B / Bm / C(§8.6)
+  lid_test.py                     蓋子用滑鼠拉不拉得開(§8.6)
   orbit_video.py                  環繞影片(只算圖)
   run_demo.sh                     跑四段模擬並串成 DEMO.mp4
   make_carton_P.py, make_definitive.sh   紙箱產生器
@@ -724,7 +823,11 @@ build/
 
 | 腳本 | 是什麼 | 怎麼執行 |
 |---|---|---|
-| `sim/crease_hold_ui.py` | 摺痕力矩 + PhysicsScene 修正 | ✅ **唯一在 UI 裡執行的**(§3.4) |
+| `sim/crease_hold_ui.py` | 摺痕力矩 + PhysicsScene 修正 | ✅ 在 UI 裡(Script Editor),§3.4 |
+| `sim/lid_latch.py` | 蓋子開 / 關閂鎖 | ✅ 在 UI 裡;啟動腳本自動載入(§3.3) |
+| `sim/click_to_ros.py` | Ctrl + 點擊 → ROS 2 座標 | ✅ 在 UI 裡;啟動腳本自動載入(§9) |
+| `sim/ros_click_listener.py` | ROS 2 訂閱範例 | Isaac 外面:`source /opt/ros/jazzy/setup.bash && python3 ros_click_listener.py` |
+| `sim/ui_boot.py` | GUI 開機腳本 | 由 `open_in_ui.sh` 透過 `kit --exec` 啟動 |
 | `sim/webrtc_boot.py` | WebRTC 開機腳本 | 由 `open_in_webrtc.sh` 透過 `kit --exec` 啟動 |
 | `sim/crease_physics.py` | 摺痕模型(函式庫) | 被其他腳本 import |
 | `sim/grip_common.py` | 共用模擬零件(函式庫) | 被 `wrap_sim.py` import |
@@ -733,6 +836,7 @@ build/
 | `sim/ui_path_check.py` | UI 路徑的 Play 驗證 | 終端機(§8.2) |
 | `sim/build_phys_scene.py` | 建出 `scene_final_phys.usd` | 終端機(§8.6) |
 | `sim/verify_phys_scene.py` | 物理包裹的測試 | 終端機(§8.6) |
+| `sim/lid_test.py` | 蓋子開啟測試 | 終端機(§8.6) |
 | `sim/orbit_video.py` | 環繞影片 | 終端機(§5) |
 | `sim/make_carton_P.py` | 紙箱產生器 | 終端機,由 `make_definitive.sh` 呼叫 |
 | `build/build_full_scene.py` | 重組場景 | 終端機(§8.5) |
@@ -836,59 +940,113 @@ GPU deformable 不是確定性的。重跑的影片長度相同(62.2 秒),但結
 
 ### 8.6 有物理的包裹(`scene_final_phys.usd`)
 
-由 `sim/build_phys_scene.py` 從 `scene_final_ui.usd` 建出。其他部分(手臂、紙箱、摺痕 drive、120 Hz TGS 解算器)都沒動。
-
-| 部分 | 怎麼建模 |
-|---|---|
-| 包材 `/World/Packed/Wrap` | **Surface deformable**(1225 個頂點、2312 個三角形)。靜止形狀 = 包好的形狀(`restShapePoints` = points,`restBendAnglesDefault = restShapeDefault`),所以摺痕不會彈開。材質:楊氏模數 2e4 Pa、Poisson 0.45、厚度 4 mm、彎曲剛性 4、摩擦 0.8、密度 100(約 65 g)。自碰撞開、解算迭代 64 次、contact / rest offset 5 / 1 mm、睡眠參數同 `wrap_sim.py` |
-| 杯子 `/World/Packed/Mug` | **動態剛體**,0.32 kg,摩擦 0.9。碰撞體 = 沿外型疊起來的凸台 + 把手上 13 顆球(半徑 10 mm) |
-| 紙箱 | 不變,另外在 3 mm 箱底下面加一塊看不見的 20 mm 墊片碰撞體(掛在箱底下),包材頂點才不會穿出箱底 |
-| PhysicsScene | GPU dynamics + GPU broadphase,deformable 接觸容量 4 M,碰撞堆疊 128 MB |
-| 沉降 | 存檔前先在檔案裡沉降:杯子固定 2 秒,再放開 4 秒;沉降後的形狀同時寫進 points 和靜止形狀,速度歸零 |
-
-為什麼這樣可行:surface deformable 的靜止形狀要在 Play 之前寫好(Play 中途改沒有作用);
-靜止形狀只消除摺痕的回彈,擋不住重力 —— 包材每個部分都要有東西撐著,這裡是杯子和箱底。
-
-**測試**(走 UI 路徑:開檔 → Play;數字寫在 `sim/logs/verify_scene_final_phys_<測試>.txt`):
-
-```bash
-cd sim
-/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test A    # 靜置 8 秒,不碰任何東西
-/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test B    # 搬箱:3 秒內把紙箱往 y +0.20 m、z +0.10 m 移動,再停 2 秒
-/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test Bm   # 同樣的搬箱,改用模擬的滑鼠拖曳
-/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test C    # 用 3 N 把下層蓋 fxn 往下壓在包材上 3 秒
-```
-
-出貨檔的測試 A(2026-10-07):
-
-| 項目 | 結果 |
-|---|---|
-| 紙箱位移 / 傾斜 | 0.12 mm / 0.07° |
-| 包材相對紙箱 | 最大 13.3 mm、平均 4.3 mm —— **3 秒時就停住,之後不再變化** |
-| 杯子相對紙箱 | 0.13 mm |
-| 跑出內腔的頂點(容差 1 mm) | 包材 4 / 1225(跟一開始一樣)、杯子 0 |
-| NaN / 爆炸 | 無 |
-| 蓋子角度 | ≤ 2.1° |
-
-測試 B、Bm、C 還沒在這個檔上跑過。
-
-**重建**(約 2 分鐘;預設參數就會做出出貨的這個檔 —— GPU deformable 不是確定性的,數字會略有差異):
+由 `sim/build_phys_scene.py` 從 `scene_final_ui.usd` 建出(約 2 分鐘;預設參數就是出貨的這個檔;GPU deformable 不是確定性的,數字會略有差異):
 
 ```bash
 cd sim && /isaac-sim/python.sh build_phys_scene.py     # 寫出 ../scene_final_phys.usd,log 在 ../logs/build_phys.log
 ```
 
+| 部分 | 怎麼建模 |
+|---|---|
+| 包材 `/World/Packed/Wrap` | **Surface deformable**(1225 個頂點、2312 個三角形)。靜止形狀 = 包好的形狀(`restShapePoints` = points,`restBendAnglesDefault = restShapeDefault`),摺痕不會彈開。楊氏模數 2e4 Pa、Poisson 0.45、厚度 4 mm、彎曲剛性 4、摩擦 0.8、密度 100(約 65 g)、自碰撞開、解算 64 次、contact / rest offset 5 / 1 mm |
+| 杯子 `/World/Packed/Mug` | **動態剛體**,0.32 kg,摩擦 0.9。碰撞體 = 沿外型疊起來的凸台 + 把手上 13 顆球(半徑 10 mm) |
+| 紙箱 | 幾何不變。箱底加線性 / 角阻尼 2 / 2(不然力量式滑鼠拖曳會衝過頭)。3 mm 箱底下方有一塊看不見的 20 mm 墊片碰撞體,擋住包材頂點穿出箱底;它**對 `tabletop_link`、`frame_link` 不碰撞**(10-07 下午之前沒有過濾,紙箱被卡死在桌上) |
+| 蓋子摺痕 | 彈簧 drive 剛性 **0.012 N·m/deg**、阻尼 0.003(原本 0.056,滑鼠只拉得開 15°)。重力下垂約 1°。`lid_latch.py` 在執行期加上開 / 關閂鎖 |
+| PhysicsScene | 120 Hz TGS、迭代 8 / 1、GPU dynamics + GPU broadphase、deformable 接觸容量 4 M、碰撞堆疊 128 MB |
+| 沉降 | 存檔前先沉降:杯子固定 2 秒,再放開 4 秒;沉降後的形狀同時寫進 points 和靜止形狀,速度歸零 |
+
+為什麼這樣可行:surface deformable 的靜止形狀要在 Play 之前寫好(Play 中途改沒有作用);
+靜止形狀只消除摺痕的回彈,擋不住重力 —— 包材每個部分都要有東西撐著,這裡是杯子和箱底。
+
+**測試**(走 UI 路徑:開檔 → Play → 動作;數字寫在 `sim/logs/verify_scene_final_phys_<測試>.txt`):
+
+```bash
+cd sim
+/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test A    # 靜置 8 秒,不碰任何東西
+/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test B    # 搬箱:伺服箱底 +0.10 m x / +0.10 m z,3 秒到位再停 2 秒(像夾爪夾著)
+/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test Bm   # 同樣目標,改用模擬的滑鼠拖曳抓 +x 箱壁(力道 70)
+/isaac-sim/python.sh verify_phys_scene.py ../scene_final_phys.usd --test C    # 用 3 N 把下層蓋 fxn 往下壓在包材上 3 秒
+```
+
+| 測試 | 紙箱位移 / 傾斜 | 包材相對紙箱 | 杯子相對紙箱 | 跑出內腔(容差 1 mm) | 說明 |
+|---|---|---|---|---|---|
+| A —— 靜置 8 秒 | 0.00 mm / 0.04° | 最大 14.4、平均 5.6 mm | 0.03 mm | 包材 5、杯子 0 | 包材約 3 秒後停住 |
+| B —— 伺服搬箱 +0.10 x / +0.10 z | 到達 (100, 0, 90) mm,傾斜 1.0° | 最大 29.1、平均 8.1 mm | 0.02 mm | 包材 5、杯子 0 | **包裹跟著走**;夾爪夾住箱子就是這種情況 |
+| Bm —— 滑鼠拖曳,力道 40,同樣目標 | 到達 (135, -0, 49) mm,傾斜 25.1° | 最大 84.9、平均 21.2 mm | 8.1 mm | 包材 7、杯子 5 | 抓一面箱壁提 → 翹起,包裹沒掉 |
+| Bm —— 滑鼠拖曳,力道 70,同樣目標 | 到達 (137, -0, 50) mm,傾斜 26.0° | 最大 85.9、平均 21.2 mm | 8.1 mm | 包材 7、杯子 5 | 啟動腳本預設值 |
+| Bm —— 滑鼠拖曳,力道 100,同樣目標 | 到達 (132, -63, 234) mm,傾斜 126.7° | 最大 140.2、平均 89.4 mm | 86.2 mm | 包材 17、杯子 0 | **整箱翻掉**,包裹掉出 |
+| C —— 3 N 壓下層蓋 fxn 3 秒 | 0.00 mm / 0.04° | 最大 17.7、平均 5.9 mm | 0.03 mm | 包材 5、杯子 0 | 蓋子被包材擋在 12.3°(最大 12.3°),放手回到 2.6° —— **蓋子會跟包材碰撞** |
+
+**用滑鼠(力道 100)把上層蓋 fyp / fyn 往上拉 15 cm**(`sim/lid_test.py`,2026-10-07):
+
+| 模式 | 拉著時 | 放手 2 秒後 | 意思 |
+|---|---|---|---|
+| **預設**:彈簧 0.012 + `lid_latch.py` | fyp 74°、fyn 72° | fyp 172°、fyn 172° | 過門檻就翻開並停住(量測時門檻 30°;出貨 25° / 關 12°)。下層蓋:fxp 43° → 翻開、fxn 只到 29° |
+| 只有彈簧 0.012(`LID_LATCH=0`) | fyp 37°、fyn 37° | fyp 0°、fyn 0° | 彈回關上 |
+| `crease_hold_ui.py`(彈塑性) | fyp 42°、fyn 37° | fyp 25°、fyn 20° | 停在降伏後的角度(滑鼠只比 0.6 N·m 降伏值大一點) |
+
+下層蓋(fxp / fxn)被上層蓋壓在底下時拉不動 —— 先開上層。
+
 ---
 
-## 9. 已知問題
+## 9. 點擊取座標 → ROS 2(給手臂的目標點)
+
+`sim/click_to_ros.py` 把 viewport 裡的滑鼠點擊變成 ROS 2 訊息:控制手臂的人在 UI 或 WebRTC 畫面裡點紙箱(或任何東西),
+就能指定目標點。兩支啟動腳本都會自動載入。
+
+**用法:** 按 Play(不按也可以點),按住 **Ctrl**,左鍵點一個物件。紅色小球(`/World/ClickMarker`)標出那個點,console 也會印出來。
+點到空的天空不會發佈。
+
+**接口**
+
+| | |
+|---|---|
+| Topic | `/clicked_point` —— `geometry_msgs/msg/PointStamped` —— `header.frame_id = "world"`(Isaac 世界座標:Z-up、公尺,和 USD 同一個座標系) |
+| Topic | `/clicked_prim` —— `std_msgs/msg/String` —— 點到的 USD prim,例如 `/World/Packed/Box/fyp/geo` |
+| QoS | reliable、**transient_local**、depth 1 → 晚點才啟動的訂閱者會立刻收到最後一次點的點 |
+| Node | `isaac_click_publisher`(Isaac 內建 rclpy、ROS 2 jazzy、`rmw_fastrtps_cpp`、`ROS_DOMAIN_ID` 跟 shell 一樣,預設 0) |
+| 環境變數 | `CLICK_TOPIC`、`CLICK_PRIM_TOPIC`、`CLICK_FRAME`、`CLICK_MODIFIER` = `ctrl`(預設)/ `alt` / `none`、`CLICK_TO_ROS=0` 不載入 |
+| 程式位置 | `sim/click_to_ros.py` —— `_on_click`(viewport 手勢 → 像素)→ `viewport_api.request_query`(像素 → prim + 世界座標)→ `_publish` |
+
+**接收端(手臂那邊)** —— 同一個網路 / domain、有 ROS 2 jazzy 的任何機器:
+
+```bash
+source /opt/ros/jazzy/setup.bash
+ros2 topic echo /clicked_point                     # 快速確認
+python3 sim/ros_click_listener.py                  # 範例節點;把手臂的呼叫放進 on_point()
+```
+
+**手臂在哪裡**(世界座標,取自 `stationary_ai_carton_scene_flat.usd`),需要換算到手臂 base 座標時用:
+
+| Link | 位置(m) | 姿態四元數(w, x, y, z) |
+|---|---|---|
+| `follower_left_base_link` | (−0.0200, +0.4575, 0.0391) | (−0.7071, 0, 0, 0.7071)= 繞 z −90° |
+| `follower_right_base_link` | (−0.0200, −0.4575, 0.0391) | (0.7071, 0, 0, 0.7071)= 繞 z +90° |
+| `tabletop_link` | (0, 0, 0) | 單位(桌面在 z = 0.020 m) |
+
+紙箱在世界座標 (−0.020, 0, 0.020…0.154) m。手臂的 joint state / TF 請用 `isaacsim.ros2.bridge` 的 ROS 2 OmniGraph 節點(Linux 啟動時會自動啟用)。
+
+**Isaac 裡的 ROS 2 怎麼設定**(兩支啟動腳本都會做):用 Isaac 內建的 jazzy 函式庫與 rclpy(配 Kit 的 python 3.11);
+Kit 這個程序的 `PYTHONPATH` / `LD_LIBRARY_PATH` 會拿掉系統的 `/opt/ros/jazzy`(python 3.12),因為混在一起 Kit 裡的 `rclpy` 會載入失敗。
+訊息照樣能送到系統的 ROS 2(用 `ros2 topic echo` 驗證過)。
+
+2026-10-07 在 Kit 裡實測(headless、UI 路徑):`request_query` 畫面中心回傳 `/World/Packed/Box/base/wyn`、座標 (0.0950, 0.0950, 0.0950) m,
+系統的 `ros2 topic echo /clicked_point` 收到完全相同的訊息。
+滑鼠手勢本身(在 viewport 裡 Ctrl + 點擊)headless 測不到 —— 請在 UI / WebRTC 裡確認一次。
+
+---
+
+## 10. 已知問題
 
 | # | 問題 | 影響 | 怎麼處理 |
 |---|---|---|---|
-| 1 | `scene_final.usd` 沒有 PhysicsScene;UI 的預設值太弱 | UI 按 Play 時紙箱陷 48 mm | 用 `scene_final_ui.usd` 或 `crease_hold_ui.py`(§2、§8.2) |
+| 1 | `scene_final.usd` 沒有 PhysicsScene;UI 的預設值太弱 | UI 按 Play 時紙箱陷 48 mm | 用 `scene_final_ui.usd` / `scene_final_phys.usd` 或 `crease_hold_ui.py`(§2、§8.2) |
 | 2 | `scene_final_ui.usd` / `scene_final.usd` 的包材與杯子是靜態 mesh | 抓不到;拖紙箱時它們留在原地;蓋子會穿過去 | 改用 `scene_final_phys.usd`(§8.6) |
 | 2a | `scene_final_phys.usd` 需要在啟動時開啟 deformable | 沒開的話包材不會有物理 | 用啟動腳本,或照 §3.1 第 0 步 |
-| 2b | `scene_final_phys.usd` 目前只量過靜置測試(A) | 搬紙箱(B / Bm)、蓋子壓包材(C)、用滑鼠直接拖包材都還沒驗證 | 執行 `verify_phys_scene.py --test B / Bm / C`(§8.6) |
-| 2c | 有人回報蓋子用滑鼠很難拉開 | 還沒查出原因 | 先開上層蓋(fyp / fyn)再開下層蓋;遇到請回報狀況 |
+| 2b | 用滑鼠抓一面箱壁往上提,紙箱會翹起來(以另一側底邊為支點;實測傾斜約 25°) | 包裹會位移,翹太高會掉出 | 在桌上推著走;輕輕提;或像測試 B 那樣伺服箱底(傾斜 1°)—— 夾爪夾住兩面牆就是 B 的情況 |
+| 2c | 滑鼠力道 100 抓箱壁往上提會翻箱;≥ 400 會不穩(紙箱飛走) | — | 要提箱子 `pickingForce` 不要超過 70(啟動腳本預設 70);在桌上推 100 沒問題 |
+| 2d | 用滑鼠直接拖包材還沒測過 | — | 改拖紙箱或杯子 |
+| 2e | `crease_hold_ui.py` + 滑鼠:蓋子拉到約 40°,放手停在約 20–25°(滑鼠力矩只比 0.6 N·m 降伏值大一點) | 摺痕模式下蓋子開不全 | 用預設的閂鎖模式,或 `lids_open()` |
 | 3 | `crease_physics.py` 的**預設係數**(k=3.5、My0=0.85、H=0.55、c=0.28、clip=3.6)跟實際使用的(k=3.2、My0=0.60、H=0.85、c=0.33、clip=3.0)不一樣 | 用預設值會對不上影片和數字 | 建 `ElastoplasticCrease(...)` 時一律明確傳入係數;c 不要超過 0.4(會數值爆炸) |
 | 4 | Play 時 log 出現 `angle limit ... clamped to ±180 degrees`(crease_*) | 無 | USD 設 ±185°,PhysX D6 上限 ±180°;蓋子實際只動幾度 |
 | 5 | Play 時 log 出現 `PhysX error: ... foundLostAggregatePairsCapacity to 3418` | 預設設定下可能漏接觸 | `scene_final_ui.usd` 和 `crease_hold_ui.py` 已調到 8192;實測不再出現 |
