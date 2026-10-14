@@ -23,6 +23,7 @@ ap.add_argument("--arc_up_mm", type=float, default=0.0)
 ap.add_argument("--hold", type=float, default=2.0)
 ap.add_argument("--post", type=float, default=2.0)
 ap.add_argument("--band_mm", type=float, default=None, help="覆寫高度帶:|n|<=band(診斷用,非真夾持)")
+ap.add_argument("--gvert", type=int, default=None, help="改抓 yn 自由邊頂點(flat 索引);TCP 終點 = 該點較高層 + 指尖距 10mm + lift_mm")
 ap.add_argument("--guard", type=float, default=2.3)
 ap.add_argument("--no_video", action="store_true")
 a = ap.parse_args()
@@ -79,8 +80,14 @@ plan = [(f, None) for f in range(f0, fB5 + 1)]
 plan += [(fB5, "hold")] * int(round(a.hold * FPS))
 plan += [(fB5, "open")] * int(round(0.5 * FPS)) + [(fB5, "post")] * int(round(a.post * FPS))
 P("frame %d~%d,b3 末 %d、b5 末 %d;hold %.1fs 後釋放;共 %d 格" % (f0, fB5, fB3, fB5, a.hold, len(plan)))
+BASE0 = np.array([0, 0, a.lift_mm]) * 1e-3 + SOUT * a.out_mm * 1e-3
+if a.gvert is not None:
+    _v = max((a.gvert, a.gvert + 1296), key=lambda v: C["S0"][v, 2]); _te = (MR["base_T"] @ RM.fk_np(MR, Z["qR"][SEG["b2"][1] - 1])["tcp"])[:3, 3]
+    BASE0 = C["S0"][_v] + np.array([0, 0, 0.010 + a.lift_mm * 1e-3]) - _te
+    P("改抓 v%d S %s mm;原 b2 終點 TCP %s → 偏移 %s mm" % (_v, (C["S0"][_v] * 1e3).round(1).tolist(), (_te * 1e3).round(1).tolist(), (BASE0 * 1e3).round(1).tolist()))
+    V1 = _v
 def offset(f, ev):
-    base = np.array([0, 0, a.lift_mm]) * 1e-3 + SOUT * a.out_mm * 1e-3
+    base = BASE0
     arc = np.array([-a.arc_out_mm, 0, a.arc_up_mm]) * 1e-3
     if ev is not None: return base + arc
     if f < SEG["b1"][1]: return base * (f - f0) / (SEG["b1"][1] - f0)
@@ -165,6 +172,10 @@ def finger_sd(Pc):
     return best
 T_ = C["TETS"]; EDG = np.unique(np.sort(np.vstack([T_[:, [i, j]] for i, j in ((0, 1), (0, 2), (0, 3), (1, 2), (1, 3), (2, 3))]), 1), axis=0)
 L0 = np.linalg.norm(C["S0"][EDG[:, 0]] - C["S0"][EDG[:, 1]], axis=1)
+def rel(sc):
+    """釋放 = attachmentEnabled False(不 RemovePrim;r2 RemovePrim 後程序無訊息結束)。"""
+    ch = st.GetPrimAtPath(sc + "/vtx_xform_attachment")
+    if ch: ch.GetAttribute("omniphysics:attachmentEnabled").Set(False)
 def eratio(Pc): return float((np.linalg.norm(Pc[EDG[:, 0]] - Pc[EDG[:, 1]], axis=1) / L0).max())
 apply(f0, None)
 for _ in range(int(round(a.settle * FPS))): world.step(render=bool(cams))
@@ -214,11 +225,11 @@ for k, (f, ev) in enumerate(plan):
         scope = AG.bind(st, VB, PROXY, points=Pc, body_path="/World/cloth", finger_pos=c, finger_R=R, scope="/World/gatt_peel", P=P)
         LOCB = (Pc[VB] - c) @ R; M["nbind"] = len(VB); KEY["bind"] = dict(t=f / FPS, **C["measure"](Pc))
     if scope and er > a.guard:
-        AG.release(st, scope); scope = None; M["guard"] = dict(t=round(f / FPS, 2), er=er, seg=sn); P("★ 守衛:邊長比 %.2f > %.1f,t=%.2f %s 自動 release" % (er, a.guard, f / FPS, sn))
+        rel(scope); scope = None; M["guard"] = dict(t=round(f / FPS, 2), er=er, seg=sn); P("★ 守衛:邊長比 %.2f > %.1f,t=%.2f %s 自動 release" % (er, a.guard, f / FPS, sn))
     if ev == "hold" and plan[k + 1][1] != "hold":
         M["yn_nom"], M["yn_meas"] = yn1, yn2; KEY["pre_release"] = dict(t=f / FPS, yn_nom=yn1, yn_meas=yn2, slip=M["slip"], **C["measure"](Pc))
         P("t=%.2f 釋放前:yn 越線 名義 %.1f%% / 實測 %.1f%%,滑動 max %.2f mm,邊長比 max %.2f" % (f / FPS, yn1, yn2, M["slip"], M["er_max"]))
-        if scope: AG.release(st, scope); scope = None; P("  release")
+        if scope: rel(scope); scope = None; P("  release")
     if f == fB5 and ev is None: KEY["b5_end"] = dict(t=f / FPS, yn_nom=yn1, yn_meas=yn2, **C["measure"](Pc))
     if k % (FPS // 2) == 0 or k == len(plan) - 1:
         rows.append(dict(t=round(k / FPS, 2), seg=sn, dmin=float(sd.min() * 1e3), oth=oth, er=er, yn=yn2, slip=slip))
