@@ -220,6 +220,7 @@ ap.add_argument("--g_peel_t", type=float, default=6.0, help="抓取:掀的秒數
 ap.add_argument("--g_hold", type=float, default=2.0, help="抓取:掀完停幾秒再放")
 ap.add_argument("--g_pick_mm", type=float, default=12.0, help="抓取:下指挑角上抬 mm")
 ap.add_argument("--g_th1", type=float, default=160.0, help="抓取:弧線終點角(度;0 = 夾點起始方向 +y、180 = 水平朝 -y)")
+ap.add_argument("--g_tip_only", type=int, default=0, help="抓取:1 = 候選只取 yn 尖端那條邊(flat y=-W/2),不取 yn 兩側邊")
 ap.add_argument("--g_rank", type=int, default=1, help="抓取:用合格第幾名")
 ap.add_argument("--in_box_already", action="store_true",
                 help="--init_npz 已是箱內座標(如 lidcheck/wrap.npz):跳過入箱的置中/墊高平移")
@@ -1375,13 +1376,14 @@ if a.grasp:
         IX_, IY_ = CBOX["ix"], CBOX["iy"]; ZO = max(CBOX["top"], CBOX["top_y"]) + 0.005
         bnd = (GII == 0) | (GII == nx) | (GJJ == 0) | (GJJ == ny)
         cand = np.where(bnd & (GSIDE == "yn"))[0]
+        if a.g_tip_only: cand = cand[GJJ[cand] == 0]
         rows = []
         for v in cand:
             p = Sl[v]
             vin = v + (nx+1) if GJJ[v] == 0 else (v + 1 if GII[v] == 0 else v - 1)
             u3 = Sl[v] - Sl[vin]; uh = np.array([u3[0], u3[1], 0.0])
             if np.linalg.norm(uh) < 1e-6: continue
-            uh /= np.linalg.norm(uh); tt = np.cross(uh, [0, 0, 1.0]);   # 右手系 [t,u,n] R0 = np.stack([tt, uh, [0, 0, 1.0]], 1)
+            uh /= np.linalg.norm(uh); tt = np.cross(uh, [0, 0, 1.0]); R0 = np.stack([tt, uh, [0, 0, 1.0]], 1)   # 右手系 [t,u,n]
             fd = np.linalg.norm(GFLAT - GFLAT[v], axis=1); other = fd > 0.045
             hr = np.linalg.norm(Sl[:, :2] - p[:2], axis=1)
             na = int((other & (GSIDE != "yn") & (hr < 0.030) & (Sl[:, 2] > p[2] + 0.0005)).sum())   # r1:yn 自己的皺褶不算「被壓」(400mm 布 yn 尖端是皺的)
@@ -1518,7 +1520,8 @@ if a.grasp:
         if "plan" not in dn and t >= TG0 - 1e-6:
             dn.add("plan"); g_plan(t)
             _bo = GS["plan"]["bo"]
-            G.look(cam, list(_bo + [0.30, -0.42, 0.40]), list(_bo + [0, -0.03, 0.06]))
+            _tg = np.array(TGT, float) - MOVE/2.0 + box_off(); _ey = np.array(EYE, float) - MOVE/2.0 + box_off()
+            G.look(cam, list(_tg + 0.55*(_ey - _tg)), list(_tg))      # r3:自訂機位全白 → 改成原機位方向、拉近到 55%
         if "bind" not in dn and t >= TG0 + T_BIND - 1e-6:
             dn.add("bind"); g_measure("pre_bind", t); g_bind(t)
         if "hold" not in dn and t >= TG0 + T_REL - 0.05:

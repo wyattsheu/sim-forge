@@ -61,7 +61,7 @@ if not a.no_video:
     from isaacsim.core.utils.viewports import set_camera_view
     import imageio
     from PIL import Image, ImageDraw, ImageFont
-    for i, (eye, tgt) in enumerate((((-0.55, -0.45, 0.50), (-0.03, -0.08, 0.13)), ((-0.03, -0.42, 0.32), (-0.03, -0.10, 0.13)))):
+    for i, (eye, tgt) in enumerate((((-0.55, -0.45, 0.50), (-0.03, -0.08, 0.13)), ((0.35, -0.30, 0.45), (-0.03, -0.05, 0.10)))):
         c = Camera(prim_path="/World/dc_cam%d" % i, resolution=(960, 540), frequency=FPS); cams.append((c, eye, tgt))
 world.reset()
 ART = Articulation(prim_paths_expr=R0, name="arms"); ART.initialize()
@@ -92,6 +92,14 @@ def finger_sd(Pc):
     return best
 apply(f0)
 for _ in range(int(round(a.settle * FPS))): world.step(render=bool(cams))
+from pxr import Vt
+import trimesh as _tr
+_T = C["TETS"]; _F = np.vstack([_T[:, [0, 2, 1]], _T[:, [0, 1, 3]], _T[:, [1, 2, 3]], _T[:, [0, 3, 2]]])
+_k = np.sort(_F, 1); _u, _inv, _c = np.unique(_k, axis=0, return_inverse=True, return_counts=True); SF = _F[_c[_inv.ravel()] == 1]
+VIS = UsdGeom.Mesh.Define(st, "/World/cloth_vis"); VIS.CreateFaceVertexIndicesAttr([int(i) for i in SF.ravel()]); VIS.CreateFaceVertexCountsAttr([3] * len(SF))
+VIS.CreateDoubleSidedAttr(True); VIS.CreateDisplayColorAttr([Gf.Vec3f(0.2, 0.7, 0.95)])
+def upd_vis(Pc): VIS.GetPointsAttr().Set(Vt.Vec3fArray([Gf.Vec3f(*map(float, p)) for p in Pc]))
+upd_vis(C["PLATE"].pts()); P("cloth_vis 表面三角形 %d" % len(SF))
 Pb = C["PLATE"].pts(); MUGP = UsdGeom.Mesh(st.GetPrimAtPath("/World/cloth_mug/geo"))
 r = C["measure"](Pb); P("settle %.1fs 後:位移(對 rest)%.2f mm 反轉 %d 互穿 %d 穿杯 %d" % (a.settle, r["disp"], r["inv"], r["pen"], r["inmug"]))
 wr = None
@@ -111,7 +119,7 @@ def segname(f):
 maxjerr = 0.0
 for f in range(f0, f1):
     apply(f); world.step(render=bool(cams))
-    Pc = C["PLATE"].pts(); sd = finger_sd(Pc); sn = segname(f)
+    Pc = C["PLATE"].pts(); upd_vis(Pc); sd = finger_sd(Pc); sn = segname(f)
     moved = np.linalg.norm(Pc - Pb, axis=1); mugd = np.linalg.norm(np.array(MX.get_world_pose()[0]) - mug_p0) * 1e3
     gap = G0 + GK * Z["gR"][f]
     A = segacc.setdefault(sn, dict(dmin=9e9, pen=0.0, moved=0, mug=0.0, v1d=9e9))

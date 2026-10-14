@@ -963,7 +963,7 @@ if a.grasp:
         seg = col[kb:]; Lcur = float(np.linalg.norm(np.diff(M[seg], axis=0), axis=1).sum()) if len(seg) > 1 else float("nan")
         Lflat = float(abs(GF2[v, 1] - hfy))
         if a.grasp_attach and pl.get("att", {}).get("n", 0) > 0:
-            Lflat = float(np.median(np.abs(GF2[pl["att"]["vids"], 1] - hfy)))
+            Lflat = float(np.median(np.abs(GF2[np.asarray(pl["att"]["vids"]) % N1, 1] - hfy)))
         Lmat = max(Lcur, Lflat)
         Rr = a.arc_k * (Lmat - 0.0075)
         gc0 = (pl["lo_f"] + pl["up_f"]) / 2; R0 = pl["R0"]
@@ -1215,6 +1215,9 @@ for fr in range(NFR):
         P(s_)
         if a.grasp and GS["plans"] and tcur >= TG0:
             _pl = GS["plans"][-1]; g_line(_pl, g_metrics(_pl, tcur, Pp), r)
+            if _pl.get("att", {}).get("on") and r["lr"][1] > 2.3:
+                st.RemovePrim(Sdf.Path(_pl["att"]["scope"])); _pl["att"]["on"] = False; _pl["ev"]["lr_guard"] = tcur
+                P("★ t=%.2f [%s] 守衛:邊長比最大 %.3f > 2.3 → RemovePrim %s 放手" % (tcur, _pl["sd"], r["lr"][1], _pl["att"]["scope"]))
     # 階段快照
     for nm_, tt_ in [("fold_" + FOLD_ORDER[1], FT[FOLD_ORDER[2]][0] - 1e-6), ("after_move", T_OPEN0 - 1e-6),
                      ("before_move", T_MOVE0 - 1e-6), ("end", T_END_ALL - 1e-6)]:
