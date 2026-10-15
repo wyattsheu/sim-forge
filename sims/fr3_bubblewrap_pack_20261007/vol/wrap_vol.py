@@ -141,6 +141,9 @@ ap.add_argument("--hold_yp", type=int, default=0, help="[extract] 1 = yp 掀到�
 ap.add_argument("--extract", type=int, default=0, help="[extract] 1 = yp 段結束後第三隻 kinematic 取杯手:下到杯頂 → 綁杯(杯轉 kinematic 跟手)→ 抬 150mm → 水平 +x 移 → 放到地面")
 ap.add_argument("--extract_lift_mm", type=float, default=150.0, help="[extract] 垂直抬起 mm")
 ap.add_argument("--extract_out_mm", type=float, default=200.0, help="[extract] 水平 +x 移出 mm")
+ap.add_argument("--extract_mode", default="lift", choices=["lift", "slide"], help="[extract2] lift = 舊(垂直抬 → +x);slide = 抬 20mm → 斜升過 yn 壁頂 → 水平 −y 移出 extract_out_mm → 降到地面")
+ap.add_argument("--guard_yp", type=float, default=0.0, help="[extract2] >0:yp 段守衛邊長比門檻(取代 2.3)")
+ap.add_argument("--guard_n", type=int, default=1, help="[extract2] yp 段守衛需連續 N 次量測超過門檻才放手(預設 1 = 舊)")
 ap.add_argument("--proxy_m", type=float, default=0.005, help="[drag] 代理質量 kg")
 a = ap.parse_args()
 if a.tuck == 0:
@@ -1537,7 +1540,10 @@ X = dict(st="wait")
 if a.extract:
     def x_hand(r_):
         """取杯手中心(世界)。段:A 上方 → B 杯頂 → 綁 → C 抬 → D 移 → E 放 → 手抬開"""
-        segs = [(0.0, XT["down"], X["A"], X["B"]), (XT["down"] + XT["bind"], XT["lift"], X["B"], X["C"]), (None, XT["move"], X["C"], X["D"]),
+        if "path" in X:                                                      # [extract2] slide:多段折線
+            segs = [(0.0, XT["down"], X["A"], X["B"])] + [(XT["down"] + XT["bind"] if k_ == 0 else None, du_, p0_, p1_) for k_, (du_, p0_, p1_) in enumerate(X["path"])] \
+                   + [(None, XT["up"], X["E"], X["E"] + [0, 0, 0.10])]
+        else: segs = [(0.0, XT["down"], X["A"], X["B"]), (XT["down"] + XT["bind"], XT["lift"], X["B"], X["C"]), (None, XT["move"], X["C"], X["D"]),
                 (None, XT["lower"], X["D"], X["E"]), (None, XT["up"], X["E"], X["E"] + [0, 0, 0.10])]
         t0 = 0.0; cur = X["A"]
         for s0, du, p0, p1 in segs:
@@ -1571,12 +1577,34 @@ if a.extract:
             hz = float(MW[:, 2].max()) - mp[2] + H3S[2] / 2; X["hz"] = hz
             X["B"] = mp + [0, 0, hz]; X["A"] = X["B"] + [0, 0, 0.15]; X["C"] = X["B"] + [0, 0, a.extract_lift_mm / 1e3]
             X["D"] = X["C"] + [a.extract_out_mm / 1e3, 0, 0]
-            zg = g_offw()[2] + CDZ; dst = MW + (X["D"] - X["B"]); z_land = zg; hit = []
-            for nm_, rg in x_part_boxes():
-                mn, mx = np.array(rg.GetMin()), np.array(rg.GetMax())
-                if (dst[:, 0].max() > mn[0]) and (dst[:, 0].min() < mx[0]) and (dst[:, 1].max() > mn[1]) and (dst[:, 1].min() < mx[1]) and mx[2] > z_land:
-                    z_land = mx[2]; hit.append(nm_)
-            X["E"] = X["D"] + [0, 0, (z_land + 0.001) - dst[:, 2].min()]; X["zg"] = zg; X["land_on"] = hit
+            zg = g_offw()[2] + CDZ
+            def _land(D_):
+                dst = MW + (D_ - X["B"]); z_land = zg; hit = []
+                for nm_, rg in x_part_boxes():
+                    mn, mx = np.array(rg.GetMin()), np.array(rg.GetMax())
+                    if (dst[:, 0].max() > mn[0]) and (dst[:, 0].min() < mx[0]) and (dst[:, 1].max() > mn[1]) and (dst[:, 1].min() < mx[1]) and mx[2] > z_land:
+                        z_land = mx[2]; hit.append(nm_)
+                return D_ + [0, 0, (z_land + 0.001) - dst[:, 2].min()], hit
+            if a.extract_mode == "slide":                                     # [extract2] 抬 20 → 斜升過 yn 壁 → 水平 −y → 降
+                o_ = g_offw(); rM = float(MW[:, 1].max() - MW[:, 1].min()) / 2; hM = float(MW[:, 2].max() - MW[:, 2].min())
+                zc = o_[2] + max(CBOX["top"], CBOX["top_y"]) + hM / 2 + 0.010 + (mp[2] - (MW[:, 2].max() + MW[:, 2].min()) / 2)   # 杯底高過壁頂 10mm
+                X["C"] = X["B"] + [0, 0, 0.020]
+                yin = o_[1] - (IY - rM - 0.005); hzc = zc + hz
+                C2 = np.array([X["C"][0], min(X["C"][1], yin), max(X["C"][2], hzc)])
+                outm = a.extract_out_mm / 1e3
+                for k_ in range(12):                                          # 落點撞箱件(蓋)→ 再往 −y 推 20mm
+                    D_ = np.array([X["B"][0], X["B"][1] - outm, max(X["C"][2], hzc)]); E_, hit = _land(D_)
+                    if not hit: break
+                    outm += 0.020
+                X["D"] = D_; X["E"], X["land_on"] = E_, hit; X["zg"] = zg; X["out_used"] = outm
+                X["path"] = [(0.8, X["B"], X["C"]), (2.2, X["C"], C2), (2.0, C2, X["D"]), (XT["lower"], X["D"], X["E"])]
+                X["seg_t"] = np.cumsum([XT["down"] + XT["bind"]] + [p_[0] for p_ in X["path"]])
+                P("★ [extract2] slide:杯半徑 %.1f 高 %.1f | 壁頂(局部) %.1f → 過壁手心 z %.1f | 路徑 B%s → C%s → C2%s → D%s → E%s mm | 往 −y 實際 %.0f mm(要求 %.0f)落點擋到 %s"
+                  % (rM * 1e3, hM * 1e3, max(CBOX["top"], CBOX["top_y"]) * 1e3, (hzc - o_[2]) * 1e3, *[np.round((q_ - o_) * 1e3, 1) for q_ in (X["B"], X["C"], C2, X["D"], X["E"])],
+                     outm * 1e3, a.extract_out_mm, hit or "無"))
+                z_land = MW[:, 2].min() + (X["E"][2] - X["B"][2]) - 0.001; hit = X["land_on"]
+            else:
+                X["E"], hit = _land(X["D"]); X["zg"] = zg; X["land_on"] = hit; z_land = MW[:, 2].min() + (X["E"][2] - X["B"][2]) - 0.001
             X["P0"] = PLATE.pts().copy(); X["log"] = []; X["next"] = t
             EYE = g_offw() + np.array([0.55, -0.80, 0.60]); TGT = g_offw() + np.array([0.10, 0.0, 0.10]); G.look(cam, list(EYE), list(TGT))
             P("\n★ t=%.2f [extract] 開始:杯心 (%.1f,%.1f,%.1f) mm(箱局部 %s);取杯手 %s mm 從杯頂上方 150mm 下;抬 %.0f → +x %.0f → 放到 z %.1f(地面 %.1f;落點擋到 %s)"
@@ -1585,6 +1613,10 @@ if a.extract:
         TB = XT["down"]; TBi = TB + XT["bind"]; TC = TBi + XT["lift"]; TD = TC + XT["move"]; TE = TD + XT["lower"]
         X["st"] = ("hand3 down" if r_ < TB else "bind cup" if r_ < TBi else "lift %.0fmm" % a.extract_lift_mm if r_ < TC else
                    "move out %.0fmm" % a.extract_out_mm if r_ < TD else "place on ground" if r_ < TE else "hand3 release/up")
+        if "path" in X:                                                       # [extract2]
+            TE = X["seg_t"][-1]
+            X["st"] = ("hand3 down" if r_ < TB else "bind cup" if r_ < TBi else "lift 20mm" if r_ < X["seg_t"][1] else "rise over yn wall" if r_ < X["seg_t"][2]
+                       else "slide -y" if r_ < X["seg_t"][3] else "place on ground" if r_ < TE else "hand3 release/up")
         hp = x_hand(r_); GVIS["h3"].set(hp)
         if "bind" not in X and r_ >= TB - 1e-6:
             kin.Set(True); X["bind"] = t; X["P0"] = PLATE.pts().copy()
@@ -1597,19 +1629,24 @@ if a.extract:
         if "bind" in X and t >= X["next"] - 1e-9:
             X["next"] = t + 0.25; Pw = PLATE.pts(); mp, Rq, MW = mug_world()
             near, inm, nmov, dmx, d = x_cloth_stats(Pw, MW, mp, Rq); cav = x_cavity(MW)
-            if not cav and "t_out" not in X: X["t_out"] = t
+            if not cav and "t_out" not in X: X["t_out"] = t; X["out_pct"] = 100.0 * nmov / len(Pw); P("★ t=%.2f [extract2] 離箱(杯出內腔):布被帶起 %.1f%%" % (t, X["out_pct"]))
+            if "free" in X and "land_pct" not in X: X["land_pct"] = 100.0 * nmov / len(Pw); P("★ t=%.2f [extract2] 落地:布被帶起 %.1f%%" % (t, X["land_pct"]))
             X["log"].append((t, near, inm, nmov, dmx))
             P("  [extract] t=%.2f %-16s 杯心 (%.1f,%.1f,%.1f) 抬 %.1f mm | 杯邊 5mm 內布點 %d | 布穿杯 %d | 布位移>10mm %d 點(%.1f%%)最大 %.1f mm | 杯在內腔 %s"
               % (t, X["st"], *(mp * 1e3), (mp[2] - X["mp0"][2]) * 1e3, near, inm, nmov, 100.0 * nmov / len(Pw), dmx, "是" if cav else "否"))
         if "sum" not in X and r_ >= sum(XT.values()) - 0.05:
             X["sum"] = 1; Pw = PLATE.pts(); mp, Rq, MW = mug_world(); near, inm, nmov, dmx, d = x_cloth_stats(Pw, MW, mp, Rq)
             L_ = X["log"]; lift = [x for x in L_ if X["bind"] + XT["bind"] <= x[0] <= X["bind"] + XT["bind"] + XT["lift"] + 1e-6]
+            if "path" in X: lift = [x for x in L_ if x[0] <= X.get("t_out", 1e9) + 1e-6]   # [extract2] 抬起時 = 綁到離箱
             fc, inb = x_final_cloth(Pw); cav = x_cavity(MW); mx_inm = max([x[2] for x in L_] + [0])
             ok = (not cav) and mx_inm == 0 and np.linalg.norm(mp - X["mp0"]) > 0.15
             P("[extract] SUMMARY bind_t=%.2f 綁時杯邊布點 %d | 全程杯邊布點最大 %d 布穿杯最大 %d | 抬起段 布位移>10mm 最大 %d 點(%.1f%%)最大位移 %.1f mm | 離開內腔 t=%s | 最終杯心 世界 (%.1f,%.1f,%.1f) 箱局部 (%.1f,%.1f,%.1f) mm 杯底 z %.1f(地面 %.1f) | 最終 布位移>10mm %.1f%% 黏在杯邊 %d 點 | %s | 布在箱內 %.1f%% | 取杯 %s"
               % (X["bind"], X["bind_near"], max(x[1] for x in L_), mx_inm, max([x[3] for x in lift] + [0]), 100.0 * max([x[3] for x in lift] + [0]) / len(Pw),
                  max([x[4] for x in lift] + [0]), "%.2f" % X["t_out"] if "t_out" in X else "未離開", *(mp * 1e3), *((mp - g_offw()) * 1e3),
                  MW[:, 2].min() * 1e3, X["zg"] * 1e3, 100.0 * nmov / len(Pw), near, " / ".join(fc), inb, "OK" if ok else "NG"))
+            P("[extract2] SUMMARY mode=%s 布被帶起 抬起時最大 %.1f%% | 離箱 %s | 落地 %s | 最終 %.1f%% | 最終杯心 箱局部 (%.1f,%.1f,%.1f) 落點擋到 %s | 布在箱內 %.1f%%"
+              % (a.extract_mode, 100.0 * max([x[3] for x in lift] + [0]) / len(Pw), "%.1f%%" % X["out_pct"] if "out_pct" in X else "-",
+                 "%.1f%%" % X["land_pct"] if "land_pct" in X else "-", 100.0 * nmov / len(Pw), *((mp - g_offw()) * 1e3), X["land_on"] or "無", inb))
         return
 
 # ── 主迴圈 ───────────────────────────────────────────────────────────
@@ -1731,10 +1768,17 @@ for fr in range(NFR):
         if a.grasp and GS["plans"] and tcur >= TG0:
             _pl = GS["plans"][-1]; g_line(_pl, g_metrics(_pl, tcur, Pp), r)
             _gth = a.guard_hold if (a.guard_hold > 0 and _pl.get("hold", {}).get("on")) else 2.3   # [drag2]
-            if _pl.get("att", {}).get("on") and r["lr"][1] > _gth:
+            _gn = 1
+            if _pl["sd"] == "yp":                                              # [extract2] yp 段門檻/連續次數
+                if a.guard_yp > 0: _gth = a.guard_yp
+                _gn = max(1, a.guard_n)
+            _pl["gcnt"] = (_pl.get("gcnt", 0) + 1) if r["lr"][1] > _gth else 0
+            if _pl.get("att", {}).get("on") and r["lr"][1] > _gth and _pl["gcnt"] < _gn:
+                P("  [guard_yp] t=%.2f [%s] 邊長比 %.3f > %.2f 第 %d/%d 次,先不放" % (tcur, _pl["sd"], r["lr"][1], _gth, _pl["gcnt"], _gn))
+            if _pl.get("att", {}).get("on") and r["lr"][1] > _gth and _pl["gcnt"] >= _gn:
                 st.RemovePrim(Sdf.Path(_pl["att"]["scope"])); _pl["att"]["on"] = False
                 if _pl["att"].get("lo"): st.RemovePrim(Sdf.Path(_pl["att"]["scope"] + "_lo")); _pl["ev"]["lr_guard"] = tcur
-                P("★ t=%.2f [%s] 守衛:邊長比最大 %.3f > 2.3 → RemovePrim %s 放手" % (tcur, _pl["sd"], r["lr"][1], _pl["att"]["scope"]))
+                P("★ t=%.2f [%s] 守衛:邊長比最大 %.3f > %.2f(連續 %d 次)→ RemovePrim %s 放手" % (tcur, _pl["sd"], r["lr"][1], _gth, _pl["gcnt"], _pl["att"]["scope"]))
                 if _pl.get("hold", {}).get("on"):                               # [drag] 守衛時也放開他片
                     st.RemovePrim(Sdf.Path(_pl["hold"]["scope"])); _pl["hold"]["on"] = False; _pl["ev"]["hold_guard"] = tcur
                     P("★ t=%.2f [%s] 守衛:同時 RemovePrim %s 放開他片 %d 點" % (tcur, _pl["sd"], _pl["hold"]["scope"], _pl["hold"]["n"]))
