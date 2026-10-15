@@ -132,6 +132,10 @@ ap.add_argument("--fold_order", default="xp,xn,yp,yn", help="[variants] 折序,�
 ap.add_argument("--mug_off_mm", default="0,0", help="[variants] 杯子(佔位中心)相對布中心偏 dx,dy mm;實作 = 布反向平移")
 ap.add_argument("--mug_yaw_deg", type=float, default=0.0, help="[variants] 杯子繞 z 轉幾度(佔位 = 轉後 AABB)")
 ap.add_argument("--seed", type=int, default=0, help="[variants] 隨機種子(記錄用)")
+ap.add_argument("--hand2", choices=["off", "press", "attach"], default="off", help="[hand2] 第二隻手:press = 放手前在夾點外側(壁外 10~40mm)以有碰撞 kinematic 壓板(40x30x4mm)壓住躺在蓋上那段;attach = 同位置 VtxXformAttachment 綁到 kinematic 方塊;off = 舊行為")
+ap.add_argument("--hand2_hold_s", type=float, default=3.0, help="[hand2] 第一隻手放手後第二隻手持續壓/綁幾秒,之後垂直抬起(attach:先解綁)")
+ap.add_argument("--hand2_lead_s", type=float, default=0.5, help="[hand2] 放手前幾秒壓到位(之前 0.5s 從上方下壓)")
+ap.add_argument("--hand2_pad_mm", type=float, default=15.0, help="[hand2] attach:方塊足跡外擴 mm 內的頂點都綁")
 ap.add_argument("--proxy_m", type=float, default=0.005, help="[drag] 代理質量 kg")
 a = ap.parse_args()
 if a.tuck == 0:
@@ -570,6 +574,14 @@ if a.grasp:
         GVIS[k_].set(GPARK[k_])
     P("★ --grasp 1:kinematic 指 rod %s / 上下指 %s mm,指面摩擦 %.1f(rod 0.5),cont 1 / rest 0;停在 %s"
       % (GRS*1e3, GFS*1e3, a.ffric, GPARK["rod"]))
+    if a.hand2 != "off":                                                       # [hand2] 第二隻手(壓板 / 綁定方塊)
+        H2S = np.array([0.040, 0.030, 0.004]); GPARK["h2"] = np.array([3.0, 3.3, 1.0]); GPATH["h2"] = "/World/gfing/h2"
+        if a.hand2 == "press": GU.finger(st, GPATH["h2"], H2S, GPARK["h2"], a.fric, cont=0.001, rest=0.0)
+        else: VC.kin_box(st, GPATH["h2"], H2S, GPARK["h2"], collide=False, visible=False)
+        UsdGeom.Imageable(st.GetPrimAtPath(GPATH["h2"])).CreateVisibilityAttr().Set(UsdGeom.Tokens.invisible)
+        GVIS["h2"] = GU.VisBox(st, "/World/gvis_h2", H2S, (0.15, 0.4, 0.9)); GVIS["h2"].set(GPARK["h2"])
+        P("★ --hand2 %s:第二隻手 %s %s mm(%s);放手前 %.1fs 到位,放手後持續 %.1fs 再抬起"
+          % (a.hand2, GPATH["h2"], H2S * 1e3, "有碰撞 摩擦 %.1f" % a.fric if a.hand2 == "press" else "不碰撞、綁頂點 pad %.0f mm" % a.hand2_pad_mm, a.hand2_lead_s, a.hand2_hold_s))
     if a.attach_proxy:                                                        # [drag] 力限代理:動態剛體 upx 以 D6 drive 掛在上指
         GPATH["upx"] = "/World/gfing/upx"
         _px = VC.kin_box(st, GPATH["upx"], [0.004] * 3, GPARK["up"], collide=False, visible=False)
@@ -693,8 +705,9 @@ G_LF = a.lift_first_t if a.lift_first_mm > 0 else 0.0                           
 G_EXT = a.arc2_ext_t if a.arc2_ext_mm > 0 else 0.0                                                # [drag2]
 G_EXT += (a.arc2_cl_t + 1.0 if a.arc2_target == "centroid" else a.arc2_over_t if a.arc2_over_mm > 0 else 0.0) + (0.5 if a.release_press_mm > 0 else 0.0) + a.release_settle_s   # [peel]
 G_EXT += a.arc2_lay_t if a.arc2_lay else 0.0                                                      # [peel4]
+G_EXT2 = (a.hand2_hold_s + 3.0) if a.hand2 != "off" else 0.0                                      # [hand2] 放手後:壓 hold_s + 抬 1s + 觀察 2s
 G_RT = 4.0                                                                                             # [robust] 每次重夾:抬 0.5 + 移 0.8 + 降 0.8 + 合 0.8 + 停 0.7 + 餘
-G_SHEET = G_RT * a.grasp_retry + G_TGRIP + G_LF + G_EXT + a.peel_t + GT["peel_hold"] + GT["rel_open"] + GT["rel_slide"] + GT["rel_up"] + 0.3
+G_SHEET = G_RT * a.grasp_retry + G_TGRIP + G_LF + G_EXT + a.peel_t + GT["peel_hold"] + GT["rel_open"] + GT["rel_slide"] + GT["rel_up"] + 0.3 + G_EXT2
 G_SEQ = (["yn", "yp"] if a.second else ["yn"]) if a.grasp else []
 TG0 = T_END_ALL + 1.0
 if a.grasp and a.until == "all":
@@ -1396,6 +1409,65 @@ if a.grasp:
         GS["rows"].append(dict(sd=pl["sd"], **{k_: (v_.tolist() if isinstance(v_, np.ndarray) else v_) for k_, v_ in r.items()},
                                pen=rm["pen"], inmug=rm["inmug"], inv=rm["inv"]))
 
+    def h2_stat(pl, Pw=None):                                                 # [hand2] yn 越線 / 質心 y / 壁外比例
+        Pl = (PLATE.pts() if Pw is None else Pw) - g_offw(); sd, sg = pl["sd"], pl["sg"]; m = GSIDE2 == sd
+        return (float((sg * Pl[pl["TOPS"], 1] > CY).mean()) * 100 if len(pl["TOPS"]) else float("nan"),
+                float(Pl[m, 1].mean()) * 1e3, float((sg * Pl[m, 1] > IY + 0.0015).mean()) * 100)
+    def h2_events(pl, t):
+        h = pl.setdefault("h2", {}); sd, sg = pl["sd"], pl["sg"]; TR = pl["TR"]; I3 = np.eye(3)
+        TA = TR - a.hand2_lead_s; TH = TR + a.hand2_hold_s; TL = TH + 1.0
+        if "pos" not in h and t >= TA - (0.5 if a.hand2 == "press" else 0.0) - 1e-6:
+            offw, Pw, Pl, _, _ = g_state(); m = GSIDE2 == sd; gx = float(((g_pose("up", t)[0] - offw))[0])
+            ltop = lid_top_local(sd); e0 = IY + 0.0015
+            c = m & (sg * Pl[:, 1] >= e0 + 0.010) & (sg * Pl[:, 1] <= e0 + 0.040) & (Pl[:, 2] < ltop + 0.020)
+            best = (-1, 0.0)
+            for xc in np.arange(-0.100, 0.1001, 0.005):
+                if abs(xc - gx) < 0.033: continue
+                n_ = int((c & (np.abs(Pl[:, 0] - xc) < 0.020)).sum())
+                if n_ > best[0] or (n_ == best[0] and abs(xc - gx) < abs(best[1] - gx)): best = (n_, xc)
+            xc = best[1]; yc = sg * (e0 + 0.025); zb = ltop + T + 0.001
+            fp = m & (np.abs(Pl[:, 0] - xc) < 0.020) & (np.abs(Pl[:, 1] - yc) < 0.015)
+            ztop = float(Pl[fp, 2].max()) if fp.any() else zb
+            zp = zb + H2S[2] / 2; za = max(zp, ztop + H2S[2] / 2 + 0.010) + 0.005
+            h.update(pos=np.array([xc, yc, zp]), n_cand=best[0], gx=gx)
+            if a.hand2 == "press":
+                g_fn("h2", t, 1e-3, lambda w, p_=np.array([xc, yc, za]) + offw: (p_, I3))
+                g_lin("h2", t + 0.01, max(0.05, TA - t - 0.01), np.array([xc, yc, zp]) + offw, I3)
+                g_lin("h2", TH, 1.0, np.array([xc, yc, zp + 0.060]) + offw, I3)
+                g_fn("h2", TL + 0.01, 1e-3, lambda w: (GPARK["h2"], I3))
+                P("★ t=%.2f [%s] [hand2] press 壓板中心 (%.1f,%.1f) mm(夾爪 x %.1f;壁外 10~40mm 候選 %d 點);從 z %.1f 下壓到 %.1f(底 = 蓋頂 %.1f + T + 1 = %.1f)@%.2f;放手 %.2f;抬起 %.2f~%.2f"
+                  % (t, sd, xc * 1e3, yc * 1e3, gx * 1e3, best[0], za * 1e3, zp * 1e3, ltop * 1e3, zb * 1e3, TA, TR, TH, TL))
+            else:
+                hv = np.where(m & (np.abs(Pl[:, 0] - xc) < 0.020 + a.hand2_pad_mm / 1e3) & (np.abs(Pl[:, 1] - yc) < 0.015 + a.hand2_pad_mm / 1e3)
+                              & (Pl[:, 2] < ltop + 0.025))[0]
+                zc = float(Pl[hv, 2].mean()) if len(hv) else zp; pw_ = np.array([xc, yc, zc]) + offw
+                g_fn("h2", t, 1e-3, lambda w, p_=pw_: (p_, I3)); g_lin("h2", TH + 0.01, 1.0, pw_ + [0, 0, 0.060], I3)
+                g_fn("h2", TL + 0.02, 1e-3, lambda w: (GPARK["h2"], I3))
+                h["att_t"] = t + 0.02; h["hv"] = hv; h["pw"] = pw_
+                P("★ t=%.2f [%s] [hand2] attach 方塊中心 (%.1f,%.1f,%.1f) mm(夾爪 x %.1f;候選 %d 點);綁 %d 點(pad %.0f mm,z %.0f~%.0f);放手 %.2f;解綁 %.2f 抬起 ~%.2f"
+                  % (t, sd, xc * 1e3, yc * 1e3, zc * 1e3, gx * 1e3, best[0], len(hv), a.hand2_pad_mm,
+                     Pl[hv, 2].min() * 1e3 if len(hv) else np.nan, Pl[hv, 2].max() * 1e3 if len(hv) else np.nan, TR, TH, TL))
+        if a.hand2 == "attach" and "att_on" not in h and "att_t" in h and t >= h["att_t"]:
+            h["att_on"] = bool(len(h["hv"]))
+            if len(h["hv"]):
+                Pw = PLATE.pts(); VC.attach_vtx(st, "/World/gh2_%s" % sd, "/World/plate", "/World/plate", GPATH["h2"], h["hv"], Pw[h["hv"]] - h["pw"], P=P)
+        if h.get("att_on") and t >= TH - 1e-6:
+            st.RemovePrim(Sdf.Path("/World/gh2_%s" % sd)); h["att_on"] = False; P("★ t=%.2f [%s] [hand2] 解綁 %d 點" % (t, sd, len(h["hv"])))
+        for nm_, tt_ in (("pre", TR - 0.02), ("rel+0.5", TR + 0.5), ("rel+2", TR + 2.0), ("lift+2", TL + 2.0)):
+            if "pos" in h and nm_ not in h and t >= tt_:
+                cr, cy, wo = h2_stat(pl); h[nm_] = (cr, cy, wo); extra = ""
+                if nm_ == "pre" and a.hand2 == "press":
+                    Pl = PLATE.pts() - g_offw(); p_ = h["pos"]; mm = GSIDE2 == sd
+                    nc = int((mm & (np.abs(Pl[:, 0] - p_[0]) < 0.022) & (np.abs(Pl[:, 1] - p_[1]) < 0.017) & (Pl[:, 2] > p_[2] - H2S[2] / 2 - T - 0.003) & (Pl[:, 2] < p_[2])).sum())
+                    h["contact"] = nc; extra = " | 壓板下接觸 %d 點" % nc
+                if nm_ == "pre" and a.hand2 == "attach": extra = " | 綁 %d 點" % len(h["hv"])
+                P("★ t=%.2f [%s] [hand2] %s:%s 越線 %.0f%% | 質心 y %.1f mm | 壁外 %.0f%%%s" % (t, sd, nm_, sd, cr, cy, wo, extra))
+        if "lift+2" in h and "sum" not in h:
+            h["sum"] = 1
+            P("[hand2] SUMMARY %s mode=%s pos=(%.1f,%.1f,%.1f) n=%d 越線 pre/0.5/2/lift+2 = %.0f/%.0f/%.0f/%.0f%% 質心y = %.1f/%.1f/%.1f/%.1f 壁外 = %.0f/%.0f/%.0f/%.0f%%"
+              % (sd, a.hand2, *(h["pos"] * 1e3), h.get("contact", len(h.get("hv", []))), *[h[k][0] for k in ("pre", "rel+0.5", "rel+2", "lift+2")],
+                 *[h[k][1] for k in ("pre", "rel+0.5", "rel+2", "lift+2")], *[h[k][2] for k in ("pre", "rel+0.5", "rel+2", "lift+2")]))
+
     def g_events(t):
         """每個物理步呼叫:到點就做規劃 / 量測。"""
         k_ = int((t - TG0) // G_SHEET)
@@ -1425,6 +1497,7 @@ if a.grasp:
             g_after_pick(pl, t)
         if "grip" not in ev and t >= pl.get("t_grip", S0 + G_TGRIP) - 1e-6:
             g_grip_and_arc(pl, t)
+        if a.hand2 != "off" and "TR" in pl: h2_events(pl, t)                   # [hand2]
         if pl.get("att", {}).get("on") and t >= pl["TR"] - 1e-6:
             st.RemovePrim(Sdf.Path(pl["att"]["scope"])); pl["att"]["on"] = False
             if pl["att"].get("lo"): st.RemovePrim(Sdf.Path(pl["att"]["scope"] + "_lo"))
