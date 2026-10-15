@@ -136,6 +136,11 @@ ap.add_argument("--hand2", choices=["off", "press", "attach"], default="off", he
 ap.add_argument("--hand2_hold_s", type=float, default=3.0, help="[hand2] 第一隻手放手後第二隻手持續壓/綁幾秒,之後垂直抬起(attach:先解綁)")
 ap.add_argument("--hand2_lead_s", type=float, default=0.5, help="[hand2] 放手前幾秒壓到位(之前 0.5s 從上方下壓)")
 ap.add_argument("--hand2_pad_mm", type=float, default=15.0, help="[hand2] attach:方塊足跡外擴 mm 內的頂點都綁")
+ap.add_argument("--hand2_keep", type=int, default=0, help="[extract] 1 = 第二隻手綁住 yn 後不撤(到流程結束);只用在 yn")
+ap.add_argument("--hold_yp", type=int, default=0, help="[extract] 1 = yp 掀到壁外後第一隻手不放(停在那裡到結束)")
+ap.add_argument("--extract", type=int, default=0, help="[extract] 1 = yp 段結束後第三隻 kinematic 取杯手:下到杯頂 → 綁杯(杯轉 kinematic 跟手)→ 抬 150mm → 水平 +x 移 → 放到地面")
+ap.add_argument("--extract_lift_mm", type=float, default=150.0, help="[extract] 垂直抬起 mm")
+ap.add_argument("--extract_out_mm", type=float, default=200.0, help="[extract] 水平 +x 移出 mm")
 ap.add_argument("--proxy_m", type=float, default=0.005, help="[drag] 代理質量 kg")
 a = ap.parse_args()
 if a.tuck == 0:
@@ -582,6 +587,8 @@ if a.grasp:
         GVIS["h2"] = GU.VisBox(st, "/World/gvis_h2", H2S, (0.15, 0.4, 0.9)); GVIS["h2"].set(GPARK["h2"])
         P("★ --hand2 %s:第二隻手 %s %s mm(%s);放手前 %.1fs 到位,放手後持續 %.1fs 再抬起"
           % (a.hand2, GPATH["h2"], H2S * 1e3, "有碰撞 摩擦 %.1f" % a.fric if a.hand2 == "press" else "不碰撞、綁頂點 pad %.0f mm" % a.hand2_pad_mm, a.hand2_lead_s, a.hand2_hold_s))
+    if a.extract:                                                             # [extract] 第三隻手(純視覺;杯子轉 kinematic 跟著走 = 剛性綁定)
+        H3S = np.array([0.070, 0.070, 0.012]); GVIS["h3"] = GU.VisBox(st, "/World/gvis_h3", H3S, (0.85, 0.2, 0.75)); GVIS["h3"].set([3.0, 3.4, 1.0])
     if a.attach_proxy:                                                        # [drag] 力限代理:動態剛體 upx 以 D6 drive 掛在上指
         GPATH["upx"] = "/World/gfing/upx"
         _px = VC.kin_box(st, GPATH["upx"], [0.004] * 3, GPARK["up"], collide=False, visible=False)
@@ -715,6 +722,9 @@ if a.grasp and a.until == "all":
     P("抓取段:open hold 完 %.2f → settle → %s 每片 %.1fs(挑角 0~%.1f、下指進 ~%.1f、夾好 %.1f、掀 %.1fs、停 %.1fs、放開);結束 %.2f"
       % (T_END_ALL, " / ".join("%s@%.2f" % (sd, TG0 + k_*G_SHEET) for k_, sd in enumerate(G_SEQ)), G_SHEET, G_TPICK, G_TLOIN,
          G_TGRIP, a.peel_t, GT["peel_hold"], T_END))
+if a.extract:                                                                  # [extract] 取杯段接在 yp 段之後
+    XT = dict(down=1.5, bind=0.3, lift=3.0, move=3.0, lower=2.5, up=1.0, obs=1.0); T_X0 = T_END; T_END = T_X0 + sum(XT.values())
+    P("[extract] 取杯段 %.2f~%.2f %s" % (T_X0, T_END, XT))
 P("時間表:折 %s | 折完 %.2f | 入箱 %.2f | 關下蓋 %.2f | 關上蓋 %.2f | 放錨+杯動態 %.2f | 搬 %.2f~%.2f | 開上蓋 %.2f | 開下蓋 %.2f | 結束 %.2f(本次跑到 %.2f)"
   % (" ".join("%s@%.1f(%.1fs)" % (k, *v) for k, v in FT.items()), T_FOLD_END, T_INBOX, T_LID0, T_LID1, T_REL,
      T_MOVE0, T_MOVE1, T_OPEN0, T_OPEN1, T_END_ALL, T_END))
@@ -737,6 +747,7 @@ def phase(t):
     if t < T_OPEN2: return "open lower lids"
     if t < T_END_ALL or not a.grasp: return "hold"
     if t < TG0: return "grasp settle"
+    if a.extract and t >= T_X0: return "EXTRACT: " + X["st"]                   # [extract]
     k_ = min(int((t - TG0) // G_SHEET), len(G_SEQ) - 1); sd = G_SEQ[k_]; r_ = t - TG0 - k_ * G_SHEET
     _pf = "lower jaw" if a.pick_mode == "jaw" else "rod"
     _sq = ([("upper jaw down", G_TPICK + GT["lo_above"] + GT["lo_down"]), ("close jaws", G_TPICK + GT["lo_above"] + GT["lo_down"] + GT["close"]),
@@ -1329,6 +1340,7 @@ if a.grasp:
             P("  [%s] [peel] 放手前下壓 %.0f mm 再停 %.1f s" % (sd, a.release_press_mm, a.release_settle_s)); TP1 = TP1 + a.release_settle_s
         TR = TP1 + GT["peel_hold"]
         for k_, sgn in ((("up", 1.0),) if a.grasp_attach else (("up", 1.0), ("lo", -1.0))):
+            if a.hold_yp and sd == "yp": continue                             # [extract] yp 不放手:不排放開軌跡
             if "lay" in pl:                                                   # [peel4] 放手:從(凍結的)貼蓋位置先往箱外抽 40mm 再抬
                 def relL(w, k_=k_, ph=0):
                     Pq, Rq_ = pl["lay"]["f"](1.0); p1 = Pq[k_] + offw; B = p1 + np.array([0, pl["sg"] * 0.040, 0]); C = B + [0, 0, 0.08]
@@ -1414,6 +1426,7 @@ if a.grasp:
         return (float((sg * Pl[pl["TOPS"], 1] > CY).mean()) * 100 if len(pl["TOPS"]) else float("nan"),
                 float(Pl[m, 1].mean()) * 1e3, float((sg * Pl[m, 1] > IY + 0.0015).mean()) * 100)
     def h2_events(pl, t):
+        if a.hand2_keep and pl["sd"] != "yn": return                          # [extract] 第二隻手只拿 yn、不移走
         h = pl.setdefault("h2", {}); sd, sg = pl["sd"], pl["sg"]; TR = pl["TR"]; I3 = np.eye(3)
         TA = TR - a.hand2_lead_s; TH = TR + a.hand2_hold_s; TL = TH + 1.0
         if "pos" not in h and t >= TA - (0.5 if a.hand2 == "press" else 0.0) - 1e-6:
@@ -1441,8 +1454,10 @@ if a.grasp:
                 hv = np.where(m & (np.abs(Pl[:, 0] - xc) < 0.020 + a.hand2_pad_mm / 1e3) & (np.abs(Pl[:, 1] - yc) < 0.015 + a.hand2_pad_mm / 1e3)
                               & (Pl[:, 2] < ltop + 0.025))[0]
                 zc = float(Pl[hv, 2].mean()) if len(hv) else zp; pw_ = np.array([xc, yc, zc]) + offw
-                g_fn("h2", t, 1e-3, lambda w, p_=pw_: (p_, I3)); g_lin("h2", TH + 0.01, 1.0, pw_ + [0, 0, 0.060], I3)
-                g_fn("h2", TL + 0.02, 1e-3, lambda w: (GPARK["h2"], I3))
+                g_fn("h2", t, 1e-3, lambda w, p_=pw_: (p_, I3))
+                if not a.hand2_keep:                                          # [extract] keep = 不抬不停放
+                    g_lin("h2", TH + 0.01, 1.0, pw_ + [0, 0, 0.060], I3)
+                    g_fn("h2", TL + 0.02, 1e-3, lambda w: (GPARK["h2"], I3))
                 h["att_t"] = t + 0.02; h["hv"] = hv; h["pw"] = pw_
                 P("★ t=%.2f [%s] [hand2] attach 方塊中心 (%.1f,%.1f,%.1f) mm(夾爪 x %.1f;候選 %d 點);綁 %d 點(pad %.0f mm,z %.0f~%.0f);放手 %.2f;解綁 %.2f 抬起 ~%.2f"
                   % (t, sd, xc * 1e3, yc * 1e3, zc * 1e3, gx * 1e3, best[0], len(hv), a.hand2_pad_mm,
@@ -1451,7 +1466,7 @@ if a.grasp:
             h["att_on"] = bool(len(h["hv"]))
             if len(h["hv"]):
                 Pw = PLATE.pts(); VC.attach_vtx(st, "/World/gh2_%s" % sd, "/World/plate", "/World/plate", GPATH["h2"], h["hv"], Pw[h["hv"]] - h["pw"], P=P)
-        if h.get("att_on") and t >= TH - 1e-6:
+        if h.get("att_on") and t >= TH - 1e-6 and not a.hand2_keep:
             st.RemovePrim(Sdf.Path("/World/gh2_%s" % sd)); h["att_on"] = False; P("★ t=%.2f [%s] [hand2] 解綁 %d 點" % (t, sd, len(h["hv"])))
         for nm_, tt_ in (("pre", TR - 0.02), ("rel+0.5", TR + 0.5), ("rel+2", TR + 2.0), ("lift+2", TL + 2.0)):
             if "pos" in h and nm_ not in h and t >= tt_:
@@ -1498,7 +1513,7 @@ if a.grasp:
         if "grip" not in ev and t >= pl.get("t_grip", S0 + G_TGRIP) - 1e-6:
             g_grip_and_arc(pl, t)
         if a.hand2 != "off" and "TR" in pl: h2_events(pl, t)                   # [hand2]
-        if pl.get("att", {}).get("on") and t >= pl["TR"] - 1e-6:
+        if pl.get("att", {}).get("on") and t >= pl["TR"] - 1e-6 and not (a.hold_yp and pl["sd"] == "yp"):
             st.RemovePrim(Sdf.Path(pl["att"]["scope"])); pl["att"]["on"] = False
             if pl["att"].get("lo"): st.RemovePrim(Sdf.Path(pl["att"]["scope"] + "_lo"))
             P("★ t=%.2f [%s] 張開:RemovePrim %s(釋放 %d 頂點)" % (t, pl["sd"], pl["att"]["scope"], pl["att"]["n"]))
@@ -1516,6 +1531,86 @@ if a.grasp:
                 P("\n★ t=%.2f [%s] %s" % (t, pl["sd"], nm_)); g_line(pl, r, rm)
                 if nm_ in ("held", "released"):
                     P("  杯頂俯視覆蓋 %.0f%% → 露出 %.0f%%(開始時 %.0f%%)" % (100 * r["rm"]["cov"], 100 * (1 - r["rm"]["cov"]), 100 * (1 - pl["cov0"])))
+
+# ── [extract] 第三隻手取杯 ──
+X = dict(st="wait")
+if a.extract:
+    def x_hand(r_):
+        """取杯手中心(世界)。段:A 上方 → B 杯頂 → 綁 → C 抬 → D 移 → E 放 → 手抬開"""
+        segs = [(0.0, XT["down"], X["A"], X["B"]), (XT["down"] + XT["bind"], XT["lift"], X["B"], X["C"]), (None, XT["move"], X["C"], X["D"]),
+                (None, XT["lower"], X["D"], X["E"]), (None, XT["up"], X["E"], X["E"] + [0, 0, 0.10])]
+        t0 = 0.0; cur = X["A"]
+        for s0, du, p0, p1 in segs:
+            t0 = s0 if s0 is not None else t0
+            if r_ < t0: return cur
+            if r_ < t0 + du: return p0 + (p1 - p0) * ss((r_ - t0) / du)
+            cur = p1; t0 += du
+        return cur
+    def x_part_boxes():
+        bc = UsdGeom.BBoxCache(Usd.TimeCode.Default(), ["default", "render"])
+        return [(nm_, bc.ComputeWorldBound(st.GetPrimAtPath("/World/Box/" + nm_)).ComputeAlignedRange()) for nm_ in ["base"] + [L["nm"] for L in LIDS]]
+    def x_cavity(MW):
+        q = MW - g_offw(); return bool(((np.abs(q[:, 0]) < IX) & (np.abs(q[:, 1]) < IY) & (q[:, 2] < max(CBOX["top"], CBOX["top_y"]))).any())
+    def x_cloth_stats(Pw, MW, mp, Rq):
+        lo, hi = MW.min(0) - 0.005, MW.max(0) + 0.005
+        near = int(((Pw > lo) & (Pw < hi)).all(1).sum())
+        inm, _ = sheet_in_mug(Pw, mp, Rq); d = np.linalg.norm(Pw - X["P0"], axis=1)
+        return near, inm, int((d > 0.010).sum()), float(d.max()) * 1e3, d
+    def x_final_cloth(Pw):
+        Pl = Pw - g_offw(); out = []
+        for pl in GS["plans"]:
+            sd, sg = pl["sd"], pl["sg"]; m = GSIDE2 == sd
+            out.append("%s 越線 %.0f%% 壁外 %.0f%%" % (sd, float((sg * Pl[pl["TOPS"], 1] > CY).mean()) * 100 if len(pl["TOPS"]) else float("nan"),
+                                                   float((sg * Pl[m, 1] > IY + 0.0015).mean()) * 100))
+        inb = float(((np.abs(Pl[:, 0]) < IX) & (np.abs(Pl[:, 1]) < IY) & (Pl[:, 2] < max(CBOX["top"], CBOX["top_y"]))).mean()) * 100
+        return out, inb
+    def x_events(t):
+        r_ = t - T_X0
+        if "A" not in X:
+            mp, Rq, MW = mug_world(); X["q0"] = np.array(mugx.get_world_pose()[1], float); X["mp0"] = mp.copy()
+            hz = float(MW[:, 2].max()) - mp[2] + H3S[2] / 2; X["hz"] = hz
+            X["B"] = mp + [0, 0, hz]; X["A"] = X["B"] + [0, 0, 0.15]; X["C"] = X["B"] + [0, 0, a.extract_lift_mm / 1e3]
+            X["D"] = X["C"] + [a.extract_out_mm / 1e3, 0, 0]
+            zg = g_offw()[2] + CDZ; dst = MW + (X["D"] - X["B"]); z_land = zg; hit = []
+            for nm_, rg in x_part_boxes():
+                mn, mx = np.array(rg.GetMin()), np.array(rg.GetMax())
+                if (dst[:, 0].max() > mn[0]) and (dst[:, 0].min() < mx[0]) and (dst[:, 1].max() > mn[1]) and (dst[:, 1].min() < mx[1]) and mx[2] > z_land:
+                    z_land = mx[2]; hit.append(nm_)
+            X["E"] = X["D"] + [0, 0, (z_land + 0.001) - dst[:, 2].min()]; X["zg"] = zg; X["land_on"] = hit
+            X["P0"] = PLATE.pts().copy(); X["log"] = []; X["next"] = t
+            EYE = g_offw() + np.array([0.55, -0.80, 0.60]); TGT = g_offw() + np.array([0.10, 0.0, 0.10]); G.look(cam, list(EYE), list(TGT))
+            P("\n★ t=%.2f [extract] 開始:杯心 (%.1f,%.1f,%.1f) mm(箱局部 %s);取杯手 %s mm 從杯頂上方 150mm 下;抬 %.0f → +x %.0f → 放到 z %.1f(地面 %.1f;落點擋到 %s)"
+              % (t, *(mp * 1e3), np.round((mp - g_offw()) * 1e3, 1), H3S * 1e3, a.extract_lift_mm, a.extract_out_mm,
+                 (z_land + 0.001) * 1e3, zg * 1e3, hit or "無"))
+        TB = XT["down"]; TBi = TB + XT["bind"]; TC = TBi + XT["lift"]; TD = TC + XT["move"]; TE = TD + XT["lower"]
+        X["st"] = ("hand3 down" if r_ < TB else "bind cup" if r_ < TBi else "lift %.0fmm" % a.extract_lift_mm if r_ < TC else
+                   "move out %.0fmm" % a.extract_out_mm if r_ < TD else "place on ground" if r_ < TE else "hand3 release/up")
+        hp = x_hand(r_); GVIS["h3"].set(hp)
+        if "bind" not in X and r_ >= TB - 1e-6:
+            kin.Set(True); X["bind"] = t; X["P0"] = PLATE.pts().copy()
+            mp, Rq, MW = mug_world(); near, inm, nmov, dmx, _ = x_cloth_stats(X["P0"], MW, mp, Rq)
+            X["bind_near"] = near; X["bind_inm"] = inm
+            P("★ t=%.2f [extract] 綁杯:杯子 physics:kinematicEnabled=True、之後每步杯心 = 手 − %.1f mm(剛性綁定);杯邊 5mm 內布頂點 %d、布穿杯 %d" % (t, X["hz"] * 1e3, near, inm))
+        if "bind" in X and "free" not in X:
+            mugx.set_world_pose(position=hp - [0, 0, X["hz"]], orientation=X["q0"])
+            if r_ >= TE - 1e-6: X["free"] = t; P("★ t=%.2f [extract] 放下、手鬆開(杯子保持 kinematic 停在落點;地板碰撞早已關)" % t)
+        if "bind" in X and t >= X["next"] - 1e-9:
+            X["next"] = t + 0.25; Pw = PLATE.pts(); mp, Rq, MW = mug_world()
+            near, inm, nmov, dmx, d = x_cloth_stats(Pw, MW, mp, Rq); cav = x_cavity(MW)
+            if not cav and "t_out" not in X: X["t_out"] = t
+            X["log"].append((t, near, inm, nmov, dmx))
+            P("  [extract] t=%.2f %-16s 杯心 (%.1f,%.1f,%.1f) 抬 %.1f mm | 杯邊 5mm 內布點 %d | 布穿杯 %d | 布位移>10mm %d 點(%.1f%%)最大 %.1f mm | 杯在內腔 %s"
+              % (t, X["st"], *(mp * 1e3), (mp[2] - X["mp0"][2]) * 1e3, near, inm, nmov, 100.0 * nmov / len(Pw), dmx, "是" if cav else "否"))
+        if "sum" not in X and r_ >= sum(XT.values()) - 0.05:
+            X["sum"] = 1; Pw = PLATE.pts(); mp, Rq, MW = mug_world(); near, inm, nmov, dmx, d = x_cloth_stats(Pw, MW, mp, Rq)
+            L_ = X["log"]; lift = [x for x in L_ if X["bind"] + XT["bind"] <= x[0] <= X["bind"] + XT["bind"] + XT["lift"] + 1e-6]
+            fc, inb = x_final_cloth(Pw); cav = x_cavity(MW); mx_inm = max([x[2] for x in L_] + [0])
+            ok = (not cav) and mx_inm == 0 and np.linalg.norm(mp - X["mp0"]) > 0.15
+            P("[extract] SUMMARY bind_t=%.2f 綁時杯邊布點 %d | 全程杯邊布點最大 %d 布穿杯最大 %d | 抬起段 布位移>10mm 最大 %d 點(%.1f%%)最大位移 %.1f mm | 離開內腔 t=%s | 最終杯心 世界 (%.1f,%.1f,%.1f) 箱局部 (%.1f,%.1f,%.1f) mm 杯底 z %.1f(地面 %.1f) | 最終 布位移>10mm %.1f%% 黏在杯邊 %d 點 | %s | 布在箱內 %.1f%% | 取杯 %s"
+              % (X["bind"], X["bind_near"], max(x[1] for x in L_), mx_inm, max([x[3] for x in lift] + [0]), 100.0 * max([x[3] for x in lift] + [0]) / len(Pw),
+                 max([x[4] for x in lift] + [0]), "%.2f" % X["t_out"] if "t_out" in X else "未離開", *(mp * 1e3), *((mp - g_offw()) * 1e3),
+                 MW[:, 2].min() * 1e3, X["zg"] * 1e3, 100.0 * nmov / len(Pw), near, " / ".join(fc), inb, "OK" if ok else "NG"))
+        return
 
 # ── 主迴圈 ───────────────────────────────────────────────────────────
 try: FONT = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf", 17)
@@ -1599,6 +1694,7 @@ for fr in range(NFR):
         drive(tcur)
         if a.grasp and tcur >= TG0 - 1e-9:
             g_events(tcur); g_drive(tcur)
+        if a.extract and tcur >= T_X0 - 1e-9: x_events(tcur)                   # [extract]
         world.step(render=(k == SPF - 1) and _vid)
     # ── 渲染幀 ──
     Pp = PLATE.pts()
