@@ -98,6 +98,13 @@ def _on_update(_e):
                 _hlog("flap model: co7b (crease_co7b.py)")
             except Exception as e:
                 _hlog("crease_co7b.py failed to load: %s" % e)
+        if not CREASE_MODE and LID_MODE == "free":       # free = no flap model at all: crease drives zeroed, no torques
+            from pxr import UsdPhysics
+            st = omni.usd.get_context().get_stage()
+            for n in ("fxp", "fxn", "fyp", "fyn"):
+                d = UsdPhysics.DriveAPI.Get(st.GetPrimAtPath("/World/Packed/Box/crease_" + n), "angular")
+                if d: d.GetStiffnessAttr().Set(0.0); d.GetDampingAttr().Set(0.0)
+            _hlog("flap model: free (crease drives zeroed, no crease torques)")
         if CREASE:
             p = os.path.join(SIM, "crease_hold_ui.py")
             exec(compile(open(p).read(), p, "exec"), globals())
