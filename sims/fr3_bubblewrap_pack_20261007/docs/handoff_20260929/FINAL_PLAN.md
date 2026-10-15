@@ -97,4 +97,4 @@
 - `--guard_yn 2.6 --guard_n 2`:yn 守衛 3/3 沒觸發;`--slide_clear_mm 40`:穿杯 3/3 = 0(v2 有 3~4 點)。
 - `--hand2_tuck_mm 20`(滑出前手 2 把 yn 往外下壓)**有害**:2/3 把 yp 扯斷(邊長比 3.4~5.4 守衛放手)。拿掉。
 - X1(全過):yn/yp 拿住、穿杯 0、落地後布被帶起 22.8%(目前最好)。落點多推 20 mm 是真的會碰到平放的 yn 蓋,用 `--extract_out_mm 280`。
-- 目前正式 demo 旗標 = extract2 + `--guard_yn 2.6 --slide_clear_mm 40 --extract_out_mm 280`(不加 tuck),待 3 次驗證。
+- 目前正式 demo 旗標 = extract2 + `--guard_yn 2.6 --slide_clear_mm 40 --extract_out_mm 280`(不加 tuck);3 次驗證(vol/extract4):yn 3/3、yp 3/3 拿住,穿杯 0,落地後布被帶起 33.8/19.1/36.6%(<30% 只有 1/3),demo 影片用 X2。
