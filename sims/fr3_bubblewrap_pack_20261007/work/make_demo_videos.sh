@@ -49,8 +49,13 @@ if ok $W; then ws=$(awk -v d=$(dur $W) 'BEGIN{s=d-35;print (s<0?0:s)}'); fi
 seg $T/w2.mp4 $W $ws 35 "0:35:volume 整包綁定掀"
 cat_ $O/DEMO_5_wrap_peel.mp4 $T/t5.mp4 $T/w1.mp4 $T/w2.mp4
 
+title $T/t6.mp4 "雙手掀開並拿住 → 取杯（volume）"
+seg $T/x1.mp4 $D/videos/DEMO_twohand_extract_short.mp4 0 0 "0:20:掀 yn → 第二手接住 → 掀 yp → 取杯"
+seg $T/x2.mp4 $D/videos/VARIANTS_grid.mp4 0 0 "0:8:24 種折序並排"
+cat_ $O/DEMO_6_twohand_extract.mp4 $T/t6.mp4 $T/x1.mp4 $T/x2.mp4
+
 blk
-cat_ $O/DEMO_ALL.mp4 $O/DEMO_1_surface_pipeline.mp4 $T/black.mp4 $O/DEMO_2_volume_pipeline.mp4 $T/black.mp4 $O/DEMO_3_grasp_probes.mp4 $T/black.mp4 $O/DEMO_4_arm.mp4 $T/black.mp4 $O/DEMO_5_wrap_peel.mp4
+cat_ $O/DEMO_ALL.mp4 $O/DEMO_1_surface_pipeline.mp4 $T/black.mp4 $O/DEMO_2_volume_pipeline.mp4 $T/black.mp4 $O/DEMO_3_grasp_probes.mp4 $T/black.mp4 $O/DEMO_4_arm.mp4 $T/black.mp4 $O/DEMO_5_wrap_peel.mp4 $T/black.mp4 $O/DEMO_6_twohand_extract.mp4
 
 { echo "# DEMO 索引"; echo; echo "| 成品 | 長度(s) | 來源 / 段 |"; echo "|---|---|---|"
  row(){ echo "| $1 | $(printf %.1f $(dur $O/$1)) | $2 |"; }
@@ -59,5 +64,6 @@ cat_ $O/DEMO_ALL.mp4 $O/DEMO_1_surface_pipeline.mp4 $T/black.mp4 $O/DEMO_2_volum
  row DEMO_3_grasp_probes.mp4 "deck/figs/11、12 side_by_side；g1a_best_p16_both_g4；g2ab_G2a_noW（各 ≤12 s，標題 2 s）"
  row DEMO_4_arm.mp4 "arm_peel_dry_v2（0-20s）；dry_with_cloth（15s）；peel_v3_best（v3 u0.60）"
  row DEMO_5_wrap_peel.mp4 "SURF_grasp_attach（來源僅 19 s，故取全段）；vol/grasp/out_ga2/wrap.mp4（存在才納入，取最後 35s）"
- row DEMO_ALL.mp4 "A~E 串接，段間 1 s 黑幕"; } > $O/DEMO_INDEX.md
+ row DEMO_6_twohand_extract.mp4 "vol/videos/DEMO_twohand_extract_short.mp4（X3，18 s）；VARIANTS_grid.mp4（6 s）"
+ row DEMO_ALL.mp4 "A~F 串接，段間 1 s 黑幕"; } > $O/DEMO_INDEX.md
 rm -rf $T; ls -l $O
