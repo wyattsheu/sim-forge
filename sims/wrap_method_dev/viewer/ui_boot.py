@@ -1,0 +1,55 @@
+# ui_boot.py — open_in_ui.sh 用的開機腳本(kit --exec):開場景,然後載入 click_to_ros.py(Ctrl+點擊 → ROS 2 座標)。
+import os, carb, omni.kit.app, omni.usd
+USD = os.environ["HANDOFF_USD"]; SIM = os.environ.get("HANDOFF_SIM", os.path.dirname(os.path.abspath(__file__)))
+CLICK = os.environ.get("CLICK_TO_ROS", "1") == "1"
+# wrap_method_dev:紙箱蓋子的摺痕模型(crease_*.py、lid_latch.py)放在 ../carton/,click_to_ros.py 在本目錄
+CARTON = os.environ.get("WRAPDEV_CARTON_DIR", SIM)
+CREASE_MODE = False
+_s = {"f": 0, "opened": -1, "done": False}
+
+
+def _log(m): carb.log_warn("[handoff] " + m)
+_hlog = _log      # kept: click_to_ros.py etc. are exec'd into these globals and redefine _log
+
+
+def _on_update(_e):
+    _s["f"] += 1; f = _s["f"]
+    if _s["done"]: return
+    if f == 30:
+        omni.usd.get_context().open_stage(USD); _s["opened"] = f
+        _log("opening " + USD)
+    elif _s["opened"] > 0 and f == _s["opened"] + 150:
+        # 滑鼠拖曳:力量式 + 100(見 webrtc_boot.py 的實測);免按 Shift
+        st = carb.settings.get_settings()
+        st.set_bool("/physics/mouseInteractionEnabled", True); st.set_bool("/physics/mouseGrab", True)
+        st.set_bool("/physics/mouseGrabIgnoreInvisible", True); st.set_bool("/physics/forceGrab", True)
+        st.set_float("/physics/pickingForce", float(os.environ.get("MOUSE_PICKING_FORCE", "70")))
+        try:
+            from omni.physxui.scripts.extension import get_physicsui_instance
+            from omni.physxui.scripts.physxViewportOverlays import PhysxUIMouseInteraction
+            inst = get_physicsui_instance()
+            if inst is not None:
+                inst.mouse_interaction_override_toggle(PhysxUIMouseInteraction.ENABLED); _log("mouse dragging without Shift")
+        except Exception as e:
+            _log("could not enable no-Shift dragging (use Shift + left-drag): %s" % e)
+        if CLICK:
+            p = os.path.join(SIM, "click_to_ros.py")
+            try:
+                exec(compile(open(p).read(), p, "exec"), globals())
+            except Exception as e:
+                _log("click_to_ros.py failed to load: %s" % e)
+        # flap model: co7b = the carton of the dual-arm opening run co7b (default since 2026-10-14; Play is not pressed
+        # yet, so its drive / preset / wrap-iteration changes land on the stopped stage); plastic = drive-based
+        # elastic-plastic crease (archived in sims/carton_plastic_crease_20261009); latch = open/shut latch; spring = drive only
+        lid_mode = os.environ.get("LID_MODE", "spring" if os.environ.get("LID_LATCH", "1") == "0" else "co7b")
+        if not CREASE_MODE and lid_mode in ("co7b", "plastic", "latch"):
+            p = os.path.join(CARTON, {"co7b": "crease_co7b.py", "plastic": "crease_plastic.py", "latch": "lid_latch.py"}[lid_mode])
+            try:
+                exec(compile(open(p).read(), p, "exec"), globals())
+                _hlog("flap model: %s (%s)" % (lid_mode, os.path.basename(p)))
+            except Exception as e:
+                _hlog("%s failed to load: %s" % (os.path.basename(p), e))
+        _log("READY"); _s["done"] = True
+
+
+_sub = omni.kit.app.get_app().get_update_event_stream().create_subscription_to_pop(_on_update, name="handoff_ui_boot")

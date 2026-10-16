@@ -1,0 +1,101 @@
+#!/bin/bash
+# 用 WebRTC 串流開「場景 USD」(遠端用 Isaac Sim WebRTC Streaming Client 連進來看、用滑鼠操作)。
+# 從 fr3_bubblewrap_pack_handoff_20261007/open_in_webrtc.sh 複製;只改了路徑(boot 在 viewer/、蓋子摺痕在 carton/)。
+# 要看「包裝模擬的過程」用 ./run_wrap.sh --live;這支是看已經做好的場景(雙臂工作站 + 紙箱 + 包裹)。
+#
+#   ./open_in_webrtc.sh                          # 預設:交付包的 scene_final_phys.usd(包材 / 杯子有物理)
+#   ./open_in_webrtc.sh <你的場景.usd>            # 例如 physics/build_phys_scene.py 做出來的
+#   ./open_in_webrtc.sh scene_final.usd --crease # 原檔 + 彈塑性摺痕(carton/crease_hold_ui.py)
+#   WEBRTC_IP=1.2.3.4 WEBRTC_PORT=49110 ./open_in_webrtc.sh
+#   WEBRTC_NO_PLAY=1 ./open_in_webrtc.sh         # 開好不要自動按 Play
+#   CLICK_TO_ROS=0 ./open_in_webrtc.sh           # 不載入 Ctrl+點擊 → ROS 2 座標
+#
+#   ./open_in_webrtc.sh --check                  # 只印偵測結果(Isaac Sim 在哪、IP、port、GPU),不啟動
+#   ./open_in_webrtc.sh --stop                   # 停止
+#
+# Isaac Sim 位置自動偵測(二進位版 / Docker / pip 版),見 find_isaac.sh;偵測不到時指定:
+#   ISAAC_SIM_PATH=<含 kit/kit 的目錄>  或  ISAAC_SIM_PIP_ENV=<含 bin/isaacsim 的 venv>
+# WEBRTC_IP 沒設就用本機第一個非內網 IP;port 被佔用會自動往上找空的(WEBRTC_PORT 可指定起點)。
+set -e
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCENE="$HERE/../fr3_bubblewrap_pack_handoff_20261007/scene_final_phys.usd"; CREASE=0
+PIDF="$HERE/logs/webrtc.pid"
+BOOT="$HERE/viewer/webrtc_boot.py"
+running() { pgrep -f -- "--exec $BOOT" ; }      # 這個資料夾開出來的所有串流實例
+if [ "$1" = "--stop" ]; then
+  P_=$(running)
+  if [ -z "$P_" ]; then echo "No stream is running"; rm -f "$PIDF"; exit 0; fi
+  kill $P_ 2>/dev/null
+  echo -n "Stopping (pid $(echo $P_ | tr '\n' ' '))"
+  for i in $(seq 1 30); do [ -z "$(running)" ] && break; echo -n "."; sleep 1; done   # Kit 要幾秒才會真的結束
+  if [ -n "$(running)" ]; then kill -9 $(running) 2>/dev/null; sleep 1; echo -n " force-killed"; fi
+  echo " stopped"; rm -f "$PIDF"; exit 0
+fi
+if [ -n "$(running)" ]; then
+  echo "A stream is already running (pid $(running | tr '\n' ' '))." >&2
+  echo "Two streams interfere with each other (the client may connect to the wrong one, or show a black screen). Run first: $0 --stop" >&2
+  exit 4
+fi
+CHECK=0
+for a in "$@"; do
+  case "$a" in
+    --check) CHECK=1 ;;
+    --crease) CREASE=1 ;;
+    *) SCENE="$(cd "$(dirname "$a")" && pwd)/$(basename "$a")" ;;
+  esac
+done
+source "$HERE/find_isaac.sh"
+find_isaac || exit 5
+isaac_kit_cmd stream
+[ -f "$SCENE" ] || { echo "Scene not found: $SCENE" >&2; exit 2; }
+PORT="${WEBRTC_PORT:-49100}"
+if [ -z "${WEBRTC_PORT:-}" ]; then      # 沒指定就找第一個沒被佔用的
+  for _ in $(seq 1 20); do ss -lnt 2>/dev/null | grep -q ":$PORT " || break; PORT=$((PORT+1)); done
+fi
+if ss -lnt 2>/dev/null | grep -q ":$PORT "; then
+  echo "Port $PORT is in use -- pick another: WEBRTC_PORT=49110 $0 $*" >&2; exit 3
+fi
+# 對外 IP:優先 WEBRTC_IP;否則取本機第一個非內網、非 docker 的 IPv4(內網 / VPN 環境請自己設 WEBRTC_IP)
+if [ -n "${WEBRTC_IP:-}" ]; then PUBLIC_IP="$WEBRTC_IP"
+else
+  PUBLIC_IP=$(hostname -I 2>/dev/null | tr ' ' '\n' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$' \
+    | grep -vE '^(10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.|127\.|169\.254\.)' | head -1)
+  [ -n "$PUBLIC_IP" ] || PUBLIC_IP=$(hostname -I 2>/dev/null | awk '{print $1}')
+  echo "IP     : WEBRTC_IP not set, using $PUBLIC_IP (if wrong: WEBRTC_IP=<an IP the client can reach> $0)"
+fi
+if [ "$CHECK" = 1 ]; then
+  echo "Isaac  : $ISAAC_KIND  $ISAAC_HOME"; echo "Launch :  ${KIT_CMD[*]}"
+  echo "Scene  : $SCENE"; echo "Connect: $PUBLIC_IP  signaling TCP $PORT / media UDP 47998"
+  nvidia-smi --query-gpu=index,name,memory.free --format=csv,noheader 2>/dev/null | sed 's/^/GPU    : /'
+  ss -lnu 2>/dev/null | grep -q ":47998 " && echo "Warning: UDP 47998 is in use (another stream running?)"
+  exit 0
+fi
+mkdir -p "$HERE/logs"; LOG="$HERE/logs/webrtc.log"
+export HANDOFF_USD="$SCENE" HANDOFF_CREASE="$CREASE" HANDOFF_SIM="$HERE/viewer" HANDOFF_NO_PLAY="${WEBRTC_NO_PLAY:-0}"
+export WRAPDEV_CARTON_DIR="$HERE/carton"
+echo "Isaac  : $ISAAC_KIND  $ISAAC_HOME"
+echo "Scene  : $SCENE  (crease script: $([ $CREASE = 1 ] && echo on || echo off))"
+echo "Connect: enter $PUBLIC_IP in the Streaming Client (signaling TCP $PORT, media UDP 47998)"
+echo "Log    : $LOG   -- connect once you see [handoff] READY (first start of a pip install can take ~5 min)"
+[ "$(id -u)" = 0 ] && export OMNI_KIT_ALLOW_ROOT=1
+isaac_setup_ros
+export HANDOFF_SIM="$HERE/viewer"
+nohup "${KIT_CMD[@]}" \
+  --no-window --allow-root \
+  --/persistent/physics/enableDeformableBeta=true \
+  --/physics/updateToUsd=true \
+  --/physics/mouseInteractionEnabled=true \
+  --/physics/mouseGrab=true \
+  --/physics/forceGrab=false \
+  --/physics/pickingForce=25.0 \
+  --/app/livestream/publicEndpointAddress="$PUBLIC_IP" \
+  --/app/livestream/port="$PORT" \
+  --/exts/omni.kit.livestream.app/primaryStream/signalPort="$PORT" \
+  --/exts/omni.kit.livestream.app/primaryStream/publicIp="$PUBLIC_IP" \
+  --/app/window/drawMouse=true \
+  --/app/livestream/allowResize=true \
+  --/app/livestream/allowDynamicResize=true \
+  --exec "$BOOT" \
+  > "$LOG" 2>&1 &
+echo $! > "$PIDF"
+echo "pid    : $! (stop with: $0 --stop)"

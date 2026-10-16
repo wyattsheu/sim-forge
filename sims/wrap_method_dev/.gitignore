@@ -1,0 +1,19 @@
+# repo 根目錄的 .gitignore 擋掉了 *.usd 和 sims/*/assets/(那是給 NVIDIA 第三方資產用的),
+# 這裡的 assets/ 是我們自己的被包物 / 紙箱 / 貼圖,要進版控
+!assets/
+!*.usd
+!**/*.usd
+
+# 模擬輸出:每次重跑都會重建,不進版控
+out_*/
+surface/c1/
+surface/c2/
+surface/box/
+surface/mb_open/
+surface/list.txt
+*.mp4
+*.stdout
+__pycache__/
+*.pyc
+out/
+logs/
