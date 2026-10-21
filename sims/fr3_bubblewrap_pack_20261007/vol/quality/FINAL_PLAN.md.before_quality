@@ -1,0 +1,102 @@
+# 最終方案:surface 還是 volume、要輸出哪個版本、折法多樣性怎麼做(2026-10-14)
+
+所有數字出自 `work/`、`vol/`、`arm/` 的 log(見各節出處);「待驗」= 今天還在跑。
+
+## 1. 結論:包材用 volume,surface 只留作對照與快速篩選
+
+| 需求 | surface(零厚度膜) | volume(4 mm 四面體板) | 勝 |
+|---|---|---|---|
+| 外觀:有厚度、折邊圓角 | 無厚度,靠 surfaceThickness 假厚;層間距 4.3~5.6 mm 是自碰撞撐出來的 | 真厚度 4 mm,層間距 = 厚度 | volume |
+| 入箱 0 超出、關蓋、搬箱、開蓋 | ✓(DEMO_1) | ✓(DEMO_2,互穿 ≤ 8,可重現 ≤ 2 mm) | 平手 |
+| 包起來的體積 | 3.1× 杯子(sheet 400) | 撐滿內腔(E 2e3 才留得住) | surface 略勝,但都不是「貼身」 |
+| 夾得住(綁定後) | 綁 9~11 點,yn 掀 73~78% | 綁 12 點,yn 掀 100%、放手後 62% | volume |
+| 掀一片不扯整張 | 整張被拖 99%(片重疊 51%) | 他片被拖 20%(三方案壓低中,待驗) | volume |
+| 手臂場景能載入、能掀 | 未做 | 載入 OK,v3 掀 64~68%、放手後 56~66% | volume |
+| 速度(整鏈 86 s 模擬) | 約 5 分鐘 | 10.7 分鐘(7.4× 實時);dt 1/120 快到 5.8× 但放手後回彈 0%,不能用 | surface |
+| 折痕留形(塑性) | 無(restBendAngles 可寫但沒定型) | 無(schema 無塑性) | 都沒有 |
+| 顫抖 | 小(有 sleep) | 明顯;edamp 0.02 可降 40% 但傷抓取鏈 | surface |
+
+理由:使用者的終點是「手臂夾緊、掀開、正確外觀與物理」。這三項 volume 都比 surface 好或持平,surface 唯一的優勢是快,而快可以用「surface 先篩參數、volume 出正式結果」補。
+
+## 2. 要輸出的版本(正式版 = 這組,不要再隨手改)
+
+- 程式:`vol/wrap_vol.py`(單程式整鏈),`vol/volcommon.py`、`vol/vol_pen.py`、`vol/layer_order.py`、`vol/grasp_plan.py`。
+- 物理:`--young 2e3 --poisson 0.45 --thick_mm 4 --areal 0.1 --fric 0.8 --cont 0.002 --rest 0.0005 --solver 128 --dt 1/240 --ldamp 0 --edamp 0`(阻尼 0;展示折疊影片可 `--edamp 0.02`)。
+- 幾何:`--sheet_mm 500 --nxy 35 --tip_over_mm 30 --tuck 1`,紙箱 `carton_w131.usd`(270×230×131,內腔 264×224)。
+- 抓取:`--grasp 1 --grasp_attach 1 --attach_pad_mm 24 --attach_layer both --arc2 1 --arc_k 0.8 --peel_t 6 --gap_mm 4 --clear_mm 6 --steep_deg 45 --second 1`。
+- 重現指令:`vol/grasp/out_ga3/wrap_vol.log` 第 2 行的 args;影片 `vol/videos/VOL_grasp_attach.mp4`。
+- **demo 正式旗標(夾爪版,2026-10-21,vol/JAW.md)**:三隻手都是兩指夾爪「合指完成才綁 / 才帶走」(使用者:demo 要夾不要黏,之後用夾爪)。`vol/extract6/run.sh` = 抓取旗標 + `--grasp_site state --grasp_retry 2 --site_xmax_mm 60 --grasp_site_k 13 --arc2_over_cap 0 --arc2_over_mm 30 --hand2 jaw --hand2_pad_mm 15 --hand2_keep 1 --hold_yp 1 --extract 1 --guard_yp 2.6 --guard_n 2 --extract_mode slide --extract_out_mm 280 --guard_yn 2.6 --slide_clear_mm 40 --hand1_jaw 1 --extract_grip jaw --edamp 0.02`;2 次驗證都拿住、穿杯 0,落地布被帶起 34.8%(X1,無阻尼)/ 22.0%(X2,edamp 0.02);影片 `vol/videos/VOL_twohand_extract.mp4`、`DEMO_twohand_extract_short.mp4`(extract6/X2)。純摩擦不綁定不可行(fric/F1、F2 指間 0 點)。
+- 輸出格式(給手臂端 / 下游):每個 snapshot 的 `wrap.npz`(sheet、mug、tets、TOP/BOT 層索引)+ `wrap_vol.log` 的判讀表 + `cloth_iface.py` 的介面(OFF、NX/CX/CY、snap_t、lid_deg);手臂端綁定介面見 `arm/INTERFACE.md` §5。
+- 驗收:`work/tests/run_checks.py`(10 函式 23 項)+ 判準:入箱 0 超出、穿杯 0、邊長比 0.95~1.05、yn 越線 ≥ 80%、放手後 ≥ 50%、他片 < 5%。
+
+待驗後可能併入正式版:他片三方案(`vol/DRAG.md`)、速度(`vol/SPEED.md`,目前只有「渲染降頻」是安全的,物理放寬都傷掀開)。
+
+## 3. 折法多樣性:怎麼用隨機產生很多種折法
+
+目的:下游(手臂拆包、資料集)要看到不同的包法,不是只有一種「先左右後前後」。
+
+### 3.1 可變的維度(都在 wrap_vol.py 既有幾何上,不用新物理)
+| 維度 | 現狀 | 隨機範圍 | 旗標 |
+|---|---|---|---|
+| 折序 | 固定 xp,xn,yp,yn | 4! = 24 種,先分兩類:x 先(y 在外層,PPT 要求)/ y 先;同軸兩片誰先 | `--fold_order xp,xn,yp,yn` |
+| 哪片在最外層 | yn | 四片任一 | 由折序決定 |
+| 布大小 / 長寬比 | 500 正方 | 420~560;長方 0.8~1.25 | `--sheet_x_mm --sheet_y_mm` |
+| 杯子在布上的位置 | 正中 | 偏 ±30 mm(四片長度不等 → 越線量不同) | `--mug_off_mm dx,dy`(新) |
+| 杯子方位 | 躺平,杯口 +x | 繞 z 轉 0/90/180/270 + ±10° | `--mug_yaw_deg`(新) |
+| 尖端越線量 | 30 | 10~45 | `--tip_over_mm` |
+| 佔位 / 折線位置 | margin 12、wall 6 | margin 8~20、wall 3~10 | `--margin --wall` |
+| 收耳 | on | on/off | `--tuck` |
+| 折速 / 停留 | 3 s / 0.5 s | 2~4 / 0.2~1(影響皺褶) | `--fold_span --fold_hold` |
+| 材質 | E 2e3 | 1.5e3~3e3(皺褶軟硬) | `--young` |
+
+不做的(另一條線):斜角/對角折(SIDEPICK 要重寫)、捲筒式包法、兩張布。
+
+### 3.2 實作
+1. `vol/wrap_vol.py` 加 `--fold_order`、`--mug_off_mm`、`--mug_yaw_deg`、`--seed`;`FOLD_ORDER` 從旗標來,`plan_ends()` 的「已疊層數」計算已經是依順序推算,直接可用;`UORDER` 自動反序。
+2. `vol/fold_variants.py`:`--n N --seed S` 從 3.1 的範圍抽樣 N 組,寫 `variants/<id>/cmd.sh` + `params.json`;`--run` 逐一跑(一次一個,GPU 門檻 20 GB),用 `--until box`(折 + 入箱,約 4 分鐘)篩,通過判準(入箱 0 超出、穿杯 0、自穿 < 20、邊長比 0.9~1.1)的才跑整鏈。
+3. 結果進 `vol/variants/VARIANTS.csv`(每列 = 一組參數 + 判讀),`layer_order.py` 標出最外層是哪片,給手臂端選抓取片。
+4. 驗收:24 種折序各跑一次 `--until box`,統計通過率;隨機 30 組看分佈。
+5. 文件 `vol/FOLD_DIVERSITY.md`:通過率表、失敗模式、每種折序的最外層片、影片拼貼(`videos/VARIANTS_grid.mp4`)。
+
+### 3.3 風險
+- 折序改成 y 先時,x 片的錨點選取(`vids` 的 |y| ≤ CY 規則)要對調軸,程式裡用 `ax` 推導即可,但要驗。
+- 杯子偏位後 `SIDEPICK` 的角落歸屬以佔位中心算,折線也要跟著偏。
+- 隨機組合可能讓尖端打不到杯頂(布太小);`plan_ends()` 要加檢查並在 params 標 infeasible。
+
+### 3.4 結果(2026-10-14,詳見 vol/FOLD_DIVERSITY.md、vol/VARIANTS.csv)
+- 24 種折序全部能包進箱:物理判準(0 超出、穿杯 0、自穿、反轉)過 20/24,加邊長比 [0.5,1.65] 過 9/24(邊長比門檻落在雜訊內,同參數兩次 1.56 / 1.66)。
+- 最外層 22/24 = 最後折的那片;下游要哪片在外層就把它排最後。
+- 隨機 12 組(杯偏位 ±30、轉向 0/90/180/270±10°):tuck=0 的 8 組全部 y 向超出內腔 → **抽樣固定 tuck=1**;布小 + 偏位會 infeasible(log 標 ★)。物理 PASS 的 2 組整鏈(搬、開蓋)0 超出。
+- 影片 `vol/videos/VARIANTS_grid.mp4`(22 格)。旗標 `--fold_order --mug_off_mm=dx,dy --mug_yaw_deg --seed`;抽樣/批跑 `vol/fold_variants.py`。
+- 已知:GPU 不可重現,同參數兩次結果不同;判讀要用分布。
+
+## 4. 掀開可重現性:四輪結論(2026-10-14 晚,vol/ROBUST.md、PEEL.md、PEEL2~4.md)
+| 輪 | 做法 | yn 放手後 ≥50% |
+|---|---|---|
+| ROBUST | 看實際狀態選抓點 + 綁 <6 重夾 | 綁點穩定 14~31,但放手後 1/5 |
+| PEEL A | 弧線終點越壁 30 mm 轉 180° | 2/3(事後證明是臨界平衡碰對邊)|
+| PEEL2 | + |x|<50 選點過濾 + 實際鉸點 | 0/5(候選只剩 1、越壁被材料長截)|
+| PEEL3 | 越壁不截 + 質心閉環 | 0/7(片被拉長不是翻出;質心過壁也留不住)|
+| PEEL4 | + 往下貼蓋 + 邊長比 2.0 停 | 1/5(指頭傾斜佔 15 mm,片貼不到蓋)|
+
+**物理結論**:4 mm volume 片在放手瞬間是立在箱壁上的臨界平衡——往牆倒就留住、往內倒就翻回,成敗由當次皺褶決定,單手「掀完放手靠重力」這條線不可靠,**停止**。
+**改走**:(1) 第二隻手在放手前壓住躺在蓋上那段(PPT 的雙手分工,也解他片問題);(2) 抓靠近根部、分兩段掀讓立起段往外倒;(3) 用 surface 版對照確認是不是板的彎曲回彈。
+已可用的部分:綁定抓取本身穩定(綁點 ≥9、滑動 <1 mm、穿杯 0),越線 ≥70% 在 5 次中 3~4 次。
+
+### 4.1 雙手版結果(vol/HAND2.md,2026-10-15 凌晨)
+- 第二隻手綁住(attach)躺在蓋上那段時,yn 片 100% 留住;**一撤開就翻回**(attach 2/5、壓板 0/3,yp 0/8)。壓板因為只壓到蓋頂 + 5 mm 等於沒壓力。
+- 物理結論:4 mm volume 板立在內壁的那段有持續的彎曲回彈(材料無塑性),壓 3 s 不會定型。「放手後靠重力留住」在這個材料上**不成立**,不是軌跡問題。
+- **對 demo 的定義改成**:手臂把包材「掀開並持續壓住/拿住」的狀態下取出杯子(真人拆包也是一手撐開一手拿),而不是掀開放手。這個定義下現有能力已足夠:綁定抓取穩定、掀開 ≥70%、第二隻手綁住時 100% 留住。
+- 要「放手後仍開」只剩兩條:材料加塑性(PhysX 107.3 volume 無此 schema,需換 solver 或 rest-shape 重烘焙)或兩片互壓(yn、yp 都掀完互相壓住再撤,未試)。
+
+### 4.2 取杯 v2(vol/EXTRACT2.md,2026-10-15)
+- yp 守衛觸發是弧線起頭 1~1.5 s「從杯頂撕起」的單格尖峰(2.3~2.8,下一格回 1.8)。對策 `--guard_yp 2.6 --guard_n 2`(連續兩格才放手)→ yp 3/3 拿住到取杯前(舊 1/3)。
+- 取杯改 `--extract_mode slide`(抬 20 → 斜升過 yn 壁頂 → 水平 −y 260 → 落地):3/3 出箱落地、不撞蓋;布被帶起抬起時 26~32%(舊 41~87%),但滑過 yn 壁時把掛著的 yn 布拖出,落地後 31~54%;穿杯出現 3~4 點(舊 0)。
+- 下一步:過壁高度 +30~50 mm、或從 x 側出箱、或手 2 先把 yn 壓低;yn 段也套用連續次數守衛(X2 的 yn 被 2.3 單格尖峰放手)。
+
+### 4.3 取杯 v3(vol/EXTRACT3.md)
+- `--guard_yn 2.6 --guard_n 2`:yn 守衛 3/3 沒觸發;`--slide_clear_mm 40`:穿杯 3/3 = 0(v2 有 3~4 點)。
+- `--hand2_tuck_mm 20`(滑出前手 2 把 yn 往外下壓)**有害**:2/3 把 yp 扯斷(邊長比 3.4~5.4 守衛放手)。拿掉。
+- X1(全過):yn/yp 拿住、穿杯 0、落地後布被帶起 22.8%(目前最好)。落點多推 20 mm 是真的會碰到平放的 yn 蓋,用 `--extract_out_mm 280`。
+- (舊,已由 §2 夾爪版取代)demo 旗標 = extract2 + `--guard_yn 2.6 --slide_clear_mm 40 --extract_out_mm 280`(不加 tuck);3 次驗證(vol/extract4):yn 3/3、yp 3/3 拿住,穿杯 0,落地後布被帶起 33.8/19.1/36.6%(<30% 只有 1/3),demo 影片用 X2。
+- v5 阻尼(vol/EXTRACT3.md「v5 阻尼」,vol/extract5,舊綁定版 + `--edamp 0.02`,2 次):掀開停留顫抖(影片像素二階差 RMS)25.06 → 6.50(e4 X2 → e5 X1,3 次平均 −68%),但 X2 的 yn 在 59.53 被守衛放手(e4 是 3/3 沒觸發)、落地帶起 44.7%;X1 全過(落地 21.0%)。綁定版判準比 extract4 差 → 綁定版不加阻尼;§2 夾爪版已帶 `--edamp 0.02`,注意 yn 守衛放手的風險要靠多次驗證確認。

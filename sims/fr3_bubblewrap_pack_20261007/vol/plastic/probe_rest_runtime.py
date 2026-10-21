@@ -11,6 +11,7 @@ mode 0 對照(不改)
      2 1 + USD points ← 當下
      3 1 + prim SetActive(False) → step → SetActive(True)(強迫 PhysX 重新解析)
      4 刪掉整塊板 + 同路徑重建(points = rest = 當下),根部 attachment 也重建
+     6 1 + 同一幀 SetActive(False)→SetActive(True)(不 step)
      5 1 + RemoveAPI/ApplyAPI OmniPhysicsDeformableBodyAPI(schema resync)
 量測:彎角 = 尖端段(最後 20mm)切線角 − 根部段(8~20mm)切線角(x-z 平面,deg);StVK 彈性能(相對當前生效的 rest)。
 """
@@ -126,7 +127,7 @@ for s in range(1, NS + 1):
         cur = mesh.pts(); b, _ = bend_deg(cur)
         e_old = stvk(cur, REST); res["bend_pl"] = b
         prim = st.GetPrimAtPath(PATH)
-        if a.mode in (1, 2, 3, 5):
+        if a.mode in (1, 2, 3, 5, 6):
             setv(prim.GetAttribute("omniphysics:restShapePoints"), cur)
             if a.mode == 2:
                 setv(mesh.pa, cur)
@@ -134,6 +135,9 @@ for s in range(1, NS + 1):
                 prim.SetActive(False); world.step(render=False); prim = st.GetPrimAtPath(PATH); prim.SetActive(True)
                 mesh = VC.Mesh(st, PATH)
                 setv(mesh.pa, cur)
+            if a.mode == 6:                       # 同一幀 SetActive(False) → SetActive(True),不多走一步
+                prim.SetActive(False); prim = st.GetPrimAtPath(PATH); prim.SetActive(True)
+                mesh = VC.Mesh(st, PATH)
             if a.mode == 5:
                 api = [x for x in prim.GetAppliedSchemas() if "DeformableBody" in x and "Physx" not in x]
                 P("   mode5 RemoveAPI/ApplyAPI %s" % api)

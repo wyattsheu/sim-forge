@@ -152,6 +152,14 @@ ap.add_argument("--jaw_collide", type=int, default=0, help="[jaw3] 1 = 夾爪指
 ap.add_argument("--finger_mm", type=float, default=20.0, help="[jaw2] 第一隻手指面邊長 mm(t,u);預設 20 = 舊")
 ap.add_argument("--guard_n", type=int, default=1, help="[extract2] yp 段守衛需連續 N 次量測超過門檻才放手(預設 1 = 舊)")
 ap.add_argument("--proxy_m", type=float, default=0.005, help="[drag] 代理質量 kg")
+ap.add_argument("--plastic_on_release", type=int, default=0, help="[plastic] 1 = 第一隻手放手前 --plastic_pre 秒把 yn/yp 的 rest shape 改成當下形狀(寫 restShapePoints + SetActive 關→開 讓 PhysX 重建),模擬塑性;0 = 舊行為")
+ap.add_argument("--plastic_on_fold", type=int, default=0, help="[plastic] 1 = 關蓋完成、放錨點之前把整張布 rest 改成當下(折好)形狀;0 = 舊行為")
+ap.add_argument("--plastic_pre", type=float, default=0.2, help="[plastic] 放手前幾秒改 rest")
+ap.add_argument("--plastic_region", choices=["all", "side"], default="all", help="[plastic] release 時改哪些頂點:all = 全片;side = 本片 + 鉸線內 30mm(其他頂點 rest 不變)")
+ap.add_argument("--plastic_how", choices=["frame", "step"], default="frame", help="[plastic] SetActive(False)→(True) 在同一幀(frame)或中間多走一步(step)")
+ap.add_argument("--plastic_filter_mm", type=float, default=-1.0, help="[plastic] 重建時把 selfCollisionFilterDistance(以 rest 形狀量)改成這個 mm;折好的 rest 層間 <1mm 會被濾掉自碰撞;<0 = 不改")
+ap.add_argument("--release_watch", type=int, default=0, help="[plastic] 1 = 放手後 0.5/2/10 s 印 越線/壁外/自穿/穿杯/杯位移(--plastic_on_release 1 時自動開)")
+ap.add_argument("--grasp_tail_s", type=float, default=0.0, help="[plastic] 抓取段結束後多觀察幾秒(取杯段之前);0 = 舊行為")
 ap.add_argument("--quality", choices=["off", "fast", "final"], default="off",
                 help="[quality] fast = 開發用(dt 1/120 solver 48 vid_every 2 960x540);final = 出片(dt 1/240 solver 128);off = 舊行為。個別旗標有明確給時以個別旗標為準")
 a = ap.parse_args()
@@ -775,7 +783,7 @@ G_SHEET = G_RT * a.grasp_retry + G_TGRIP + G_LF + G_EXT + a.peel_t + GT["peel_ho
 G_SEQ = (["yn", "yp"] if a.second else ["yn"]) if a.grasp else []
 TG0 = T_END_ALL + 1.0
 if a.grasp and a.until == "all":
-    T_END = TG0 + G_SHEET * len(G_SEQ)
+    T_END = TG0 + G_SHEET * len(G_SEQ) + a.grasp_tail_s                     # [plastic] grasp_tail_s 預設 0
     P("抓取段:open hold 完 %.2f → settle → %s 每片 %.1fs(挑角 0~%.1f、下指進 ~%.1f、夾好 %.1f、掀 %.1fs、停 %.1fs、放開);結束 %.2f"
       % (T_END_ALL, " / ".join("%s@%.2f" % (sd, TG0 + k_*G_SHEET) for k_, sd in enumerate(G_SEQ)), G_SHEET, G_TPICK, G_TLOIN,
          G_TGRIP, a.peel_t, GT["peel_hold"], T_END))
@@ -1538,7 +1546,11 @@ if a.grasp:
                 P("★ t=%.2f [%s] [hand2] press 壓板中心 (%.1f,%.1f) mm(夾爪 x %.1f;壁外 10~40mm 候選 %d 點);從 z %.1f 下壓到 %.1f(底 = 蓋頂 %.1f + T + 1 = %.1f)@%.2f;放手 %.2f;抬起 %.2f~%.2f"
                   % (t, sd, xc * 1e3, yc * 1e3, gx * 1e3, best[0], za * 1e3, zp * 1e3, ltop * 1e3, zb * 1e3, TA, TR, TH, TL))
             elif a.hand2 == "jaw":                                            # [jaw2] 兩指從上方 80mm 張開(指間 40)下降 → TA 前 0.6s 沿 x 合到指間 6mm → TA 綁
-                zf = ztop + H2F[2] / 2 - 0.001; oo = 0.020 + H2F[0] / 2; oc = H2GAP / 2 + H2F[0] / 2; pw_ = np.array([xc, yc, ztop]) + offw
+                zf = ztop + H2F[2] / 2 - 0.001
+                if a.jaw_collide:                                             # [jaw3] 指尖停在兩指掃過範圍的布頂 +0.5mm(C1f:壓 1mm 再合 → 布被拖皺,yn 邊長比 5.3 守衛放手)
+                    _fz = m & (np.abs(Pl[:, 0] - xc) < 0.030) & (np.abs(Pl[:, 1] - yc) < H2F[1] / 2 + 0.002)
+                    zf = (float(Pl[_fz, 2].max()) if _fz.any() else ztop) + H2F[2] / 2 + 0.0005
+                oo = 0.020 + H2F[0] / 2; oc = H2GAP / 2 + H2F[0] / 2; pw_ = np.array([xc, yc, ztop]) + offw
                 g_fn("h2", t, 1e-3, lambda w, p_=pw_: (p_, I3))               # 綁定錨(不碰撞、不顯示)先就位
                 for k_, s_ in (("h2a", -1.0), ("h2b", 1.0)):
                     g_fn(k_, t, 1e-3, lambda w, p_=np.array([xc + s_ * oo, yc, zf + 0.08]) + offw: (p_, I3))
@@ -1727,7 +1739,13 @@ if a.extract:
                 ztp = float(MW[:, 2].max()); xb = float(MW[MW[:, 2] > ztp - 0.005, 0].mean())
                 bd = (np.abs(MW[:, 0] - xb) < H3F[0] / 2) & (MW[:, 2] > ztp - H3F[2])
                 y0, y1 = float(MW[bd, 1].min()), float(MW[bd, 1].max()); hp0 = X["B"]
-                X["jaw"] = dict(dx=xb - hp0[0], dz=ztp - H3F[2] / 2 - hp0[2], ya=y0 - hp0[1] - H3F[1] / 2 - (0.001 if a.jaw_collide else 0.0005), yb=y1 - hp0[1] + H3F[1] / 2 + (0.001 if a.jaw_collide else 0.0005))   # [jaw3] 碰撞版離杯 1mm
+                ca = cb = 0.0005
+                if a.jaw_collide:                                             # [jaw3] 杯端外 10mm 內有布 → 停在 杯 + 布厚 + 1mm(C1f:停 1mm 把布夾在指與 kinematic 杯之間,穿入 2.8mm);沒布 → 杯 + 1mm
+                    _Pw = PLATE.pts(); _bb = (np.abs(_Pw[:, 0] - xb) < H3F[0] / 2 + 0.005) & (_Pw[:, 2] > ztp - H3F[2]) & (_Pw[:, 2] < ztp + 0.010)
+                    _na = int((_bb & (_Pw[:, 1] > y0 - 0.010) & (_Pw[:, 1] < y0 + 0.002)).sum()); _nb = int((_bb & (_Pw[:, 1] < y1 + 0.010) & (_Pw[:, 1] > y1 - 0.002)).sum())
+                    ca = T + 0.001 if _na else 0.001; cb = T + 0.001 if _nb else 0.001
+                    P("  [jaw3] 取杯指停點:−y 端外 10mm 布點 %d → 離杯 %.1f mm;+y 端 %d → %.1f mm" % (_na, ca * 1e3, _nb, cb * 1e3))
+                X["jaw"] = dict(dx=xb - hp0[0], dz=ztp - H3F[2] / 2 - hp0[2], ya=y0 - hp0[1] - H3F[1] / 2 - ca, yb=y1 - hp0[1] + H3F[1] / 2 + cb)
                 P("★ t=%.2f [jaw2] 取杯夾爪:指 %s mm 沿 y 夾杯兩端;杯身 x %.1f(箱局部)接觸 y %.1f / %.1f(杯長 %.1f mm,z 帶 %.1f~%.1f);張開每邊 +25mm;合指 %.1fs → 接觸才轉 kinematic"
                   % (t, H3F * 1e3, (xb - g_offw()[0]) * 1e3, (y0 - g_offw()[1]) * 1e3, (y1 - g_offw()[1]) * 1e3, (y1 - y0) * 1e3, (ztp - H3F[2] - g_offw()[2]) * 1e3, (ztp - g_offw()[2]) * 1e3, XT["bind"]))
             EYE = g_offw() + np.array([0.55, -0.80, 0.60]); TGT = g_offw() + np.array([0.10, 0.0, 0.10]); G.look(cam, list(EYE), list(TGT))
@@ -1800,6 +1818,46 @@ def stamp(rgb, t, ph_):
     d.text((Wd-424, 8), "t=%5.2fs  %s" % (t, ph_), fill=(255,)*3, font=FONT)
     return np.array(im)
 
+# ── [plastic] runtime 改 rest shape(模擬塑性):寫 restShapePoints → SetActive(False/True) 讓 PhysX 以新 rest 重建(points = 當下)
+def _stvk(p, rest):
+    Dm = np.stack([rest[TETS[:, i]] - rest[TETS[:, 0]] for i in (1, 2, 3)], 2)
+    Ds = np.stack([p[TETS[:, i]] - p[TETS[:, 0]] for i in (1, 2, 3)], 2)
+    F_ = Ds @ np.linalg.inv(Dm); E_ = 0.5 * (np.transpose(F_, (0, 2, 1)) @ F_ - np.eye(3)); tr_ = np.trace(E_, axis1=1, axis2=2)
+    mu_ = a.young / (2 * (1 + a.poisson)); lam_ = a.young * a.poisson / ((1 + a.poisson) * (1 - 2 * a.poisson))
+    return float((np.abs(np.linalg.det(Dm)) / 6 * (mu_ * (E_ * E_).sum((1, 2)) + 0.5 * lam_ * tr_ * tr_)).sum())
+def plastic_bake(why, t, sel=None):
+    assert not a.fast_pts, "[plastic] 重建 body 會讓 fast_pts 的 tensor view 失效"
+    ra = PLATE.prim.GetAttribute("omniphysics:restShapePoints")
+    cur = PLATE.pts(); old = np.array(ra.Get(), float).reshape(-1, 3); new = old.copy()
+    if sel is None: new[:] = cur
+    else: new[sel] = cur[sel]
+    e0, e1 = _stvk(cur, old), _stvk(cur, new)
+    ra.Set(Vt.Vec3fArray.FromNumpy(new.astype(np.float32)))
+    if a.plastic_filter_mm >= 0: PLATE.prim.GetAttribute("physxDeformableBody:selfCollisionFilterDistance").Set(a.plastic_filter_mm / 1e3)
+    PLATE.prim.SetActive(False)
+    if a.plastic_how == "step": world.step(render=False)
+    st.GetPrimAtPath("/World/plate").SetActive(True)
+    PLATE.prim = st.GetPrimAtPath("/World/plate"); PLATE.tm = UsdGeom.TetMesh(PLATE.prim); PLATE.pa = PLATE.tm.GetPointsAttr()
+    PLATE.pa.Set(Vt.Vec3fArray.FromNumpy(cur.astype(np.float32)))
+    P("★ t=%.2f [plastic] %s:rest ← 當下形狀 %d 點(全片 %d)| 彈性能(StVK)改前 %.3e J → 改後 %.3e J | SetActive 重建(%s)"
+      % (t, why, len(cur) if sel is None else int(np.sum(sel)), len(cur), e0, e1, a.plastic_how))
+    return e0, e1
+def plastic_watch(t):
+    for pl in GS["plans"]:
+        if "TR" not in pl or (a.hold_yp and pl["sd"] == "yp"): continue
+        ev = pl["ev"]
+        if a.plastic_on_release and "plastic" not in ev and pl.get("att", {}).get("on") and t >= pl["TR"] - a.plastic_pre - 1e-6:
+            S_ = SIDES[pl["sd"]]
+            sel = None if a.plastic_region == "all" else (S_["sg"] * FLAT[:, S_["ax"]] > S_["C"] - 0.030)
+            ev["plastic"] = dict(t=t); plastic_bake("[%s] 放手前 %.2fs(%s)" % (pl["sd"], a.plastic_pre, a.plastic_region), t, sel)
+        for k_s in (0.5, 2.0, 10.0):
+            nm_ = "after%g" % k_s
+            if nm_ not in ev and t >= pl["TR"] + k_s - 1e-6:
+                ev[nm_] = dict(t=t); cr, cy, wo = h2_stat(pl); rm, Pw, _ = measure(t)
+                Pl = Pw - g_offw(); m = GSIDE2 == pl["sd"]; ca = float((pl["sg"] * Pl[m, 1] > CY).mean()) * 100
+                P("★ t=%.2f [%s] [plastic] 放手後 %gs:越線 %.0f%%(全片 %.0f%%)| 壁外 %.0f%% | 質心 y %.1f mm | 自穿 %d | 布穿杯 %d | 杯位移 %.1f mm"
+                  % (t, pl["sd"], k_s, cr, ca, wo, cy, rm["pen"], rm["inmug"], float(np.linalg.norm(mug_world()[0] - pl["mug0"])) * 1e3))
+
 writer = imageio.get_writer(os.path.join(a.out, "wrap.mp4"), fps=max(1, round(FPS / a.vid_every)), quality=7, macro_block_size=1)
 SPF = int(round(1.0 / (FPS * a.dt)))                 # 每個渲染幀幾個物理步
 NFR = int(round(T_END * FPS))
@@ -1856,6 +1914,7 @@ for fr in range(NFR):
         if not ST["released"] and tcur >= T_ANC:
             Pp = PLATE.pts(); mp, Rq, MW = mug_world()
             r_, _, _ = measure(tcur, full=True); SNAP["closed_pre_release"] = (Pp.copy(), MW.copy(), r_)
+            if a.plastic_on_fold: plastic_bake("關蓋完成、放錨點前(全片)", tcur)   # [plastic]
             st.RemovePrim(Sdf.Path("/World/attach"))
             kin.Set(False)
             ST["released"] = True
@@ -1863,6 +1922,7 @@ for fr in range(NFR):
         drive(tcur)
         if a.grasp and tcur >= TG0 - 1e-9:
             g_events(tcur); g_drive(tcur)
+            if a.plastic_on_release or a.release_watch: plastic_watch(tcur)   # [plastic]
         if a.extract and tcur >= T_X0 - 1e-9: x_events(tcur)                   # [extract]
         world.step(render=(k == SPF - 1) and _vid)
     # ── 渲染幀 ──
