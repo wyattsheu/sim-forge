@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T14:59:18+08:00",
+  "updated_at": "2026-10-21T15:01:21+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-21T14:59:18+08:00",
+      "updated_at": "2026-10-21T15:01:21+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -145,7 +145,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:59:18+08:00",
+      "updated_at": "2026-10-21T15:01:21+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -251,7 +251,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-21T14:59:18+08:00",
+      "updated_at": "2026-10-21T15:01:21+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -357,7 +357,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-21T14:59:18+08:00",
+      "updated_at": "2026-10-21T15:01:21+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -376,10 +376,10 @@
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "pending",
+          "status": "running",
           "ledger_status": "pending",
           "ok": false,
-          "started_at": null,
+          "started_at": "2026-10-21T07:01:13.478885+00:00",
           "finished_at": null
         },
         {
@@ -451,6 +451,16 @@
           "path": "media/curling_iron_cleaned_image.png",
           "bytes": 1248008,
           "sha256": "b90f604fe533cb7ea1e9cbfc8fda0759705a9ae129c708e258f244cec325a02a"
+        },
+        {
+          "path": "media/curling_iron_processed_white_bg_png.png",
+          "bytes": 61462,
+          "sha256": "d5800442e062facd6bd85ac7b7c33cf9cf6f8a3778136d6a9358a808f7544c1b"
+        },
+        {
+          "path": "media/curling_iron_processed_rgba.png",
+          "bytes": 82709,
+          "sha256": "2d751c28583788d671fb48828dd2e6e9eea6ebd46e19af9e311cfcc23314c5bd"
         }
       ],
       "id": "curling_iron",
@@ -469,7 +479,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:59:18+08:00",
+      "updated_at": "2026-10-21T15:01:21+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -575,7 +585,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:59:18+08:00",
+      "updated_at": "2026-10-21T15:01:21+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -681,7 +691,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:59:18+08:00",
+      "updated_at": "2026-10-21T15:01:21+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -787,7 +797,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:59:18+08:00",
+      "updated_at": "2026-10-21T15:01:21+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -893,7 +903,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:59:18+08:00",
+      "updated_at": "2026-10-21T15:01:21+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -999,7 +1009,17 @@
       "path": "media/curling_iron_cleaned_image.png",
       "bytes": 1248008,
       "sha256": "b90f604fe533cb7ea1e9cbfc8fda0759705a9ae129c708e258f244cec325a02a"
+    },
+    {
+      "path": "media/curling_iron_processed_white_bg_png.png",
+      "bytes": 61462,
+      "sha256": "d5800442e062facd6bd85ac7b7c33cf9cf6f8a3778136d6a9358a808f7544c1b"
+    },
+    {
+      "path": "media/curling_iron_processed_rgba.png",
+      "bytes": 82709,
+      "sha256": "2d751c28583788d671fb48828dd2e6e9eea6ebd46e19af9e311cfcc23314c5bd"
     }
   ],
-  "signature": "1e13932bfb9857055fd0b41bc95a5dcd7411a13b4068e7e7343c7e9598bc5105"
+  "signature": "be746010fef0f52530778c3b2522ef9148712cf2ebf0eedf76d31eef672e2c31"
 }
