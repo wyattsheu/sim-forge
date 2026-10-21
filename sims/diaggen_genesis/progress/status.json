@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T13:20:31+08:00",
+  "updated_at": "2026-10-21T13:22:34+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T05:16:48.582796+00:00",
-      "updated_at": "2026-10-21T13:20:31+08:00",
+      "updated_at": "2026-10-21T13:22:34+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -52,10 +52,10 @@
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "pending",
+          "status": "running",
           "ledger_status": "pending",
           "ok": false,
-          "started_at": null,
+          "started_at": "2026-10-21T05:22:33.818591+00:00",
           "finished_at": null
         },
         {
@@ -144,7 +144,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:20:31+08:00",
+      "updated_at": "2026-10-21T13:22:34+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -249,7 +249,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:20:31+08:00",
+      "updated_at": "2026-10-21T13:22:34+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -354,7 +354,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:20:31+08:00",
+      "updated_at": "2026-10-21T13:22:34+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -459,7 +459,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:20:31+08:00",
+      "updated_at": "2026-10-21T13:22:34+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -564,7 +564,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:20:31+08:00",
+      "updated_at": "2026-10-21T13:22:34+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -669,7 +669,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:20:31+08:00",
+      "updated_at": "2026-10-21T13:22:34+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -774,7 +774,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:20:31+08:00",
+      "updated_at": "2026-10-21T13:22:34+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -879,7 +879,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:20:31+08:00",
+      "updated_at": "2026-10-21T13:22:34+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -981,5 +981,5 @@
       "sha256": "c22b1efd8a9a394b6428b1bb25f527e2dd1857188e6ad35b4157fda015ec1f8a"
     }
   ],
-  "signature": "71d0fc05856c0ec2eaf7b3a42e8a011c3e456561f2ef7b7a683ba440cceb8ff6"
+  "signature": "6db5c4637b4eef8aa368ff23d9f897f2d71e5cf37412304a663f48408262de0a"
 }
