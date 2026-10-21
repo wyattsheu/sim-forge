@@ -68,3 +68,29 @@ fric/run.sh F1                 # 純摩擦(yn 一片,~74 s 模擬)
 
 ## 事故紀錄
 - 02:16 裝進 wrap_vol.py 的版本在**預設 `--extract_grip pad`** 時取杯段 KeyError 'open'(`[(…XT["open"]…)] * ("open" in XT)` 會先取值),extract5/X2 因此 EXIT 1;02:5x 改成 `([…] if "open" in XT else [])` 修好。jaw 模式(extract6)不受影響。
+
+## [jaw3] 碰撞體指頭(2026-10-21 晚;使用者:「夾爪好像穿過布」)
+**旗標**:`--jaw_collide 1`(預設 0 = jaw2 純視覺)。正式夾爪旗標 = `--hand1_jaw 1 --hand2 jaw --extract_grip jaw --jaw_collide 1`(兩手版本把 `--hand2 jaw` 改成 `--hand2 off` 即可,其他旗標不變)。備份 `wrap_vol.py.before_jaw3`;diff 約 70 行,都標了 `[jaw3]`。
+
+改了什麼(`--jaw_collide 1`):
+- 所有指頭都是 kinematic 碰撞體(`GU.finger`,cont 1 mm / rest 0,摩擦 = `--ffric`),視覺方塊跟著碰撞體走。
+- 手 1 下指:用原本的實體 `lo` 指走 jaw2 的下指路徑(布邊外 35 mm 上方 → 降 → 沿 −u 滑到布下 → 上指合到指間 4 mm = 布厚),合好後跟著上指,不再停 park。綁定仍在合指完成那一步、只綁指面足跡內的頂點。
+- 手 2 兩指(`h2a`/`h2b`)進 kinematic view;合指後指間 9 mm(捏起兩層布 8 + 1)。
+- 取杯手兩指(`h3a`/`h3b`)進 kinematic view(位置每步由取杯段寫入);kinematic 指不會碰 kinematic 杯,停點算在杯身外側。
+- log:`[jaw3] t=… 指-布最小距離 mm`(每 0.5 s;布頂點對指盒的 SDF,負 = 穿入,`*` = 合指中),結束印 `[jaw3] SUMMARY 合指中 指-布最小距離`(判準 ≥ −2 mm)。這是頂點對盒的距離,網格間距約 14 mm,指面落在兩個頂點之間時量不到。
+
+### C1f(fast:`extract6/run.sh C1f --jaw_collide 1 --edamp 0.02 --vid_every 4 --vid_res 640x360`)— **沒過**
+`grep -n "jaw3\] SUMMARY\|綁住\|合指完成\|守衛\|布穿杯最大" extract6/C1f/stdout.txt`;`python3 extract6/table.py extract6/X2 extract6/C1f`
+| 次 | 手1 yn/yp 綁 | 手2 綁 | 守衛 | 穿杯最大 | 布被帶起 抬起 / 離箱 / 落地 | 合指中 指-布最小距離 mm |
+|---|---|---|---|---|---|---|
+| X2(jaw2 純視覺)| 18 / 19 | 27 | 都沒觸發 | 0 | 23.5 / 19.7 / 22.0% | (沒量) |
+| C1f(jaw3 碰撞)| 12 / 10 | 20 | **yn@66.03(邊長比 5.33)、yp@99.53(3.06)放手** | **1** | **57.8 / 57.8 / 54.2%** | up 1.3、lo 0.5、h2a 6.4、h2b 0.5、h3a 0.7、**h3b −2.8** |
+
+- 手 1 上下指:全程沒穿布(上指 1.3~2.0、下指 0.5~1.5 mm)→ 手 1 實體下指可以用。
+- **手 2 是主因**:65.00~65.60 合指期間 yn 邊長比 1.72 → 5.20(65.53,還沒綁)。指尖壓進布頂 1 mm 再沿 x 合,碰撞 + 摩擦把布拖皺、拉長;合指完成時又把拉長的狀態綁住,之後邊長比一直留在 1.95,到 yp 段再疊到 3.06 → 兩段都被守衛放手 → 取杯帶起 54%。
+- 手 3 h3b −2.8 mm:指停在杯外 1 mm,把杯端上的布夾在指和 kinematic 杯之間(布逃不掉)→ 穿入,穿杯 1。
+
+### 修正(已在 wrap_vol.py,C3f 驗證中)
+- 手 2:指尖改成停在兩指掃過範圍(x ±30 mm)的布頂 +0.5 mm(碰到、不往下壓),合指時就不會把布拖皺。
+- 手 3:closing 開始前查杯端外 10 mm 內有沒有布(指的 x/z 帶):有 → 停在 杯 + 布厚 4 + 1 mm,沒有 → 杯 + 1 mm。log `[jaw3] 取杯指停點`。
+- 驗證:`extract6/run.sh C3f --jaw_collide 1 --edamp 0.02 --vid_every 4 --vid_res 640x360`(fast,跑中)。依協調者指示不跑正式精度,最後 3 次由塑性 agent 帶這組旗標驗證。
