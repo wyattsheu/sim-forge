@@ -1,0 +1,9 @@
+{
+  "schema_version": "diaggen-verified-native-patch-v1",
+  "native_commit": "3d2d3779613b9253109f63e1ff345b11c9097b70",
+  "target": "hag4r/tools/volumetric_meshing.py",
+  "before_sha256": "346ed7750a9e6dd0943f96f64c80780d5d0a3e8638484a3e25d20d58751d08f3",
+  "after_sha256": "5fe97fb4c5fde9980c1a5c8c334ddacbcbcafe8e294ea7dc3b4377ff7040a0e9",
+  "patch_sha256": "17a7eb51a35b26b92097c4b900bd9a3449376db42ce91bf9ce9ac6af3fb60950",
+  "contract": "Missing expected material labels fail exact coverage; component-resolver subset coverage unchanged."
+}

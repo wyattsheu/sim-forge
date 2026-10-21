@@ -76,3 +76,10 @@ views came from missing Xvfb. Private pinned Xvfb + per-worker dynamic DISPLAY
 and six-view CPU preflight are now provided. Each worker cleans up only its
 own X server. Source helpers: tools/setup_diaggen_xvfb.sh,
 tools/check_diaggen_display.py, tools/wait_diaggen_gpu_memory.py.
+
+Full environment preflight: 71 required passes, zero required fail/skip;
+one optional CMake skip. See preflight/latest.json and README.md for exact
+scope and limits. Each worker verifies queue/runtime_preflight.json against
+current code, inputs, five env package inventories and binaries before launch.
+A missing/stale record holds new jobs. Recreate native MP4 support and strict
+material coverage via bash tools/setup_diaggen_runtime_support.sh.

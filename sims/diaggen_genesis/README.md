@@ -1,6 +1,6 @@
 # DiagGen / Genesis 實驗
 
-[最新進度](progress/) · [官方圖片總覽](demo_inputs_preview.jpg) · [圖片來源紀錄](demo_image_sources.json) · [排程清單](batch_plan.json)
+[最新進度](progress/) · [執行環境預檢](preflight/latest.json) · [官方圖片總覽](demo_inputs_preview.jpg) · [圖片來源紀錄](demo_image_sources.json) · [排程清單](batch_plan.json)
 
 使用 DiagGen 內附的 **Genesis 1.2.0**，開啟 Genesis 診斷，排程 9 張圖片的完整生成流程。
 
@@ -72,6 +72,28 @@ USB Hub 重跑已通過 SAM3 並產生中間 combined mesh；原生程式因缺�
 先保留 GPT-6 Luna Max 完成基準試跑，再依錯誤類型比較更強模型；目前沒有本批結果，不能保證九件都達標。若零件語義、材料推斷或診斷修正反覆失敗，可選代表案例改用更強模型做同條件比較。[OpenAI Docs](https://developers.openai.com/api/docs/guides/model-selection)建議按實測選擇達標的模型。更多 reasoning 預算和模型本身能力是不同因素。
 
 更換 LLM 不會自動更換 SAM3、OmniPart 或貼圖工具；清楚原圖、實際尺寸、材料資料與真實互動對照仍然重要。
+
+## 執行前預檢
+
+本次必要檢查 **71 項通過、0 項失敗、0 項未測**；非必要 CMake 未安裝，另標為 optional skip。完整結果摘要見 [preflight/latest.json](preflight/latest.json)。這是環境與小型 fixture 測試，不是九件物品已生成完成。
+
+| 範圍 | 實際測試 | 必要檢查 |
+| --- | --- | --- |
+| 主機／SAM3 | 9 圖片解碼和雜湊、5 環境、所有 stage／MCP 匯入、權重 CPU mmap、EXR、命令與磁碟讀寫 | 21 通過 |
+| 網格／材料 | 原生實心／空心處理、四面體化、材料配置、序列化、4 張實際渲染、壞資料拒絕與物理匯出契約 | 12 通過 |
+| OmniPart／貼圖 | 離線權重、FlashAttention、spconv、scatter、nvdiffrast 編譯／渲染／取樣、Gaussian、UV 和 GLB | 13 通過 |
+| Genesis | 實際 CUDA FEM、live API、幾何讀回、三視角／零件標記渲染、捕捉影格 MP4 編解碼、程序收尾 | 25 通過 |
+
+已查核[官方 GitHub](https://github.com/diaggen/diaggen/tree/3d2d3779613b9253109f63e1ff345b11c9097b70)及全部狀態的 Issues／PRs／Releases，沒有找到更新的修復版。確認兩項需本地修復：
+
+- 官方診斷呼叫 `scripts/generate_simulation_mp4.sh`，但發佈目錄缺檔。新增相容入口，使用實際擷取影格編碼，檢查影格連續、尺寸、幀率與解碼數量；缺少影格時拒絕，不能拿舊 MP4 當新成果。
+- 官方技能要求完整材料標籤覆蓋，原版程式卻只警告；已用一行可重現補丁改為嚴格失敗，保留元件修復的 subset 行為。補丁有原始碼前後 SHA256，遇到不同上游版本會停止套用。
+
+新環境先執行 `bash tools/setup_diaggen_runtime_support.sh` 還原這兩項本地支援。各 probe 位於 `preflight/probe_*.py`，必須使用對應的專案 Python、全新 `tools/diaggen/outputs/preflight/` 子目錄，GPU probe 另需明確 UUID；硬體探針以 `queue/preflight_gpu.lock` 序列執行。
+
+完整報告通過後，`preflight/readiness.py` 產生本機檢查紀錄。每件工作開始前，會比對輸入、必要來源檔、原生 Python／CUDA 程式、五個環境套件及執行檔；缺少或變更會建立 HOLD，先擋住新工作。只有圖片雜湊、套件列表或設定存在，不能代替實際功能預檢。
+
+預檢未量測完整推論的峰值顯存，未宣稱整個 1024² 貼圖重烘焙或含外觀的最終資產包已跑通；雲端模型與 imagegen 可用性採用既有成功執行的明確紀錄。本機完整原始報告、測試影格與影片留在 `tools/diaggen/outputs/preflight/`。
 
 ## 來源
 

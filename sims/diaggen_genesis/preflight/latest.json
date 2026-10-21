@@ -1,0 +1,322 @@
+{
+  "schema_version": "diaggen-full-runtime-preflight-v1",
+  "checked_at": "2026-10-21T14:34:35+08:00",
+  "overall_status": "pass",
+  "simulator": "Genesis",
+  "checks": [
+    {
+      "name": "host/nine_input_decode_hash_dimensions",
+      "status": "pass"
+    },
+    {
+      "name": "host/native_output_space_write_read",
+      "status": "pass"
+    },
+    {
+      "name": "host/python_hag4r",
+      "status": "pass"
+    },
+    {
+      "name": "host/python_hag4r_mesh",
+      "status": "pass"
+    },
+    {
+      "name": "host/python_hag4r_segmentation",
+      "status": "pass"
+    },
+    {
+      "name": "host/python_omnipart",
+      "status": "pass"
+    },
+    {
+      "name": "host/python_genesis",
+      "status": "pass"
+    },
+    {
+      "name": "host/hag4r_all_stage_runtime_imports",
+      "status": "pass"
+    },
+    {
+      "name": "host/sam3_cpu_runtime_imports",
+      "status": "pass"
+    },
+    {
+      "name": "host/sam3_checkpoint_cpu_mmap",
+      "status": "pass"
+    },
+    {
+      "name": "host/sam3_exr_actual_roundtrip",
+      "status": "pass"
+    },
+    {
+      "name": "host/command_conda",
+      "status": "pass"
+    },
+    {
+      "name": "host/command_codex",
+      "status": "pass"
+    },
+    {
+      "name": "host/command_git",
+      "status": "pass"
+    },
+    {
+      "name": "host/command_tmux",
+      "status": "pass"
+    },
+    {
+      "name": "host/command_ffmpeg",
+      "status": "pass"
+    },
+    {
+      "name": "host/command_ffprobe",
+      "status": "pass"
+    },
+    {
+      "name": "host/command_nvcc",
+      "status": "pass"
+    },
+    {
+      "name": "host/command_cpp",
+      "status": "pass"
+    },
+    {
+      "name": "host/private_xvfb_executable",
+      "status": "pass"
+    },
+    {
+      "name": "host/historical_codex_model_imagegen_subagent_evidence",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/mesh_runtime_dependencies",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/color_locked_material_fixture_and_negative_control",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/native_glb_load_and_metric_scaling",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/native_solid_and_hollow_voxelization",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/native_marching_cubes_and_meshlab_simplification",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/native_manifold_boolean_union",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/native_pytetwild_and_hard_tet_validation",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/native_tet_owner_material_assignment_and_npz",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/native_medit_serialization_and_scale_volume",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/native_invalid_tets_and_material_negative_controls",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/native_canonical_physical_export_contract",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/native_four_material_pngs",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/dependency_imports",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/native_stage_imports",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/offline_weight_inventory",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/external_toolchain",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/ffmpeg_encode_decode",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/xatlas_exact_binding_and_glb",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/existing_usb_glb_and_appearance",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/cuda_identity_arithmetic",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/native_flash_attention_kernel",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/spconv_actual_convolution",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/torch_scatter_cuda",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/native_texture_uv_raster_and_sample",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/native_gaussian_rasterizer",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_genesis",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_genesis_live_server",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_genesis_live_visual_telemetry",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_genesis_ext_pyrender",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_genesis_utils_heterogeneous_materials",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_igl",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_numpy",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_scipy",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_torch",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_pyglet",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_OpenGL",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_imageio",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_imageio_ffmpeg",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/native_diagnostic_mp4_script",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/binary_ffmpeg",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/binary_ffprobe",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/gpu_memory_gate",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/private_xvfb",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/live_ready_handshake",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/negative_rpc_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/heterogeneous_fem_readback",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/cuda_fem_step_finite_motion",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/native_part_shaded_triptych",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/mp4_encode_decode",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/live_server_clean_close",
+      "status": "pass"
+    }
+  ],
+  "optional_checks": [
+    {
+      "name": "host/optional_cmake",
+      "status": "skip",
+      "reason": "Not required by the installed precompiled runtime or validated Ninja JIT"
+    }
+  ],
+  "counts": {
+    "pass": 71,
+    "fail": 0,
+    "skip": 0
+  },
+  "scope": "Dependency and infrastructure smoke tests; synthetic fixtures are not generated production assets",
+  "limitations": [
+    "No complete nine-object generation or full-model peak VRAM measurement",
+    "Texture kernels and exact binding tested; complete production texture rebake not claimed",
+    "Final physical export contract and missing-appearance rejection tested; full appearance bundle export not claimed",
+    "Model/imagegen access uses recorded successful executions; no new cloud image-generation call",
+    "GPU availability is checked separately and does not reserve memory"
+  ],
+  "upstream": {
+    "repository": "https://github.com/diaggen/diaggen",
+    "commit": "3d2d3779613b9253109f63e1ff345b11c9097b70",
+    "newer_head_found": false,
+    "official_issues_prs_releases_found": false
+  },
+  "local_fixes": [
+    "Restored missing native MP4 encoder entrypoint with actual captured-frame roundtrip",
+    "Enforced exact material coverage; subset behavior retained"
+  ]
+}

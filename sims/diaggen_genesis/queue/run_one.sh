@@ -63,6 +63,13 @@ if [[ -e "$DIAGGEN_JOB_QUEUE_DIR/STARTED" || -e "$RUN_ROOT/state.json" ]]; then
     finish_job failed duplicate_run
     exit 0
 fi
+if ! "$PYTHON" "$BASE/preflight/readiness.py" verify --certificate "$ROOT_QUEUE/runtime_preflight.json" \
+    > "$DIAGGEN_JOB_QUEUE_DIR/runtime_preflight.json" 2> "$DIAGGEN_JOB_QUEUE_DIR/runtime_preflight.stderr.log"; then
+    printf '%s\n' "Runtime preflight is missing or stale; rerun checks before clearing HOLD." > "$ROOT_QUEUE/HOLD"
+    state failed "Full runtime preflight is missing or stale; new jobs held"
+    finish_job failed runtime_preflight_failed
+    exit 0
+fi
 (set -o noclobber; printf '%s\n' "$DIAGGEN_QUEUE_RUN_ID" > "$DIAGGEN_JOB_QUEUE_DIR/STARTED")
 printf '%s\n' "$CUDA_VISIBLE_DEVICES" > "$DIAGGEN_JOB_QUEUE_DIR/selected_gpu.txt"
 printf '%s\n' "$SOURCE_IMAGE" > "$DIAGGEN_JOB_QUEUE_DIR/original_input.txt"

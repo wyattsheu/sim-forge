@@ -1,0 +1,13 @@
+diff --git a/hag4r/tools/volumetric_meshing.py b/hag4r/tools/volumetric_meshing.py
+index 60a1ec3..8866906 100644
+--- a/hag4r/tools/volumetric_meshing.py
++++ b/hag4r/tools/volumetric_meshing.py
+@@ -1109,7 +1109,7 @@ def analyze_tet_mesh(
+     if component_count != 1:
+         report["failures"].append(f"tetrahedral material domain has {component_count} face-connected components")
+     if material_coverage == "exact" and missing_material_labels:
+-        report["warnings"].append(
++        report["failures"].append(
+             "material-label coverage incomplete: "
+             f"missing expected labels {missing_material_labels}; expected {expected_labels}, present {present_labels}"
+         )
