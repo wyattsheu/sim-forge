@@ -2,10 +2,10 @@
   "schema_version": "diaggen-public-batch-progress-v1",
   "pipeline": "DiagGen",
   "simulator": "Genesis",
-  "phase": "running",
+  "phase": "waiting_gpu",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T16:32:29+08:00",
+  "updated_at": "2026-10-21T16:33:46+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -14,9 +14,9 @@
   },
   "counts": {
     "queued": 5,
-    "running": 1,
+    "running": 0,
     "success": 0,
-    "failed": 3,
+    "failed": 4,
     "cancelled": 0,
     "unknown": 0,
     "total": 9
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-21T16:32:29+08:00",
+      "updated_at": "2026-10-21T16:33:46+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -139,13 +139,13 @@
       "pipeline": "DiagGen",
       "simulator": "Genesis",
       "run_id": "genesis_capybara_plush_toy_20261021_exr_retry1_memory_retry2",
-      "phase": "running",
+      "phase": "failed",
       "pipeline_status": "seeded",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T07:14:19.925656+00:00",
-      "updated_at": "2026-10-21T16:32:29+08:00",
+      "updated_at": "2026-10-21T16:33:46+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -262,7 +262,7 @@
         }
       ],
       "id": "capybara_plush_toy",
-      "status": "running",
+      "status": "failed",
       "attempts": 3,
       "minimum_free_mib": 49152
     },
@@ -277,7 +277,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-21T16:32:29+08:00",
+      "updated_at": "2026-10-21T16:33:46+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -383,7 +383,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-21T16:32:29+08:00",
+      "updated_at": "2026-10-21T16:33:46+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -560,7 +560,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:32:29+08:00",
+      "updated_at": "2026-10-21T16:33:46+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -666,7 +666,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:32:29+08:00",
+      "updated_at": "2026-10-21T16:33:46+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -772,7 +772,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:32:29+08:00",
+      "updated_at": "2026-10-21T16:33:46+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -878,7 +878,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:32:29+08:00",
+      "updated_at": "2026-10-21T16:33:46+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -984,7 +984,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:32:29+08:00",
+      "updated_at": "2026-10-21T16:33:46+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1182,5 +1182,5 @@
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "b86a90cc6d6c351975c82ad9aba7ce887c3c95c805948ffae908bf60568b85fa"
+  "signature": "67db70fa400b6632d1b2020553bc6e5cd93fa6a2c28eaa1713b753b87fc4293f"
 }
