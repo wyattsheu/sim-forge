@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T17:32:27+08:00（Asia/Taipei）
+更新：2026-10-21T17:32:43+08:00（Asia/Taipei）
 
 共 9 件：等待 1、執行中 2、完成 0、失敗 6、取消 0。
 
@@ -20,7 +20,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢
 | dragon | failed | seeded | revision_0000 | 24576 MiB | 0/9 |
 | kitchen_tongs | failed | seeded | revision_0000 | 24576 MiB | 2/9 |
 | sauce_keeper | running | failed | revision_0000 | 24576 MiB | 6/9 |
-| sloth | running | seeded | revision_0000 | 24576 MiB | 1/9 |
+| sloth | running | seeded | revision_0000 | 24576 MiB | 2/9 |
 | sneaker | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
 
 ## usb_hub
@@ -235,7 +235,7 @@ Run：`genesis_sloth_20261021`；執行中。
 | 階段 | 狀態 |
 |---|---|
 | 圖片清理 | success |
-| SAM3 分割 | pending |
+| SAM3 分割 | success |
 | OmniPart 幾何生成 | pending |
 | 材料推估 | pending |
 | 材料參數配置 | pending |
@@ -247,6 +247,14 @@ Run：`genesis_sloth_20261021`；執行中。
 Genesis 診斷 episode 數：0。
 
 ![sloth_cleaned_image](media/sloth_cleaned_image.png)
+
+![sloth_processed_white_bg_png](media/sloth_processed_white_bg_png.png)
+
+![sloth_processed_rgba](media/sloth_processed_rgba.png)
+
+![sloth_ordered_mask_vis](media/sloth_ordered_mask_vis.png)
+
+![sloth_segmentation_overlay](media/sloth_segmentation_overlay.png)
 
 
 ## sneaker
