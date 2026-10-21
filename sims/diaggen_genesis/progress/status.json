@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T16:09:31+08:00",
+  "updated_at": "2026-10-21T16:09:48+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-21T16:09:31+08:00",
+      "updated_at": "2026-10-21T16:09:48+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -145,7 +145,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T07:14:19.925656+00:00",
-      "updated_at": "2026-10-21T16:09:31+08:00",
+      "updated_at": "2026-10-21T16:09:48+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -277,7 +277,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-21T16:09:31+08:00",
+      "updated_at": "2026-10-21T16:09:48+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -383,7 +383,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-21T16:09:31+08:00",
+      "updated_at": "2026-10-21T16:09:48+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -456,11 +456,11 @@
         {
           "name": "hag4r_post_mesh_texture",
           "label": "貼圖生成",
-          "status": "running",
-          "ledger_status": "pending",
-          "ok": false,
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
           "started_at": "2026-10-21T08:09:19.902678+00:00",
-          "finished_at": null
+          "finished_at": "2026-10-21T08:09:38.074312+00:00"
         },
         {
           "name": "hag4r_final_export_bundle",
@@ -497,6 +497,11 @@
           "path": "media/curling_iron_segmentation_overlay.png",
           "bytes": 53859,
           "sha256": "902248d1abd6f5918be7be558ea48ba16794e388e34004294d06209273b8729f"
+        },
+        {
+          "path": "media/curling_iron_albedo.png",
+          "bytes": 744236,
+          "sha256": "b6658c6775065aef814823fa42deadb6dacf685dc84ad01c7b8833b99aef5300"
         },
         {
           "path": "media/curling_iron_omnipart_top.png",
@@ -555,7 +560,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:09:31+08:00",
+      "updated_at": "2026-10-21T16:09:48+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -661,7 +666,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:09:31+08:00",
+      "updated_at": "2026-10-21T16:09:48+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -767,7 +772,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:09:31+08:00",
+      "updated_at": "2026-10-21T16:09:48+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -873,7 +878,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:09:31+08:00",
+      "updated_at": "2026-10-21T16:09:48+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -979,7 +984,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:09:31+08:00",
+      "updated_at": "2026-10-21T16:09:48+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1132,6 +1137,11 @@
       "sha256": "902248d1abd6f5918be7be558ea48ba16794e388e34004294d06209273b8729f"
     },
     {
+      "path": "media/curling_iron_albedo.png",
+      "bytes": 744236,
+      "sha256": "b6658c6775065aef814823fa42deadb6dacf685dc84ad01c7b8833b99aef5300"
+    },
+    {
       "path": "media/curling_iron_omnipart_top.png",
       "bytes": 11523,
       "sha256": "6f2051fee5996f5293699d836b8341ff1dd9796b64fcacb64582eb104da77590"
@@ -1172,5 +1182,5 @@
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "75d2e2df18aebdd88c71a5cb8bc4de6cefa35f334465300698744906936cfade"
+  "signature": "b378184e3db557ea115f7a186edce5f67638c25026d35726c297a314a90743ff"
 }
