@@ -2,9 +2,9 @@
 
 狀態：**等待空閒 GPU**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T13:49:15+08:00（Asia/Taipei）
+更新：2026-10-21T14:12:18+08:00（Asia/Taipei）
 
-共 9 件：等待 7、執行中 0、完成 0、失敗 2、取消 0。
+共 9 件：等待 9、執行中 0、完成 0、失敗 0、取消 0。
 
 GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢查。  
 允許與既有運算共用 GPU：是。
@@ -13,8 +13,8 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢
 
 | 物件 | 排程狀態 | Runtime | Revision | 已完成階段 |
 |---|---|---|---|---|
-| usb_hub | failed | seeded | revision_0000 | 2/9 |
-| capybara_plush_toy | failed | seeded | revision_0000 | 2/9 |
+| usb_hub | queued | not_initialized | 尚未初始化 | 0/9 |
+| capybara_plush_toy | queued | not_initialized | 尚未初始化 | 0/9 |
 | baseball_cap | queued | not_initialized | 尚未初始化 | 0/9 |
 | curling_iron | queued | not_initialized | 尚未初始化 | 0/9 |
 | dragon | queued | not_initialized | 尚未初始化 | 0/9 |
@@ -25,13 +25,13 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢
 
 ## usb_hub
 
-Run：`genesis_first_20261021_exr_retry1`；執行失敗。
+Run：`genesis_first_20261021_exr_retry1_display_retry2`；等待空閒 GPU。
 
 | 階段 | 狀態 |
 |---|---|
-| 圖片清理 | success |
-| SAM3 分割 | success |
-| OmniPart 幾何生成 | failed |
+| 圖片清理 | pending |
+| SAM3 分割 | pending |
+| OmniPart 幾何生成 | pending |
 | 材料推估 | pending |
 | 材料參數配置 | pending |
 | 體積網格處理 | pending |
@@ -40,27 +40,17 @@ Run：`genesis_first_20261021_exr_retry1`；執行失敗。
 | 最終匯出 | pending |
 
 Genesis 診斷 episode 數：0。
-
-![usb_hub_cleaned_image](media/usb_hub_cleaned_image.png)
-
-![usb_hub_processed_white_bg_png](media/usb_hub_processed_white_bg_png.png)
-
-![usb_hub_processed_rgba](media/usb_hub_processed_rgba.png)
-
-![usb_hub_ordered_mask_vis](media/usb_hub_ordered_mask_vis.png)
-
-![usb_hub_segmentation_overlay](media/usb_hub_segmentation_overlay.png)
 
 
 ## capybara_plush_toy
 
-Run：`genesis_capybara_plush_toy_20261021_exr_retry1`；執行失敗。
+Run：`genesis_capybara_plush_toy_20261021_exr_retry1_memory_retry2`；等待空閒 GPU。
 
 | 階段 | 狀態 |
 |---|---|
-| 圖片清理 | success |
-| SAM3 分割 | success |
-| OmniPart 幾何生成 | failed |
+| 圖片清理 | pending |
+| SAM3 分割 | pending |
+| OmniPart 幾何生成 | pending |
 | 材料推估 | pending |
 | 材料參數配置 | pending |
 | 體積網格處理 | pending |
@@ -69,16 +59,6 @@ Run：`genesis_capybara_plush_toy_20261021_exr_retry1`；執行失敗。
 | 最終匯出 | pending |
 
 Genesis 診斷 episode 數：0。
-
-![capybara_plush_toy_cleaned_image](media/capybara_plush_toy_cleaned_image.png)
-
-![capybara_plush_toy_processed_white_bg_png](media/capybara_plush_toy_processed_white_bg_png.png)
-
-![capybara_plush_toy_processed_rgba](media/capybara_plush_toy_processed_rgba.png)
-
-![capybara_plush_toy_ordered_mask_vis](media/capybara_plush_toy_ordered_mask_vis.png)
-
-![capybara_plush_toy_segmentation_overlay](media/capybara_plush_toy_segmentation_overlay.png)
 
 
 ## baseball_cap
