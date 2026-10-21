@@ -5,7 +5,7 @@
 
 目前只有**一種寫死的包法**(四片對折包,§3)。被包物和紙箱已經可以從設定檔換(§2),但包法本身還沒有依物件 / 紙箱調整。
 
-程式來自 [`fr3_bubblewrap_pack_handoff_20261007`](../fr3_bubblewrap_pack_handoff_20261007)(交付版)和
+程式來自 [`fr3_bubblewrap_pack_surface_handoff_20261007`](../fr3_bubblewrap_pack_surface_handoff_20261007)(交付版)和
 [`fr3_bubblewrap_pack_20261007`](../fr3_bubblewrap_pack_20261007)(開發紀錄),是**複製**過來的,原資料夾沒動。改了哪些見 §10。
 
 ---
@@ -311,7 +311,7 @@ log 在 `logs/webrtc.log`,等 `[handoff] READY` 再連。左鍵直接拖箱子 /
 
 ```bash
 cd physics
-HO=../../fr3_bubblewrap_pack_handoff_20261007
+HO=../../fr3_bubblewrap_pack_surface_handoff_20261007
 $ISAAC_PYTHON build_full_scene.py --scene $HO/build/stationary_ai_carton_scene_flat.usd \
     --carton ../assets/cartons/carton_270x230x131.usd --wrap <surface 版的 wrap.npz> \
     --mug ../assets/items/mug.stl --out ../out/scene/scene_final.usd
@@ -404,7 +404,7 @@ wrap.npz / log ──► 評估(§7)──► CSV(沿用 VARIANTS.csv 欄位)
 
 | 這裡 | 來自 |
 |---|---|
-| `surface/`、`carton/`、`physics/`、`viewer/`(部分)、`open_in_*.sh`、`find_isaac.sh` | `fr3_bubblewrap_pack_handoff_20261007/` |
+| `surface/`、`carton/`、`physics/`、`viewer/`(部分)、`open_in_*.sh`、`find_isaac.sh` | `fr3_bubblewrap_pack_surface_handoff_20261007/` |
 | `volume/`、`docs/FOLD_DIVERSITY.md`、`SPEED.md`、`DAMPING.md` | `fr3_bubblewrap_pack_20261007/vol/` |
 | `surface/` 量測工具、`carton/carton_sweep.py`、`docs/PITFALLS.md` | `fr3_bubblewrap_pack_20261007/work/` |
 | `docs/ARM_INTERFACE.md` | `fr3_bubblewrap_pack_20261007/arm/INTERFACE.md` |

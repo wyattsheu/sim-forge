@@ -8,8 +8,8 @@ domains: [rigid, usd]
 tags: [FilteredPairsAPI, CollisionGroup, invertFilteredGroups, pad collider, tabletop_link, frame_link]
 triggers: [加一個隱形輔助碰撞體(墊片、加厚板), 設定 collision group, 物體突然拖不動]
 versions: Isaac Sim 5.1.0(墊片 bug)/ 6.0(invertFilteredGroups)
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/CHANGELOG.md 2026-10-07 下午, sim-forge 分支 portable-isaac-launch commit 59eb65d sim/build_phys_scene.py]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/CHANGELOG.md 2026-10-07 下午, sim-forge 分支 portable-isaac-launch commit 59eb65d sim/build_phys_scene.py]
 related: [L0013, L0002, L0033]
 observed: 2026-10-07
 ---

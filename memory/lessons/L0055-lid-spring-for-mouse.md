@@ -8,8 +8,8 @@ domains: [ui, rigid]
 tags: [crease drive, stiffness, lid_latch.py, crease_hold_ui.py, yield, lid order, fyp, fyn]
 triggers: [讓使用者在 UI 裡用滑鼠開關紙箱蓋, 蓋子拉不開或放手就彈回]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/CHANGELOG.md 2026-10-07 下午, sims/fr3_bubblewrap_pack_handoff_20261007/README.md §3.4、§8.6 lid_test 表、§10 #2e]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/CHANGELOG.md 2026-10-07 下午, sims/fr3_bubblewrap_pack_surface_handoff_20261007/README.md §3.4、§8.6 lid_test 表、§10 #2e]
 related: [L0027, L0054]
 observed: 2026-10-07
 ---

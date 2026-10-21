@@ -8,8 +8,8 @@ domains: [measure, surface]
 tags: [penetration, chain_pen.py, trimesh.contains, edge sampling, vertex check]
 triggers: [檢查布穿杯或穿箱, 驗收報告寫「穿模 0」之前]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_20261007/docs/handoff_20260929/ADAPTING.md §4, sims/fr3_bubblewrap_pack_20261007/docs/handoff_20260929/CHANGES_TO_VERIFY.md C2, sims/fr3_bubblewrap_pack_handoff_20261007/sim/wrap_sim.py ~635]
+scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_20261007/docs/handoff_20260929/ADAPTING.md §4, sims/fr3_bubblewrap_pack_20261007/docs/handoff_20260929/CHANGES_TO_VERIFY.md C2, sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/wrap_sim.py ~635]
 related: [L0057, L0060]
 observed: 2026-09-26
 ---

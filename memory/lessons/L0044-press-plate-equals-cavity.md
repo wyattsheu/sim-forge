@@ -8,8 +8,8 @@ domains: [surface, geometry]
 tags: [press6, press plate, cavity, compaction, kinematic plate]
 triggers: [用壓板壓實包裹, 設定 --press6 目標]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007, sims/fr3_bubblewrap_pack_20261007]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/sim/wrap_sim.py --press6 help、~1057-1060, sims/fr3_bubblewrap_pack_20261007/work/REPORT_THICKNESS.md §3, sims/fr3_bubblewrap_pack_20261007/work/README.md「不跑 c3」]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007, sims/fr3_bubblewrap_pack_20261007]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/wrap_sim.py --press6 help、~1057-1060, sims/fr3_bubblewrap_pack_20261007/work/REPORT_THICKNESS.md §3, sims/fr3_bubblewrap_pack_20261007/work/README.md「不跑 c3」]
 related: [L0031, L0035]
 observed: 2026-09-25
 ---

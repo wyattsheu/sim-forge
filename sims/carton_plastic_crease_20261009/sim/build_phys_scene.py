@@ -14,7 +14,7 @@ during the settle doesn't offset the package.
 """
 import argparse, os, sys, math, json
 HERE = os.path.dirname(os.path.abspath(__file__))
-H = os.path.join(os.path.dirname(os.path.dirname(HERE)), "fr3_bubblewrap_pack_handoff_20261007")   # scenes live in the handoff package (archived copy)
+H = os.path.join(os.path.dirname(os.path.dirname(HERE)), "fr3_bubblewrap_pack_surface_handoff_20261007")   # scenes live in the handoff package (archived copy)
 ap = argparse.ArgumentParser()
 ap.add_argument("--scene", default=H + "/scene_final_ui.usd")
 ap.add_argument("--mugstl", default=H + "/sim/mug.stl")

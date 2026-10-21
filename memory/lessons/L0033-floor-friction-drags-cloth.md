@@ -8,7 +8,7 @@ domains: [surface, rigid]
 tags: [base_collider_pad, no_ground_collision, movebox, friction, thin floor, carry]
 triggers: [搬動裝著 deformable 的箱子, 包裹相對箱子滑動]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_handoff_20261007]
+scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_surface_handoff_20261007]
 evidence: [sims/fr3_bubblewrap_pack_20261007/work/PITFALLS.md #9, sims/fr3_bubblewrap_pack_20261007/work/EXPERIMENTS.md 10_box_move、探針 probe_fric_a~g]
 related: [L0029, L0024]
 observed: 2026-09-30

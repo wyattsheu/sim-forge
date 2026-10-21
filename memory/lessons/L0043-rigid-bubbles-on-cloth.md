@@ -8,8 +8,8 @@ domains: [surface, attach]
 tags: [bubbles, rigid bubble, element_filter, vtx_xform_attachment, spacing]
 triggers: [在 deformable 上附掛剛體小物件, 布一開始就炸開]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/sim/wrap_sim.py ~790-800、~834-840]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/wrap_sim.py ~790-800、~834-840]
 related: [L0049]
 observed: 2026-09-24
 ---

@@ -8,8 +8,8 @@ domains: [rigid]
 tags: [dynamic carton, goods_kg, payload, FixedJoint, tip over]
 triggers: [把紙箱 base 從 kinematic 改成 dynamic, 空箱被蓋子動作掀翻]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/sim/make_carton_P.py --goods_kg help、meta _note(NINE_LESSONS E-4)]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/make_carton_P.py --goods_kg help、meta _note(NINE_LESSONS E-4)]
 related: [L0061, L0015]
 observed: 2026-08
 ---

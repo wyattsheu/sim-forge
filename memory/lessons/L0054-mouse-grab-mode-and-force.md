@@ -8,8 +8,8 @@ domains: [ui, rigid]
 tags: [forceGrab, pickingForce, joint mode, force mode, lever arm, tip over, MOUSE_PICKING_FORCE]
 triggers: [設定滑鼠拖曳參數, 拖曳只動一點點, 提起箱子會翻倒]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007, sims/wrapped_mug, tools/parcel-forge]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/CHANGELOG.md 2026-10-07 下午, sims/fr3_bubblewrap_pack_handoff_20261007/README.md §3.3、§8.6 Bm、§10 #2b #2c, sims/fr3_bubblewrap_pack_handoff_20261007/sim/webrtc_boot.py ~35, sims/wrapped_mug/docs/FINDINGS.md §12, tools/parcel-forge/docs/DECISIONS.md D062、D067]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007, sims/wrapped_mug, tools/parcel-forge]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/CHANGELOG.md 2026-10-07 下午, sims/fr3_bubblewrap_pack_surface_handoff_20261007/README.md §3.3、§8.6 Bm、§10 #2b #2c, sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/webrtc_boot.py ~35, sims/wrapped_mug/docs/FINDINGS.md §12, tools/parcel-forge/docs/DECISIONS.md D062、D067]
 related: [L0053, L0055]
 observed: 2026-10-07
 ---

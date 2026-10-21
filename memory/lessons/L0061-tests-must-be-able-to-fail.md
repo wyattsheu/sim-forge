@@ -8,8 +8,8 @@ domains: [measure, workflow]
 tags: [tautology, false pass, kinematic, selfcheck, golden test, negative control, validator]
 triggers: [寫新的檢查或驗收腳本, 一個測試永遠是 PASS, 拿參數檔證明產出正確]
 versions: Isaac Sim 5.1.0 / 6.0.1
-scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_handoff_20261007, tools/parcel-forge]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/sim/make_carton_P.py 檔頭與 --anchor help, sims/fr3_bubblewrap_pack_20261007/docs/handoff_20260929/CHANGES_TO_VERIFY.md A1/A4、C1、C3, sims/fr3_bubblewrap_pack_20261007/work/FOLDORDER_NOTES.md §3, sims/fr3_bubblewrap_pack_20261007/work/tests/README.md golden, tools/parcel-forge/docs/DECISIONS.md D010]
+scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_surface_handoff_20261007, tools/parcel-forge]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/make_carton_P.py 檔頭與 --anchor help, sims/fr3_bubblewrap_pack_20261007/docs/handoff_20260929/CHANGES_TO_VERIFY.md A1/A4、C1、C3, sims/fr3_bubblewrap_pack_20261007/work/FOLDORDER_NOTES.md §3, sims/fr3_bubblewrap_pack_20261007/work/tests/README.md golden, tools/parcel-forge/docs/DECISIONS.md D010]
 related: [L0025, L0062, L0070]
 observed: 2026-09-26
 ---

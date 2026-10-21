@@ -8,8 +8,8 @@ domains: [env, ui, measure]
 tags: [WebRTC, livestream, omni.kit.livestream.app, hide_ui, isaacsim.exp.full.streaming, port 49100, publicEndpointAddress]
 triggers: [寫或修改 WebRTC 串流啟動腳本, 使用者說連上去是灰畫面或只有 viewport]
 versions: Isaac Sim 6.0.1(parcel-forge)/ 5.1.0(sims open_in_webrtc.sh)
-scope: [tools/parcel-forge, sims/fr3_bubblewrap_pack_handoff_20261007, sims/wrapped_mug]
-evidence: [tools/parcel-forge/docs/DECISIONS.md D021、D024、D025, sims/fr3_bubblewrap_pack_handoff_20261007/README.md §4, sims/wrapped_mug/viewer/start_viewer.sh]
+scope: [tools/parcel-forge, sims/fr3_bubblewrap_pack_surface_handoff_20261007, sims/wrapped_mug]
+evidence: [tools/parcel-forge/docs/DECISIONS.md D021、D024、D025, sims/fr3_bubblewrap_pack_surface_handoff_20261007/README.md §4, sims/wrapped_mug/viewer/start_viewer.sh]
 related: [L0053, L0062]
 observed: 2026-09-16
 ---
@@ -54,4 +54,4 @@ observed: 2026-09-16
 
 ## 證據
 
-`tools/parcel-forge/docs/DECISIONS.md` D021(livestream key 被忽略)、D024(experience 決定有沒有 UI)、D025(`hide_ui=False`)。`sims/fr3_bubblewrap_pack_handoff_20261007/README.md` §4.3 測試紀錄。
+`tools/parcel-forge/docs/DECISIONS.md` D021(livestream key 被忽略)、D024(experience 決定有沒有 UI)、D025(`hide_ui=False`)。`sims/fr3_bubblewrap_pack_surface_handoff_20261007/README.md` §4.3 測試紀錄。

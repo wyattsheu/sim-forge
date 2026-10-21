@@ -8,8 +8,8 @@ domains: [surface, attach]
 tags: [anchor, hold_mm, tip_over_mm, LZ_HOLD, extrapolation, floor_edges, stage2, set_world_pose]
 triggers: [寫或調整用錨點折布的程式, 包裹疊得太高, 布被甩飛]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_20261007/work/REPORT_20260930.md §1, sims/fr3_bubblewrap_pack_20261007/work/EXPERIMENTS.md 03_anchor、05_tipover_thin, sims/fr3_bubblewrap_pack_handoff_20261007/sim/wrap_sim.py ~1462-1480、--floor_edges help]
+scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_20261007/work/REPORT_20260930.md §1, sims/fr3_bubblewrap_pack_20261007/work/EXPERIMENTS.md 03_anchor、05_tipover_thin, sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/wrap_sim.py ~1462-1480、--floor_edges help]
 related: [L0035, L0050, L0040]
 observed: 2026-09-25
 ---

@@ -8,8 +8,8 @@ domains: [ui]
 tags: [Script Editor, __file__, exec compile, SIM_DIR_OVERRIDE, Content panel, reference]
 triggers: [寫要在 UI Script Editor 執行、又需要 import 同資料夾模組的腳本, 教使用者在 UI 裡開場景]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/README.md §3.1、§3.4、§10 #8]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/README.md §3.1、§3.4、§10 #8]
 related: [L0001]
 observed: 2026-10-07
 ---

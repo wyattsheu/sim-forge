@@ -8,7 +8,7 @@ domains: [pipeline]
 tags: [rm -rf, stale output, chain3.sh, run_demo.sh, collect_runs.py, runs/ directory]
 triggers: [寫批次或串接模擬的 shell 腳本, 結果好得不合理]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_handoff_20261007]
+scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_surface_handoff_20261007]
 evidence: [sims/fr3_bubblewrap_pack_20261007/docs/handoff_20260929/CHANGES_TO_VERIFY.md D1-D3, sims/fr3_bubblewrap_pack_20261007/work/tests/README.md 建議流程, sim-forge 分支 portable-isaac-launch sim/run_demo.sh]
 related: [L0066, L0068]
 observed: 2026-09-29

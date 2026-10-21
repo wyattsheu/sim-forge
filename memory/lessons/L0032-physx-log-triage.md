@@ -8,8 +8,8 @@ domains: [rigid]
 tags: [foundLostAggregatePairsCapacity, gpuFoundLostAggregatePairsCapacity, angle limit clamped, D6]
 triggers: [Play 後 log 出現 PhysX error 或 warning]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/README.md §10 #4、#5]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/README.md §10 #4、#5]
 related: [L0011]
 observed: 2026-10-07
 ---

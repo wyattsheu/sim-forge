@@ -8,8 +8,8 @@ domains: [render, usd]
 tags: [OmniPBR, UsdPreviewSurface, UsdUVTexture, diffuse_color_constant, st primvar, UsdGeom.Cube, decal, opacity cutout]
 triggers: [給物體加貼圖或貼紙, 貼圖渲染成黑色方塊或很暗]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/sim/make_carton_P.py ~60、~155-175、~300-315]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/make_carton_P.py ~60、~155-175、~300-315]
 related: [L0017]
 observed: 2026-08-17
 ---

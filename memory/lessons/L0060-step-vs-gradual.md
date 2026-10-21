@@ -8,8 +8,8 @@ domains: [measure, pipeline]
 tags: [stage boundary, step change, placement bug, bookkeeping, diagnosis]
 triggers: [多段模擬某個指標突然變差, 判斷問題是座標還是物理]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_20261007/docs/handoff_20260929/ADAPTING.md §5, sims/fr3_bubblewrap_pack_20261007/work/PITFALLS.md #16, sims/fr3_bubblewrap_pack_handoff_20261007/sim/wrap_sim.py ~625-645]
+scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_20261007/docs/handoff_20260929/ADAPTING.md §5, sims/fr3_bubblewrap_pack_20261007/work/PITFALLS.md #16, sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/wrap_sim.py ~625-645]
 related: [L0071, L0058]
 observed: 2026-09-26
 ---

@@ -8,8 +8,8 @@ domains: [usd, rigid, geometry]
 tags: [BBoxCache, purpose, guide, render, ComputeWorldBound, collision mesh, pad collider]
 triggers: [用 bbox 算箱底高度或擺放位置, 用 bbox 判斷碰撞體重疊來決定過濾]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/sim/wrap_sim.py ~453, sims/fr3_bubblewrap_pack_handoff_20261007/CHANGELOG.md 2026-10-07 下午第一條]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/wrap_sim.py ~453, sims/fr3_bubblewrap_pack_surface_handoff_20261007/CHANGELOG.md 2026-10-07 下午第一條]
 related: [L0029]
 observed: 2026-09-25
 ---

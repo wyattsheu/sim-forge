@@ -1,6 +1,9 @@
-# Bubble-Wrapped Mug in a Carton — Dual-Arm Workstation (Handoff)<br>氣泡布包裹馬克杯入箱 —— 雙臂工作站(交付版)
+# Bubble-Wrapped Mug in a Carton — Dual-Arm Workstation (Handoff, surface wrap)<br>氣泡布包裹馬克杯入箱 —— 雙臂工作站(交付版)(surface 包材版)
 
 **Language / 語言:** [English](#english) · [繁體中文](#繁體中文)
+
+> **Renamed 2026-10-21:** this folder was `fr3_bubblewrap_pack_handoff_20261007`. It is the **surface-deformable** wrap handoff. The official wrap is now the **volume** (4 mm) version: [`../fr3_bubblewrap_pack_volume_release_20261021`](../fr3_bubblewrap_pack_volume_release_20261021).<br>
+> **2026-10-21 改名:** 原資料夾名 `fr3_bubblewrap_pack_handoff_20261007`。這是 **surface 包材版**交付;正式包材已改為 **volume 4 mm** 版,見 [`../fr3_bubblewrap_pack_volume_release_20261021`](../fr3_bubblewrap_pack_volume_release_20261021)。
 
 ---
 

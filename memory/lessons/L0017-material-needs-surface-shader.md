@@ -8,8 +8,8 @@ domains: [render, usd]
 tags: [UsdShade, MaterialAPI, surface output, OmniPBR, black render, materialPurpose]
 triggers: [建一個物理材質(摩擦/彈性)並綁到可見物體, 物體渲染成全黑]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/sim/make_carton_P.py ~135-150]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/make_carton_P.py ~135-150]
 related: [L0018]
 observed: 2026-08-17
 ---

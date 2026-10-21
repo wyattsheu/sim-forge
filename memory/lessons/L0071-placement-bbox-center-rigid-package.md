@@ -8,8 +8,8 @@ domains: [geometry, pipeline]
 tags: [placement, bbox center, vertex mean, rigid package, in_box_already, CDZ, centering]
 triggers: [把上一段的結果搬進箱子或新位置, 換階段時物體位置跳一下]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007, sims/fr3_bubblewrap_pack_20261007]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/sim/wrap_sim.py ~625-655, sims/fr3_bubblewrap_pack_20261007/work/CHANGES_wrap_sim.md 杯子入箱平移, sims/fr3_bubblewrap_pack_20261007/docs/handoff_20260929/CHANGES_TO_VERIFY.md B1]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007, sims/fr3_bubblewrap_pack_20261007]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/wrap_sim.py ~625-655, sims/fr3_bubblewrap_pack_20261007/work/CHANGES_wrap_sim.md 杯子入箱平移, sims/fr3_bubblewrap_pack_20261007/docs/handoff_20260929/CHANGES_TO_VERIFY.md B1]
 related: [L0060]
 observed: 2026-09-26
 ---

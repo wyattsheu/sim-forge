@@ -8,8 +8,8 @@ domains: [rigid]
 tags: [FixedJoint, localPos0, localPos1, world anchor]
 triggers: [要把一個剛體釘在世界上, 想用 joint 把箱子固定在桌上]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/sim/make_carton_P.py --anchor help]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/make_carton_P.py --anchor help]
 related: [L0061, L0028]
 observed: 2026-08
 ---

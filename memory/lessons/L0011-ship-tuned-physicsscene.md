@@ -8,8 +8,8 @@ domains: [usd, rigid, ui]
 tags: [PhysicsScene, TGS, position iterations, 120 Hz, UI Play, World defaults, sink]
 triggers: [交付一個會在 UI 裡按 Play 的 USD, headless 測試都過但使用者說東西會陷下去]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/README.md §2、§8.2, sims/fr3_bubblewrap_pack_handoff_20261007/sim/ui_path_check.py]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/README.md §2、§8.2, sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/ui_path_check.py]
 related: [L0010, L0061]
 observed: 2026-10-07
 ---
@@ -44,4 +44,4 @@ USD 內寫 `/physicsScene`:120 Hz、TGS、min position iterations 8、min veloci
 
 ## 證據
 
-`sims/fr3_bubblewrap_pack_handoff_20261007/README.md` §8.2 三路對照表、§10 已知問題 #1、#5。
+`sims/fr3_bubblewrap_pack_surface_handoff_20261007/README.md` §8.2 三路對照表、§10 已知問題 #1、#5。

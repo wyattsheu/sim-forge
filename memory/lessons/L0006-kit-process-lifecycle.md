@@ -8,8 +8,8 @@ domains: [env, workflow]
 tags: [kill, SIGTERM, SIGKILL, pid, port, pgrep, --stop, --replace]
 triggers: [寫啟動或停止背景 Kit 的腳本, port 被佔用無法啟動, 寫等待某程序結束的迴圈]
 versions: Isaac Sim 5.1.0 / 6.0.1
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007, sims/fr3_bubblewrap_pack_20261007, tools/parcel-forge]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/CHANGELOG.md 2026-10-07 03:48 (679eb23), tools/parcel-forge/docs/DECISIONS.md D022, sims/fr3_bubblewrap_pack_20261007/work/PITFALLS.md #11]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007, sims/fr3_bubblewrap_pack_20261007, tools/parcel-forge]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/CHANGELOG.md 2026-10-07 03:48 (679eb23), tools/parcel-forge/docs/DECISIONS.md D022, sims/fr3_bubblewrap_pack_20261007/work/PITFALLS.md #11]
 related: [L0078]
 observed: 2026-10-07
 ---

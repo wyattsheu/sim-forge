@@ -8,8 +8,8 @@ domains: [geometry, usd, pipeline]
 tags: [carton.meta.json, derived, wall_top_x, wall_top_y, wall_top_z, hinge_z, make_carton_P.py]
 triggers: [程式裡需要箱子的任何尺寸, 換一個紙箱尺寸, 寫讀取 carton 的新腳本]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_20261007/docs/handoff_20260929/ADAPTING.md §2, sims/fr3_bubblewrap_pack_handoff_20261007/sim/make_carton_P.py ~337-349, sims/fr3_bubblewrap_pack_handoff_20261007/sim/wrap_sim.py ~515-532、~1807]
+scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_20261007/docs/handoff_20260929/ADAPTING.md §2, sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/make_carton_P.py ~337-349, sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/wrap_sim.py ~515-532、~1807]
 related: [L0065, L0072]
 observed: 2026-09-25
 ---

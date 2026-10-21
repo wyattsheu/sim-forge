@@ -8,8 +8,8 @@ domains: [geometry, rigid]
 tags: [lid, hinge, rotation axis, sgn, lid_pose, world.reset, wall height, carton_sweep.py, 270 deg]
 triggers: [寫開關紙箱蓋的程式, 改紙箱生成器的牆或蓋, 模擬開始第一格包裹被壓扁]
 versions: Isaac Sim 5.1.0 / 6.0.1
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007, sims/fr3_bubblewrap_pack_20261007, tools/parcel-forge]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/sim/wrap_sim.py ~515-532, sims/fr3_bubblewrap_pack_20261007/work/CHANGES_wrap_sim.md 修正, sims/fr3_bubblewrap_pack_20261007/work/PITFALLS.md #8, sims/fr3_bubblewrap_pack_handoff_20261007/sim/make_carton_P.py ~225-235, tools/parcel-forge/docs/DECISIONS.md D066、D067]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007, sims/fr3_bubblewrap_pack_20261007, tools/parcel-forge]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/wrap_sim.py ~515-532, sims/fr3_bubblewrap_pack_20261007/work/CHANGES_wrap_sim.md 修正, sims/fr3_bubblewrap_pack_20261007/work/PITFALLS.md #8, sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/make_carton_P.py ~225-235, tools/parcel-forge/docs/DECISIONS.md D066、D067]
 related: [L0014, L0073]
 observed: 2026-09-25
 ---

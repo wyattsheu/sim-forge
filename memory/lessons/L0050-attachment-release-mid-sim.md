@@ -8,8 +8,8 @@ domains: [attach, surface]
 tags: [RemovePrim, attachmentEnabled, SetActive, release, release_after, probe_detach.py, anchor cube]
 triggers: [折完想讓布自然落下, 想在一次模擬裡放開夾爪或錨點, 讀到「attachment 跑到一半改無效」的舊註解]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_20261007/work/probe_detach.py, sims/fr3_bubblewrap_pack_20261007/work/EXPERIMENTS.md 探針 detach_m1~m7、06_release, sims/fr3_bubblewrap_pack_20261007/work/REPORT_20260930.md §1 結論 2, sims/fr3_bubblewrap_pack_handoff_20261007/sim/wrap_sim.py ~192、~1484-1495, sims/fr3_bubblewrap_pack_20261007/work/PITFALLS.md #7]
+scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_20261007/work/probe_detach.py, sims/fr3_bubblewrap_pack_20261007/work/EXPERIMENTS.md 探針 detach_m1~m7、06_release, sims/fr3_bubblewrap_pack_20261007/work/REPORT_20260930.md §1 結論 2, sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/wrap_sim.py ~192、~1484-1495, sims/fr3_bubblewrap_pack_20261007/work/PITFALLS.md #7]
 related: [L0049, L0042, L0077]
 supersedes: [L0051]
 observed: 2026-09-30

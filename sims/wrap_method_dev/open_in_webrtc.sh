@@ -1,6 +1,6 @@
 #!/bin/bash
 # 用 WebRTC 串流開「場景 USD」(遠端用 Isaac Sim WebRTC Streaming Client 連進來看、用滑鼠操作)。
-# 從 fr3_bubblewrap_pack_handoff_20261007/open_in_webrtc.sh 複製;只改了路徑(boot 在 viewer/、蓋子摺痕在 carton/)。
+# 從 fr3_bubblewrap_pack_surface_handoff_20261007/open_in_webrtc.sh 複製;只改了路徑(boot 在 viewer/、蓋子摺痕在 carton/)。
 # 要看「包裝模擬的過程」用 ./run_wrap.sh --live;這支是看已經做好的場景(雙臂工作站 + 紙箱 + 包裹)。
 #
 #   ./open_in_webrtc.sh                          # 預設:交付包的 scene_final_phys.usd(包材 / 杯子有物理)
@@ -18,7 +18,7 @@
 # WEBRTC_IP 沒設就用本機第一個非內網 IP;port 被佔用會自動往上找空的(WEBRTC_PORT 可指定起點)。
 set -e
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SCENE="$HERE/../fr3_bubblewrap_pack_handoff_20261007/scene_final_phys.usd"; CREASE=0
+SCENE="$HERE/../fr3_bubblewrap_pack_surface_handoff_20261007/scene_final_phys.usd"; CREASE=0
 PIDF="$HERE/logs/webrtc.pid"
 BOOT="$HERE/viewer/webrtc_boot.py"
 running() { pgrep -f -- "--exec $BOOT" ; }      # 這個資料夾開出來的所有串流實例

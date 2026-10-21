@@ -8,8 +8,8 @@ domains: [measure, workflow, env]
 tags: [evidence, silent ignore, config key, verification, not_tested]
 triggers: [回報某個設定或服務已經生效, 改了設定但現象沒變]
 versions: Isaac Sim 6.0.1 / 5.1.0
-scope: [tools/parcel-forge, sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [tools/parcel-forge/docs/DECISIONS.md D021、D025、D035, sims/fr3_bubblewrap_pack_handoff_20261007/README.md §4.3、§9]
+scope: [tools/parcel-forge, sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [tools/parcel-forge/docs/DECISIONS.md D021、D025、D035, sims/fr3_bubblewrap_pack_surface_handoff_20261007/README.md §4.3、§9]
 related: [L0005, L0061, L0030]
 observed: 2026-09-16
 ---

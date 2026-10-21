@@ -1,7 +1,7 @@
 # CHANGELOG
 
-Newest first. Times are UTC. Each entry = one git commit on `sims/fr3_bubblewrap_pack_handoff_20261007`
-(`git log --date=iso -- sims/fr3_bubblewrap_pack_handoff_20261007` shows the same history).
+Newest first. Times are UTC. Each entry = one git commit on `sims/fr3_bubblewrap_pack_surface_handoff_20261007`
+(`git log --date=iso -- sims/fr3_bubblewrap_pack_surface_handoff_20261007` shows the same history).
 最新的在最上面。時間是 UTC。每一條對應一個 git commit。
 
 ---

@@ -8,8 +8,8 @@ domains: [env, surface, volume]
 tags: [enableDeformableBeta, persistent, Preferences, Extra Args, scene_final_phys.usd]
 triggers: [開啟含 deformable 的 USD, 寫啟動腳本或交付說明, 包材在 UI 裡不動]
 versions: Isaac Sim 5.1.0(6.x 預設已開,見 L0002)
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/README.md §2、§3.1、§10 #2a]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/README.md §2、§3.1、§10 #2a]
 related: [L0002, L0008]
 observed: 2026-10-07
 ---
@@ -37,4 +37,4 @@ observed: 2026-10-07
 
 ## 證據
 
-`sims/fr3_bubblewrap_pack_handoff_20261007/README.md` §2 警告框、§3.1 步驟 0、§10 已知問題 #2a。
+`sims/fr3_bubblewrap_pack_surface_handoff_20261007/README.md` §2 警告框、§3.1 步驟 0、§10 已知問題 #2a。

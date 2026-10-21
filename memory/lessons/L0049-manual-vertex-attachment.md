@@ -8,8 +8,8 @@ domains: [attach, surface, volume]
 tags: [create_auto_deformable_attachment, AutoAttachmentAPI, OmniPhysicsVtxXformAttachment, vtxIndicesSrc0, PhysxPhysicsAttachment, headless]
 triggers: [把 deformable 頂點釘到剛體或夾爪上, attachment 建好了但布沒被抓住]
 versions: Isaac Sim 5.1.0-rc.19
-scope: [sims/wrapped_mug, sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/wrapped_mug/docs/FINDINGS.md §3, sims/wrapped_mug/wf_common.py attach_verts_to_xform ~243-280, sims/fr3_bubblewrap_pack_20261007/vol/grip_common.py ~396-419, sims/fr3_bubblewrap_pack_handoff_20261007/sim/wrap_sim.py 檔頭]
+scope: [sims/wrapped_mug, sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/wrapped_mug/docs/FINDINGS.md §3, sims/wrapped_mug/wf_common.py attach_verts_to_xform ~243-280, sims/fr3_bubblewrap_pack_20261007/vol/grip_common.py ~396-419, sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/wrap_sim.py 檔頭]
 related: [L0050, L0037]
 observed: 2026-09
 ---

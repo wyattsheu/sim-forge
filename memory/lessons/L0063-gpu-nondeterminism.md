@@ -8,8 +8,8 @@ domains: [measure, surface, pipeline]
 tags: [nondeterminism, GPU, noise, reproducibility, init_npz, A/B test, states npz]
 triggers: [比較兩組參數的結果, 重跑一次結果不同, 交付時要給參考數字]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_20261007/work/PITFALLS.md #5, sims/fr3_bubblewrap_pack_20261007/work/README.md, sims/fr3_bubblewrap_pack_handoff_20261007/README.md §8.4, sims/fr3_bubblewrap_pack_20261007/docs/handoff_20260929/ADAPTING.md §5]
+scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_20261007/work/PITFALLS.md #5, sims/fr3_bubblewrap_pack_20261007/work/README.md, sims/fr3_bubblewrap_pack_surface_handoff_20261007/README.md §8.4, sims/fr3_bubblewrap_pack_20261007/docs/handoff_20260929/ADAPTING.md §5]
 related: [L0046]
 observed: 2026-09-30
 ---

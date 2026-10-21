@@ -4,7 +4,7 @@
 # 包材是 beta surface deformable,Kit 啟動時就要開 enableDeformableBeta,所以一律帶這兩個參數。
 # 開好之後會載入 viewer/click_to_ros.py:Ctrl + 左鍵點場景 → 座標發佈到 ROS 2 /clicked_point。
 HERE=$(cd "$(dirname "$0")" && pwd)
-SCENE=${1:-$HERE/../fr3_bubblewrap_pack_handoff_20261007/scene_final_phys.usd}
+SCENE=${1:-$HERE/../fr3_bubblewrap_pack_surface_handoff_20261007/scene_final_phys.usd}
 export HANDOFF_USD="$(cd "$(dirname "$SCENE")" && pwd)/$(basename "$SCENE")"
 export DISPLAY=${DISPLAY:-:1}
 [ "$(id -u)" = 0 ] && export OMNI_KIT_ALLOW_ROOT=1

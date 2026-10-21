@@ -8,8 +8,8 @@ domains: [pipeline, measure]
 tags: [silent fallback, carton meta, floor_edges.json, SystemExit, guard, meta_guard]
 triggers: [寫讀取設定檔或中間檔的程式, 加一個「找不到就用預設」的分支, 階段名稱照印但畫面沒變]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_20261007/work/PITFALLS.md #1、#17, sims/fr3_bubblewrap_pack_20261007/work/REPORT_20260930.md §1 結論 7, sims/fr3_bubblewrap_pack_20261007/work/FOLDORDER_NOTES.md §2.5, sims/fr3_bubblewrap_pack_handoff_20261007/sim/wrap_sim.py ~508]
+scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_20261007/work/PITFALLS.md #1、#17, sims/fr3_bubblewrap_pack_20261007/work/REPORT_20260930.md §1 結論 7, sims/fr3_bubblewrap_pack_20261007/work/FOLDORDER_NOTES.md §2.5, sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/wrap_sim.py ~508]
 related: [L0014, L0066]
 observed: 2026-09-30
 ---

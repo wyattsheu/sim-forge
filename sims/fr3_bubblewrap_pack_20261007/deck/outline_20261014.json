@@ -45,7 +45,7 @@
     "caption": "scene_final_phys.usd(RTX 渲染);右下兩張隱藏了外層",
     "source": "ours"
    },
-   "notes": "先講結論:逆物流情境的 3D 模型已經建完,交付在 sim-forge 的 fr3_bubblewrap_pack_handoff_20261007。整個場景是一個 USD 檔 scene_final_phys.usd,裡面有雙臂工作站、紙箱、泡泡紙包裹和馬克杯,每個物件都有物理,不是只有外觀。左邊是場景全貌,紙箱放在兩隻手臂中間。右邊四張依序是關著的紙箱、蓋子推開後、把紙箱藏起來看包裹、再把包材藏起來看杯子;杯子在包裹裡是側躺的,這是模擬包裝的結果。接下來幾張逐一說明每個物件怎麼建、參數從哪裡來、驗證到什麼程度。",
+   "notes": "先講結論:逆物流情境的 3D 模型已經建完,交付在 sim-forge 的 fr3_bubblewrap_pack_surface_handoff_20261007。整個場景是一個 USD 檔 scene_final_phys.usd,裡面有雙臂工作站、紙箱、泡泡紙包裹和馬克杯,每個物件都有物理,不是只有外觀。左邊是場景全貌,紙箱放在兩隻手臂中間。右邊四張依序是關著的紙箱、蓋子推開後、把紙箱藏起來看包裹、再把包材藏起來看杯子;杯子在包裹裡是側躺的,這是模擬包裝的結果。接下來幾張逐一說明每個物件怎麼建、參數從哪裡來、驗證到什麼程度。",
    "bullets": [
     {
      "text": "雙臂工作站 + 紙箱 + 泡泡紙 + 馬克杯,全部有物理;clone 下來直接用",
@@ -309,7 +309,7 @@
      "level": 0
     },
     {
-     "text": "交付:sim-forge / sims / fr3_bubblewrap_pack_handoff_20261007",
+     "text": "交付:sim-forge / sims / fr3_bubblewrap_pack_surface_handoff_20261007",
      "level": 1
     }
    ]

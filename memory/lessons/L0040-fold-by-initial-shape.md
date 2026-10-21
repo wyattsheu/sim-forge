@@ -8,8 +8,8 @@ domains: [surface, geometry]
 tags: [fold_init, fixture, placeholder block, flap length, wrap_plan.py, sweep bar]
 triggers: [設計怎麼用模擬把布折起來, 布折不上去或俯視遮蔽 0%, 加輔助碰撞體幫忙折]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/sim/wrap_sim.py 檔頭 docstring、--fold_init help、~416, sims/fr3_bubblewrap_pack_20261007/docs/handoff_20260929/ADAPTING.md §1]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/wrap_sim.py 檔頭 docstring、--fold_init help、~416, sims/fr3_bubblewrap_pack_20261007/docs/handoff_20260929/ADAPTING.md §1]
 related: [L0038, L0042]
 observed: 2026-09-23
 ---

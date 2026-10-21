@@ -8,8 +8,8 @@ domains: [surface]
 tags: [restShapePoints, restBendAnglesDefault, restShapeDefault, restBendAngles, restAdjTriPairs, flatDefault, crease]
 triggers: [想讓布或膜保持折痕, 想讓包好的包材不要彈開, 讀到官方文件說可以設 restBendAngles]
 versions: Isaac Sim 5.1.0-rc.19 / PhysX 107.3.26
-scope: [sims/wrapped_mug, sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/wrapped_mug/docs/FINDINGS.md §1、§11, sims/wrapped_mug/experiments/p0b_crease_matrix.py, sims/fr3_bubblewrap_pack_20261007/work/EXPERIMENTS.md 08_crease, sims/fr3_bubblewrap_pack_handoff_20261007/README.md §8.6]
+scope: [sims/wrapped_mug, sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/wrapped_mug/docs/FINDINGS.md §1、§11, sims/wrapped_mug/experiments/p0b_crease_matrix.py, sims/fr3_bubblewrap_pack_20261007/work/EXPERIMENTS.md 08_crease, sims/fr3_bubblewrap_pack_surface_handoff_20261007/README.md §8.6]
 related: [L0035, L0037, L0047]
 observed: 2026-09
 ---

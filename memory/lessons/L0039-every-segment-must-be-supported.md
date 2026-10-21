@@ -8,8 +8,8 @@ domains: [surface, geometry]
 tags: [support, gravity, freestanding, tunnel profile, cross cutout, box wall, rest shape]
 triggers: [設計包材的初始形狀或 rest shape, 包材靜置後攤開或往外倒]
 versions: Isaac Sim 5.1.0-rc.19
-scope: [sims/wrapped_mug, sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/wrapped_mug/docs/FINDINGS.md §7、§8、§13, sims/fr3_bubblewrap_pack_handoff_20261007/README.md §8.6]
+scope: [sims/wrapped_mug, sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/wrapped_mug/docs/FINDINGS.md §7、§8、§13, sims/fr3_bubblewrap_pack_surface_handoff_20261007/README.md §8.6]
 related: [L0034, L0041]
 observed: 2026-09
 ---

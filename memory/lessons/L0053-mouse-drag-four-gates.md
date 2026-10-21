@@ -8,7 +8,7 @@ domains: [ui]
 tags: [mouse drag, omni.physx.ui, timeline play, Shift, mouse_interaction_override_toggle, gizmo, on_mouse_shift_drag_start, input actions]
 triggers: [使用者說滑鼠拖不動, 寫給人互動用的 viewer 或啟動腳本, 想用 headless 測滑鼠互動]
 versions: Isaac Sim 5.1.0-rc.19(sims)/ 6.0.1 omni.physx.ui 110.1.13(parcel-forge)
-scope: [sims/wrapped_mug, sims/fr3_bubblewrap_pack_handoff_20261007, tools/parcel-forge]
+scope: [sims/wrapped_mug, sims/fr3_bubblewrap_pack_surface_handoff_20261007, tools/parcel-forge]
 evidence: [sims/wrapped_mug/docs/FINDINGS.md §12, tools/parcel-forge/docs/DECISIONS.md D020、D057、D063、D064, sims/wrapped_mug/viewer/viewer_boot.py ~32]
 related: [L0054, L0005]
 observed: 2026-09

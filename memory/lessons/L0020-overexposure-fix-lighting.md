@@ -8,8 +8,8 @@ domains: [render]
 tags: [lighting, DomeLight, exposure, diffuse, color calibration, headlight]
 triggers: [使用者說顏色怪, 淺色物體一片死白, 調材質顏色調不準]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007, sims/wrapped_mug]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/sim/wrap_sim.py ~335-350、~1243, sims/wrapped_mug/docs/FINDINGS.md §10]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007, sims/wrapped_mug]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/wrap_sim.py ~335-350、~1243, sims/wrapped_mug/docs/FINDINGS.md §10]
 related: [L0019]
 observed: 2026-09-25
 ---

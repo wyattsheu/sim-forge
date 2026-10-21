@@ -8,8 +8,8 @@ domains: [attach, surface]
 tags: [attachmentEnabled, stiffness, release, init_npz, stage2]
 triggers: [讀到 wrap_sim.py 檔頭「不用 attachment」或 --init_npz help「跑到一半放力做不到」]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/sim/wrap_sim.py 檔頭 docstring、--init_npz help(probe_release.py 2026-09-25)]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/wrap_sim.py 檔頭 docstring、--init_npz help(probe_release.py 2026-09-25)]
 related: [L0050, L0077]
 superseded_by: L0050
 observed: 2026-09-25

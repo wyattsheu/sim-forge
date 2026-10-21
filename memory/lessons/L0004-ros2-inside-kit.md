@@ -8,8 +8,8 @@ domains: [env]
 tags: [ROS 2, rclpy, jazzy, PYTHONPATH, LD_LIBRARY_PATH, python 3.11, python 3.12]
 triggers: [在 Isaac Sim 裡發佈或訂閱 ROS 2 topic, 寫啟動腳本並且有 source /opt/ros]
 versions: Isaac Sim 5.1.0(binary)/ 6.0(pip 版路徑不同)
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/CHANGELOG.md 2026-10-07 下午, sims/fr3_bubblewrap_pack_handoff_20261007/README.md §9, sims/fr3_bubblewrap_pack_handoff_20261007/open_in_ui.sh]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/CHANGELOG.md 2026-10-07 下午, sims/fr3_bubblewrap_pack_surface_handoff_20261007/README.md §9, sims/fr3_bubblewrap_pack_surface_handoff_20261007/open_in_ui.sh]
 related: []
 observed: 2026-10-07
 ---
@@ -43,4 +43,4 @@ Kit 內 `request_query` 取一點並發佈,系統端 `ros2 topic echo` 收到同
 
 ## 證據
 
-`sims/fr3_bubblewrap_pack_handoff_20261007/CHANGELOG.md`:「the system /opt/ros (python 3.12) is removed from PYTHONPATH / LD_LIBRARY_PATH because mixing them made rclpy fail inside Kit」;README §9 驗證紀錄。
+`sims/fr3_bubblewrap_pack_surface_handoff_20261007/CHANGELOG.md`:「the system /opt/ros (python 3.12) is removed from PYTHONPATH / LD_LIBRARY_PATH because mixing them made rclpy fail inside Kit」;README §9 驗證紀錄。

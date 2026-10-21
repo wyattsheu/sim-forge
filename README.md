@@ -9,7 +9,7 @@ Isaac Sim 物理模擬資產的生成管線。每個模擬是 `sims/` 底下一�
 | --- | --- |
 | [`sims/wrapped_mug`](sims/wrapped_mug) | 逆物流情境:紙箱內用泡泡紙包覆的馬克杯,放進 stationary_ai 雙臂平台 |
 | [`sims/fr3_bubblewrap_pack_20261007`](sims/fr3_bubblewrap_pack_20261007) | 同一情境的**物理模擬開發紀錄**(2026-09-30~10-07):surface / volume deformable 包材折疊、入箱、搬箱、開蓋、夾爪掀包材、FR3 可達性;含 122 次模擬紀錄、自動測試集與場景 USD |
-| [`sims/fr3_bubblewrap_pack_handoff_20261007`](sims/fr3_bubblewrap_pack_handoff_20261007) | 同一情境的**交付版 handoff**(拿到就能用):雙臂工作站 + 紙箱 + 包好的馬克杯場景 USD,Isaac Sim UI / WebRTC 開啟與滑鼠互動,`make_videos.sh` 重新產生影片。開發過程看上一列。紙箱用 co7b 雙臂開箱那次的紙箱(2026-10-14 起) |
+| [`sims/fr3_bubblewrap_pack_surface_handoff_20261007`](sims/fr3_bubblewrap_pack_surface_handoff_20261007) | 同一情境的**交付版 handoff(surface 包材版)**(拿到就能用):雙臂工作站 + 紙箱 + 包好的馬克杯場景 USD,Isaac Sim UI / WebRTC 開啟與滑鼠互動,`make_videos.sh` 重新產生影片。開發過程看上一列。紙箱用 co7b 雙臂開箱那次的紙箱(2026-10-14 起) |
 | [`sims/carton_plastic_crease_20261009`](sims/carton_plastic_crease_20261009) | 交付版 2026-10-09~10-13 用的紙箱蓋模型**存檔**:drive 版彈塑性摺痕(文獻值,回彈 45°、可摺到 261°)、力學說明文件、摺痕試驗、報告簡報 |
 
 ![wrapped_mug](sims/wrapped_mug/docs/img/rig.png)

@@ -8,8 +8,8 @@ domains: [rigid, surface, measure]
 tags: [kinematic, lid_span, press_down, drive, set_world_pose, kinematic target, deformable contact]
 triggers: [用 kinematic 蓋子、壓板、夾爪去推 deformable, 布被掃穿箱壁, 判斷布到底有沒有被頂住]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/sim/wrap_sim.py --lid_span、--press_down、--close_lid help、~1653]
+scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/wrap_sim.py --lid_span、--press_down、--close_lid help、~1653]
 related: [L0044, L0061]
 observed: 2026-09-26
 ---

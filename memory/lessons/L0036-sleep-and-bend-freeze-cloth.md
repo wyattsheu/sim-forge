@@ -8,8 +8,8 @@ domains: [surface, measure]
 tags: [sleepThreshold, settlingThreshold, settlingDamping, sleepy, no_sleepy, surfaceBendStiffness, bend 2e3]
 triggers: [套用別人 USD 的 deformable 參數, 布在模擬中停住不動, 量測壓實後的回彈]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/sim/wrap_sim.py ~746, sims/fr3_bubblewrap_pack_20261007/docs/handoff_20260929/ADAPTING.md §3, sims/fr3_bubblewrap_pack_20261007/work/PITFALLS.md #2, sims/fr3_bubblewrap_pack_20261007/work/EXPERIMENTS.md 03_anchor]
+scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/wrap_sim.py ~746, sims/fr3_bubblewrap_pack_20261007/docs/handoff_20260929/ADAPTING.md §3, sims/fr3_bubblewrap_pack_20261007/work/PITFALLS.md #2, sims/fr3_bubblewrap_pack_20261007/work/EXPERIMENTS.md 03_anchor]
 related: [L0035]
 observed: 2026-09-24
 ---

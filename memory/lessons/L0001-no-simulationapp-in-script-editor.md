@@ -8,8 +8,8 @@ domains: [env, ui]
 tags: [SimulationApp, Script Editor, python.sh, kit]
 triggers: [要在 Isaac Sim UI 的 Script Editor 執行一支腳本, 寫一支要同時給 UI 和終端機用的腳本]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/README.md §7]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/README.md §7]
 related: [L0056]
 observed: 2026-10-07
 ---
@@ -41,4 +41,4 @@ grep 腳本開頭:有 `SimulationApp(` 的就不該出現在「UI 內執行」�
 
 ## 證據
 
-`sims/fr3_bubblewrap_pack_handoff_20261007/README.md` §7「Never paste a script that creates its own SimulationApp into the Script Editor」與腳本分類表。
+`sims/fr3_bubblewrap_pack_surface_handoff_20261007/README.md` §7「Never paste a script that creates its own SimulationApp into the Script Editor」與腳本分類表。

@@ -8,7 +8,7 @@ domains: [env]
 tags: [pip, shader cache, extscache, first start, READY]
 triggers: [在新機器或新 venv 第一次啟動 Isaac, 啟動腳本設定逾時]
 versions: Isaac Sim 6.0.0-rc.22(pip)
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007]
 evidence: [sim-forge 分支 portable-isaac-launch commit a8800e9(open_in_webrtc.sh 與 README)]
 related: [L0002]
 observed: 2026-10-07

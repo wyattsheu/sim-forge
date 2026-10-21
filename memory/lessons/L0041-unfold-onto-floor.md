@@ -8,8 +8,8 @@ domains: [surface, geometry]
 tags: [unbox, flat_ground, stretch, edge ratio, hanging sheet]
 triggers: [做開箱或攤平包材的動作, 邊長比中位大於 1.05]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/sim/wrap_sim.py ~1393-1400, sims/fr3_bubblewrap_pack_20261007/docs/handoff_20260929/CHANGES_TO_VERIFY.md B10]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/wrap_sim.py ~1393-1400, sims/fr3_bubblewrap_pack_20261007/docs/handoff_20260929/CHANGES_TO_VERIFY.md B10]
 related: [L0039]
 observed: 2026-09-26
 ---

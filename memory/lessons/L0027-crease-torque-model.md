@@ -8,8 +8,8 @@ domains: [rigid, usd]
 tags: [crease, ElastoplasticCrease, crease_physics.py, armature, inertia, damping, explicit damping stability, yield]
 triggers: [用 crease_physics.py 或自己寫摺痕力矩, 蓋子抖動或發散, 想把摺痕行為存進 USD]
 versions: Isaac Sim 5.1.0
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007]
-evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/sim/make_carton_P.py ~246-249, sims/fr3_bubblewrap_pack_handoff_20261007/README.md §8.1、§10 #3]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007]
+evidence: [sims/fr3_bubblewrap_pack_surface_handoff_20261007/sim/make_carton_P.py ~246-249, sims/fr3_bubblewrap_pack_surface_handoff_20261007/README.md §8.1、§10 #3]
 related: [L0055]
 observed: 2026-09
 ---

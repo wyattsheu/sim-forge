@@ -8,7 +8,7 @@ domains: [env, usd, rigid]
 tags: [Isaac Sim 6.0, Isaac Sim 5.1, isaacsim.core.api, World, SimulationManager, invertFilteredGroups, enableDeformableBeta, pip]
 triggers: [在另一台機器或另一個 Isaac 版本上跑既有腳本, 把 sims 的程式搬進 tools/parcel-forge 或反過來, 重建 scene_final_phys.usd]
 versions: Isaac Sim 5.1.0 (binary, sims) / 6.0.0-rc.22 (pip, portable 分支) / 6.0.1.0 (pip, parcel-forge)
-scope: [sims/fr3_bubblewrap_pack_handoff_20261007, tools/parcel-forge]
+scope: [sims/fr3_bubblewrap_pack_surface_handoff_20261007, tools/parcel-forge]
 evidence: [tools/parcel-forge/docs/ENVIRONMENT.md「API shape on this version」, tools/parcel-forge/docs/DECISIONS.md D002, sim-forge 分支 portable-isaac-launch commit 59eb65d、c3a974e(CHANGELOG 與 build_phys_scene.py 註解)]
 related: [L0029, L0007]
 observed: 2026-10-07

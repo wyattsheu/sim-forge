@@ -1,6 +1,6 @@
 # 紙箱:彈塑性摺痕(drive 版)—— 存檔
 
-> 這是 `fr3_bubblewrap_pack_handoff_20261007` 在 **2026-10-09 ~ 2026-10-13** 用的紙箱蓋模型。
+> 這是 `fr3_bubblewrap_pack_surface_handoff_20261007` 在 **2026-10-09 ~ 2026-10-13** 用的紙箱蓋模型。
 > 2026-10-14 起,交付包改用 co7b 的紙箱(`sim/crease_co7b.py`,見交付包 README),這個模型存在這裡,
 > 特性、參數、驗證數字和報告簡報都保留。交付包裡仍可用 `LID_MODE=plastic` 切回這個模型。
 
@@ -79,7 +79,7 @@ carton_plastic_crease_20261009/
 
 ```bash
 cd sims/carton_plastic_crease_20261009/sim
-S=../../fr3_bubblewrap_pack_handoff_20261007/scene_final_phys.usd
+S=../../fr3_bubblewrap_pack_surface_handoff_20261007/scene_final_phys.usd
 /isaac-sim/python.sh crease_test.py $S --lid fyp --track 90 --empty     # 摺到 90° 放手
 /isaac-sim/python.sh verify_phys_scene.py $S --test P --pull_lid fyp --pull_max 3
 ./run_crease_matrix.sh                                                  # 全部(依序跑,GPU 跟別人共用)
