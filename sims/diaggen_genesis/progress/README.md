@@ -1,10 +1,10 @@
 # DiagGen / Genesis 批次執行進度
 
-狀態：**等待空閒 GPU**  
+狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T16:38:05+08:00（Asia/Taipei）
+更新：2026-10-21T16:38:22+08:00（Asia/Taipei）
 
-共 9 件：等待 4、執行中 0、完成 0、失敗 5、取消 0。
+共 9 件：等待 3、執行中 1、完成 0、失敗 5、取消 0。
 
 GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢查。  
 允許與既有運算共用 GPU：是。
@@ -18,7 +18,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢
 | baseball_cap | failed | seeded | revision_0000 | 24576 MiB | 0/9 |
 | curling_iron | failed | running | revision_0000 | 24576 MiB | 9/9 |
 | dragon | failed | seeded | revision_0000 | 24576 MiB | 0/9 |
-| kitchen_tongs | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
+| kitchen_tongs | running | seeded | revision_0000 | 24576 MiB | 0/9 |
 | sauce_keeper | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
 | sloth | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
 | sneaker | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
@@ -160,7 +160,7 @@ Genesis 診斷 episode 數：0。
 
 ## kitchen_tongs
 
-Run：`genesis_kitchen_tongs_20261021`；等待空閒 GPU。
+Run：`genesis_kitchen_tongs_20261021`；執行中。
 
 | 階段 | 狀態 |
 |---|---|
