@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T12:13:00+08:00",
+  "updated_at": "2026-10-21T12:13:16+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T04:05:19.455387+00:00",
-      "updated_at": "2026-10-21T12:13:00+08:00",
+      "updated_at": "2026-10-21T12:13:16+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -52,10 +52,10 @@
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "pending",
+          "status": "running",
           "ledger_status": "pending",
           "ok": false,
-          "started_at": null,
+          "started_at": "2026-10-21T04:13:10.580509+00:00",
           "finished_at": null
         },
         {
@@ -127,6 +127,16 @@
           "path": "media/usb_hub_cleaned_image.png",
           "bytes": 1407489,
           "sha256": "b08a20d955c14f03357ccb85134d54888a8d6db91773ee398da98690d928097f"
+        },
+        {
+          "path": "media/usb_hub_processed_white_bg_png.png",
+          "bytes": 98969,
+          "sha256": "df78850d527a5358848706915dca1489bddc2241c5bfc750d99c7777caf4718b"
+        },
+        {
+          "path": "media/usb_hub_processed_rgba.png",
+          "bytes": 119427,
+          "sha256": "3fd0e39819159e2f0881cc9bfcd4339897732fbd58b6868d1d321de38605acd1"
         }
       ],
       "id": "usb_hub",
@@ -144,7 +154,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T04:05:19.462238+00:00",
-      "updated_at": "2026-10-21T12:13:00+08:00",
+      "updated_at": "2026-10-21T12:13:16+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -265,7 +275,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T04:12:53.485565+00:00",
-      "updated_at": "2026-10-21T12:13:00+08:00",
+      "updated_at": "2026-10-21T12:13:16+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -370,7 +380,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:13:00+08:00",
+      "updated_at": "2026-10-21T12:13:16+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -475,7 +485,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:13:00+08:00",
+      "updated_at": "2026-10-21T12:13:16+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -580,7 +590,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:13:00+08:00",
+      "updated_at": "2026-10-21T12:13:16+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -685,7 +695,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:13:00+08:00",
+      "updated_at": "2026-10-21T12:13:16+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -790,7 +800,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:13:00+08:00",
+      "updated_at": "2026-10-21T12:13:16+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -895,7 +905,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:13:00+08:00",
+      "updated_at": "2026-10-21T12:13:16+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -997,6 +1007,16 @@
       "sha256": "b08a20d955c14f03357ccb85134d54888a8d6db91773ee398da98690d928097f"
     },
     {
+      "path": "media/usb_hub_processed_white_bg_png.png",
+      "bytes": 98969,
+      "sha256": "df78850d527a5358848706915dca1489bddc2241c5bfc750d99c7777caf4718b"
+    },
+    {
+      "path": "media/usb_hub_processed_rgba.png",
+      "bytes": 119427,
+      "sha256": "3fd0e39819159e2f0881cc9bfcd4339897732fbd58b6868d1d321de38605acd1"
+    },
+    {
       "path": "media/capybara_plush_toy_cleaned_image.png",
       "bytes": 2482560,
       "sha256": "3b1f44d91ac24d48d58d8521565e71a34d09efe83f337eae9ca1c469415dc378"
@@ -1012,5 +1032,5 @@
       "sha256": "01a3dd10e40951bb097d9dca078b38e2867a71f7e709c86b7430835a294b068d"
     }
   ],
-  "signature": "70f16636afda20736481bf122e2ac1bb9e8ed62b13f3c8ec5d20061b7433adf6"
+  "signature": "666aef9d2e9ce20302478f3b6f04115f4045b685c89f1babdfaa2493f85a666d"
 }
