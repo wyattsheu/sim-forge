@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T16:58:12+08:00",
+  "updated_at": "2026-10-21T17:05:30+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-21T16:58:12+08:00",
+      "updated_at": "2026-10-21T17:05:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -145,7 +145,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T07:14:19.925656+00:00",
-      "updated_at": "2026-10-21T16:58:12+08:00",
+      "updated_at": "2026-10-21T17:05:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -277,7 +277,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-21T16:58:12+08:00",
+      "updated_at": "2026-10-21T17:05:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -383,7 +383,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-21T16:58:12+08:00",
+      "updated_at": "2026-10-21T17:05:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -560,7 +560,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-21T16:58:12+08:00",
+      "updated_at": "2026-10-21T17:05:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -666,7 +666,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:38:07.768841+00:00",
-      "updated_at": "2026-10-21T16:58:12+08:00",
+      "updated_at": "2026-10-21T17:05:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -798,7 +798,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:46:28.056801+00:00",
-      "updated_at": "2026-10-21T16:58:12+08:00",
+      "updated_at": "2026-10-21T17:05:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -826,11 +826,11 @@
         {
           "name": "omnipart_generate_parts",
           "label": "OmniPart 幾何生成",
-          "status": "running",
-          "ledger_status": "pending",
-          "ok": false,
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
           "started_at": "2026-10-21T08:58:00.175990+00:00",
-          "finished_at": null
+          "finished_at": "2026-10-21T09:05:25.208061+00:00"
         },
         {
           "name": "hag4r_gpt_staged_material_inference",
@@ -912,6 +912,36 @@
           "path": "media/sauce_keeper_segmentation_overlay.png",
           "bytes": 51232,
           "sha256": "8d3e79c55979913a661011aed3292ac359bb0a2e613d84df75b42208db52d25d"
+        },
+        {
+          "path": "media/sauce_keeper_omnipart_top.png",
+          "bytes": 8505,
+          "sha256": "df555ec2f70231dccb28a799f1d2d6a9f951ee31e1835eba27e82dfbc5e1aecf"
+        },
+        {
+          "path": "media/sauce_keeper_omnipart_bottom.png",
+          "bytes": 6449,
+          "sha256": "61c8448c789aa88932344ef658ecb7e58324ca9347c984abdb0eedba0f394124"
+        },
+        {
+          "path": "media/sauce_keeper_omnipart_front.png",
+          "bytes": 7298,
+          "sha256": "c58c617b6649093ae5dbc8bd7bcaeecc556febeb0281caa0c98e0c698323296a"
+        },
+        {
+          "path": "media/sauce_keeper_omnipart_back.png",
+          "bytes": 7117,
+          "sha256": "ac62dae4cf5eeed97bff99d74610db7a4d5cfaaee52ee533134e0b673ee45bf5"
+        },
+        {
+          "path": "media/sauce_keeper_omnipart_left.png",
+          "bytes": 7021,
+          "sha256": "ae8c9bf8dc884418261127ba1865de72055680005b37fa594f88c58f0eae9dfa"
+        },
+        {
+          "path": "media/sauce_keeper_omnipart_right.png",
+          "bytes": 6901,
+          "sha256": "0d60d7d19a302a95e69b4093ef70a47b3b9eb58d0d01ab9a8b95098a3430356b"
         }
       ],
       "id": "sauce_keeper",
@@ -930,7 +960,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:58:12+08:00",
+      "updated_at": "2026-10-21T17:05:30+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1036,7 +1066,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:58:12+08:00",
+      "updated_at": "2026-10-21T17:05:30+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1282,7 +1312,37 @@
       "path": "media/sauce_keeper_segmentation_overlay.png",
       "bytes": 51232,
       "sha256": "8d3e79c55979913a661011aed3292ac359bb0a2e613d84df75b42208db52d25d"
+    },
+    {
+      "path": "media/sauce_keeper_omnipart_top.png",
+      "bytes": 8505,
+      "sha256": "df555ec2f70231dccb28a799f1d2d6a9f951ee31e1835eba27e82dfbc5e1aecf"
+    },
+    {
+      "path": "media/sauce_keeper_omnipart_bottom.png",
+      "bytes": 6449,
+      "sha256": "61c8448c789aa88932344ef658ecb7e58324ca9347c984abdb0eedba0f394124"
+    },
+    {
+      "path": "media/sauce_keeper_omnipart_front.png",
+      "bytes": 7298,
+      "sha256": "c58c617b6649093ae5dbc8bd7bcaeecc556febeb0281caa0c98e0c698323296a"
+    },
+    {
+      "path": "media/sauce_keeper_omnipart_back.png",
+      "bytes": 7117,
+      "sha256": "ac62dae4cf5eeed97bff99d74610db7a4d5cfaaee52ee533134e0b673ee45bf5"
+    },
+    {
+      "path": "media/sauce_keeper_omnipart_left.png",
+      "bytes": 7021,
+      "sha256": "ae8c9bf8dc884418261127ba1865de72055680005b37fa594f88c58f0eae9dfa"
+    },
+    {
+      "path": "media/sauce_keeper_omnipart_right.png",
+      "bytes": 6901,
+      "sha256": "0d60d7d19a302a95e69b4093ef70a47b3b9eb58d0d01ab9a8b95098a3430356b"
     }
   ],
-  "signature": "f1180a1b53af49bba26f1d4f237cd7d3a2adc0655beb4303d301ff93173af7d9"
+  "signature": "d59e9a96843765e9a4dd01baf6c148f5a342390c7db02147da48e22b871aa5b1"
 }

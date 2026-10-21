@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T16:58:12+08:00（Asia/Taipei）
+更新：2026-10-21T17:05:30+08:00（Asia/Taipei）
 
 共 9 件：等待 2、執行中 1、完成 0、失敗 6、取消 0。
 
@@ -19,7 +19,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢
 | curling_iron | failed | running | revision_0000 | 24576 MiB | 9/9 |
 | dragon | failed | seeded | revision_0000 | 24576 MiB | 0/9 |
 | kitchen_tongs | failed | seeded | revision_0000 | 24576 MiB | 2/9 |
-| sauce_keeper | running | seeded | revision_0000 | 24576 MiB | 2/9 |
+| sauce_keeper | running | seeded | revision_0000 | 24576 MiB | 3/9 |
 | sloth | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
 | sneaker | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
 
@@ -195,7 +195,7 @@ Run：`genesis_sauce_keeper_20261021`；執行中。
 |---|---|
 | 圖片清理 | success |
 | SAM3 分割 | success |
-| OmniPart 幾何生成 | running |
+| OmniPart 幾何生成 | success |
 | 材料推估 | pending |
 | 材料參數配置 | pending |
 | 體積網格處理 | pending |
@@ -214,6 +214,18 @@ Genesis 診斷 episode 數：0。
 ![sauce_keeper_ordered_mask_vis](media/sauce_keeper_ordered_mask_vis.png)
 
 ![sauce_keeper_segmentation_overlay](media/sauce_keeper_segmentation_overlay.png)
+
+![sauce_keeper_omnipart_top](media/sauce_keeper_omnipart_top.png)
+
+![sauce_keeper_omnipart_bottom](media/sauce_keeper_omnipart_bottom.png)
+
+![sauce_keeper_omnipart_front](media/sauce_keeper_omnipart_front.png)
+
+![sauce_keeper_omnipart_back](media/sauce_keeper_omnipart_back.png)
+
+![sauce_keeper_omnipart_left](media/sauce_keeper_omnipart_left.png)
+
+![sauce_keeper_omnipart_right](media/sauce_keeper_omnipart_right.png)
 
 
 ## sloth
