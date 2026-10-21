@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T22:24:55+08:00",
+  "updated_at": "2026-10-21T22:30:59+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-21T22:24:55+08:00",
+      "updated_at": "2026-10-21T22:30:59+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -147,6 +147,36 @@
           "path": "media/usb_hub_segmentation_overlay.png",
           "bytes": 74478,
           "sha256": "111470c84f452e131f91c1543b1d43dc2818cd8c8edac9766fc085d4a9e5576b"
+        },
+        {
+          "path": "media/usb_hub_omnipart_top.png",
+          "bytes": 6106,
+          "sha256": "af9d76468657e97bf21a543c41c15df8731b2ce32e64a84d4a25bf88a4577989"
+        },
+        {
+          "path": "media/usb_hub_omnipart_bottom.png",
+          "bytes": 5877,
+          "sha256": "0657196e8afab1684217f8f940a3332be72f087f3fdcbbdce06520e4f062412a"
+        },
+        {
+          "path": "media/usb_hub_omnipart_front.png",
+          "bytes": 5890,
+          "sha256": "84c0069c477d3b95d8dbc1b7f5d7011c90cadbf5b74c58f1f0898cfe6a5ca41f"
+        },
+        {
+          "path": "media/usb_hub_omnipart_back.png",
+          "bytes": 5940,
+          "sha256": "ade2c6b6bf433de9f0685f0d7d4878eb9e5f80c418ca764048ef968acce967aa"
+        },
+        {
+          "path": "media/usb_hub_omnipart_left.png",
+          "bytes": 8593,
+          "sha256": "2b9592726627c58165b0ebcce26b1da7d1260e778bbc9e947c8a41d9d2e5039c"
+        },
+        {
+          "path": "media/usb_hub_omnipart_right.png",
+          "bytes": 8681,
+          "sha256": "6d3f5577ad1bcdaf27abec1a24e8eb4fd07a54d6010649e382247addcb3a5c59"
         }
       ],
       "id": "usb_hub",
@@ -165,7 +195,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T07:14:19.925656+00:00",
-      "updated_at": "2026-10-21T22:24:55+08:00",
+      "updated_at": "2026-10-21T22:30:59+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -297,7 +327,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-21T22:24:55+08:00",
+      "updated_at": "2026-10-21T22:30:59+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -403,7 +433,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-21T22:24:55+08:00",
+      "updated_at": "2026-10-21T22:30:59+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -580,7 +610,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-21T22:24:55+08:00",
+      "updated_at": "2026-10-21T22:30:59+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -686,7 +716,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:38:07.768841+00:00",
-      "updated_at": "2026-10-21T22:24:55+08:00",
+      "updated_at": "2026-10-21T22:30:59+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -818,7 +848,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:46:28.056801+00:00",
-      "updated_at": "2026-10-21T22:24:55+08:00",
+      "updated_at": "2026-10-21T22:30:59+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
@@ -980,7 +1010,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:26:08.183115+00:00",
-      "updated_at": "2026-10-21T22:24:55+08:00",
+      "updated_at": "2026-10-21T22:30:59+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1112,7 +1142,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:39:46.288097+00:00",
-      "updated_at": "2026-10-21T22:24:55+08:00",
+      "updated_at": "2026-10-21T22:30:59+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1289,6 +1319,36 @@
       "path": "media/usb_hub_segmentation_overlay.png",
       "bytes": 74478,
       "sha256": "111470c84f452e131f91c1543b1d43dc2818cd8c8edac9766fc085d4a9e5576b"
+    },
+    {
+      "path": "media/usb_hub_omnipart_top.png",
+      "bytes": 6106,
+      "sha256": "af9d76468657e97bf21a543c41c15df8731b2ce32e64a84d4a25bf88a4577989"
+    },
+    {
+      "path": "media/usb_hub_omnipart_bottom.png",
+      "bytes": 5877,
+      "sha256": "0657196e8afab1684217f8f940a3332be72f087f3fdcbbdce06520e4f062412a"
+    },
+    {
+      "path": "media/usb_hub_omnipart_front.png",
+      "bytes": 5890,
+      "sha256": "84c0069c477d3b95d8dbc1b7f5d7011c90cadbf5b74c58f1f0898cfe6a5ca41f"
+    },
+    {
+      "path": "media/usb_hub_omnipart_back.png",
+      "bytes": 5940,
+      "sha256": "ade2c6b6bf433de9f0685f0d7d4878eb9e5f80c418ca764048ef968acce967aa"
+    },
+    {
+      "path": "media/usb_hub_omnipart_left.png",
+      "bytes": 8593,
+      "sha256": "2b9592726627c58165b0ebcce26b1da7d1260e778bbc9e947c8a41d9d2e5039c"
+    },
+    {
+      "path": "media/usb_hub_omnipart_right.png",
+      "bytes": 8681,
+      "sha256": "6d3f5577ad1bcdaf27abec1a24e8eb4fd07a54d6010649e382247addcb3a5c59"
     },
     {
       "path": "media/capybara_plush_toy_cleaned_image.png",
@@ -1546,5 +1606,5 @@
       "sha256": "db4ba55885ed522bc4e367674ec755352c5d4146d558baf33c306ea93dad3f7f"
     }
   ],
-  "signature": "73cfb2acdb2b208b5e3eb5f2395ee2b1b2f4dc484fef925263661d99e88673c3"
+  "signature": "ae773586424cae759d5a974a3565fa59faef6962f5df74d565072766eb17eb4b"
 }

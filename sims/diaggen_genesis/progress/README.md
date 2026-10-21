@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T22:24:55+08:00（Asia/Taipei）
+更新：2026-10-21T22:30:59+08:00（Asia/Taipei）
 
 共 9 件：等待 2、執行中 1、完成 1、失敗 5、取消 0。
 
@@ -50,6 +50,18 @@ Genesis 診斷 episode 數：0。
 ![usb_hub_ordered_mask_vis](media/usb_hub_ordered_mask_vis.png)
 
 ![usb_hub_segmentation_overlay](media/usb_hub_segmentation_overlay.png)
+
+![usb_hub_omnipart_top](media/usb_hub_omnipart_top.png)
+
+![usb_hub_omnipart_bottom](media/usb_hub_omnipart_bottom.png)
+
+![usb_hub_omnipart_front](media/usb_hub_omnipart_front.png)
+
+![usb_hub_omnipart_back](media/usb_hub_omnipart_back.png)
+
+![usb_hub_omnipart_left](media/usb_hub_omnipart_left.png)
+
+![usb_hub_omnipart_right](media/usb_hub_omnipart_right.png)
 
 
 ## capybara_plush_toy
