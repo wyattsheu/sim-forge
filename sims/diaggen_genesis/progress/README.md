@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T16:09:48+08:00（Asia/Taipei）
+更新：2026-10-21T16:10:50+08:00（Asia/Taipei）
 
 共 9 件：等待 5、執行中 2、完成 0、失敗 2、取消 0。
 
@@ -16,7 +16,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢
 | usb_hub | failed | seeded | revision_0000 | 24576 MiB | 1/9 |
 | capybara_plush_toy | running | seeded | revision_0000 | 49152 MiB | 2/9 |
 | baseball_cap | failed | seeded | revision_0000 | 24576 MiB | 0/9 |
-| curling_iron | running | running | revision_0000 | 24576 MiB | 8/9 |
+| curling_iron | running | running | revision_0000 | 24576 MiB | 9/9 |
 | dragon | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
 | kitchen_tongs | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
 | sauce_keeper | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
@@ -106,7 +106,7 @@ Run：`genesis_curling_iron_20261021_exr_retry1`；執行中。
 | 體積網格處理 | success |
 | Genesis 物理診斷 | success |
 | 貼圖生成 | success |
-| 最終匯出 | pending |
+| 最終匯出 | success |
 
 Genesis 診斷 episode 數：2。
 

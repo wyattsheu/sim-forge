@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T16:09:48+08:00",
+  "updated_at": "2026-10-21T16:10:50+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-21T16:09:48+08:00",
+      "updated_at": "2026-10-21T16:10:50+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -145,7 +145,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T07:14:19.925656+00:00",
-      "updated_at": "2026-10-21T16:09:48+08:00",
+      "updated_at": "2026-10-21T16:10:50+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -277,7 +277,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-21T16:09:48+08:00",
+      "updated_at": "2026-10-21T16:10:50+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -383,7 +383,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-21T16:09:48+08:00",
+      "updated_at": "2026-10-21T16:10:50+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -465,11 +465,11 @@
         {
           "name": "hag4r_final_export_bundle",
           "label": "最終匯出",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
+          "started_at": "2026-10-21T08:10:38.019564+00:00",
+          "finished_at": "2026-10-21T08:10:38.502581+00:00"
         }
       ],
       "media": [
@@ -560,7 +560,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:09:48+08:00",
+      "updated_at": "2026-10-21T16:10:50+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -666,7 +666,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:09:48+08:00",
+      "updated_at": "2026-10-21T16:10:50+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -772,7 +772,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:09:48+08:00",
+      "updated_at": "2026-10-21T16:10:50+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -878,7 +878,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:09:48+08:00",
+      "updated_at": "2026-10-21T16:10:50+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -984,7 +984,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:09:48+08:00",
+      "updated_at": "2026-10-21T16:10:50+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1182,5 +1182,5 @@
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "b378184e3db557ea115f7a186edce5f67638c25026d35726c297a314a90743ff"
+  "signature": "47c62572fc7ba2c466a600647d9997589997fca75d9bc49e309f6369711da7f1"
 }
