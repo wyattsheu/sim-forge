@@ -7,7 +7,7 @@ confidence: measured
 domains: [measure, workflow]
 tags: [tautology, false pass, kinematic, selfcheck, golden test, negative control, validator]
 triggers: [寫新的檢查或驗收腳本, 一個測試永遠是 PASS, 拿參數檔證明產出正確]
-versions: Isaac Sim 5.1.0 / 6.0.1
+versions: Isaac Sim 5.1.0 / 6.0.1; DiagGen 3d2d377 with bundled Genesis 1.2.0
 scope: [sims/fr3_bubblewrap_pack_20261007, sims/fr3_bubblewrap_pack_handoff_20261007, tools/parcel-forge]
 evidence: [sims/fr3_bubblewrap_pack_handoff_20261007/sim/make_carton_P.py 檔頭與 --anchor help, sims/fr3_bubblewrap_pack_20261007/docs/handoff_20260929/CHANGES_TO_VERIFY.md A1/A4、C1、C3, sims/fr3_bubblewrap_pack_20261007/work/FOLDORDER_NOTES.md §3, sims/fr3_bubblewrap_pack_20261007/work/tests/README.md golden, tools/parcel-forge/docs/DECISIONS.md D010]
 related: [L0025, L0062, L0070]
@@ -41,3 +41,11 @@ observed: 2026-09-26
 ## 證據
 
 `make_carton_P.py` 檔頭與 `--anchor` 說明;CHANGES_TO_VERIFY 開頭的 ★ 與 C 段;tests/README golden 15/15。
+
+### 2026-10-21：DiagGen 材料覆蓋的負向對照
+
+DiagGen `3d2d377` 的 `analyze_tet_mesh(material_coverage="exact")` 對缺少預期材料標籤只寫 warning，回報 `material_label_coverage_valid=false`，但 `valid=true`；外層只讀 `valid`，與 stage skill 的完整覆蓋要求不符。預檢刻意拿掉一個標籤，修復前確實抓到錯誤接受；改為 failures 後同一負向案例被拒絕。`subset` 模式保留原規則，沒有把所有 warning 一律提升成失敗。
+
+這個案例驗證的是 validator 對已知壞輸入會拒絕，不是從測試輸入反推實際網格正確。完整原生網格 fixture 與四張實際渲染另行檢查。
+
+證據：`tools/diaggen/outputs/preflight/runtime_audit_20261021_141715/mesh/report.json`（修復前）、同層 `mesh_verified/report.json`（修復後）；`sims/diaggen_genesis/tests/test_preflight_mesh.py`；可重現補丁與原始碼 SHA256：`tools/diaggen_support/strict_material_coverage.patch`、`strict_material_coverage.json`。
