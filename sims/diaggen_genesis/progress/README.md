@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T23:51:44+08:00（Asia/Taipei）
+更新：2026-10-21T23:54:47+08:00（Asia/Taipei）
 
 共 9 件：等待 1、執行中 1、完成 1、失敗 6、取消 0。
 
@@ -20,7 +20,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢
 | dragon | failed | seeded | revision_0000 | 24576 MiB | 0/9 |
 | kitchen_tongs | failed | seeded | revision_0000 | 24576 MiB | 2/9 |
 | sauce_keeper | failed | failed | revision_0000 | 24576 MiB | 6/9 |
-| sloth | running | seeded | revision_0000 | 24576 MiB | 3/9 |
+| sloth | running | seeded | revision_0000 | 24576 MiB | 4/9 |
 | sneaker | queued | seeded | revision_0000 | 24576 MiB | 6/9 |
 
 ## usb_hub
@@ -257,7 +257,7 @@ Run：`genesis_sloth_20261021`；執行中。
 | 圖片清理 | success |
 | SAM3 分割 | success |
 | OmniPart 幾何生成 | success |
-| 材料推估 | running |
+| 材料推估 | success |
 | 材料參數配置 | pending |
 | 體積網格處理 | pending |
 | Genesis 物理診斷 | pending |
