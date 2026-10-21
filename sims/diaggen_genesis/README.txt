@@ -15,7 +15,10 @@ See demo_image_sources.json for provenance. demo_inputs_preview.jpg contains
 only the eight official crops. references/official_cleaned/ is not a queue input.
 
 The watcher checks every 15 seconds. It permits compute sharing whenever a GPU
-has at least 24576 MiB free. It does not require low utilization or no processes.
+has at least 24576 MiB free. Capybara uses a separate 49152 MiB trial after a
+mesh-decoder OOM. Other fitting jobs can bypass it in the queue. Neither gate
+requires low utilization or no processes. Before OmniPart, its owning child
+must recheck and wait for the same per-job minimum on the already bound GPU.
 At most one of our jobs per physical GPU and two jobs total run simultaneously.
 This is an aggressive experimental threshold, not a measured OmniPart peak.
 Other users' processes are never interrupted. GPU memory can change after a
@@ -67,3 +70,9 @@ were explicitly requeued with _exr_retry1 run IDs; no success was fabricated.
 GitHub progress: branch diaggen-genesis-progress, directory
   sims/diaggen_genesis/progress/
 Publisher session: diaggen-github-progress
+
+2026-10-21: USB Hub reached real intermediate mesh generation; missing six
+views came from missing Xvfb. Private pinned Xvfb + per-worker dynamic DISPLAY
+and six-view CPU preflight are now provided. Each worker cleans up only its
+own X server. Source helpers: tools/setup_diaggen_xvfb.sh,
+tools/check_diaggen_display.py, tools/wait_diaggen_gpu_memory.py.

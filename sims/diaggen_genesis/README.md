@@ -11,11 +11,11 @@
 
 ## 背景執行
 
-`queue/wait_and_run.sh` 在伺服器的 `tmux` session `diaggen-genesis-wait` 執行。每 **15 秒**檢查顯存，只要某張 GPU 至少有 **24576 MiB（24 GiB）** 可用就可啟動；允許和既有運算工作共用，不要求 GPU 利用率低或完全閒置。每張 GPU 同時最多一個本批次工作，整批最多兩個工作並行。
+`queue/wait_and_run.sh` 在伺服器的 `tmux` session `diaggen-genesis-wait` 執行。每 **15 秒**檢查顯存，只要某張 GPU 至少有 **24576 MiB（24 GiB）** 可用就可啟動；允許和既有運算工作共用，不要求 GPU 利用率低或完全閒置。每張 GPU 同時最多一個本批次工作，整批最多兩個工作並行。水豚曾在 OmniPart mesh decoder 發生 OOM，下一次單獨改用 **49152 MiB（48 GiB）** 試跑；其餘仍為 24 GiB。進入 OmniPart 前，該階段子代理還必須在原綁定 GPU 上重新等待相同門檻。顯存檢查不會保留容量，無法保證其他程序稍後不增加用量。
 
 24 GiB 是尚未量測 OmniPart 實際峰值前的積極試跑門檻，不能保證避免記憶體不足。失敗會如實保留紀錄，不覆蓋既有 run。修復共通環境問題後，可明確安排新 run ID 重試；舊 run 與日誌會保留。SSH 斷線不影響 tmux；伺服器重開機會中斷。
 
-9 個工作與輸入雜湊記錄於 `batch_plan.json`。README 與授權文字不會成為工作。先跑 USB Hub、水豚玩偶，再處理其餘圖片。
+9 個工作與輸入雜湊記錄於 `batch_plan.json`。README 與授權文字不會成為工作。依清單順序選取符合目前顯存的工作；水豚的較高門檻不會擋住其餘圖片。
 
 每個工作使用獨立 run ID、GPU UUID、Genesis cache、日誌及歸檔目錄。原始工作檔寫在 `tools/diaggen/outputs/`；結束後整理到本機 `sims/diaggen_genesis/runs/<run_id>/`，並標記 `simulator: Genesis`。部分失敗工作可能只有中間產物。
 
@@ -30,6 +30,14 @@
 首批 USB Hub、水豚、棒球帽與電捲棒完成清理後，均因 OpenCV 5.0 未編入 OpenEXR 而停在 SAM3 輸出。專案內的分割環境已改回原專案指定的 `opencv-python==4.13.0.92`，用實際 float32 RGB EXR 遮罩確認寫入、讀回和數值完全一致。環境建置腳本已固定版本，各工作啟動前也會執行同一檢查；檢查失敗會暫停新件。
 
 原生流程沒有重開已 halt 分割階段的恢復入口，因此採用新 run ID 從原圖重跑；失敗 run、部分產物與原始日誌均保留，未改寫成成功。執行次數記錄在本機 batch ledger，9 個物件維持 9 個排程項目。
+
+## 2026-10-21：OmniPart 渲染與顯存修復
+
+USB Hub 重跑已通過 SAM3 並產生中間 combined mesh；原生程式因缺少 Xvfb 跳過六視角零件預覽，故資產驗證正確停止。已將固定版本的 Xvfb 解開到專案私有目錄，並用真實中間網格完成六視角 CPU 測試。每個新工作都啟動自己的動態顯示號，在啟動前確認六張非空測試圖，退出時只關閉自己建立的 X server。沒有修改系統套件；測試預覽不當作原生階段成功。
+
+水豚重跑通過 SAM3 後，在 OmniPart mesh decoder 發生 CUDA OOM。它的下一次試跑門檻改成 48 GiB，其他物件維持 24 GiB；這不是量測出的保證峰值。記憶體等待工具只查詢原 GPU，不切換 GPU、不終止其他工作，也不降低推理或輸出品質。
+
+這兩件均保留既有失敗 run，再以新 run ID 重跑；原生 halt terminal 未被刪除或改寫。私有顯示環境可用 `bash tools/setup_diaggen_xvfb.sh` 重建。
 
 ## 完成後會得到什麼
 

@@ -11,7 +11,7 @@
     "check_interval_seconds": 15,
     "max_parallel_jobs": 2
   },
-  "memory_threshold_basis": "Aggressive first-run scheduling assumption; no measured OmniPart peak yet.",
+  "memory_threshold_basis": "Default 24 GiB is an experimental entry threshold. After an OmniPart mesh-decoder OOM, capybara uses a higher unmeasured 48 GiB trial; each run must recheck its own threshold immediately before OmniPart. Checks do not reserve memory.",
   "jobs": [
     {
       "id": "usb_hub",
@@ -27,7 +27,9 @@
       "input": "inputs/demo_gallery/Capybara plush toy.jpg",
       "input_sha256": "9c132575e36fefa9e72641b30f2b22e06ba19b7f15bfd829a51343d92f39a821",
       "width": 750,
-      "height": 750
+      "height": 750,
+      "minimum_free_mib": 49152,
+      "scheduling_note": "omnipart_memory_retry"
     },
     {
       "id": "baseball_cap",

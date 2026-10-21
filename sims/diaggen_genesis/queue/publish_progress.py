@@ -286,6 +286,11 @@ def build_batch_snapshot(workspace, queued, batch):
         progress.pop("signature", None)
         progress.update(id=job_id, status=status,
                         attempts=bounded_integer(job.get("attempts"), 0, 1000000))
+        minimums = [value for value in (
+            policy["minimum_free_mib"],
+            bounded_integer(job.get("minimum_free_mib"), 1, 1024 * 1024),
+        ) if value is not None]
+        progress["minimum_free_mib"] = max(minimums) if minimums else None
         snapshot["jobs"].append(progress)
         snapshot["media"].extend(progress["media"])
     snapshot["counts"]["total"] = len(snapshot["jobs"])
@@ -314,10 +319,10 @@ def render_batch_readme(snapshot):
              f"GPU 可用記憶體門檻：{policy['minimum_free_mib']} MiB；最多同時 {policy['max_parallel_jobs']} 件；排程每 {policy['check_interval_seconds']} 秒檢查。  ",
              f"允許與既有運算共用 GPU：{'是' if policy['allow_compute_sharing'] is True else '否' if policy['allow_compute_sharing'] is False else '未知'}。", "",
              "只在排程狀態、階段、revision 或預覽成果改變時更新。等待期間不重複提交。", "",
-             "| 物件 | 排程狀態 | Runtime | Revision | 已完成階段 |", "|---|---|---|---|---|"]
+             "| 物件 | 排程狀態 | Runtime | Revision | 顯存門檻 | 已完成階段 |", "|---|---|---|---|---|---|"]
     for job in snapshot["jobs"]:
         completed = sum(stage["ok"] for stage in job["stages"])
-        lines.append(f"| {job['id']} | {job['status']} | {job['pipeline_status']} | {job['active_revision'] or '尚未初始化'} | {completed}/{len(STAGES)} |")
+        lines.append(f"| {job['id']} | {job['status']} | {job['pipeline_status']} | {job['active_revision'] or '尚未初始化'} | {job['minimum_free_mib']} MiB | {completed}/{len(STAGES)} |")
     for job in snapshot["jobs"]:
         lines += ["", f"## {job['id']}", "", f"Run：`{job['run_id']}`；{PHASE_LABELS[job['phase']]}。", "",
                   "| 階段 | 狀態 |", "|---|---|"]

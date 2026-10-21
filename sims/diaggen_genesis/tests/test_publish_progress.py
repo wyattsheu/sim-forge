@@ -309,6 +309,20 @@ class BatchTests(unittest.TestCase):
         SnapshotTests.setUp(self)
         self.install_batch()
 
+    def test_per_job_memory_override_is_public_bounded_and_uses_global_floor(self):
+        self.batch["jobs"][0]["minimum_free_mib"] = 49152
+        self.batch["jobs"][1]["minimum_free_mib"] = 1024
+        self.batch["jobs"][2]["minimum_free_mib"] = True
+        self.batch["jobs"][3]["minimum_free_mib"] = "PRIVATE_SECRET"
+        write_json(self.queue / "batch.json", self.batch)
+        snapshot, _ = publisher.build_snapshot(self.workspace)
+        self.assertEqual(snapshot["jobs"][0]["minimum_free_mib"], 49152)
+        self.assertEqual([job["minimum_free_mib"] for job in snapshot["jobs"][1:4]],
+                         [24576, 24576, 24576])
+        report = publisher.render_readme(snapshot)
+        self.assertIn("49152 MiB", report)
+        self.assertNotIn("PRIVATE_SECRET", json.dumps(snapshot) + report)
+
     def test_all_nine_jobs_counts_policy_and_no_private_fields(self):
         snapshot, _ = publisher.build_snapshot(self.workspace)
         self.assertEqual(len(snapshot["jobs"]), 9)

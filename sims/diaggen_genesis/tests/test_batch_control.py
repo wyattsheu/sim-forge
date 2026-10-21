@@ -1,4 +1,5 @@
 import importlib.util
+import io
 import json
 import os
 from pathlib import Path
@@ -9,6 +10,7 @@ import sys
 import tempfile
 import unittest
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import redirect_stdout
 from unittest.mock import patch
 
 
@@ -135,6 +137,116 @@ class BatchControlTests(unittest.TestCase):
         self.assertIsNone(self.queue.claim("GPU-A"))
         self.assertTrue(all(job["status"] == "queued" for job in self.state()["jobs"]))
 
+    def test_per_job_minimum_rejects_nonpositive_or_noninteger_values(self):
+        before = self.state()
+        for value in (True, False, 0, -1, 24576.0, "24576", None):
+            with self.subTest(value=value):
+                self.plan["jobs"][0] = {**self.job(0), "minimum_free_mib": value}
+                self.write_plan()
+                with self.assertRaises(ValueError):
+                    self.queue.init()
+                (self.base / "queue/HOLD").touch()
+                with self.assertRaises(ValueError):
+                    self.queue.set_minimum("object_0", value, "measured_memory_peak")
+                self.assertEqual(self.state(), before)
+        state = self.state()
+        state["jobs"][0]["minimum_free_mib"] = True
+        batch.atomic_json(self.base / "queue/batch.json", state)
+        (self.base / "queue/HOLD").unlink()
+        with self.assertRaises(ValueError):
+            self.queue.candidates()
+
+    def test_candidates_and_claim_skip_large_job_when_another_job_fits(self):
+        hold = self.base / "queue/HOLD"
+        hold.touch()
+        self.queue.set_minimum("object_0", 70000, "measured_memory_peak")
+        self.assertEqual(self.queue.info("object_0", "minimum_free_mib"), 70000)
+        self.assertEqual(self.queue.info("object_1", "minimum_free_mib"), 24576)
+        hold.unlink()
+        self.assertEqual(self.queue.candidates(), ["GPU-A", "GPU-B"])
+        # Both the candidate probe and the lock-protected reprobe use each job's gate.
+        self.assertEqual(self.queue.claim("GPU-A"), "object_1")
+        self.assertEqual(self.queue.claim("GPU-B"), "object_2")
+        self.assertEqual(self.state()["jobs"][0]["status"], "queued")
+        self.assertEqual(self.state()["jobs"][0]["attempts"], 0)
+        self.assertEqual(self.queue.candidates(), [])
+        self.assertIsNone(self.queue.claim("GPU-A"))
+        self.queue.finish("object_1", "success")
+        self.assertEqual(self.queue.claim("GPU-A"), "object_3")
+        self.queue.finish("object_2", "success")
+        self.queue.finish("object_3", "success")
+        self.assertEqual(self.queue.candidates(), [])
+        self.assertIsNone(self.queue.claim("GPU-A"))
+        self.assertIn("70000 MiB", self.queue.summary()["detail"])
+        self.queue.gpu_query = lambda: "0,GPU-A,70000\n"
+        self.assertEqual(self.queue.candidates(), ["GPU-A"])
+        self.assertEqual(self.queue.claim("GPU-A"), "object_0")
+
+    def test_claim_reprobes_per_job_threshold_before_selecting_first_fitting_job(self):
+        hold = self.base / "queue/HOLD"
+        hold.touch()
+        self.queue.set_minimum("object_0", 30000, "measured_memory_peak")
+        hold.unlink()
+        self.assertEqual(self.queue.candidates(), ["GPU-A", "GPU-B"])
+        self.queue.gpu_query = lambda: "0,GPU-A,28000\n"
+        self.assertEqual(self.queue.claim("GPU-A"), "object_1")
+        self.assertEqual(self.state()["jobs"][0]["status"], "queued")
+
+    def test_job_override_cannot_lower_global_floor_and_policy_update_preserves_it(self):
+        hold = self.base / "queue/HOLD"
+        hold.touch()
+        result = self.queue.set_minimum("object_0", 1, "measured_memory_peak")
+        self.assertEqual(result["effective_minimum_free_mib"], 24576)
+        hold.unlink()
+        self.queue.gpu_query = lambda: "0,GPU-A,24575\n"
+        self.assertEqual(self.queue.candidates(), [])
+        self.assertIsNone(self.queue.claim("GPU-A"))
+        self.plan["policy"]["minimum_free_mib"] = 30000
+        self.write_plan()
+        self.queue.init()
+        job = self.state()["jobs"][0]
+        self.assertEqual(job["minimum_free_mib"], 1)
+        self.assertEqual(job["scheduling_note"], "measured_memory_peak")
+        self.assertEqual(self.queue.info("object_0", "minimum_free_mib"), 30000)
+        self.queue.gpu_query = lambda: "0,GPU-A,29999\n"
+        self.assertEqual(self.queue.candidates(), [])
+        self.assertIsNone(self.queue.claim("GPU-A"))
+        self.queue.gpu_query = lambda: "0,GPU-A,30000\n"
+        self.assertEqual(self.queue.claim("GPU-A"), "object_0")
+
+    def test_set_minimum_requires_hold_refuses_running_and_validates_note(self):
+        before = self.state()
+        with self.assertRaises(ValueError):
+            self.queue.set_minimum("object_0", 70000, "measured_memory_peak")
+        self.assertEqual(self.state(), before)
+        self.queue.claim("GPU-A")
+        hold = self.base / "queue/HOLD"
+        hold.touch()
+        running = self.state()
+        with self.assertRaises(ValueError):
+            self.queue.set_minimum("object_0", 70000, "measured_memory_peak")
+        self.assertEqual(self.state(), running)
+        for reason in ("private details", "a" * 65, "", None):
+            with self.subTest(reason=reason), self.assertRaises(ValueError):
+                self.queue.set_minimum("object_1", 70000, reason)
+        with self.assertRaises(ValueError):
+            self.queue.set_minimum("../escape", 70000, "measured_memory_peak")
+        self.assertEqual(self.state(), running)
+        self.queue.finish("object_0", "failed", "execution_failed")
+        result = self.queue.set_minimum("object_0", 70000, "measured_memory_peak")
+        self.assertEqual(result, {
+            "job_id": "object_0", "minimum_free_mib": 70000,
+            "effective_minimum_free_mib": 70000, "scheduling_note": "measured_memory_peak"})
+        self.assertEqual(self.state()["jobs"][0]["status"], "failed")
+
+    def test_set_minimum_cli_uses_the_held_queue_and_emits_safe_result(self):
+        (self.base / "queue/HOLD").touch()
+        output = io.StringIO()
+        with patch.object(batch, "Queue", return_value=self.queue), redirect_stdout(output):
+            self.assertEqual(batch.main(["set-minimum", "object_0", "70000", "measured_memory_peak"]), 0)
+        self.assertEqual(json.loads(output.getvalue())["minimum_free_mib"], 70000)
+        self.assertEqual(self.state()["jobs"][0]["scheduling_note"], "measured_memory_peak")
+
     def test_hold_blocks_candidates_and_claim_without_probing_or_changing_jobs(self):
         self.assertEqual(self.queue.claim("GPU-A"), "object_0")
         self.queue.bind("object_0", 123)
@@ -220,6 +332,18 @@ class BatchControlTests(unittest.TestCase):
         (self.base / "queue/HOLD").unlink()
         with self.assertRaises(ValueError):
             self.queue.retry("object_0", "fresh_run", "dependency_repaired")
+
+    def test_retry_preserves_per_job_memory_and_scheduling_note(self):
+        self.prepare_failed_retry()
+        self.queue.set_minimum("object_0", 70000, "measured_memory_peak")
+        self.queue.retry("object_0", "genesis_object_0_retry1", "dependency_repaired")
+        job = self.state()["jobs"][0]
+        for entry in (job, job["attempts_history"][0]):
+            self.assertEqual(entry["minimum_free_mib"], 70000)
+            self.assertEqual(entry["scheduling_note"], "measured_memory_peak")
+        (self.base / "queue/HOLD").unlink()
+        self.assertEqual(self.queue.claim("GPU-A"), "object_1")
+        self.assertEqual(self.state()["jobs"][0]["status"], "queued")
 
     def test_retry_refuses_unsafe_duplicate_ids_reasons_and_existing_history(self):
         logs = self.prepare_failed_retry()

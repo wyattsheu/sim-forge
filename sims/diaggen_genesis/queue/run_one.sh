@@ -22,6 +22,14 @@ finish_job() {
 worker_exit() {
     local rc=$?
     trap - EXIT
+    # Signal only the still-running background X server owned by this shell.
+    local owned_pid
+    for owned_pid in $(jobs -pr); do
+        if [[ "$owned_pid" == "${XVFB_PID:-}" ]]; then
+            kill "$owned_pid" 2>/dev/null || true
+            wait "$owned_pid" 2>/dev/null || true
+        fi
+    done
     if ((WORKER_FINALIZED == 0)); then
         set +e
         if [[ -n "${DIAGGEN_QUEUE_RUN_ID:-}" && -n "${DIAGGEN_JOB_QUEUE_DIR:-}" ]]; then
@@ -40,6 +48,8 @@ export DIAGGEN_QUEUE_RUN_ID
 export HAG4R_WORKER_ID="$DIAGGEN_QUEUE_RUN_ID"
 CUDA_VISIBLE_DEVICES="$(batch info "$JOB_ID" gpu_uuid)"
 export CUDA_VISIBLE_DEVICES
+DIAGGEN_JOB_MINIMUM_FREE_MIB="$(batch info "$JOB_ID" minimum_free_mib)"
+export DIAGGEN_JOB_MINIMUM_FREE_MIB
 SOURCE_IMAGE="$(batch info "$JOB_ID" input)"
 [[ "$SOURCE_IMAGE" = /* ]] || SOURCE_IMAGE="$BASE/$SOURCE_IMAGE"
 export DIAGGEN_JOB_QUEUE_DIR="$ROOT_QUEUE/jobs/$JOB_ID"
@@ -67,6 +77,34 @@ if ! "$DIAGGEN_ROOT/.conda/hag4r_segmentation/bin/python" "$WORKSPACE/tools/chec
     finish_job failed exr_preflight_failed
     exit 0
 fi
+# Every run gets a real, unique local display; do not use PyVista's shared :99.
+XVFB_EXEC="$DIAGGEN_ROOT/.local/xvfb/usr/bin/Xvfb"
+if [[ ! -x "$XVFB_EXEC" ]]; then
+    printf '%s\n' "Private Xvfb is missing; repair before clearing HOLD." > "$ROOT_QUEUE/HOLD"
+    state failed "Private Xvfb is missing; new jobs held"
+    finish_job failed display_preflight_failed
+    exit 0
+fi
+"$XVFB_EXEC" -displayfd 3 -screen 0 1024x768x24 -nolisten tcp \
+    3> "$DIAGGEN_JOB_QUEUE_DIR/xdisplay.number" > "$DIAGGEN_JOB_QUEUE_DIR/xvfb.log" 2>&1 &
+XVFB_PID=$!
+for ((display_check=0; display_check<100; display_check++)); do
+    [[ ! -s "$DIAGGEN_JOB_QUEUE_DIR/xdisplay.number" ]] || break
+    kill -0 "$XVFB_PID" 2>/dev/null || break
+    sleep 0.1
+done
+DISPLAY_NUMBER="$(cat "$DIAGGEN_JOB_QUEUE_DIR/xdisplay.number")"
+if [[ ! "$DISPLAY_NUMBER" =~ ^[0-9]+$ ]] || \
+    ! DISPLAY=":$DISPLAY_NUMBER" LIBGL_ALWAYS_SOFTWARE=1 GALLIUM_DRIVER=llvmpipe \
+      __GLX_VENDOR_LIBRARY_NAME=mesa "$DIAGGEN_ROOT/.conda/omnipart/bin/python" \
+      "$WORKSPACE/tools/check_diaggen_display.py" > "$DIAGGEN_JOB_QUEUE_DIR/display_preflight.json" \
+      2> "$DIAGGEN_JOB_QUEUE_DIR/display_preflight.stderr.log"; then
+    printf '%s\n' "Six-view display preflight failed; repair before clearing HOLD." > "$ROOT_QUEUE/HOLD"
+    state failed "Six-view display preflight failed; new jobs held"
+    finish_job failed display_preflight_failed
+    exit 0
+fi
+export DISPLAY=":$DISPLAY_NUMBER"
 cd "$DIAGGEN_ROOT"
 mkdir -p outputs/inputs
 FROZEN_INPUT="$DIAGGEN_ROOT/outputs/inputs/${DIAGGEN_QUEUE_RUN_ID}.${SOURCE_IMAGE##*.}"
@@ -89,6 +127,13 @@ Use GPT-6 Luna (gpt-6-luna), max reasoning, throughout generation and diagnostic
 inherit this same model/effort. This is the user-authorized newer version of the paper's GPT-5.6 Luna
 at Max reasoning; do not silently substitute models, lower effort, or reduce the requested fidelity.
 The selected physical GPU token is $CUDA_VISIBLE_DEVICES. Keep that exact token in workers and MCP.
+Before invoking the OmniPart stage tool, require its owning stage child to run this deterministic
+memory guard and wait for its successful exit on the same bound GPU:
+$PYTHON $WORKSPACE/tools/wait_diaggen_gpu_memory.py --gpu-uuid $CUDA_VISIBLE_DEVICES --minimum-free-mib $DIAGGEN_JOB_MINIMUM_FREE_MIB --poll-seconds 15
+The guard must run immediately before the OmniPart tool, after segmentation. Wait on this GPU
+when memory is insufficient; never switch GPUs or reduce output quality. This is a free-memory
+check, not a reservation or a guarantee against OOM. The wrapper owns DISPLAY=$DISPLAY and its
+private X server; preserve DISPLAY in stage children and do not start a shared :99 X server.
 The GPU is shared with existing work. Do not stop or alter other processes, claim another GPU,
 install packages, edit project code, start Isaac Sim, or initialize another run. Existing model
 caches and necessary public model downloads are allowed. Preserve the per-job GS_CACHE_FILE_PATH.
@@ -111,7 +156,7 @@ codex exec --approve-for-me --cd "$DIAGGEN_ROOT" --enable multi_agent_v2 \
     -c "mcp_servers.hag4r_genesis_diagnostics.command=\"$PYTHON\"" \
     -c 'mcp_servers.hag4r_genesis_diagnostics.args=["-B","-m","hag4r.agentic.diagnostic_mcp_server","--owner-lease-timeout-s","3900"]' \
     -c "mcp_servers.hag4r_genesis_diagnostics.cwd=\"$DIAGGEN_ROOT\"" \
-    -c "mcp_servers.hag4r_genesis_diagnostics.env={CUDA_VISIBLE_DEVICES=\"$CUDA_VISIBLE_DEVICES\",DIAGGEN_ROOT=\"$DIAGGEN_ROOT\",GS_CACHE_FILE_PATH=\"$GS_CACHE_FILE_PATH\",HAG4R_WORKER_ID=\"$HAG4R_WORKER_ID\",PYTHONNOUSERSITE=\"1\"}" \
+    -c "mcp_servers.hag4r_genesis_diagnostics.env={CUDA_VISIBLE_DEVICES=\"$CUDA_VISIBLE_DEVICES\",DISPLAY=\"$DISPLAY\",DIAGGEN_ROOT=\"$DIAGGEN_ROOT\",GS_CACHE_FILE_PATH=\"$GS_CACHE_FILE_PATH\",HAG4R_WORKER_ID=\"$HAG4R_WORKER_ID\",PYTHONNOUSERSITE=\"1\"}" \
     -c 'mcp_servers.hag4r_genesis_diagnostics.enabled=true' \
     -c 'mcp_servers.hag4r_genesis_diagnostics.required=true' \
     -c 'mcp_servers.hag4r_genesis_diagnostics.startup_timeout_sec=60' \

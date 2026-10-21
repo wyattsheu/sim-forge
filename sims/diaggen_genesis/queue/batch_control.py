@@ -78,6 +78,10 @@ def validate_policy(value):
     return policy
 
 
+def effective_minimum_free_mib(policy, job):
+    return max(policy["minimum_free_mib"], job.get("minimum_free_mib", 0))
+
+
 def query_gpu_csv():
     # A failed or unavailable query is an error, never evidence of free memory.
     return subprocess.run(
@@ -148,6 +152,10 @@ class Queue:
         digest = job.get("input_sha256")
         if digest is not None and (not isinstance(digest, str) or not re.fullmatch(r"[a-f0-9]{64}", digest)):
             raise ValueError("Invalid input SHA256")
+        if "minimum_free_mib" in job and (type(job["minimum_free_mib"]) is not int or job["minimum_free_mib"] <= 0):
+            raise ValueError("Job minimum free memory must be a positive integer")
+        if "scheduling_note" in job and (not isinstance(job["scheduling_note"], str) or not REASON.fullmatch(job["scheduling_note"])):
+            raise ValueError("Scheduling note must be a short lowercase enum")
 
     def _validate_jobs(self, jobs, *, dynamic=False):
         if not isinstance(jobs, list):
@@ -191,7 +199,8 @@ class Queue:
             detail = f"Running {counts['running']} Genesis jobs; {counts['queued']} waiting."
         elif counts["queued"]:
             phase = "waiting_gpu"
-            detail = f"Waiting for at least {policy['minimum_free_mib']} MiB free GPU memory; compute sharing enabled."
+            minimum = min(effective_minimum_free_mib(policy, job) for job in jobs if job["status"] == "queued")
+            detail = f"Waiting for at least {minimum} MiB free GPU memory; compute sharing enabled."
         elif counts["failed"]:
             phase, detail = "failed", f"Batch finished with {counts['failed']} failed jobs."
         elif counts["cancelled"]:
@@ -247,12 +256,15 @@ class Queue:
                 return []
             batch = self._load()
             active = [job for job in batch["jobs"] if job["status"] == "running"]
-            if len(active) >= batch["policy"]["max_parallel_jobs"] or not any(job["status"] == "queued" for job in batch["jobs"]):
+            queued = [job for job in batch["jobs"] if job["status"] == "queued"]
+            if len(active) >= batch["policy"]["max_parallel_jobs"] or not queued:
                 return []
             used = {job["gpu_uuid"] for job in active}
             records = parse_gpu_csv(self.gpu_query())
             return [record["uuid"] for record in records
-                    if record["free_mib"] >= batch["policy"]["minimum_free_mib"] and record["uuid"] not in used]
+                    if record["uuid"] not in used and any(
+                        record["free_mib"] >= effective_minimum_free_mib(batch["policy"], job)
+                        for job in queued)]
 
     def claim(self, gpu_uuid):
         validate_gpu_uuid(gpu_uuid)
@@ -264,11 +276,15 @@ class Queue:
             active = [job for job in batch["jobs"] if job["status"] == "running"]
             if len(active) >= batch["policy"]["max_parallel_jobs"] or any(job["gpu_uuid"] == gpu_uuid for job in active):
                 return None
-            selected = next((job for job in batch["jobs"] if job["status"] == "queued"), None)
-            if selected is None:
+            queued = [job for job in batch["jobs"] if job["status"] == "queued"]
+            if not queued:
                 return None
             records = parse_gpu_csv(self.gpu_query())
-            if not any(record["uuid"] == gpu_uuid and record["free_mib"] >= batch["policy"]["minimum_free_mib"] for record in records):
+            gpu = next((record for record in records if record["uuid"] == gpu_uuid), None)
+            if gpu is None:
+                return None
+            selected = next((job for job in queued if gpu["free_mib"] >= effective_minimum_free_mib(batch["policy"], job)), None)
+            if selected is None:
                 return None
             selected.update(status="running", gpu_uuid=gpu_uuid, runner_pid=None,
                             attempts=selected["attempts"] + 1, started_at=now(), finished_at=None)
@@ -296,16 +312,41 @@ class Queue:
             self._save(batch)
 
     def info(self, job_id, field):
-        if field not in ("input", "run_id", "gpu_uuid", "status"):
+        if field not in ("input", "run_id", "gpu_uuid", "status", "minimum_free_mib"):
             raise ValueError("Unsupported job info field")
         with self._locked():
-            return self._job(self._load(), job_id).get(field)
+            batch = self._load()
+            job = self._job(batch, job_id)
+            if field == "minimum_free_mib":
+                return effective_minimum_free_mib(batch["policy"], job)
+            return job.get(field)
 
     def policy(self, field):
         if field not in DEFAULT_POLICY:
             raise ValueError("Unsupported policy field")
         with self._locked():
             return self._load()["policy"][field]
+
+    def set_minimum(self, job_id, minimum_free_mib, reason):
+        """Adjust a stopped job's memory gate while launches are held."""
+        if type(minimum_free_mib) is not int or minimum_free_mib <= 0:
+            raise ValueError("Job minimum free memory must be a positive integer")
+        if not isinstance(reason, str) or not REASON.fullmatch(reason):
+            raise ValueError("Scheduling note must be a short lowercase enum")
+        with self._locked():
+            if not (self.directory / "HOLD").exists():
+                raise ValueError("Changing job memory requires queue/HOLD")
+            batch = self._load()
+            job = self._job(batch, job_id)
+            if job["status"] == "running":
+                raise ValueError("Running job memory cannot be changed")
+            job.update(minimum_free_mib=minimum_free_mib, scheduling_note=reason)
+            self._save(batch)
+            return {
+                "job_id": job_id, "minimum_free_mib": minimum_free_mib,
+                "effective_minimum_free_mib": effective_minimum_free_mib(batch["policy"], job),
+                "scheduling_note": reason,
+            }
 
     def finish(self, job_id, status, reason=None):
         if status not in TERMINAL:
@@ -439,6 +480,8 @@ def main(argv=None):
     elif command == "policy" and len(rest) == 1:
         value = queue.policy(rest[0])
         print(str(value).lower() if isinstance(value, bool) else value)
+    elif command == "set-minimum" and len(rest) == 3:
+        print(json.dumps(queue.set_minimum(rest[0], int(rest[1]), rest[2]), ensure_ascii=False))
     elif command == "finish" and len(rest) in (2, 3):
         queue.finish(*rest)
     elif command == "retry" and len(rest) == 3:
