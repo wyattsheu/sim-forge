@@ -2,10 +2,10 @@
   "schema_version": "diaggen-public-batch-progress-v1",
   "pipeline": "DiagGen",
   "simulator": "Genesis",
-  "phase": "waiting_gpu",
+  "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T13:32:57+08:00",
+  "updated_at": "2026-10-21T13:33:14+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -13,8 +13,8 @@
     "max_parallel_jobs": 2
   },
   "counts": {
-    "queued": 8,
-    "running": 0,
+    "queued": 7,
+    "running": 1,
     "success": 0,
     "failed": 1,
     "cancelled": 0,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T05:16:48.582796+00:00",
-      "updated_at": "2026-10-21T13:32:57+08:00",
+      "updated_at": "2026-10-21T13:33:14+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -158,15 +158,15 @@
       "pipeline": "DiagGen",
       "simulator": "Genesis",
       "run_id": "genesis_capybara_plush_toy_20261021_exr_retry1",
-      "phase": "waiting_gpu",
-      "pipeline_status": "not_initialized",
+      "phase": "running",
+      "pipeline_status": "seeded",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
-      "active_revision": null,
-      "created_at": null,
-      "updated_at": "2026-10-21T13:32:57+08:00",
+      "active_revision": "revision_0000",
+      "created_at": "2026-10-21T05:33:00.553591+00:00",
+      "updated_at": "2026-10-21T13:33:14+08:00",
       "diagnostics": {
-        "enabled": null,
+        "enabled": true,
         "episode_count": 0,
         "terminal_status": "not_available"
       },
@@ -255,8 +255,8 @@
       ],
       "media": [],
       "id": "capybara_plush_toy",
-      "status": "queued",
-      "attempts": 1
+      "status": "running",
+      "attempts": 2
     },
     {
       "schema_version": "diaggen-public-progress-v1",
@@ -269,7 +269,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:32:57+08:00",
+      "updated_at": "2026-10-21T13:33:14+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -374,7 +374,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:32:57+08:00",
+      "updated_at": "2026-10-21T13:33:14+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -479,7 +479,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:32:57+08:00",
+      "updated_at": "2026-10-21T13:33:14+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -584,7 +584,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:32:57+08:00",
+      "updated_at": "2026-10-21T13:33:14+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -689,7 +689,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:32:57+08:00",
+      "updated_at": "2026-10-21T13:33:14+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -794,7 +794,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:32:57+08:00",
+      "updated_at": "2026-10-21T13:33:14+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -899,7 +899,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:32:57+08:00",
+      "updated_at": "2026-10-21T13:33:14+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1021,5 +1021,5 @@
       "sha256": "41ecad22a4827dbee3449abd5fe9f74b68fe32c645c574024c6929d2fa7cb849"
     }
   ],
-  "signature": "bb30cb88ba2e15be58eb56dd0391225138bbc431c548c1377c0b2a07996e4c35"
+  "signature": "343b3d41f27a68fe4ce0a7577c1d227ce82164e3a74ed40757b57670d6dc3cf5"
 }
