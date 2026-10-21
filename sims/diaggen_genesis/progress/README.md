@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T17:14:56+08:00（Asia/Taipei）
+更新：2026-10-21T17:16:13+08:00（Asia/Taipei）
 
 共 9 件：等待 2、執行中 1、完成 0、失敗 6、取消 0。
 
@@ -199,7 +199,7 @@ Run：`genesis_sauce_keeper_20261021`；執行中。
 | 材料推估 | success |
 | 材料參數配置 | success |
 | 體積網格處理 | success |
-| Genesis 物理診斷 | pending |
+| Genesis 物理診斷 | running |
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
