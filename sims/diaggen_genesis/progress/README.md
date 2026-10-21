@@ -2,9 +2,9 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T17:33:16+08:00（Asia/Taipei）
+更新：2026-10-21T17:39:49+08:00（Asia/Taipei）
 
-共 9 件：等待 1、執行中 1、完成 0、失敗 7、取消 0。
+共 9 件：等待 0、執行中 1、完成 0、失敗 8、取消 0。
 
 GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢查。  
 允許與既有運算共用 GPU：是。
@@ -20,8 +20,8 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢
 | dragon | failed | seeded | revision_0000 | 24576 MiB | 0/9 |
 | kitchen_tongs | failed | seeded | revision_0000 | 24576 MiB | 2/9 |
 | sauce_keeper | failed | failed | revision_0000 | 24576 MiB | 6/9 |
-| sloth | running | seeded | revision_0000 | 24576 MiB | 2/9 |
-| sneaker | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
+| sloth | failed | seeded | revision_0000 | 24576 MiB | 2/9 |
+| sneaker | running | seeded | revision_0000 | 24576 MiB | 0/9 |
 
 ## usb_hub
 
@@ -230,7 +230,7 @@ Genesis 診斷 episode 數：1。
 
 ## sloth
 
-Run：`genesis_sloth_20261021`；執行中。
+Run：`genesis_sloth_20261021`；執行失敗。
 
 | 階段 | 狀態 |
 |---|---|
@@ -259,7 +259,7 @@ Genesis 診斷 episode 數：0。
 
 ## sneaker
 
-Run：`genesis_sneaker_20261021`；等待空閒 GPU。
+Run：`genesis_sneaker_20261021`；執行中。
 
 | 階段 | 狀態 |
 |---|---|
