@@ -1,0 +1,103 @@
+{
+  "schema_version": "diaggen-public-progress-v1",
+  "pipeline": "DiagGen",
+  "simulator": "Genesis",
+  "run_id": "genesis_first_20261021",
+  "phase": "waiting_gpu",
+  "pipeline_status": "not_initialized",
+  "generation_and_diagnostics_model": "gpt-6-luna",
+  "reasoning_effort": "max",
+  "active_revision": null,
+  "created_at": null,
+  "updated_at": "2026-10-21T11:48:27+08:00",
+  "diagnostics": {
+    "enabled": null,
+    "episode_count": 0,
+    "terminal_status": "not_available"
+  },
+  "stages": [
+    {
+      "name": "image_cleanup",
+      "label": "圖片清理",
+      "status": "pending",
+      "ledger_status": "pending",
+      "ok": false,
+      "started_at": null,
+      "finished_at": null
+    },
+    {
+      "name": "sam3_omnipart_2d_segmentation",
+      "label": "SAM3 分割",
+      "status": "pending",
+      "ledger_status": "pending",
+      "ok": false,
+      "started_at": null,
+      "finished_at": null
+    },
+    {
+      "name": "omnipart_generate_parts",
+      "label": "OmniPart 幾何生成",
+      "status": "pending",
+      "ledger_status": "pending",
+      "ok": false,
+      "started_at": null,
+      "finished_at": null
+    },
+    {
+      "name": "hag4r_gpt_staged_material_inference",
+      "label": "材料推估",
+      "status": "pending",
+      "ledger_status": "pending",
+      "ok": false,
+      "started_at": null,
+      "finished_at": null
+    },
+    {
+      "name": "hag4r_assign_params_to_prims",
+      "label": "材料參數配置",
+      "status": "pending",
+      "ledger_status": "pending",
+      "ok": false,
+      "started_at": null,
+      "finished_at": null
+    },
+    {
+      "name": "hag4r_combined_to_monolithic",
+      "label": "體積網格處理",
+      "status": "pending",
+      "ledger_status": "pending",
+      "ok": false,
+      "started_at": null,
+      "finished_at": null
+    },
+    {
+      "name": "genesis_live_diagnostic_loop",
+      "label": "Genesis 物理診斷",
+      "status": "pending",
+      "ledger_status": "pending",
+      "ok": false,
+      "started_at": null,
+      "finished_at": null
+    },
+    {
+      "name": "hag4r_post_mesh_texture",
+      "label": "貼圖生成",
+      "status": "pending",
+      "ledger_status": "pending",
+      "ok": false,
+      "started_at": null,
+      "finished_at": null
+    },
+    {
+      "name": "hag4r_final_export_bundle",
+      "label": "最終匯出",
+      "status": "pending",
+      "ledger_status": "pending",
+      "ok": false,
+      "started_at": null,
+      "finished_at": null
+    }
+  ],
+  "media": [],
+  "signature": "03ef66cbe73dc846ca708fb0f53490dad695c11780530b40a10c26d70992dac9"
+}
