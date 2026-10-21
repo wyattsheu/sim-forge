@@ -182,6 +182,14 @@ ap.add_argument("--v2_hold_cup", type=int, default=0, help="[v2] 1 = x 片開始
 ap.add_argument("--ut_release_up", type=int, default=0, help="[v2x] 1 = 桌面掀法放手:兩指先張開到各 +20 mm,布上那根直接垂直抬(不沿 u 往外抽);布下那根(翻面後已在桌面下)在桌面下沿 u 平移出布外再抬;0 = 舊(張開 10 mm → 沿 u 抽 → 抬)")
 ap.add_argument("--v2_xmode", choices=["grasp", "sweep", "outer", "tapegrip"], default="grasp", help="[v2x] x 片(拆膠帶 --v2_xcut_s 後越線 < 80%%)的做法:grasp = 舊(斜靠不夾、否則寬指夾翻);tapegrip = D 不先拆膠帶,跟 yn/yp 一樣寬指夾自由邊、夾好那一刻才拆該片膠帶、繞桌面鉸點翻;sweep = A 撥開(寬指當槳,從杯頂上方沿 ±x 壓著片往外掃到 鉸點 + 材料長 x --ut_end_k、指面高 桌面 + T,不夾);outer = B 從片外側用寬指水平夾住片的頂緣,往外、往下拉到桌面攤平")
 ap.add_argument("--v2_sweep_push", type=int, default=0, help="[v2x] --v2_xmode sweep 時:1 = A2,片尖還在杯上(高於桌面 30 mm)就先用直立的槳貼著杯面把片尖往外推過杯最外緣,再做低掃;0 = A(從杯頂上方壓著掃)")
+ap.add_argument("--v2_h2_free", type=int, default=0, help="[v2x2] E:--v2_hold_cup 1 + --v2_xmode tapegrip 時,x 片夾好(拆膠帶)那一刻手 2 張開、抬 --v2_h2_lift_mm(杯轉 dynamic),片翻完再回來重夾(重新量杯姿態;取杯那次要 指-布最小距離 > --v2_h2_clear_mm 才合指);0 = 舊(一直扶)")
+ap.add_argument("--v2_h2_lift_mm", type=float, default=60.0, help="[v2x2] --v2_h2_free:手 2 鬆手後抬多高")
+ap.add_argument("--v2_h2_clear_mm", type=float, default=2.0, help="[v2x2] --v2_h2_free:重夾杯時兩指(含張開→合的掃掠)與布的最小距離要 > 這個值;找不到就退回舊夾位(杯端外有布 → 停在 杯 + 布厚 + 1 mm)")
+ap.add_argument("--v2_xpress_s", type=float, default=0.0, help="[v2x2] G:x 片(桌面掀法)放手、手指抬開後,手 1 寬指平放到 鉸點往外 --v2_xpress_mm 處,壓到 桌面 + T − 1 mm 停這麼多秒再抬開(讓鉸點附近皺褶鬆弛);0 = 不壓(舊)")
+ap.add_argument("--v2_xpress_depth_mm", type=float, default=0.0, help="[v2x2] --v2_xpress_s:>0 = 壓指底 = max(桌面 + T − 1 mm, 下指那一刻足跡內布頂 − 這個值)(G 實測鉸點外有 38 mm 高的拱,壓到桌面 + T − 1 會壓爛:反轉 257、自穿 74);0 = 一律壓到桌面 + T − 1 mm")
+ap.add_argument("--v2_xpress_mm", type=float, default=30.0, help="[v2x2] --v2_xpress_s:壓指中心在鉸點往外幾 mm(指深沿 x)")
+ap.add_argument("--v2_xend_k", type=float, default=0.0, help="[v2x2] x 片(桌面掀法)終點 = 鉸點往外 這個 x 材料長;0 = 跟 --ut_end_k 一樣(舊)")
+ap.add_argument("--v2_xrel_slide", type=int, default=0, help="[v2x2] H:x 片放手時,布上那根只張開 2 mm 就沿 u 往外抽出布外再抬(--ut_release_up 的「張開 20 mm 再垂直抬」會讓片尖跟著指往上、翻回杯上:E/F 實測指-布 0.5 mm 跟到 +20 mm);布下那根照 --ut_release_up;0 = 舊")
 ap.add_argument("--quality", choices=["off", "fast", "final"], default="off",
                 help="[quality] fast = 開發用(dt 1/120 solver 48 vid_every 2 960x540);final = 出片(dt 1/240 solver 128);off = 舊行為。個別旗標有明確給時以個別旗標為準")
 ap.add_argument("--save_state", default="", help="[speed2] npz:在 --at 時間點存 布頂點/速度、杯姿態、箱/蓋/側板、時間、量測狀態(SNAP/EV/LOGR/軌跡/RNG),之後照常跑完(--save_exit 1 存完就停)")
@@ -1730,6 +1738,10 @@ if a.grasp:
             _sc = [A["scope"] for A in ANC if A["side"] == sd and st.GetPrimAtPath(A["scope"]).IsValid()]
             for _s in _sc: st.RemovePrim(Sdf.Path(_s))
             P("★ t=%.2f [%s] [table] 夾好 → 移除 %s 片錨點 %d 個(膠帶);其他片仍封著" % (t, sd, sd, len(_sc)))
+        if a.v2_h2_free and ax == 0 and XT.get("hold") and "bind" in X and "free" not in X and "rel" not in XH:   # [v2x2] E:手 2 鬆手抬開,片翻完再回來
+            _k = G_SEQ.index(sd); _rg = min(TG0 + G_SHEET * (_k + 1), T_X0 + XT["down"] + XT["bind"] + XT["hold"] - V2XG)
+            XH.update(rel=t, sd=sd, rg=_rg, hp0=np.array(X["B"], float), j0=dict(X["jaw"]), last=(_k + 1 == len(G_SEQ)))
+            P("★ t=%.2f [%s] [v2x2] 手 2 鬆手:張開 0.4 s、抬 %.0f mm(杯轉 dynamic);%.2f 回來重夾%s" % (t, sd, a.v2_h2_lift_mm, _rg, "(取杯那次:指-布 > %.1f mm 才合指)" % a.v2_h2_clear_mm if XH["last"] else ""))
         if ax == 1: col = np.where((GPL.S["ii"] == v % (a.nxy + 1)) & (sg * GF2[:, 1] > CY - 1e-9))[0]
         else: col = np.where((GPL.S["jj"] == v // (a.nxy + 1)) & (sg * GF2[:, 0] > CX - 1e-9))[0]   # [v2] x 片:夾點那一列
         col = col[np.argsort(sg * GF2[col, ax])]
@@ -1748,7 +1760,8 @@ if a.grasp:
         for k_ in KS: g_lin(k_, t, a.ut_lift_t, pl[k_ + "_f"] + dl + offw, R0)
         TP0 = t + a.ut_lift_t; gs = gc0 + dl
         os_, zs = sg * (gs[ax] - hy), gs[2] - Bz; ph_s = float(np.arctan2(zs, os_)); r_s = float(np.hypot(os_, zs))
-        oe, ze = a.ut_end_k * L, zg + T - Bz; ph_e = float(np.arctan2(ze, oe)); r_e = float(np.hypot(oe, ze)); Rr = a.ut_arc_k * L
+        oe, ze = (a.v2_xend_k if (ax == 0 and a.v2_xend_k > 0) else a.ut_end_k) * L, zg + T - Bz   # [v2x2] v2_xend_k
+        ph_e = float(np.arctan2(ze, oe)); r_e = float(np.hypot(oe, ze)); Rr = a.ut_arc_k * L
         Rend = np.column_stack([[-sg, 0.0, 0.0], [0.0, sg, 0.0], [0.0, 0.0, -1.0]])   # t,u,n:u 往外(離開包裹)、n 朝下(翻面)
         Rpi = lambda w: rotm([sg, 0.0, 0.0], -np.pi * w)
         if ax == 0:                                                           # [v2] x 片:u = sg x、繞 y 翻
@@ -1770,8 +1783,32 @@ if a.grasp:
             p1 = Pf1[k_] + offw; A_ = p1 + sgn * n_e * 0.010; B_ = A_ + u_e * (GFS[1] + 0.020)
             if a.ut_release_up:                                               # [v2x] 張開到 +20 mm;布上那根垂直抬、不往外抽;布下那根(已在桌面下)在桌面下沿 u 出布外再抬
                 A_ = p1 + sgn * n_e * 0.020; B_ = A_ + u_e * (GFS[1] + 0.020) if sgn * n_e[2] < 0 else A_
+                if a.v2_xrel_slide and ax == 0 and sgn * n_e[2] >= 0:             # [v2x2] H:布上那根張開 2 mm → 沿 u 抽出布外 → 抬
+                    A_ = p1 + sgn * n_e * 0.002; B_ = A_ + u_e * (GFS[1] + 0.020)
             g_lin(k_, TR, GT["rel_open"], A_); g_lin(k_, TR + GT["rel_open"], GT["rel_slide"], B_)
             g_lin(k_, TR + GT["rel_open"] + GT["rel_slide"], GT["rel_up"], B_ + [0, 0, 0.08])
+        if a.v2_xpress_s > 0 and ax == 0:                                     # [v2x2] G:放手抬開後,"up" 指平放壓在片根部外側 v2_xpress_s 秒再抬
+            _t = TR + GT["rel_open"] + GT["rel_slide"] + GT["rel_up"]; _pc = np.array([hy + sg * a.v2_xpress_mm / 1e3, float(pl["p"][1]), zg + T + GFS[2] / 2 - 0.001]) + offw
+            _Rp = np.column_stack([[0.0, -sg, 0.0], [sg, 0.0, 0.0], [0.0, 0.0, 1.0]])
+            if a.v2_xpress_depth_mm > 0:                                      # 壓指高度在下指那一刻才量(布頂 − depth)
+                PRZ = {}
+                def _pz(_t=_t, _pc=_pc, PRZ=PRZ, sd=sd):
+                    if "z" not in PRZ:
+                        if CL["t"] < _t + 1.0 - 1e-6: return float(_pc[2])
+                        _Pw = PLATE.pts(); _m = (np.abs(_Pw[:, 0] - _pc[0]) < GFS[1] / 2) & (np.abs(_Pw[:, 1] - _pc[1]) < GFS[0] / 2)
+                        _zt = float(_Pw[_m, 2].max()) if _m.any() else float(_pc[2])
+                        PRZ["z"] = max(float(_pc[2]), _zt - a.v2_xpress_depth_mm / 1e3 + GFS[2] / 2)
+                        P("  [%s] [v2x2] 壓片根部 t=%.2f:足跡內布頂 z %.1f mm(%d 點)→ 指底 z %.1f(桌面 + T − 1 = %.1f)" % (sd, CL["t"], (_zt - offw[2]) * 1e3, int(_m.sum()), (PRZ["z"] - GFS[2] / 2 - offw[2]) * 1e3, (_pc[2] - GFS[2] / 2 - offw[2]) * 1e3))
+                    return PRZ["z"]
+                _xy = lambda z_, _pc=_pc: np.array([_pc[0], _pc[1], z_])
+                g_lin("up", _t, 1.0, _pc + [0, 0, 0.06], _Rp)
+                g_fn("up", _t + 1.0, 0.7, lambda w, _pc=_pc: (_xy(_pc[2] + 0.06 + (_pz() - _pc[2] - 0.06) * w), _Rp))
+                g_fn("up", _t + 1.7, a.v2_xpress_s, lambda w: (_xy(_pz()), _Rp))
+                g_fn("up", _t + 1.7 + a.v2_xpress_s, 0.7, lambda w: (_xy(_pz() + 0.08 * w), _Rp))
+            else: g_lin("up", _t, 1.0, _pc + [0, 0, 0.06], _Rp); g_lin("up", _t + 1.0, 0.7, _pc); g_lin("up", _t + 1.7, a.v2_xpress_s, _pc); g_lin("up", _t + 1.7 + a.v2_xpress_s, 0.7, _pc + [0, 0, 0.08])
+            pl["press"] = (_t + 1.7, _t + 1.7 + a.v2_xpress_s)
+            P("  [%s] [v2x2] 放手後壓片根部:%.2f 起 指 %s mm(箱局部;鉸點往外 %.0f mm、指底 = 桌面 + T − 1 mm)壓 %.1f s(%.2f ~ %.2f)再抬 80 mm"
+              % (sd, _t, np.round((_pc - offw) * 1e3, 1), a.v2_xpress_mm, a.v2_xpress_s, *pl["press"]))
         pl.update(TP0=TP0, TP1=TP1, TR=TR, hinge=(hy, Bz), Lcur=L, Lflat=L, Rr=Rr, r0=r_s, th0=ph_s, th1=ph_e, R2=None, two=False, zclear=None,
                   end_local=(Pf1["up"] + Pf1["lo"]) / 2, ut=dict(h=h, hy=hy, Bz=Bz, L=L, flat_h=float(GF2[h, ax]), n_gv=len(gv)))
         P(("  [%s] [table] 桌面鉸點 v%d " + "xy"[ax] + "=%.1f z=%.1f mm(flat " + "xy"[ax] + " %.1f;折線 %+.1f)| 材料長 鉸點→夾持頂點(%d 點 flat 中位)%.1f mm | 抬 %.0f mm(%.1f s)→ 弧 %.0f° → %.0f°、半徑 %.1f → %.1f(%.2f L)→ %.1f mm、夾爪繞 x 轉 180°(%.1f s)| 終點夾爪中心 (%.1f,%.1f,%.1f) mm;停 %.1f s 放手 @%.2f")
@@ -2010,7 +2047,63 @@ if a.grasp:
 
 # ── [extract] 第三隻手取杯 ──
 X = dict(st="wait")
+XH = {}                                                                        # [v2x2] --v2_h2_free:手 2 鬆手 / 重夾狀態
 if a.extract:
+    def h3_boxd(Pw, c, hs):                                                   # [v2x2] 布頂點到軸對齊盒(中心 c、半邊 hs)的最小距離(負 = 在盒內)
+        q_ = np.abs(Pw - c) - hs; return float(np.where((q_ < 0).all(1), q_.max(1), np.linalg.norm(np.maximum(q_, 0), axis=1)).min())
+    def h3_regrip_plan(t, last):
+        """[v2x2] 重夾:用當下杯姿態找夾位(指頂高 杯頂 + dz、指 x 偏 dx),兩指從張開 25 mm 到合(停在杯 + 1 mm)的掃掠盒與布最小距離 > clear 才用;都不行 → 舊規則(預設夾位、杯端外 10 mm 有布 → 停 T + 1 mm)"""
+        mp, Rq, MW = mug_world(); Pw = PLATE.pts(); ztp = float(MW[:, 2].max()); xb = float(MW[MW[:, 2] > ztp - 0.005, 0].mean()); clr = a.v2_h2_clear_mm / 1e3
+        res = []
+        for dzs in (0.0, 0.010, 0.020, 0.030):
+            for dxs in (0.0, -0.010, 0.010, -0.020, 0.020):
+                xb_, zt_ = xb + dxs, ztp + dzs
+                bd = (np.abs(MW[:, 0] - xb_) < H3F[0] / 2) & (MW[:, 2] > zt_ - H3F[2]) & (MW[:, 2] < zt_)
+                if bd.sum() < 10: continue
+                y0, y1 = float(MW[bd, 1].min()), float(MW[bd, 1].max()); zc = zt_ - H3F[2] / 2
+                ca_ = np.array([xb_, y0 - H3F[1] / 2 - 0.001 - 0.0125, zc]); cb_ = np.array([xb_, y1 + H3F[1] / 2 + 0.001 + 0.0125, zc])   # 掃掠盒中心(合位 ~ 張開 25 mm)
+                hs_ = np.array([H3F[0], H3F[1] + 0.025, H3F[2]]) / 2
+                da, db = h3_boxd(Pw, ca_, hs_), h3_boxd(Pw, cb_, hs_)
+                res.append(dict(dz=dzs, dx=dxs, y0=y0, y1=y1, xb=xb_, zt=zt_, da=da, db=db, ok=min(da, db) > clr))
+        ok = [r for r in res if r["ok"]]; pick = ok[0] if ok else res[0]
+        ca = cb = 0.001
+        if not ok:                                                            # 舊規則(jaw3)
+            _bb = (np.abs(Pw[:, 0] - xb) < H3F[0] / 2 + 0.005) & (Pw[:, 2] > ztp - H3F[2]) & (Pw[:, 2] < ztp + 0.010)
+            ca = T + 0.001 if (_bb & (Pw[:, 1] > pick["y0"] - 0.010) & (Pw[:, 1] < pick["y0"] + 0.002)).any() else 0.001
+            cb = T + 0.001 if (_bb & (Pw[:, 1] < pick["y1"] + 0.010) & (Pw[:, 1] > pick["y1"] - 0.002)).any() else 0.001
+        hz = pick["zt"] - mp[2] + H3S[2] / 2; B1 = mp + [0, 0, hz]
+        j1 = dict(dx=pick["xb"] - B1[0], dz=pick["zt"] - H3F[2] / 2 - B1[2], ya=pick["y0"] - B1[1] - H3F[1] / 2 - ca, yb=pick["y1"] - B1[1] + H3F[1] / 2 + cb)
+        P("★ t=%.2f [v2x2] 手 2 重夾規劃%s:杯心 (%.1f,%.1f,%.1f) mm(鬆手時 %s)位移 %.1f mm;候選 %d 個、無布 %d 個 → 用 指頂 杯頂%+.0f mm、x 偏 %+.0f mm(掃掠盒-布 −y %.1f / +y %.1f mm)%s"
+          % (t, "(取杯)" if last else "", *(mp * 1e3), np.round((XH["hp0"] - [0, 0, X["hz"]]) * 1e3, 1), np.linalg.norm(mp - (XH["hp0"] - [0, 0, X["hz"]])) * 1e3,
+             len(res), len(ok), pick["dz"] * 1e3, pick["dx"] * 1e3, pick["da"] * 1e3, pick["db"] * 1e3, "" if ok else ";★ 沒有無布夾位 → 舊規則,停點 −y %.1f / +y %.1f mm" % (ca * 1e3, cb * 1e3)))
+        return dict(B1=B1, j1=j1, hz=hz, MW=MW, ok=bool(ok), pick=pick)
+    def h2free(t):
+        """[v2x2] 回傳 (手心, 張開量 w, 指偏移 j) 或 None(照舊)。段:鬆手 rel → 張開 0.4 → 抬 1.0 → 等 → rg 平移到新夾位上方 0.5 → 降 1.0 → 合 0.8 → 杯 kinematic"""
+        if "rel" not in XH or t < XH["rel"]: return None
+        up = np.array([0, 0, a.v2_h2_lift_mm / 1e3]); te = t - XH["rel"]
+        if "dyn" not in XH:
+            kin.Set(False); XH["dyn"] = t; XH["open"] = True; _m3 = mug_world(); XH["mp_rel"] = _m3[0]; XH["zmin_rel"] = float(_m3[2][:, 2].min())
+        if t < XH["rg"]: return XH["hp0"] + up * ss((te - 0.4) / 1.0), ss(te / 0.4), XH["j0"]
+        if "plan" not in XH: XH["plan"] = h3_regrip_plan(t, XH["last"])
+        pn = XH["plan"]; tr = t - XH["rg"]; B1, j0, j1 = pn["B1"], XH["j0"], pn["j1"]
+        if tr < 0.5:
+            w = ss(tr / 0.5); return XH["hp0"] + up + (B1 - XH["hp0"]) * w, 1.0, {k_: j0[k_] + (j1[k_] - j0[k_]) * w for k_ in j0}
+        if tr < 1.5: return B1 + up * (1.0 - ss((tr - 0.5) / 1.0)), 1.0, j1
+        if XH.get("open"):                                                    # 合指前:指(合位 ~ 張開掃掠)與布的最小距離
+            XH["open"] = False; Pw = PLATE.pts(); mp, Rq, MW = mug_world(); hs_ = np.array([H3F[0], H3F[1] + 0.025, H3F[2]]) / 2
+            da = h3_boxd(Pw, B1 + [j1["dx"], j1["ya"] - 0.0125, j1["dz"]], hs_); db = h3_boxd(Pw, B1 + [j1["dx"], j1["yb"] + 0.0125, j1["dz"]], hs_)
+            XH.setdefault("chk", []).append((XH["sd"], da * 1e3, db * 1e3)); XH["regrips"] = XH.get("regrips", 0) + 1
+            P("★ t=%.2f [v2x2] 合指前 指-布最小距離(張開→合 掃掠盒)−y %.1f / +y %.1f mm(判準 > %.1f)%s;杯從鬆手時位移 %.1f mm"
+              % (t, da * 1e3, db * 1e3, a.v2_h2_clear_mm, " OK" if min(da, db) * 1e3 > a.v2_h2_clear_mm else " ★ 不合格", np.linalg.norm(mp - XH["mp_rel"]) * 1e3))
+        if tr < 2.3 - 1e-6: return B1, 1.0 - ss((tr - 1.5) / 0.8), j1
+        q_ = np.array(mugx.get_world_pose()[1], float); mp, Rq, MW = mug_world()   # 合好:杯轉 kinematic、取杯路徑跟著新夾位平移
+        dB = B1 - X["B"]; X["E"] = X["E"] + dB - [0, 0, float(MW[:, 2].min()) - XH["zmin_rel"]]   # 落點:杯底仍放在同一高度
+        X["C"] = X["C"] + dB; X["D"] = X["D"] + dB; X["A"] = X["A"] + dB; X["B"] = B1; X["hz"] = pn["hz"]; X["jaw"] = dict(j1); X["q0"] = q_
+        kin.Set(True)
+        P("★ t=%.2f [v2x2] 手 2 重夾好 → 杯 kinematic;杯心 (%.1f,%.1f,%.1f) mm,鬆手期間位移 %.1f mm" % (t, *(mp * 1e3), np.linalg.norm(mp - XH["mp_rel"]) * 1e3))
+        XH.setdefault("disp", []).append((XH["sd"], np.linalg.norm(mp - XH["mp_rel"]) * 1e3))
+        for k_ in ("rel", "sd", "rg", "hp0", "j0", "last", "dyn", "open", "mp_rel", "zmin_rel", "plan"): XH.pop(k_, None)
+        return None
     def x_hand(r_):
         """取杯手中心(世界)。段:A 上方 → B 杯頂 → 綁 → C 抬 → D 移 → E 放 → 手抬開"""
         if "path" in X:                                                      # [extract2] slide:多段折線
@@ -2134,9 +2227,12 @@ if a.extract:
             TE = X["seg_t"][-1]
             X["st"] = ("hand3 down" if r_ < TB else "bind cup" if r_ < TBi else "lift 20mm" if r_ < X["seg_t"][1] else "rise over yn wall" if r_ < X["seg_t"][2]
                        else "slide -y" if r_ < X["seg_t"][3] else "place on ground" if r_ < TE else "hand3 release/up")
-        hp = x_hand(r_); GVIS["h3"].set(hp)
+        _hf = h2free(t) if (a.v2_h2_free and "bind" in X and "free" not in X) else None   # [v2x2](先算:重夾好那一步會更新 X["B"])
+        hp = x_hand(r_) if _hf is None else _hf[0]
+        GVIS["h3"].set(hp)
         if "jaw" in X:                                                        # [jaw2] 開合:下降時張開 → bind 段合到接觸 → 放下後張開
             j_ = X["jaw"]; w_ = 1.0 if r_ < TB else (1.0 - ss((r_ - TB) / XT["bind"])) if "free" not in X else ss((t - X["free"]) / XT["open"])
+            if _hf is not None: w_, j_ = _hf[1], _hf[2]                       # [v2x2]
             ya, yb = j_["ya"] - 0.025 * w_, j_["yb"] + 0.025 * w_
             if a.jaw_collide: KOV["h3a"] = (hp + [j_["dx"], ya, j_["dz"]], np.eye(3)); KOV["h3b"] = (hp + [j_["dx"], yb, j_["dz"]], np.eye(3))   # [jaw3]
             else: JV["h3a"].set(hp + [j_["dx"], ya, j_["dz"]]); JV["h3b"].set(hp + [j_["dx"], yb, j_["dz"]])
@@ -2147,7 +2243,7 @@ if a.extract:
             mp, Rq, MW = mug_world(); near, inm, nmov, dmx, _ = x_cloth_stats(X["P0"], MW, mp, Rq)
             X["bind_near"] = near; X["bind_inm"] = inm
             P("★ t=%.2f [extract] 綁杯:杯子 physics:kinematicEnabled=True、之後每步杯心 = 手 − %.1f mm(剛性綁定);杯邊 5mm 內布頂點 %d、布穿杯 %d" % (t, X["hz"] * 1e3, near, inm))
-        if "bind" in X and "free" not in X:
+        if "bind" in X and "free" not in X and _hf is None and "rel" not in XH:   # [v2x2] 鬆手期間杯是 dynamic
             mugx.set_world_pose(position=hp - [0, 0, X["hz"]], orientation=X["q0"])
             if r_ >= TE - 1e-6: X["free"] = t; P("★ t=%.2f [extract] 放下、手鬆開(杯子保持 kinematic 停在落點;地板碰撞早已關)" % t)
         if "bind" in X and t >= X["next"] - 1e-9:
@@ -2168,6 +2264,11 @@ if a.extract:
               % (X["bind"], X["bind_near"], max(x[1] for x in L_), mx_inm, max([x[3] for x in lift] + [0]), 100.0 * max([x[3] for x in lift] + [0]) / len(Pw),
                  max([x[4] for x in lift] + [0]), "%.2f" % X["t_out"] if "t_out" in X else "未離開", *(mp * 1e3), *((mp - g_offw()) * 1e3),
                  MW[:, 2].min() * 1e3, X["zg"] * 1e3, 100.0 * nmov / len(Pw), near, " / ".join(fc), inb, "OK" if ok else "NG"))
+            if a.v2_h2_free:                                                  # [v2x2] 取杯只看抬起之後(扶杯 / x 片期間手 1 下指把布推進 kinematic 杯的瞬間穿杯另列)
+                _il = [x[2] for x in L_ if x[0] >= X.get("lift0", 1e9) - 1e-6]; _ih = [x[2] for x in L_ if x[0] < X.get("lift0", 1e9) - 1e-6]
+                P("[v2x2] SUMMARY 取杯(抬起後)布穿杯最大 %d(抬起前扶杯期間 %d)| 杯移動 %.0f mm | %s | 手 2 鬆手期間杯位移 %s mm | 重夾合指前 指-布(掃掠盒)%s mm"
+                  % (max(_il + [0]), max(_ih + [0]), np.linalg.norm(mp - X["mp0"]) * 1e3, "OK" if (not cav and max(_il + [0]) == 0 and np.linalg.norm(mp - X["mp0"]) > 0.15) else "NG",
+                     " / ".join("%s %.1f" % d_ for d_ in XH.get("disp", [])), " / ".join("%s %.1f,%.1f" % c_ for c_ in XH.get("chk", []))))
             P("[extract2] SUMMARY mode=%s 布被帶起 抬起時最大 %.1f%% | 離箱 %s | 落地 %s | 最終 %.1f%% | 最終杯心 箱局部 (%.1f,%.1f,%.1f) 落點擋到 %s | 布在箱內 %.1f%%"
               % (a.extract_mode, 100.0 * max([x[3] for x in lift] + [0]) / len(Pw), "%.1f%%" % X["out_pct"] if "out_pct" in X else "-",
                  "%.1f%%" % X["land_pct"] if "land_pct" in X else "-", 100.0 * nmov / len(Pw), *((mp - g_offw()) * 1e3), X["land_on"] or "無", inb))
@@ -2510,7 +2611,7 @@ for fr in range(FR0, NFR):                                                      
                 _FS = {"up": GFS, "lo": GFS, "h2a": H2F if a.hand2 == "jaw" else None, "h2b": H2F if a.hand2 == "jaw" else None,
                        "h3a": H3F if (a.extract and a.extract_grip == "jaw") else None, "h3b": H3F if (a.extract and a.extract_grip == "jaw") else None}   # [matsweep] --extract 0 時 H3F 未定義
                 _cl = {"up": "grip" in _pl["ev"] and (tcur < _pl.get("TR", 1e9) or (a.hold_yp and _pl["sd"] == "yp")),
-                       "h2": any(_p.get("h2", {}).get("att_on") for _p in GS["plans"]), "h3": "bind" in X and "free" not in X}
+                       "h2": any(_p.get("h2", {}).get("att_on") for _p in GS["plans"]), "h3": "bind" in X and "free" not in X and not XH.get("open")}
                 _out = []
                 for _k, _sz in _FS.items():
                     if _sz is None or _k not in GPATH: continue
