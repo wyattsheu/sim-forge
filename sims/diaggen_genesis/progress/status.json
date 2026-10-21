@@ -2,10 +2,10 @@
   "schema_version": "diaggen-public-batch-progress-v1",
   "pipeline": "DiagGen",
   "simulator": "Genesis",
-  "phase": "waiting_gpu",
+  "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T13:14:00+08:00",
+  "updated_at": "2026-10-21T13:17:18+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -13,10 +13,10 @@
     "max_parallel_jobs": 2
   },
   "counts": {
-    "queued": 5,
-    "running": 0,
+    "queued": 8,
+    "running": 1,
     "success": 0,
-    "failed": 4,
+    "failed": 0,
     "cancelled": 0,
     "unknown": 0,
     "total": 9
@@ -26,14 +26,14 @@
       "schema_version": "diaggen-public-progress-v1",
       "pipeline": "DiagGen",
       "simulator": "Genesis",
-      "run_id": "genesis_first_20261021",
-      "phase": "failed",
+      "run_id": "genesis_first_20261021_exr_retry1",
+      "phase": "running",
       "pipeline_status": "seeded",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
-      "created_at": "2026-10-21T04:05:19.455387+00:00",
-      "updated_at": "2026-10-21T13:14:00+08:00",
+      "created_at": "2026-10-21T05:16:48.582796+00:00",
+      "updated_at": "2026-10-21T13:17:18+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -43,20 +43,20 @@
         {
           "name": "image_cleanup",
           "label": "圖片清理",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-21T04:09:26.678554+00:00",
-          "finished_at": "2026-10-21T04:09:26.692132+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "failed",
-          "ledger_status": "failed",
+          "status": "pending",
+          "ledger_status": "pending",
           "ok": false,
-          "started_at": "2026-10-21T04:13:10.580509+00:00",
-          "finished_at": "2026-10-21T04:13:23.421225+00:00"
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "omnipart_generate_parts",
@@ -122,41 +122,25 @@
           "finished_at": null
         }
       ],
-      "media": [
-        {
-          "path": "media/usb_hub_cleaned_image.png",
-          "bytes": 1407489,
-          "sha256": "b08a20d955c14f03357ccb85134d54888a8d6db91773ee398da98690d928097f"
-        },
-        {
-          "path": "media/usb_hub_processed_white_bg_png.png",
-          "bytes": 98969,
-          "sha256": "df78850d527a5358848706915dca1489bddc2241c5bfc750d99c7777caf4718b"
-        },
-        {
-          "path": "media/usb_hub_processed_rgba.png",
-          "bytes": 119427,
-          "sha256": "3fd0e39819159e2f0881cc9bfcd4339897732fbd58b6868d1d321de38605acd1"
-        }
-      ],
+      "media": [],
       "id": "usb_hub",
-      "status": "failed",
-      "attempts": 1
+      "status": "running",
+      "attempts": 2
     },
     {
       "schema_version": "diaggen-public-progress-v1",
       "pipeline": "DiagGen",
       "simulator": "Genesis",
-      "run_id": "genesis_capybara_plush_toy_20261021",
-      "phase": "failed",
-      "pipeline_status": "seeded",
+      "run_id": "genesis_capybara_plush_toy_20261021_exr_retry1",
+      "phase": "waiting_gpu",
+      "pipeline_status": "not_initialized",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
-      "active_revision": "revision_0000",
-      "created_at": "2026-10-21T04:05:19.462238+00:00",
-      "updated_at": "2026-10-21T13:14:00+08:00",
+      "active_revision": null,
+      "created_at": null,
+      "updated_at": "2026-10-21T13:17:18+08:00",
       "diagnostics": {
-        "enabled": true,
+        "enabled": null,
         "episode_count": 0,
         "terminal_status": "not_available"
       },
@@ -164,20 +148,20 @@
         {
           "name": "image_cleanup",
           "label": "圖片清理",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-21T04:08:22.900897+00:00",
-          "finished_at": "2026-10-21T04:08:22.917882+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "failed",
-          "ledger_status": "failed",
+          "status": "pending",
+          "ledger_status": "pending",
           "ok": false,
-          "started_at": "2026-10-21T04:11:02.506911+00:00",
-          "finished_at": "2026-10-21T04:11:42.125678+00:00"
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "omnipart_generate_parts",
@@ -243,41 +227,25 @@
           "finished_at": null
         }
       ],
-      "media": [
-        {
-          "path": "media/capybara_plush_toy_cleaned_image.png",
-          "bytes": 2482560,
-          "sha256": "3b1f44d91ac24d48d58d8521565e71a34d09efe83f337eae9ca1c469415dc378"
-        },
-        {
-          "path": "media/capybara_plush_toy_processed_white_bg_png.png",
-          "bytes": 327716,
-          "sha256": "3996bc7725e6202e9eb84d0eeb13848bb0f7bc8515361b09e02b0f13173c53d7"
-        },
-        {
-          "path": "media/capybara_plush_toy_processed_rgba.png",
-          "bytes": 382570,
-          "sha256": "01a3dd10e40951bb097d9dca078b38e2867a71f7e709c86b7430835a294b068d"
-        }
-      ],
+      "media": [],
       "id": "capybara_plush_toy",
-      "status": "failed",
+      "status": "queued",
       "attempts": 1
     },
     {
       "schema_version": "diaggen-public-progress-v1",
       "pipeline": "DiagGen",
       "simulator": "Genesis",
-      "run_id": "genesis_baseball_cap_20261021",
-      "phase": "failed",
-      "pipeline_status": "seeded",
+      "run_id": "genesis_baseball_cap_20261021_exr_retry1",
+      "phase": "waiting_gpu",
+      "pipeline_status": "not_initialized",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
-      "active_revision": "revision_0000",
-      "created_at": "2026-10-21T04:12:53.485565+00:00",
-      "updated_at": "2026-10-21T13:14:00+08:00",
+      "active_revision": null,
+      "created_at": null,
+      "updated_at": "2026-10-21T13:17:18+08:00",
       "diagnostics": {
-        "enabled": true,
+        "enabled": null,
         "episode_count": 0,
         "terminal_status": "not_available"
       },
@@ -285,20 +253,20 @@
         {
           "name": "image_cleanup",
           "label": "圖片清理",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-21T04:17:35.138046+00:00",
-          "finished_at": "2026-10-21T04:17:35.159513+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "failed",
-          "ledger_status": "failed",
+          "status": "pending",
+          "ledger_status": "pending",
           "ok": false,
-          "started_at": "2026-10-21T04:20:25.283189+00:00",
-          "finished_at": "2026-10-21T04:20:37.502053+00:00"
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "omnipart_generate_parts",
@@ -364,41 +332,25 @@
           "finished_at": null
         }
       ],
-      "media": [
-        {
-          "path": "media/baseball_cap_cleaned_image.png",
-          "bytes": 2504852,
-          "sha256": "366f64f4600faecbbef4310c332a4df42479efdbb3e012ebf7b60f4083af5a4c"
-        },
-        {
-          "path": "media/baseball_cap_processed_white_bg_png.png",
-          "bytes": 218454,
-          "sha256": "99fe415d3d7e43d12f11b5b4da3e9f827ad1df232c25a29ba17f18e7e61513db"
-        },
-        {
-          "path": "media/baseball_cap_processed_rgba.png",
-          "bytes": 240726,
-          "sha256": "a804a9cb030a1704a976c42ef6d76c28dab205ba226bed1330daadbcb7b48b82"
-        }
-      ],
+      "media": [],
       "id": "baseball_cap",
-      "status": "failed",
+      "status": "queued",
       "attempts": 1
     },
     {
       "schema_version": "diaggen-public-progress-v1",
       "pipeline": "DiagGen",
       "simulator": "Genesis",
-      "run_id": "genesis_curling_iron_20261021",
-      "phase": "failed",
-      "pipeline_status": "seeded",
+      "run_id": "genesis_curling_iron_20261021_exr_retry1",
+      "phase": "waiting_gpu",
+      "pipeline_status": "not_initialized",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
-      "active_revision": "revision_0000",
-      "created_at": "2026-10-21T05:05:25.899087+00:00",
-      "updated_at": "2026-10-21T13:14:00+08:00",
+      "active_revision": null,
+      "created_at": null,
+      "updated_at": "2026-10-21T13:17:18+08:00",
       "diagnostics": {
-        "enabled": true,
+        "enabled": null,
         "episode_count": 0,
         "terminal_status": "not_available"
       },
@@ -406,20 +358,20 @@
         {
           "name": "image_cleanup",
           "label": "圖片清理",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-21T05:09:48.077344+00:00",
-          "finished_at": "2026-10-21T05:09:48.094025+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "failed",
-          "ledger_status": "failed",
+          "status": "pending",
+          "ledger_status": "pending",
           "ok": false,
-          "started_at": "2026-10-21T05:12:06.605174+00:00",
-          "finished_at": "2026-10-21T05:12:19.353416+00:00"
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "omnipart_generate_parts",
@@ -485,25 +437,9 @@
           "finished_at": null
         }
       ],
-      "media": [
-        {
-          "path": "media/curling_iron_cleaned_image.png",
-          "bytes": 1271715,
-          "sha256": "ebcb92670927f94d22ab96ba47eaca7eba5e74eeace15c8885513115c73c84aa"
-        },
-        {
-          "path": "media/curling_iron_processed_white_bg_png.png",
-          "bytes": 65964,
-          "sha256": "7f4d6cc7978d434824bb323378c2deb43c0cf75e2e64f7b36c0c0c32b76b91b9"
-        },
-        {
-          "path": "media/curling_iron_processed_rgba.png",
-          "bytes": 88395,
-          "sha256": "6a54e18303096e4791e45126489b323328787d59e943ce3680ebed33980e78e5"
-        }
-      ],
+      "media": [],
       "id": "curling_iron",
-      "status": "failed",
+      "status": "queued",
       "attempts": 1
     },
     {
@@ -517,7 +453,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:14:00+08:00",
+      "updated_at": "2026-10-21T13:17:18+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -622,7 +558,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:14:00+08:00",
+      "updated_at": "2026-10-21T13:17:18+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -727,7 +663,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:14:00+08:00",
+      "updated_at": "2026-10-21T13:17:18+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -832,7 +768,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:14:00+08:00",
+      "updated_at": "2026-10-21T13:17:18+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -937,7 +873,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:14:00+08:00",
+      "updated_at": "2026-10-21T13:17:18+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1032,67 +968,6 @@
       "attempts": 0
     }
   ],
-  "media": [
-    {
-      "path": "media/usb_hub_cleaned_image.png",
-      "bytes": 1407489,
-      "sha256": "b08a20d955c14f03357ccb85134d54888a8d6db91773ee398da98690d928097f"
-    },
-    {
-      "path": "media/usb_hub_processed_white_bg_png.png",
-      "bytes": 98969,
-      "sha256": "df78850d527a5358848706915dca1489bddc2241c5bfc750d99c7777caf4718b"
-    },
-    {
-      "path": "media/usb_hub_processed_rgba.png",
-      "bytes": 119427,
-      "sha256": "3fd0e39819159e2f0881cc9bfcd4339897732fbd58b6868d1d321de38605acd1"
-    },
-    {
-      "path": "media/capybara_plush_toy_cleaned_image.png",
-      "bytes": 2482560,
-      "sha256": "3b1f44d91ac24d48d58d8521565e71a34d09efe83f337eae9ca1c469415dc378"
-    },
-    {
-      "path": "media/capybara_plush_toy_processed_white_bg_png.png",
-      "bytes": 327716,
-      "sha256": "3996bc7725e6202e9eb84d0eeb13848bb0f7bc8515361b09e02b0f13173c53d7"
-    },
-    {
-      "path": "media/capybara_plush_toy_processed_rgba.png",
-      "bytes": 382570,
-      "sha256": "01a3dd10e40951bb097d9dca078b38e2867a71f7e709c86b7430835a294b068d"
-    },
-    {
-      "path": "media/baseball_cap_cleaned_image.png",
-      "bytes": 2504852,
-      "sha256": "366f64f4600faecbbef4310c332a4df42479efdbb3e012ebf7b60f4083af5a4c"
-    },
-    {
-      "path": "media/baseball_cap_processed_white_bg_png.png",
-      "bytes": 218454,
-      "sha256": "99fe415d3d7e43d12f11b5b4da3e9f827ad1df232c25a29ba17f18e7e61513db"
-    },
-    {
-      "path": "media/baseball_cap_processed_rgba.png",
-      "bytes": 240726,
-      "sha256": "a804a9cb030a1704a976c42ef6d76c28dab205ba226bed1330daadbcb7b48b82"
-    },
-    {
-      "path": "media/curling_iron_cleaned_image.png",
-      "bytes": 1271715,
-      "sha256": "ebcb92670927f94d22ab96ba47eaca7eba5e74eeace15c8885513115c73c84aa"
-    },
-    {
-      "path": "media/curling_iron_processed_white_bg_png.png",
-      "bytes": 65964,
-      "sha256": "7f4d6cc7978d434824bb323378c2deb43c0cf75e2e64f7b36c0c0c32b76b91b9"
-    },
-    {
-      "path": "media/curling_iron_processed_rgba.png",
-      "bytes": 88395,
-      "sha256": "6a54e18303096e4791e45126489b323328787d59e943ce3680ebed33980e78e5"
-    }
-  ],
-  "signature": "c8affb5782b7c5dcfcf45c7a61c991e08c77635432fd64cadb703be0cd061161"
+  "media": [],
+  "signature": "a21480e0590794758977e5e74fc39158eb2ddf4061e8bc2a3be194a6ac4f9818"
 }
