@@ -132,7 +132,7 @@ ap.add_argument("--fold_order", default="xp,xn,yp,yn", help="[variants] 折序,�
 ap.add_argument("--mug_off_mm", default="0,0", help="[variants] 杯子(佔位中心)相對布中心偏 dx,dy mm;實作 = 布反向平移")
 ap.add_argument("--mug_yaw_deg", type=float, default=0.0, help="[variants] 杯子繞 z 轉幾度(佔位 = 轉後 AABB)")
 ap.add_argument("--seed", type=int, default=0, help="[variants] 隨機種子(記錄用)")
-ap.add_argument("--hand2", choices=["off", "press", "attach"], default="off", help="[hand2] 第二隻手:press = 放手前在夾點外側(壁外 10~40mm)以有碰撞 kinematic 壓板(40x30x4mm)壓住躺在蓋上那段;attach = 同位置 VtxXformAttachment 綁到 kinematic 方塊;off = 舊行為")
+ap.add_argument("--hand2", choices=["off", "press", "attach", "jaw"], default="off", help="[hand2] 第二隻手:jaw = [jaw2] 兩指夾爪從上方下、沿 x 合指,合好才綁指間足跡(+hand2_pad_mm)頂點;press = 放手前在夾點外側(壁外 10~40mm)以有碰撞 kinematic 壓板(40x30x4mm)壓住躺在蓋上那段;attach = 同位置 VtxXformAttachment 綁到 kinematic 方塊;off = 舊行為")
 ap.add_argument("--hand2_hold_s", type=float, default=3.0, help="[hand2] 第一隻手放手後第二隻手持續壓/綁幾秒,之後垂直抬起(attach:先解綁)")
 ap.add_argument("--hand2_lead_s", type=float, default=0.5, help="[hand2] 放手前幾秒壓到位(之前 0.5s 從上方下壓)")
 ap.add_argument("--hand2_pad_mm", type=float, default=15.0, help="[hand2] attach:方塊足跡外擴 mm 內的頂點都綁")
@@ -146,6 +146,9 @@ ap.add_argument("--guard_yp", type=float, default=0.0, help="[extract2] >0:yp �
 ap.add_argument("--guard_yn", type=float, default=0.0, help="[extract3] >0:yn 段守衛門檻(取代 2.3),且 --guard_n 也套用到 yn 段")
 ap.add_argument("--slide_clear_mm", type=float, default=10.0, help="[extract3] slide 過壁:杯底高過壁頂 mm(預設 10 = 舊)")
 ap.add_argument("--hand2_tuck_mm", type=float, default=0.0, help="[extract3] >0:取杯開始時手 2 把 yn 布往壁外、往下各移 mm(綁杯前完成)")
+ap.add_argument("--hand1_jaw", type=int, default=0, help="[jaw2] 1 = 第一隻手(grasp_attach 模式)顯示下指(純視覺:布邊外 35mm 降下 → 沿 −u 滑到布下 → 上指合;合好後跟著上指、放手時張開);0 = 舊(只看得到上指)")
+ap.add_argument("--extract_grip", choices=["pad", "jaw"], default="pad", help="[jaw2] 取杯手:pad = 舊(方塊壓杯頂、杯轉 kinematic 跟手);jaw = 兩指沿 y 從杯兩端夾:張開下降 → 合指到接觸 → 杯轉 kinematic 跟手 → 放下後張開再抬")
+ap.add_argument("--finger_mm", type=float, default=20.0, help="[jaw2] 第一隻手指面邊長 mm(t,u);預設 20 = 舊")
 ap.add_argument("--guard_n", type=int, default=1, help="[extract2] yp 段守衛需連續 N 次量測超過門檻才放手(預設 1 = 舊)")
 ap.add_argument("--proxy_m", type=float, default=0.005, help="[drag] 代理質量 kg")
 ap.add_argument("--quality", choices=["off", "fast", "final"], default="off",
@@ -580,7 +583,7 @@ P("★ 紙箱 reset 前擺到旁邊 %s mm、蓋子開(180°);箱底內面對齊�
 if a.grasp:
     sys.path.insert(0, os.path.join(HERE, "grip"))
     import gutil as GU
-    GFS = np.array([0.020, 0.020, 0.008])        # 指面 (t,u,n)
+    GFS = np.array([a.finger_mm / 1e3, a.finger_mm / 1e3, 0.008])        # 指面 (t,u,n)  [jaw2] finger_mm 預設 20 = 舊
     GRS = np.array([0.008, 0.030, 0.008])        # 挑角單指(8mm 方桿,沿 u 30mm)
     GPARK = {"rod": np.array([3.0, 3.0, 1.0]), "up": np.array([3.0, 3.1, 1.0]), "lo": np.array([3.0, 3.2, 1.0])}
     GPATH = {k: "/World/gfing/" + k for k in GPARK}
@@ -591,6 +594,18 @@ if a.grasp:
         GVIS[k_] = GU.VisBox(st, "/World/gvis_" + k_, GRS if k_ == "rod" else GFS,
                              (0.2, 0.7, 0.25) if k_ == "rod" else (0.9, 0.45, 0.1))
         GVIS[k_].set(GPARK[k_])
+    class SBox:                                                               # [jaw2] 純視覺方塊(可改尺寸)
+        def __init__(s, path, color, size):
+            cb = UsdGeom.Cube.Define(st, path); cb.CreateSizeAttr(1.0); xf = UsdGeom.Xformable(cb)
+            s.t = xf.AddTranslateOp(); s.o = xf.AddOrientOp(); s.s = xf.AddScaleOp()
+            GU.bind_vis(st, cb.GetPrim(), color, "vis_%d_%d_%d" % tuple(int(c * 100) for c in color))
+            s.set([3.0, 3.5, 1.0], [1, 0, 0, 0], size)
+        def set(s, c, q=None, size=None):
+            s.t.Set(Gf.Vec3d(*map(float, c)))
+            if q is not None: s.o.Set(Gf.Quatf(*map(float, q)))
+            if size is not None: s.s.Set(Gf.Vec3f(*map(float, size)))
+    JV, JVS = {}, {}
+    if a.hand1_jaw: JV["lov"] = SBox("/World/gvis_lov", (0.9, 0.45, 0.1), GFS)
     P("★ --grasp 1:kinematic 指 rod %s / 上下指 %s mm,指面摩擦 %.1f(rod 0.5),cont 1 / rest 0;停在 %s"
       % (GRS*1e3, GFS*1e3, a.ffric, GPARK["rod"]))
     if a.hand2 != "off":                                                       # [hand2] 第二隻手(壓板 / 綁定方塊)
@@ -599,10 +614,20 @@ if a.grasp:
         else: VC.kin_box(st, GPATH["h2"], H2S, GPARK["h2"], collide=False, visible=False)
         UsdGeom.Imageable(st.GetPrimAtPath(GPATH["h2"])).CreateVisibilityAttr().Set(UsdGeom.Tokens.invisible)
         GVIS["h2"] = GU.VisBox(st, "/World/gvis_h2", H2S, (0.15, 0.4, 0.9)); GVIS["h2"].set(GPARK["h2"])
+        if a.hand2 == "jaw":                                                  # [jaw2] 綁定錨方塊不顯示,改畫兩指 + 掌
+            UsdGeom.Imageable(st.GetPrimAtPath("/World/gvis_h2")).CreateVisibilityAttr().Set(UsdGeom.Tokens.invisible)
+            H2F = np.array([0.008, 0.020, 0.030]); H2GAP = 0.006               # 指 (x 厚, y 寬, z 長);合指後指間 6mm
+            for k_ in ("h2a", "h2b"): JV[k_] = SBox("/World/gvis_" + k_, (0.15, 0.4, 0.9), H2F)
+            JV["h2p"] = SBox("/World/gvis_h2p", (0.1, 0.25, 0.6), [0.05, 0.02, 0.006])
         P("★ --hand2 %s:第二隻手 %s %s mm(%s);放手前 %.1fs 到位,放手後持續 %.1fs 再抬起"
           % (a.hand2, GPATH["h2"], H2S * 1e3, "有碰撞 摩擦 %.1f" % a.fric if a.hand2 == "press" else "不碰撞、綁頂點 pad %.0f mm" % a.hand2_pad_mm, a.hand2_lead_s, a.hand2_hold_s))
     if a.extract:                                                             # [extract] 第三隻手(純視覺;杯子轉 kinematic 跟著走 = 剛性綁定)
         H3S = np.array([0.070, 0.070, 0.012]); GVIS["h3"] = GU.VisBox(st, "/World/gvis_h3", H3S, (0.85, 0.2, 0.75)); GVIS["h3"].set([3.0, 3.4, 1.0])
+        if a.extract_grip == "jaw":                                           # [jaw2] 取杯手 = 兩指(沿 y 夾杯兩端)+ 掌
+            UsdGeom.Imageable(st.GetPrimAtPath("/World/gvis_h3")).CreateVisibilityAttr().Set(UsdGeom.Tokens.invisible)
+            H3F = np.array([0.030, 0.008, 0.050])                             # 指 (x 寬, y 厚, z 長)
+            for k_ in ("h3a", "h3b"): JV[k_] = SBox("/World/gvis_" + k_, (0.85, 0.2, 0.75), H3F)
+            JV["h3p"] = SBox("/World/gvis_h3p", (0.6, 0.12, 0.5), [0.03, 0.15, 0.012])
     if a.attach_proxy:                                                        # [drag] 力限代理:動態剛體 upx 以 D6 drive 掛在上指
         GPATH["upx"] = "/World/gfing/upx"
         _px = VC.kin_box(st, GPATH["upx"], [0.004] * 3, GPARK["up"], collide=False, visible=False)
@@ -666,6 +691,7 @@ BOXV = world.physics_sim_view.create_rigid_body_view(["/World/Box/base"] + ["/Wo
 kin = st.GetPrimAtPath("/World/mug").GetAttribute("physics:kinematicEnabled")
 if a.grasp:
     GKEYS = list(GPARK)
+    for k_ in (["lov"] if a.hand1_jaw else []) + (["h2a", "h2b"] if a.hand2 == "jaw" else []): GPARK[k_] = np.array([3.0, 3.5, 1.0])   # [jaw2] 純視覺指(不進 kinematic view)
     GFV = world.physics_sim_view.create_rigid_body_view([GPATH[k_] for k_ in GKEYS])
     _gpi = {GPATH[k_]: i_ for i_, k_ in enumerate(GKEYS)}
     GF_ORD = np.array([_gpi[p_] for p_ in GFV.prim_paths]); GF_IDX = np.arange(GFV.count, dtype=np.int32)
@@ -737,7 +763,9 @@ if a.grasp and a.until == "all":
       % (T_END_ALL, " / ".join("%s@%.2f" % (sd, TG0 + k_*G_SHEET) for k_, sd in enumerate(G_SEQ)), G_SHEET, G_TPICK, G_TLOIN,
          G_TGRIP, a.peel_t, GT["peel_hold"], T_END))
 if a.extract:                                                                  # [extract] 取杯段接在 yp 段之後
-    XT = dict(down=1.5, bind=0.3, lift=3.0, move=3.0, lower=2.5, up=1.0, obs=1.0); T_X0 = T_END; T_END = T_X0 + sum(XT.values())
+    XT = dict(down=1.5, bind=0.3, lift=3.0, move=3.0, lower=2.5, up=1.0, obs=1.0)
+    if a.extract_grip == "jaw": XT.update(bind=0.8, open=0.4)                 # [jaw2] 合指 0.8s;放下後張開 0.4s 再抬
+    T_X0 = T_END; T_END = T_X0 + sum(XT.values())
     P("[extract] 取杯段 %.2f~%.2f %s" % (T_X0, T_END, XT))
 P("時間表:折 %s | 折完 %.2f | 入箱 %.2f | 關下蓋 %.2f | 關上蓋 %.2f | 放錨+杯動態 %.2f | 搬 %.2f~%.2f | 開上蓋 %.2f | 開下蓋 %.2f | 結束 %.2f(本次跑到 %.2f)"
   % (" ".join("%s@%.1f(%.1fs)" % (k, *v) for k, v in FT.items()), T_FOLD_END, T_INBOX, T_LID0, T_LID1, T_REL,
@@ -922,6 +950,27 @@ if a.grasp:
     def g_vis(t):
         for k_ in GKEYS:
             p_, R_ = g_pose(k_, t); GVIS[k_].set(p_, rq(R_))
+        if "lov" in JV:                                                       # [jaw2] 第一隻手下指(純視覺)
+            p_, R_ = lov_pose(t); JV["lov"].set(p_, rq(R_)); JVS["lov"] = (p_, R_)
+        if "h2a" in JV:                                                       # [jaw2] 第二隻手兩指 + 掌
+            pa, Ra = g_pose("h2a", t); pb, _ = g_pose("h2b", t)
+            JV["h2a"].set(pa, rq(Ra)); JV["h2b"].set(pb, rq(Ra))
+            JV["h2p"].set((pa + pb) / 2 + [0, 0, H2F[2] / 2 + 0.003], None, [abs(pb[0] - pa[0]) + H2F[0], H2F[1], 0.006])
+    def lov_pose(t):
+        """[jaw2] 下指視覺:合指前走排好的路徑(布邊外 → 滑到布下);合好後 = 上指 − n(指厚 + 間距),放手時再張開 20mm;重夾時先張開 15mm"""
+        pls = GS["plans"]
+        if not pls: return GPARK["lov"], np.eye(3)
+        pl = pls[-1]
+        if t < pl["S0"] + G_TPICK:
+            if len(pls) < 2: return g_pose("lov", t)
+            pl = pls[-2]
+        elif t < pl["S0"] + G_TPICK + GT["lo_above"] + GT["lo_down"] + GT["close"]: return g_pose("lov", t)
+        pu, Ru = g_pose("up", t); off = GFS[2] + GAPG
+        if "rt0" in pl and t < pl["t_grip"]:
+            off += 0.015 * min(ss((t - pl["rt0"]) / 0.3), 1.0 - ss((t - (pl["t_grip"] - 1.5)) / 0.8))
+        if "TR" in pl and t >= pl["TR"] and not (a.hold_yp and pl["sd"] == "yp"):
+            off += 0.020 * ss((t - pl["TR"]) / GT["rel_open"])
+        return pu - Ru @ [0, 0, off], Ru
     def g_offw():
         return box_off(T_END_ALL) + np.array([BOXC[0], BOXC[1], 0.0])
     def g_state():
@@ -977,7 +1026,7 @@ if a.grasp:
         g_lin("up", t_, 0.8, up_above + offw, R0); t_ += 0.8
         g_lin("up", t_, 0.8, up_pre + offw); t_ += 0.8
         g_lin("up", t_, 0.8, up_f + offw); t_ += 0.8 + 0.7
-        pl["retries"] += 1; pl["tried"].append(v)
+        pl["retries"] += 1; pl["tried"].append(v); pl["rt0"] = t                 # [jaw2] rt0 只給下指視覺用
         _rv = {r["v"]: r for r in pl["rows"]}
         pl.update(v=v, nb=nb, R0=R0, p=p, lo_lift=lo_f, lo_f=lo_f, up_f=up_f, z_v0=float(M[v, 2]), t_grip=t_,
                   pick=dict(pl["pick"], v=v, p=M[v] * 1e3, slope=slope, gap=c["gap"], kind="tip"))
@@ -1107,6 +1156,10 @@ if a.grasp:
             g_lin("up", t_, GT["lo_down"], W_(up_pre)); t_ += GT["lo_down"]
             g_lin("up", t_, GT["close"], W_(up_f))
             pl.update(lo_f=lo_f, up_f=up_f)
+            if a.hand1_jaw and a.grasp_attach:                                # [jaw2] 純視覺下指:布邊外 35mm 上方 → 降 → 沿 −u 滑到布下(上指合之前到位)
+                GF["lov"]["last"] = JVS.get("lov", (GPARK["lov"], np.eye(3))); lo_o = lo_f + R0 @ [0, 0.035, 0]; t_ = pl["S0"] + G_TPICK
+                g_lin("lov", t_, GT["lo_above"], W_(lo_o + [0, 0, 0.06]), R0); t_ += GT["lo_above"]
+                g_lin("lov", t_, GT["lo_down"] / 2, W_(lo_o)); g_lin("lov", t_ + GT["lo_down"] / 2, GT["lo_down"] / 2, W_(lo_f))
             Lk = (Pw - (lo_f + offw)) @ R0
             on = (np.abs(Lk[:, 0]) < GFS[0] / 2) & (np.abs(Lk[:, 1]) < GFS[1] / 2) & (Lk[:, 2] > GFS[2] / 2 - 0.001) & (Lk[:, 2] < GFS[2] / 2 + 0.008)
             P("  [%s] 上指:從 +z 降到下指正上方 %s → 沿 −n 合 15mm 到 %s(指面間距 %.1fmm);挑角後躺在下指頂面上(0~7mm)的布頂點 %d 個"
@@ -1443,7 +1496,7 @@ if a.grasp:
         if a.hand2_keep and pl["sd"] != "yn": return                          # [extract] 第二隻手只拿 yn、不移走
         h = pl.setdefault("h2", {}); sd, sg = pl["sd"], pl["sg"]; TR = pl["TR"]; I3 = np.eye(3)
         TA = TR - a.hand2_lead_s; TH = TR + a.hand2_hold_s; TL = TH + 1.0
-        if "pos" not in h and t >= TA - (0.5 if a.hand2 == "press" else 0.0) - 1e-6:
+        if "pos" not in h and t >= TA - (0.5 if a.hand2 == "press" else 1.4 if a.hand2 == "jaw" else 0.0) - 1e-6:   # [jaw2] jaw:下降 0.8 + 合指 0.6
             offw, Pw, Pl, _, _ = g_state(); m = GSIDE2 == sd; gx = float(((g_pose("up", t)[0] - offw))[0])
             ltop = lid_top_local(sd); e0 = IY + 0.0015
             c = m & (sg * Pl[:, 1] >= e0 + 0.010) & (sg * Pl[:, 1] <= e0 + 0.040) & (Pl[:, 2] < ltop + 0.020)
@@ -1464,6 +1517,20 @@ if a.grasp:
                 g_fn("h2", TL + 0.01, 1e-3, lambda w: (GPARK["h2"], I3))
                 P("★ t=%.2f [%s] [hand2] press 壓板中心 (%.1f,%.1f) mm(夾爪 x %.1f;壁外 10~40mm 候選 %d 點);從 z %.1f 下壓到 %.1f(底 = 蓋頂 %.1f + T + 1 = %.1f)@%.2f;放手 %.2f;抬起 %.2f~%.2f"
                   % (t, sd, xc * 1e3, yc * 1e3, gx * 1e3, best[0], za * 1e3, zp * 1e3, ltop * 1e3, zb * 1e3, TA, TR, TH, TL))
+            elif a.hand2 == "jaw":                                            # [jaw2] 兩指從上方 80mm 張開(指間 40)下降 → TA 前 0.6s 沿 x 合到指間 6mm → TA 綁
+                zf = ztop + H2F[2] / 2 - 0.001; oo = 0.020 + H2F[0] / 2; oc = H2GAP / 2 + H2F[0] / 2; pw_ = np.array([xc, yc, ztop]) + offw
+                g_fn("h2", t, 1e-3, lambda w, p_=pw_: (p_, I3))               # 綁定錨(不碰撞、不顯示)先就位
+                for k_, s_ in (("h2a", -1.0), ("h2b", 1.0)):
+                    g_fn(k_, t, 1e-3, lambda w, p_=np.array([xc + s_ * oo, yc, zf + 0.08]) + offw: (p_, I3))
+                    g_lin(k_, t + 0.01, 0.8, np.array([xc + s_ * oo, yc, zf]) + offw, I3)
+                    g_lin(k_, TA - 0.6, 0.6, np.array([xc + s_ * oc, yc, zf]) + offw, I3)
+                    if not a.hand2_keep:
+                        g_lin(k_, TH, 0.3, np.array([xc + s_ * oo, yc, zf]) + offw, I3); g_lin(k_, TH + 0.3, 0.7, np.array([xc + s_ * oo, yc, zf + 0.06]) + offw, I3)
+                        g_fn(k_, TL + 0.02, 1e-3, lambda w, k_=k_: (GPARK[k_], I3))
+                if not a.hand2_keep: g_lin("h2", TH + 0.01, 1.0, pw_ + [0, 0, 0.060], I3); g_fn("h2", TL + 0.02, 1e-3, lambda w: (GPARK["h2"], I3))
+                h.update(att_t=TA, pw=pw_, jaw=dict(xc=xc, yc=yc, ltop=ltop))
+                P("★ t=%.2f [%s] [hand2] jaw 夾爪中心 (%.1f,%.1f) mm(夾爪 x %.1f;候選 %d 點);指尖 z %.1f(布頂 %.1f);下降 %.2f~%.2f 合指 %.2f~%.2f(指間 %.0f → %.0f mm)綁 @%.2f;放手 %.2f"
+                  % (t, sd, xc * 1e3, yc * 1e3, gx * 1e3, best[0], (zf - H2F[2] / 2) * 1e3, ztop * 1e3, t + 0.01, t + 0.81, TA - 0.6, TA, 2 * (oo - H2F[0] / 2) * 1e3, H2GAP * 1e3, TA, TR))
             else:
                 hv = np.where(m & (np.abs(Pl[:, 0] - xc) < 0.020 + a.hand2_pad_mm / 1e3) & (np.abs(Pl[:, 1] - yc) < 0.015 + a.hand2_pad_mm / 1e3)
                               & (Pl[:, 2] < ltop + 0.025))[0]
@@ -1476,7 +1543,12 @@ if a.grasp:
                 P("★ t=%.2f [%s] [hand2] attach 方塊中心 (%.1f,%.1f,%.1f) mm(夾爪 x %.1f;候選 %d 點);綁 %d 點(pad %.0f mm,z %.0f~%.0f);放手 %.2f;解綁 %.2f 抬起 ~%.2f"
                   % (t, sd, xc * 1e3, yc * 1e3, zc * 1e3, gx * 1e3, best[0], len(hv), a.hand2_pad_mm,
                      Pl[hv, 2].min() * 1e3 if len(hv) else np.nan, Pl[hv, 2].max() * 1e3 if len(hv) else np.nan, TR, TH, TL))
-        if a.hand2 == "attach" and "att_on" not in h and "att_t" in h and t >= h["att_t"]:
+        if a.hand2 in ("attach", "jaw") and "att_on" not in h and "att_t" in h and t >= h["att_t"]:
+            if "jaw" in h:                                                    # [jaw2] 合指完成才挑點:指間 x ±(6/2 + pad)、指寬 y ±(20/2 + pad)
+                j_ = h["jaw"]; _Pl = PLATE.pts() - g_offw(); _pd = a.hand2_pad_mm / 1e3
+                h["hv"] = np.where((GSIDE2 == sd) & (np.abs(_Pl[:, 0] - j_["xc"]) < H2GAP / 2 + _pd) & (np.abs(_Pl[:, 1] - j_["yc"]) < H2F[1] / 2 + _pd) & (_Pl[:, 2] < j_["ltop"] + 0.025))[0]
+                P("★ t=%.2f [%s] [hand2] jaw 合指完成 → 綁 %d 點(指間 ±%.0f × ±%.0f mm,z %.0f~%.0f)"
+                  % (t, sd, len(h["hv"]), (H2GAP / 2 + _pd) * 1e3, (H2F[1] / 2 + _pd) * 1e3, _Pl[h["hv"], 2].min() * 1e3 if len(h["hv"]) else np.nan, _Pl[h["hv"], 2].max() * 1e3 if len(h["hv"]) else np.nan))
             h["att_on"] = bool(len(h["hv"]))
             if len(h["hv"]):
                 Pw = PLATE.pts(); VC.attach_vtx(st, "/World/gh2_%s" % sd, "/World/plate", "/World/plate", GPATH["h2"], h["hv"], Pw[h["hv"]] - h["pw"], P=P)
@@ -1489,7 +1561,7 @@ if a.grasp:
                     Pl = PLATE.pts() - g_offw(); p_ = h["pos"]; mm = GSIDE2 == sd
                     nc = int((mm & (np.abs(Pl[:, 0] - p_[0]) < 0.022) & (np.abs(Pl[:, 1] - p_[1]) < 0.017) & (Pl[:, 2] > p_[2] - H2S[2] / 2 - T - 0.003) & (Pl[:, 2] < p_[2])).sum())
                     h["contact"] = nc; extra = " | 壓板下接觸 %d 點" % nc
-                if nm_ == "pre" and a.hand2 == "attach": extra = " | 綁 %d 點" % len(h["hv"])
+                if nm_ == "pre" and a.hand2 in ("attach", "jaw"): extra = " | 綁 %d 點" % len(h["hv"])
                 P("★ t=%.2f [%s] [hand2] %s:%s 越線 %.0f%% | 質心 y %.1f mm | 壁外 %.0f%%%s" % (t, sd, nm_, sd, cr, cy, wo, extra))
         if "lift+2" in h and "sum" not in h:
             h["sum"] = 1
@@ -1553,9 +1625,9 @@ if a.extract:
         """取杯手中心(世界)。段:A 上方 → B 杯頂 → 綁 → C 抬 → D 移 → E 放 → 手抬開"""
         if "path" in X:                                                      # [extract2] slide:多段折線
             segs = [(0.0, XT["down"], X["A"], X["B"])] + [(XT["down"] + XT["bind"] if k_ == 0 else None, du_, p0_, p1_) for k_, (du_, p0_, p1_) in enumerate(X["path"])] \
-                   + [(None, XT["up"], X["E"], X["E"] + [0, 0, 0.10])]
+                   + ([(None, XT["open"], X["E"], X["E"])] if "open" in XT else []) + [(None, XT["up"], X["E"], X["E"] + [0, 0, 0.10])]
         else: segs = [(0.0, XT["down"], X["A"], X["B"]), (XT["down"] + XT["bind"], XT["lift"], X["B"], X["C"]), (None, XT["move"], X["C"], X["D"]),
-                (None, XT["lower"], X["D"], X["E"]), (None, XT["up"], X["E"], X["E"] + [0, 0, 0.10])]
+                (None, XT["lower"], X["D"], X["E"])] + ([(None, XT["open"], X["E"], X["E"])] if "open" in XT else []) + [(None, XT["up"], X["E"], X["E"] + [0, 0, 0.10])]
         t0 = 0.0; cur = X["A"]
         for s0, du, p0, p1 in segs:
             t0 = s0 if s0 is not None else t0
@@ -1631,6 +1703,13 @@ if a.extract:
                           % (t, np.round((_h2["pw"] - g_offw()) * 1e3, 1), np.round((_pt - g_offw()) * 1e3, 1), a.hand2_tuck_mm, a.hand2_tuck_mm, XT["down"]))
                     elif _p2["sd"] == "yn": P("★ t=%.2f [extract3] 手 2 tuck 略過:yn 沒在綁(%s)" % (t, _h2.get("att_on")))
             X["P0"] = PLATE.pts().copy(); X["log"] = []; X["next"] = t
+            if a.extract_grip == "jaw":                                       # [jaw2] 接觸面 = 指 x 帶、指 z 帶(杯頂往下 50mm)內杯頂點的 y 極值
+                ztp = float(MW[:, 2].max()); xb = float(MW[MW[:, 2] > ztp - 0.005, 0].mean())
+                bd = (np.abs(MW[:, 0] - xb) < H3F[0] / 2) & (MW[:, 2] > ztp - H3F[2])
+                y0, y1 = float(MW[bd, 1].min()), float(MW[bd, 1].max()); hp0 = X["B"]
+                X["jaw"] = dict(dx=xb - hp0[0], dz=ztp - H3F[2] / 2 - hp0[2], ya=y0 - hp0[1] - H3F[1] / 2 - 0.0005, yb=y1 - hp0[1] + H3F[1] / 2 + 0.0005)
+                P("★ t=%.2f [jaw2] 取杯夾爪:指 %s mm 沿 y 夾杯兩端;杯身 x %.1f(箱局部)接觸 y %.1f / %.1f(杯長 %.1f mm,z 帶 %.1f~%.1f);張開每邊 +25mm;合指 %.1fs → 接觸才轉 kinematic"
+                  % (t, H3F * 1e3, (xb - g_offw()[0]) * 1e3, (y0 - g_offw()[1]) * 1e3, (y1 - g_offw()[1]) * 1e3, (y1 - y0) * 1e3, (ztp - H3F[2] - g_offw()[2]) * 1e3, (ztp - g_offw()[2]) * 1e3, XT["bind"]))
             EYE = g_offw() + np.array([0.55, -0.80, 0.60]); TGT = g_offw() + np.array([0.10, 0.0, 0.10]); G.look(cam, list(EYE), list(TGT))
             P("\n★ t=%.2f [extract] 開始:杯心 (%.1f,%.1f,%.1f) mm(箱局部 %s);取杯手 %s mm 從杯頂上方 150mm 下;抬 %.0f → +x %.0f → 放到 z %.1f(地面 %.1f;落點擋到 %s)"
               % (t, *(mp * 1e3), np.round((mp - g_offw()) * 1e3, 1), H3S * 1e3, a.extract_lift_mm, a.extract_out_mm,
@@ -1643,7 +1722,13 @@ if a.extract:
             X["st"] = ("hand3 down" if r_ < TB else "bind cup" if r_ < TBi else "lift 20mm" if r_ < X["seg_t"][1] else "rise over yn wall" if r_ < X["seg_t"][2]
                        else "slide -y" if r_ < X["seg_t"][3] else "place on ground" if r_ < TE else "hand3 release/up")
         hp = x_hand(r_); GVIS["h3"].set(hp)
-        if "bind" not in X and r_ >= TB - 1e-6:
+        if "jaw" in X:                                                        # [jaw2] 開合:下降時張開 → bind 段合到接觸 → 放下後張開
+            j_ = X["jaw"]; w_ = 1.0 if r_ < TB else (1.0 - ss((r_ - TB) / XT["bind"])) if "free" not in X else ss((t - X["free"]) / XT["open"])
+            ya, yb = j_["ya"] - 0.025 * w_, j_["yb"] + 0.025 * w_
+            JV["h3a"].set(hp + [j_["dx"], ya, j_["dz"]]); JV["h3b"].set(hp + [j_["dx"], yb, j_["dz"]])
+            JV["h3p"].set(hp + [j_["dx"], (ya + yb) / 2, 0.0], None, [H3F[0], yb - ya + H3F[1], H3S[2]])
+            X["st"] = X["st"].replace("bind cup", "close jaws on cup")
+        if "bind" not in X and r_ >= (TBi if "jaw" in X else TB) - 1e-6:      # [jaw2] jaw:合指到接觸(bind 段結束)才轉 kinematic
             kin.Set(True); X["bind"] = t; X["P0"] = PLATE.pts().copy()
             mp, Rq, MW = mug_world(); near, inm, nmov, dmx, _ = x_cloth_stats(X["P0"], MW, mp, Rq)
             X["bind_near"] = near; X["bind_inm"] = inm

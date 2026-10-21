@@ -1,0 +1,69 @@
+# JAW:三隻手都改成「夾」(兩指夾爪)— 2026-10-21
+
+## 結論
+三隻手在影片裡都改成兩指夾爪「張開 → 下降 → 合指 → 才綁 / 才帶走」:手 1 補上原本看不到的下指(attach 模式下指一直停在 park,影片只有一塊上指方塊),手 2 從「藍方塊直接綁」改成兩指捏、合指完成才綁指間足跡頂點,手 3 從「方塊壓杯頂」改成兩指夾杯兩端、合指接觸後杯才跟手。物理路徑沿用 extract4(綁定 / kinematic 跟隨),extract6/X1:yn、yp 都拿住到結束、守衛沒觸發、穿杯 0、出箱落地,落地布被帶起 34.8%(extract4 33.8 / 19.1 / 36.6%)→ 不比 extract4 差,影片已換成夾爪版。**純摩擦(不綁定)不可行**:F1/F2 合指後指間都是 0 個頂點,yn 越線 1% / 0%(要 ≥50%)。
+
+## 三隻手的夾法(`--hand1_jaw 1 --hand2 jaw --extract_grip jaw`)
+| 手 | 之前看起來 | 現在 | 物理(拿住靠什麼) |
+|---|---|---|---|
+| 手 1 掀 yn / yp(`--grasp_attach 1`)| **只有上指一塊橘方塊**(attach 模式下指停在 park (3000,3000,903) mm,影片裡看不到;等於「一塊方塊壓上去就黏住」)| `--hand1_jaw 1`:補畫下指(20×20×8 橘,純視覺)。上指從 +z 下來時,下指從布邊外 35 mm 上方降下 → 沿 −u 滑到布下(在上指合之前到位)→ 上指沿 −n 合 15 mm 到指間 4 mm。合好後下指 = 上指 − n(8+4) mm 跟著走;放手時張開 20 mm 再一起退。重夾(RETRY)時先張開 15 mm 再合 | 不變:合指完成那步把指面足跡(半寬 24 mm、\|n\|≤6 mm、上下層)內的頂點綁到上指,放手 RemovePrim |
+| 手 2 拿住 yn 壁外那段(`--hand2`)| 藍色 40×30×4 方塊瞬間出現、直接綁 | `--hand2 jaw`:兩指(每指 8×20×30 mm,x 厚 / y 寬 / z 長)+ 掌(藍)。放手前 1.4 s 出現在挑好的點(同 attach 選點:壁外 10~40 mm、離手 1 x ≥ 33 mm)上方 80 mm,張開(指間 40 mm)下降 0.8 s 到指尖碰布頂 → 0.6 s 沿 x 合到指間 6 mm(捏起布)| **合指完成才綁**:指間足跡 x ±(3+15) × y ±(10+15) mm、z < 蓋頂 + 25 mm 的 yn 頂點綁到不碰撞的 kinematic 錨;之後不動(`--hand2_keep 1`)。綁的時刻 = 舊 attach 的時刻(放手前 0.5 s)|
+| 手 3 取杯(`--extract`)| 紫色 70×70×12 方塊壓杯頂,杯轉 kinematic | `--extract_grip jaw`:兩指(每指 30×8×50 mm)+ 掌(紫)。沿 y 夾杯兩端(杯躺平,杯口 / 杯底在 ±y,杯耳在 +x 不碰):接觸面 = 指 x 帶、杯頂往下 50 mm 帶內杯頂點的 y 極值 + 0.5 mm。張開(每邊 +25 mm)下降 1.5 s → 合指 0.8 s 到接觸 → **接觸後**杯才轉 kinematic 跟手(剛性 = fixed joint 等效)→ 抬 / 過壁 / −y / 放地 → 張開 0.4 s → 抬手 | 杯 kinematic 跟手(同舊),只是從「合指接觸」那一刻才開始(舊:手到杯頂那一刻)|
+
+- 三隻手的指都是純視覺(不碰撞),「夾住」由綁定 / kinematic 跟隨提供 → 物理行為跟 extract4 同一條路徑(手 1、手 3 完全相同;手 2 綁點從 40×30 方塊 + pad 15 改成指間足跡 + pad 15,綁點數 32 vs 42~67)。
+- 純視覺下指在布底下會跟下層布 / 杯有幾 mm 視覺重疊(布邊下方有支撐時沒有真正的空間)。
+
+## 純摩擦可行性(不綁定,`--grasp_attach 0`)
+**不可行(這組參數 0/2)**:兩次都在「合指」那一步就沒夾到布,指間 0 個頂點 → 掀到 hold 時 yn 越線 1% / 0%(判準 ≥50%)。
+旗標:`fric/run.sh`(= `--grasp_attach 0 --pick_mode jaw --ffric 2.0 --gap_mm 2.5 --finger_mm 30 --peel_t 12`,只掀 yn;F2 加 `--grasp_rank 2` 換抓點)。
+`grep -n "夾好:\|挑角完\|參考:足跡外擴" fric/F*/stdout.txt`;`grep -A1 "\] held" fric/F*/stdout.txt`
+
+| 次 | 抓點(排名)| 邊坡度 / 下方空隙 | 挑角後下指頂面上布點 | 合指後指間頂點 | 足跡外擴 2.5 mm 內 | yn 越線 peeled / held / released | 他片 >10 mm |
+|---|---|---|---|---|---|---|---|
+| F1 | v8(#1,角在壁頂上)| 63.3° / 302 mm | 1 | **0** | 0 | 1 / 1 / 0% | 43.1% |
+| F2 | v10(#2)| 36.7° / 25 mm | 3 | **0** | 2 | 0 / 0 / 0% | 6.4% |
+
+- 失敗點是「拿到布」,不是「摩擦力不夠」:下指插到布邊下、挑角後頂面上只有 1~3 個頂點,上指合下來時布邊被推開(F2 合指後最近的布頂點在 u = −15~−17 mm,剛好在 30 mm 指面足跡外)。所以還沒測到「夾住後能不能靠摩擦拉得動」。
+- 粗估夾持力:E = 2e3 Pa、4 mm 壓到 2.5 mm(應變 0.375)、30×30 mm 指面 → 正向力 ≈ 0.68 N/面,μ 2.0 → 摩擦上限約 2.7 N;布全重 0.25 N,掀 yn 的彎曲 / 他片壓住阻力未量。數量級上不是不可能,但要先解決 volume 板邊緣在 kinematic 指之間「擠出去」的問題(gap < 板厚時布被擠走而不是被夾住)。
+- 舊紀錄 grasp/out_g(純摩擦、gap 4.5、20 mm 指):夾到 3 點、yn 越線 23%,同樣不到 50%。
+- 結論:目前**不能完全不用綁定**;demo 用「合指完成才綁」(外觀是夾、綁點只在指面足跡內),這是夾爪能做到的行為的保守替身。要真的去掉綁定,下一步可試:指面加齒 / 局部高摩擦 pad、先把布邊捏起(下指插深 ≥ 20 mm)再合、或改有限剛度綁定(`--attach_stiff`)當「摩擦上限」的近似。
+
+## 3 次驗證 → 實際 2 次(使用者要 2 小時內交,協調者砍成 2 次;X2 加 `--edamp 0.02`,因 extract5 X1 阻尼 0.02 落地 21.0% 不比 extract4 差)
+`python3 extract6/table.py extract4/X1 extract4/X2 extract4/X3 extract6/X1 extract6/X2`(全 grep)
+| 次 | yn 綁 / 手2 n | yn 越線 lift+2 → 結束(壁外)| yp 綁 | yp 越線 取杯前(117.25)→ 結束 | 守衛 | 出箱 t | 穿杯最大 | 布被帶起 抬起 / 離箱 / 落地 | 最終杯心 箱局部 mm | 布在箱內 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| extract4/X1 | 25 / 67 | 76% → 76%(18 → 19%)| 21 | 80% → 79% | 都沒觸發 | 121.55 | 0 | 28.5% / 27.6% / 33.8% | (12.8,-288.7,39.8) | 81.5% |
+| extract4/X2 | 14 / 42 | 56% → 99%(11 → 16%)| 22 | 98% → 97% | 都沒觸發 | 121.55 | 0 | 22.0% / 19.3% / 19.1% | (17.5,-299.7,39.6) | 81.1% |
+| extract4/X3 | 14 / 43 | 1% → 0%(16 → 14%)| 19 | 97% → 96% | 都沒觸發 | 121.55 | 0 | 35.5% / 35.5% / 36.6% | (15.0,-285.0,39.7) | 83.3% |
+| extract6/X1 | 12 / 32 | nan% → nan%(18 → 16%)| 15 | 71% → 97% | 都沒觸發 | 121.85 | 0 | 31.7% / 31.7% / 34.8% | (10.0,-284.9,39.8) | 80.6% |
+| extract6/X2(`--edamp 0.02`)| 跑中(交件時未完成,完成後補)| | | | | | | | | |
+
+- X1 對照 extract4:手 2 綁 32 點(extract4 42~67;指間足跡比 40×30 方塊小)但 yn 一樣拿住到結束(壁外 lift+2 18% → 結束 16%,extract4 11~19%);yn 越線 nan = 這次 yn 的 TOPS(折線內側頂點)是空的,指標失效(同 PEEL4 L1),看壁外 %。
+- yp 取杯前 71% → 結束 97%(取杯過程把 yp 再往外帶),守衛都沒觸發。出箱 121.85(比 extract4 晚 0.3 s:合指 0.8 s 取代 0.3 s 綁)。
+- 布被帶起 抬起 / 離箱 / 落地 31.7 / 31.7 / 34.8%,在 extract4 三次範圍內(19.1~36.6%),<30% 這次沒達到。
+
+## 改的檔與旗標(預設 = 舊行為;備份 `wrap_vol.py.before_jaw2`、`../publish_sim_forge.sh.before_jaw2`;wrap_vol diff 105 行)
+- `--hand1_jaw 0|1`(預設 0):第一隻手補畫下指(只在 `--grasp_attach 1` 有作用)。
+- `--hand2 jaw`(新選項;off/press/attach 不變)。`--hand2_pad_mm` 照用(15)。
+- `--extract_grip pad|jaw`(預設 pad = 舊):jaw 時 XT bind 0.3 → 0.8 s、多 open 0.4 s(取杯段總長 +0.9 s),杯轉 kinematic 移到合指結束。
+- `--finger_mm`(預設 20 = 舊):第一隻手指面邊長(純摩擦測試用 30)。
+- log:`[hand2] jaw 夾爪中心…`、`[hand2] jaw 合指完成 → 綁 N 點`、`[jaw2] 取杯夾爪:…接觸 y …`。
+- 新檔:`extract6/run.sh`(正式旗標)、`extract6/table.py`、`extract6/cut_short.sh`、`fric/run.sh`。`publish_sim_forge.sh` EXC 加 `--exclude 'extract6/*/' --exclude 'fric/*/'`。
+
+## 正式 demo 旗標(夾爪版;FINAL_PLAN §2 已改)
+```
+cd vol
+extract6/run.sh X1 [--edamp 0.02]
+# = /isaac-sim/python.sh wrap_vol.py --sheet_mm 500 --grasp 1 --grasp_attach 1 --attach_pad_mm 24 --attach_layer both --arc2 1 --arc_k 0.8 --peel_t 6 --gap_mm 4 --clear_mm 6 --steep_deg 45 --second 1 --young 2e3 --grasp_site state --grasp_retry 2 --site_xmax_mm 60 --grasp_site_k 13 --arc2_over_cap 0 --arc2_over_mm 30 --hand2 jaw --hand2_pad_mm 15 --hand2_keep 1 --hold_yp 1 --extract 1 --guard_yp 2.6 --guard_n 2 --extract_mode slide --extract_out_mm 280 --guard_yn 2.6 --slide_clear_mm 40 --hand1_jaw 1 --extract_grip jaw --out extract6/X1
+python3 extract6/table.py extract6/X1
+extract6/cut_short.sh extract6/X1/wrap.mp4 videos/DEMO_twohand_extract_short.mp4
+fric/run.sh F1                 # 純摩擦(yn 一片,~74 s 模擬)
+```
+
+## 影片
+- `videos/VOL_twohand_extract.mp4` = extract6/X1(130.5 s,夾爪版;舊 extract4/X2 版被覆蓋)。
+- `videos/DEMO_twohand_extract_short.mp4` = `extract6/cut_short.sh extract6/X1/wrap.mp4`,18.2 s:手 1 yn 合指 52–54 ×1 → yn 掀 54–64 ×4 → 手 2 下降+合指 64–66.2 ×1 → yp 夾+掀 88–102 ×4 → 取杯 下降+合指+抬 117.3–120 ×1 → 出箱+放地+張開 120–130.5 ×2。三次合指都是 1 倍速。
+- 已知外觀:手 2 在抓取段相機(focal 2.8)畫面左上邊緣,只露出指尖 + 掌一部分;純視覺下指在布底下會跟下層布有幾 mm 重疊。
+
+## 事故紀錄
+- 02:16 裝進 wrap_vol.py 的版本在**預設 `--extract_grip pad`** 時取杯段 KeyError 'open'(`[(…XT["open"]…)] * ("open" in XT)` 會先取值),extract5/X2 因此 EXIT 1;02:5x 改成 `([…] if "open" in XT else [])` 修好。jaw 模式(extract6)不受影響。

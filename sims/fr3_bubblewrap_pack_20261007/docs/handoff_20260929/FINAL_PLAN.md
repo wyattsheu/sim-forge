@@ -25,6 +25,7 @@
 - 幾何:`--sheet_mm 500 --nxy 35 --tip_over_mm 30 --tuck 1`,紙箱 `carton_w131.usd`(270×230×131,內腔 264×224)。
 - 抓取:`--grasp 1 --grasp_attach 1 --attach_pad_mm 24 --attach_layer both --arc2 1 --arc_k 0.8 --peel_t 6 --gap_mm 4 --clear_mm 6 --steep_deg 45 --second 1`。
 - 重現指令:`vol/grasp/out_ga3/wrap_vol.log` 第 2 行的 args;影片 `vol/videos/VOL_grasp_attach.mp4`。
+- **demo 正式旗標(夾爪版,2026-10-21,vol/JAW.md)**:三隻手都是兩指夾爪「合指完成才綁 / 才帶走」(使用者:demo 要夾不要黏,之後用夾爪)。`vol/extract6/run.sh` = 抓取旗標 + `--grasp_site state --grasp_retry 2 --site_xmax_mm 60 --grasp_site_k 13 --arc2_over_cap 0 --arc2_over_mm 30 --hand2 jaw --hand2_pad_mm 15 --hand2_keep 1 --hold_yp 1 --extract 1 --guard_yp 2.6 --guard_n 2 --extract_mode slide --extract_out_mm 280 --guard_yn 2.6 --slide_clear_mm 40 --hand1_jaw 1 --extract_grip jaw`;影片 `vol/videos/VOL_twohand_extract.mp4`、`DEMO_twohand_extract_short.mp4`(extract6/X1)。純摩擦不綁定不可行(fric/F1、F2 指間 0 點)。
 - 輸出格式(給手臂端 / 下游):每個 snapshot 的 `wrap.npz`(sheet、mug、tets、TOP/BOT 層索引)+ `wrap_vol.log` 的判讀表 + `cloth_iface.py` 的介面(OFF、NX/CX/CY、snap_t、lid_deg);手臂端綁定介面見 `arm/INTERFACE.md` §5。
 - 驗收:`work/tests/run_checks.py`(10 函式 23 項)+ 判準:入箱 0 超出、穿杯 0、邊長比 0.95~1.05、yn 越線 ≥ 80%、放手後 ≥ 50%、他片 < 5%。
 
@@ -97,4 +98,4 @@
 - `--guard_yn 2.6 --guard_n 2`:yn 守衛 3/3 沒觸發;`--slide_clear_mm 40`:穿杯 3/3 = 0(v2 有 3~4 點)。
 - `--hand2_tuck_mm 20`(滑出前手 2 把 yn 往外下壓)**有害**:2/3 把 yp 扯斷(邊長比 3.4~5.4 守衛放手)。拿掉。
 - X1(全過):yn/yp 拿住、穿杯 0、落地後布被帶起 22.8%(目前最好)。落點多推 20 mm 是真的會碰到平放的 yn 蓋,用 `--extract_out_mm 280`。
-- 目前正式 demo 旗標 = extract2 + `--guard_yn 2.6 --slide_clear_mm 40 --extract_out_mm 280`(不加 tuck);3 次驗證(vol/extract4):yn 3/3、yp 3/3 拿住,穿杯 0,落地後布被帶起 33.8/19.1/36.6%(<30% 只有 1/3),demo 影片用 X2。
+- (舊,已由 §2 夾爪版取代)demo 旗標 = extract2 + `--guard_yn 2.6 --slide_clear_mm 40 --extract_out_mm 280`(不加 tuck);3 次驗證(vol/extract4):yn 3/3、yp 3/3 拿住,穿杯 0,落地後布被帶起 33.8/19.1/36.6%(<30% 只有 1/3),demo 影片用 X2。

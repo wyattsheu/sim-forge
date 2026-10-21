@@ -1,13 +1,13 @@
---- wrap_vol.py.before_quality	2026-10-15 01:49:38.700067940 +0000
-+++ wrap_vol.py	2026-10-21 02:13:14.029853007 +0000
-@@ -148,7 +148,14 @@
- ap.add_argument("--hand2_tuck_mm", type=float, default=0.0, help="[extract3] >0:取杯開始時手 2 把 yn 布往壁外、往下各移 mm(綁杯前完成)")
+--- wrap_vol.py.before_quality	2026-10-21 02:16:46.258483626 +0000
++++ wrap_vol.py	2026-10-21 02:49:10.844867434 +0000
+@@ -151,7 +151,14 @@
+ ap.add_argument("--finger_mm", type=float, default=20.0, help="[jaw2] 第一隻手指面邊長 mm(t,u);預設 20 = 舊")
  ap.add_argument("--guard_n", type=int, default=1, help="[extract2] yp 段守衛需連續 N 次量測超過門檻才放手(預設 1 = 舊)")
  ap.add_argument("--proxy_m", type=float, default=0.005, help="[drag] 代理質量 kg")
 +ap.add_argument("--quality", choices=["off", "fast", "final"], default="off",
-+                help="[quality] fast = 開發用(dt 1/60 solver 32 vid_every 2 960x540);final = 出片(dt 1/240 solver 128);off = 舊行為。個別旗標有明確給時以個別旗標為準")
++                help="[quality] fast = 開發用(dt 1/120 solver 48 vid_every 2 960x540);final = 出片(dt 1/240 solver 128);off = 舊行為。個別旗標有明確給時以個別旗標為準")
  a = ap.parse_args()
-+QUALITY_PRESET = {"fast": dict(dt=1/60.0, solver=32, vid_every=2, vid_res="960x540"),
++QUALITY_PRESET = {"fast": dict(dt=1/120.0, solver=48, vid_every=2, vid_res="960x540"),   # 1/60+solver 32 自穿 ~100、四折 bbox 差 13 mm → 退到 1/120+48(quality/F1)
 +                  "final": dict(dt=1/240.0, solver=128)}.get(a.quality, {})
 +_given = {x.split("=")[0][2:] for x in sys.argv[1:] if x.startswith("--")}
 +QUALITY_SET = {k: v for k, v in QUALITY_PRESET.items() if k not in _given}
@@ -15,7 +15,7 @@
  if a.tuck == 0:
      a.squeeze_t = 0.0
  HERE = os.path.dirname(os.path.abspath(__file__))
-@@ -195,6 +202,7 @@
+@@ -198,6 +205,7 @@
  import layer_gap as LG
  
  P("=== wrap_vol sheet %.0f ===" % a.sheet_mm); P("args:", vars(a))
@@ -23,7 +23,7 @@
  world = World(physics_dt=a.dt, rendering_dt=a.dt)
  world.scene.add_default_ground_plane()
  st = omni.usd.get_context().get_stage()
-@@ -1674,6 +1682,7 @@
+@@ -1759,6 +1767,7 @@
  L2 = ("solver %d dt 1/%.0f cont %.1f rest %.2f self on | ldamp %g edamp %g | tip=top+lay*(T+1)+2mm %s%s | move %s | carton w131%s"
        % (a.solver, 1/a.dt, a.cont*1e3, a.rest*1e3, a.ldamp, a.edamp, ("extra " + a.tip_extra + " ") if a.tip_extra else "",
           ("slow " + a.slow) if a.slow else "", a.movebox, " | REST=folded" if a.rest_npz else ""))
@@ -31,7 +31,7 @@
  if a.attach_stiff > 0: L2 += " | astiff %g" % a.attach_stiff
  if a.attach_proxy: L2 += " | proxy k%g fmax%g" % (a.proxy_k, a.proxy_fmax)
  def stamp(rgb, t, ph_):
-@@ -1695,7 +1704,7 @@
+@@ -1780,7 +1789,7 @@
  LOGR = []; SNAP = {}; TRAJ_T = []; TRAJ_P = []; TRAJ_M = []
  EV = {}
  t0w = time.time(); step = 0; tcur = 0.0; nan = False
