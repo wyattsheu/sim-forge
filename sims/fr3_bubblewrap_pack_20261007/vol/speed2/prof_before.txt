@@ -1,0 +1,40 @@
+yn rank 217.14s (60 rows, ok 1) | site_cands+gap 4.06s (13) | 合計 wall 221.20s CPU 220.13s
+yp rank 185.60s (60 rows, ok 10) | site_cands+gap 3.97s (13) | 合計 wall 189.58s CPU 188.60s
+         851071539 function calls (851071153 primitive calls) in 410.781 seconds
+
+   Ordered by: cumulative time
+   List reduced from 436 to 30 due to restriction <30>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.001    0.001  410.781  410.781 /isaac-sim/test_scripts/manip_fr3/handoff_20260929/vol/speed2/prof_plan.py:25(run)
+        2    0.578    0.289  402.743  201.371 /isaac-sim/test_scripts/manip_fr3/handoff_20260929/vol/speed2/grasp_plan_old.py:88(rank)
+      354    0.001    0.000  365.801    1.033 /isaac-sim/exts/omni.pip.compute/pip_prebundle/trimesh/ray/ray_triangle.py:70(intersects_location)
+      354    1.206    0.003  365.799    1.033 /isaac-sim/exts/omni.pip.compute/pip_prebundle/trimesh/ray/ray_triangle.py:23(intersects_id)
+      120    0.000    0.000  354.736    2.956 /isaac-sim/exts/omni.pip.compute/pip_prebundle/trimesh/base.py:2969(contains)
+      120    0.000    0.000  354.736    2.956 /isaac-sim/exts/omni.pip.compute/pip_prebundle/trimesh/ray/ray_triangle.py:156(contains_points)
+  122/120    0.001    0.000  354.736    2.956 /isaac-sim/exts/omni.pip.compute/pip_prebundle/trimesh/constants.py:149(timed)
+  122/120    0.006    0.000  354.734    2.956 /isaac-sim/exts/omni.pip.compute/pip_prebundle/trimesh/ray/ray_util.py:6(contains_points)
+      354   46.230    0.131  354.265    1.001 /isaac-sim/exts/omni.pip.compute/pip_prebundle/trimesh/ray/ray_triangle.py:177(ray_triangle_id)
+      354   31.567    0.089  183.738    0.519 /isaac-sim/exts/omni.pip.compute/pip_prebundle/trimesh/ray/ray_triangle.py:303(ray_triangle_candidates)
+  1266802   67.109    0.000   80.289    0.000 /isaac-sim/exts/omni.pip.compute/pip_prebundle/rtree/index.py:738(intersection)
+788834916   73.567    0.000   75.716    0.000 /isaac-sim/exts/omni.pip.compute/pip_prebundle/rtree/index.py:918(_get_ids)
+      280   17.179    0.061   69.228    0.247 /isaac-sim/exts/omni.pip.compute/pip_prebundle/trimesh/triangles.py:495(points_to_barycentric)
+      280   17.137    0.061   52.047    0.186 /isaac-sim/exts/omni.pip.compute/pip_prebundle/trimesh/triangles.py:534(method_cramer)
+      120    2.908    0.024   44.161    0.368 /isaac-sim/exts/omni.pip.compute/pip_prebundle/trimesh/proximity.py:120(closest_point)
+     2508   43.402    0.017   43.404    0.017 /isaac-sim/exts/omni.pip.compute/pip_prebundle/trimesh/util.py:529(diagonal_dot)
+      354   28.214    0.080   36.595    0.103 /isaac-sim/exts/omni.pip.compute/pip_prebundle/trimesh/intersections.py:344(planes_lines)
+      120    0.418    0.003   32.381    0.270 /isaac-sim/exts/omni.pip.compute/pip_prebundle/trimesh/proximity.py:24(nearby_faces)
+      120    2.102    0.018   31.936    0.266 /isaac-sim/exts/omni.pip.compute/pip_prebundle/trimesh/proximity.py:64(<listcomp>)
+    10220   20.854    0.002   20.854    0.002 {built-in method numpy.array}
+     5950   18.788    0.003   18.788    0.003 {method 'reduce' of 'numpy.ufunc' objects}
+     1124    0.003    0.000   18.473    0.016 {method 'all' of 'numpy.ndarray' objects}
+     1364    0.001    0.000   18.471    0.014 /isaac-sim/extscache/omni.kit.pip_archive-0.0.0+69cbf6ad.lx64.cp311/pip_prebundle/numpy/core/_methods.py:61(_all)
+      146    0.011    0.000   11.162    0.076 /isaac-sim/test_scripts/manip_fr3/handoff_20260929/vol/speed2/grasp_plan_old.py:72(gap_below)
+1888/1538    0.005    0.000   10.245    0.007 /isaac-sim/exts/omni.pip.compute/pip_prebundle/trimesh/caching.py:121(get_cached)
+      174    0.001    0.000   10.070    0.058 /isaac-sim/exts/omni.pip.compute/pip_prebundle/trimesh/base.py:858(triangles_tree)
+      174    0.002    0.000   10.069    0.058 /isaac-sim/exts/omni.pip.compute/pip_prebundle/trimesh/triangles.py:362(bounds_tree)
+      174    0.005    0.000    9.836    0.057 /isaac-sim/exts/omni.pip.compute/pip_prebundle/trimesh/util.py:1758(bounds_tree)
+      174    0.003    0.000    9.818    0.056 /isaac-sim/exts/omni.pip.compute/pip_prebundle/rtree/index.py:80(__init__)
+      174    0.003    0.000    9.810    0.056 /isaac-sim/exts/omni.pip.compute/pip_prebundle/rtree/index.py:1204(_create_idx_from_stream)
+
+

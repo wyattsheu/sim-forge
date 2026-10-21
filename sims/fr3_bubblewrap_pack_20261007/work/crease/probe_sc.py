@@ -7,7 +7,8 @@
 沿半圓繞鉸線 x=100 對折,上層中面停在下層上方 --gap_mm;hold;放手前 0.2 s 做 --mode;放手;1 s 後 kinematic 壓板
 (80×80 mm,中心 x=50)從上方壓到「上層頂 − --press_mm」,停 2 s。
 mode 同 probe_bend:0 對照 / 1 USD restAdjTriPairs+restBendAngles ← 當下 / 2 1+SetActive 重建 / 3 1+整場重載 /
-     4 restShapePoints ← 當下 + restShapeDefault + SetActive 重建 / 6 只 SetActive 重建
+     4 restShapePoints ← 當下 + restShapeDefault + SetActive 重建 / 6 只 SetActive 重建 /
+     11 炸開 disjoint rest(ccommon.explode_rest)+ SetActive 重建
 量:S1(wrap_sim 定義:邊穿面次數)、上下層 z 差(下層 x<80 mm 的頂點 ↔ xy 最近的上層頂點,上層 = 攤平 x>120 mm),<0 的頂點數 = 穿過。
 """
 import os, sys, argparse, time
@@ -19,10 +20,12 @@ ap.add_argument("--gap_mm", type=float, default=8.0)
 ap.add_argument("--sign", type=float, default=1.0)
 ap.add_argument("--bend", type=float, default=4.0, help="surfaceBendStiffness(wrap_sim 同款 4)")
 ap.add_argument("--young", type=float, default=2e4)
+ap.add_argument("--bake_at", default="pre", help="pre = 放手前 0.2 s(上層剛疊上、層距 ~2.1 mm);press = 壓住時(t_press+1.2 s,層距 ~1.6 mm,< 2*restOffset)")
+ap.add_argument("--press2_mm", type=float, default=0.0, help="bake_at press 時:改完後壓板再往下多壓幾 mm(t_press+1.5~2.3 s)")
 ap.add_argument("--tag", default="")
 a = ap.parse_args()
 HERE = os.path.dirname(os.path.abspath(__file__))
-tag = a.tag or "sc_m%d_p%g_b%g" % (a.mode, a.press_mm, a.bend)
+tag = a.tag or ("sc_m%d_p%g_b%g" % (a.mode, a.press_mm, a.bend) + ("" if a.bake_at == "pre" else "_at%s_q%g" % (a.bake_at, a.press2_mm)))
 os.makedirs(os.path.join(HERE, "logs"), exist_ok=True); os.makedirs(os.path.join(HERE, "rec"), exist_ok=True)
 LOG = open(os.path.join(HERE, "logs", tag + ".log"), "w")
 def P(*s):
@@ -62,6 +65,8 @@ world.reset()
 bar = SingleXFormPrim("/World/bar", name="bar"); press = SingleXFormPrim("/World/press", name="press")
 GAP = a.gap_mm / 1e3
 T0, SPAN, HOLD = 0.3, 2.0, 0.8; T_REL = T0 + SPAN + HOLD; T_PL = T_REL - 0.2; T_PR = T_REL + 1.0; T_END = T_REL + 4.0
+if a.bake_at == "press":
+    T_PL = T_PR + 1.2; T_END = T_PR + 4.0
 
 
 def bar_pose(t):
@@ -88,7 +93,10 @@ def do_mode(cur):
         C.sa(prim, "omniphysics:restShapePoints", Vt.Vec3fArray([Gf.Vec3f(*map(float, q)) for q in cur]))
         prim.GetAttribute("omniphysics:restBendAnglesDefault").Set("restShapeDefault")
         msg.append("restShapePoints ← 當下 + restShapeDefault")
-    if m in (2, 4, 6):
+    if m == 11:
+        C.write_disjoint_rest(st, PATH, C.explode_rest(P0, TRIS, cur), len(TRIS)); prim = st.GetPrimAtPath(PATH)
+        msg.append("炸開 disjoint rest(攤平原位 + 轉到當下法線)")
+    if m in (2, 4, 6, 11):
         C.set_pts(st, PATH, cur); prim.SetActive(False); world.step(render=False)
         prim = st.GetPrimAtPath(PATH); prim.SetActive(True); C.set_pts(st, PATH, cur)
         msg.append("SetActive 重建")
@@ -115,7 +123,8 @@ for s in range(1, NS + 1):
             res["pre"] = (C.self_pen(cur, TRIS, EDG), gap(cur))
             EV.append((t, "press"))
             P("★ t=%.2f 壓前 S1 %d 層距 中位 %.2f 最小 %.2f mm;壓板底下到 %.1f mm(上層頂 %.1f)" % (t, res["pre"][0], res["pre"][1][0], res["pre"][1][1], zp * 1e3, top * 1e3))
-        w = C.ss((t - T_PR) / 0.8); press.set_world_pose(position=np.array([PX, 0, (0.3 * (1 - w) + zp * w) + 0.005]))
+        w = C.ss((t - T_PR) / 0.8); w2 = C.ss((t - T_PR - 1.5) / 0.8) if a.bake_at == "press" else 0.0
+        press.set_world_pose(position=np.array([PX, 0, (0.3 * (1 - w) + zp * w) - a.press2_mm / 1e3 * w2 + 0.005]))
     world.step(render=False)
     if s % 4 == 0:
         REC.append(C.pts(st, PATH).astype(np.float32)); RT.append(t)

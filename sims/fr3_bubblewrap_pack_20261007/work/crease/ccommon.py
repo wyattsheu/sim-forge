@@ -195,3 +195,26 @@ def self_pen(SP, TRI, E=None):
 def ss(u):
     u = min(max(u, 0.0), 1.0)
     return u * u * (3 - 2 * u)
+
+
+def explode_rest(P0, TRIS, X):
+    """「炸開」的逐三角形 rest:每個三角形 = 攤平時的三角形(P0,在原位置)繞自己重心轉 R_t,
+    R_t = 攤平三角形對齊到 X 中同一三角形的最佳旋轉(Kabsch)。
+    → 每個三角形面內形狀 = 原始(無應變),相鄰三角形法線夾角 = X 的二面角,但各三角形留在攤平位置,
+      rest 裡不同層之間的距離 = 攤平時的距離(不會 < selfCollisionFilterDistance)。回傳 (3T,3) 點。"""
+    F = P0[TRIS]; Q = X[TRIS]                                    # (T,3,3)
+    cf = F.mean(1, keepdims=True); cq = Q.mean(1, keepdims=True)
+    H = np.einsum("tki,tkj->tij", F - cf, Q - cq)
+    U, S, Vt_ = np.linalg.svd(H)
+    d = np.sign(np.linalg.det(np.einsum("tij,tjk->tik", Vt_.transpose(0, 2, 1), U.transpose(0, 2, 1))))
+    D = np.tile(np.eye(3), (len(TRIS), 1, 1)); D[:, 2, 2] = d
+    R = np.einsum("tij,tjk,tkl->til", Vt_.transpose(0, 2, 1), D, U.transpose(0, 2, 1))   # R @ f ≈ q
+    out = cf + np.einsum("tij,tkj->tki", R, F - cf)
+    return out.reshape(-1, 3)
+
+
+def write_disjoint_rest(st, path, RP, ntri):
+    prim = st.GetPrimAtPath(path)
+    sa(prim, "omniphysics:restShapePoints", Vt.Vec3fArray([Gf.Vec3f(*map(float, q)) for q in RP]))
+    sa(prim, "omniphysics:restTriVtxIndices", Vt.Vec3iArray([Gf.Vec3i(3 * k, 3 * k + 1, 3 * k + 2) for k in range(ntri)]))
+    prim.GetAttribute("omniphysics:restBendAnglesDefault").Set("restShapeDefault")

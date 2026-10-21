@@ -16,6 +16,10 @@ mode(runtime,放手前 0.2 s):
   4 restShapePoints ← 當下 + restBendAnglesDefault = restShapeDefault + SetActive 重建(=vol PLASTIC 有效作法)
   5 restShapePoints ← 當下 + restShapeDefault,只寫 USD
   6 只 SetActive 重建,什麼都不改(重建本身的影響)
+  10 disjoint rest:restShapePoints 每三角形各 3 點(= 當下)+ restTriVtxIndices + restShapeDefault + SetActive 重建
+     (驗證「逐三角形給 rest」可用 → 降伏規則可以只改部分邊)
+  11 炸開 disjoint rest:每三角形 = 攤平時原位的三角形、繞重心轉到當下朝向(ccommon.explode_rest)+ SetActive 重建
+     (rest 裡層與層不靠近 → 不該觸發 selfCollisionFilterDistance 過濾)
 mode(建立時,不綁桿,只看平布會不會自己彎):
   7 建立時寫 restAdjTriPairs/restBendAngles = 解析 1/4 圓的二面角 × --sign
   8 建立時 restShapePoints = 解析 1/4 圓 + restShapeDefault(正對照)
@@ -137,11 +141,20 @@ def do_mode(cur):
         ang = C.dihedrals(cur, TRIS, PAIRS) * a.sign
         C.write_rb(prim, PAIRS[:, :2], ang)
         msg.append("USD restAdjTriPairs/restBendAngles ← 當下(%d 對,中線 Σ %.1f°,max |%.2f|°)" % (len(PAIRS), ang[MIDPAIRS].sum(), np.abs(ang).max()))
+    if m == 10:
+        rp = cur[TRIS].reshape(-1, 3)
+        C.sa(prim, "omniphysics:restShapePoints", Vt.Vec3fArray([Gf.Vec3f(*map(float, q)) for q in rp]))
+        C.sa(prim, "omniphysics:restTriVtxIndices", Vt.Vec3iArray([Gf.Vec3i(3 * k, 3 * k + 1, 3 * k + 2) for k in range(len(TRIS))]))
+        prim.GetAttribute("omniphysics:restBendAnglesDefault").Set("restShapeDefault")
+        msg.append("disjoint rest:restShapePoints = 每個三角形自己 3 點(%d 點)+ restTriVtxIndices + restShapeDefault" % len(rp))
+    if m == 11:
+        C.write_disjoint_rest(st, PATH, C.explode_rest(P0, TRIS, cur), len(TRIS)); prim = st.GetPrimAtPath(PATH)
+        msg.append("炸開 disjoint rest(每三角形 = 攤平原位 + 轉到當下法線)+ restShapeDefault")
     if m in (4, 5):
         C.sa(prim, "omniphysics:restShapePoints", Vt.Vec3fArray([Gf.Vec3f(*map(float, q)) for q in cur]))
         prim.GetAttribute("omniphysics:restBendAnglesDefault").Set("restShapeDefault")
         msg.append("USD restShapePoints ← 當下 + restBendAnglesDefault = restShapeDefault")
-    if m in (2, 4, 6):
+    if m in (2, 4, 6, 10, 11):
         C.set_pts(st, PATH, cur)
         prim.SetActive(False); world.step(render=False)
         prim = st.GetPrimAtPath(PATH); prim.SetActive(True); C.set_pts(st, PATH, cur)

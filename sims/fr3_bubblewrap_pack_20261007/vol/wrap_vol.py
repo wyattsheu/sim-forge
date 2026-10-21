@@ -54,7 +54,7 @@ ap.add_argument("--move_t", type=float, default=6.0)
 ap.add_argument("--base_collider_pad", type=float, default=0.02)
 ap.add_argument("--squeeze_t", type=float, default=2.5, help="四折後四面側板收到紙箱內腔-3mm 用幾秒(0=不做)")
 ap.add_argument("--squeeze_mm", type=float, default=3.0, help="側板停在內腔內縮幾 mm")
-ap.add_argument("--until", choices=["fold", "box", "move", "all"], default="all")
+ap.add_argument("--until", choices=["fold", "box", "move", "all", "yn"], default="all", help="yn = [speed2] 跑到 yn 片結束(= --second 0 --extract 0)")
 ap.add_argument("--rest_npz", default="", help="restShapePoints = 這個 npz 的 fold_end tet 頂點(points 仍平)")
 ap.add_argument("--cam_ref", type=float, default=0.586)
 ap.add_argument("--meas_dt", type=float, default=0.5)
@@ -71,7 +71,7 @@ ap.add_argument("--arc_k", type=float, default=0.9, help="掀:弧半徑 = arc_k 
 ap.add_argument("--peel_t", type=float, default=3.0, help="掀:弧線秒數")
 ap.add_argument("--gap_mm", type=float, default=4.5, help="夾:指面間距")
 ap.add_argument("--ffric", type=float, default=2.0, help="指面摩擦")
-ap.add_argument("--pick_mode", choices=["jaw", "rod"], default="jaw",
+ap.add_argument("--pick_mode", choices=["jaw", "rod", "wide"], default="jaw",   # [pgrasp] wide = jaw 路徑 + 寬指(--wide_mm)
                 help="jaw(預設):下指本身當挑角的指(插到布邊下 → 上抬)再由上指從 +n 合;rod:另一根 8mm 單指挑角,上下指張口從布邊外插入再合(第 2~4 次實跑夾到 0)")
 ap.add_argument("--chord", type=int, default=1, help="挑角/夾的局部框:1 = 布邊切線(預設,同 grasp_points);2 = 布邊→往內第 2 排的弦")
 ap.add_argument("--arc2", type=int, default=1, help="1 = 弧線第 2 段繞箱壁頂角轉到 180°(箱外指頭最低點墊高到蓋頂);0 = 只做第 1 段(轉到指向箱壁頂角為止)")
@@ -150,6 +150,10 @@ ap.add_argument("--hand1_jaw", type=int, default=0, help="[jaw2] 1 = 第一隻�
 ap.add_argument("--extract_grip", choices=["pad", "jaw"], default="pad", help="[jaw2] 取杯手:pad = 舊(方塊壓杯頂、杯轉 kinematic 跟手);jaw = 兩指沿 y 從杯兩端夾:張開下降 → 合指到接觸 → 杯轉 kinematic 跟手 → 放下後張開再抬")
 ap.add_argument("--jaw_collide", type=int, default=0, help="[jaw3] 1 = 夾爪指都是 kinematic 碰撞體(GU.finger,cont 1mm/rest 0,摩擦 ffric):手 1 用實體下指 lo 走下指路徑、手 2 兩指、取杯手兩指;log 指-布最小距離;0 = jaw2 純視覺")
 ap.add_argument("--finger_mm", type=float, default=20.0, help="[jaw2] 第一隻手指面邊長 mm(t,u);預設 20 = 舊")
+ap.add_argument("--wide_mm", type=float, default=150.0, help="[pgrasp] --pick_mode wide:指長(沿自由邊 t)mm;指面 = wide_mm x wide_depth_mm x wide_thick_mm")
+ap.add_argument("--wide_squeeze_mm", type=float, default=1.0, help="[pgrasp] --pick_mode wide:合指後指間 = 布厚 − 這個(1.0 → 3.0mm、1.5 → 2.5mm;取代 --gap_mm)")
+ap.add_argument("--wide_depth_mm", type=float, default=20.0, help="[pgrasp] 寬指深(u)mm")
+ap.add_argument("--wide_thick_mm", type=float, default=6.0, help="[pgrasp] 寬指厚(n)mm")
 ap.add_argument("--guard_n", type=int, default=1, help="[extract2] yp 段守衛需連續 N 次量測超過門檻才放手(預設 1 = 舊)")
 ap.add_argument("--proxy_m", type=float, default=0.005, help="[drag] 代理質量 kg")
 ap.add_argument("--plastic_on_release", type=int, default=0, help="[plastic] 1 = 第一隻手放手前 --plastic_pre 秒把 yn/yp 的 rest shape 改成當下形狀(寫 restShapePoints + SetActive 關→開 讓 PhysX 重建),模擬塑性;0 = 舊行為")
@@ -162,14 +166,28 @@ ap.add_argument("--release_watch", type=int, default=0, help="[plastic] 1 = 放�
 ap.add_argument("--grasp_tail_s", type=float, default=0.0, help="[plastic] 抓取段結束後多觀察幾秒(取杯段之前);0 = 舊行為")
 ap.add_argument("--quality", choices=["off", "fast", "final"], default="off",
                 help="[quality] fast = 開發用(dt 1/120 solver 48 vid_every 2 960x540);final = 出片(dt 1/240 solver 128);off = 舊行為。個別旗標有明確給時以個別旗標為準")
+ap.add_argument("--save_state", default="", help="[speed2] npz:在 --at 時間點存 布頂點/速度、杯姿態、箱/蓋/側板、時間、量測狀態(SNAP/EV/LOGR/軌跡/RNG),之後照常跑完(--save_exit 1 存完就停)")
+ap.add_argument("--at", default="grasp", help="[speed2] 存檔點:grasp = 掀開段開始前(TG0,開蓋 hold + settle 完,預設)/ opened = 開蓋 hold 結束(T_END_ALL)/ 秒數(放錨點後 ~ TG0)")
+ap.add_argument("--save_exit", type=int, default=0, help="[speed2] 1 = 存檔後結束(不跑掀開段)")
+ap.add_argument("--load_state", default="", help="[speed2] 從 --save_state 的 npz 續跑:布 points = 存檔值(rest 仍平板)、速度歸零、杯/箱/蓋/側板/錨點/地板/相機/燈 到存檔狀態,從存檔時間繼續")
 a = ap.parse_args()
 QUALITY_PRESET = {"fast": dict(dt=1/120.0, solver=48, vid_every=2, vid_res="960x540"),   # 1/60+solver 32 自穿 ~100、四折 bbox 差 13 mm → 退到 1/120+48(quality/F1)
                   "final": dict(dt=1/240.0, solver=128)}.get(a.quality, {})
 _given = {x.split("=")[0][2:] for x in sys.argv[1:] if x.startswith("--")}
 QUALITY_SET = {k: v for k, v in QUALITY_PRESET.items() if k not in _given}
 for _k, _v in QUALITY_SET.items(): setattr(a, _k, _v)
+WIDE = a.pick_mode == "wide"                                                  # [pgrasp] 寬指 = 走 jaw 路徑(下指挑角 → 上指合)、指面換成寬指、抓點 = 自由邊中點
+if WIDE: a.pick_mode = "jaw"; a.gap_mm = a.thick_mm - a.wide_squeeze_mm
 if a.tuck == 0:
     a.squeeze_t = 0.0
+if a.until == "yn":                                                           # [speed2] 只跑到 yn 片結束
+    a.second = 0; a.extract = 0
+LOADED = None
+if a.load_state:                                                              # [speed2] 讀存檔(場景建好、world.reset 之前套用)
+    import pickle as _pk
+    _ld = np.load(a.load_state)
+    LOADED = dict(_pk.loads(_ld["meta"].tobytes()), pts=_ld["pts"].astype(float), vel=_ld["vel"].astype(float), traj_t=list(_ld["traj_t"]),
+                  traj_p=list(_ld["traj_p"]), traj_m=list(_ld["traj_m"]))
 HERE = os.path.dirname(os.path.abspath(__file__))
 os.chdir(HERE)
 os.makedirs(a.out, exist_ok=True)
@@ -593,6 +611,7 @@ if a.grasp:
     sys.path.insert(0, os.path.join(HERE, "grip"))
     import gutil as GU
     GFS = np.array([a.finger_mm / 1e3, a.finger_mm / 1e3, 0.008])        # 指面 (t,u,n)  [jaw2] finger_mm 預設 20 = 舊
+    if WIDE: GFS = np.array([a.wide_mm, a.wide_depth_mm, a.wide_thick_mm]) / 1e3   # [pgrasp]
     GRS = np.array([0.008, 0.030, 0.008])        # 挑角單指(8mm 方桿,沿 u 30mm)
     GPARK = {"rod": np.array([3.0, 3.0, 1.0]), "up": np.array([3.0, 3.1, 1.0]), "lo": np.array([3.0, 3.2, 1.0])}
     GPATH = {k: "/World/gfing/" + k for k in GPARK}
@@ -697,9 +716,36 @@ UsdGeom.Xformable(_dl).AddRotateXYZOp().Set(Gf.Vec3f(-70.0, 0.0, 25.0)); _dl.Cre
 _dl2 = UsdLux.DistantLight.Define(st, "/World/toplight2")
 UsdGeom.Xformable(_dl2).AddRotateXYZOp().Set(Gf.Vec3f(-90.0, 0.0, 0.0)); _dl2.CreateIntensityAttr(0.0); _dl2.CreateAngleAttr(4.0)
 
+def _xf_set(pth, p, q):                                                       # [speed2] reset 前直接寫世界姿態(同「reset 前擺到旁邊」寫法)
+    _pr = st.GetPrimAtPath(pth); _Wm = Gf.Matrix4d().SetRotate(Gf.Quatd(float(q[0]), Gf.Vec3d(*map(float, q[1:])))) * Gf.Matrix4d().SetTranslate(Gf.Vec3d(*map(float, p)))
+    _par = UsdGeom.Xformable(_pr.GetParent()).ComputeLocalToWorldTransform(Usd.TimeCode.Default())
+    _x = UsdGeom.Xformable(_pr); _x.ClearXformOpOrder(); _x.AddTransformOp().Set(_Wm * _par.GetInverse())
+if LOADED is not None:                                                        # [speed2] 布以外的狀態在 reset 前寫進 USD → PhysX 直接以存檔狀態建立(箱/蓋/側板不會以 kinematic 速度掃過布)
+    _m = LOADED
+    _dif = {k: (v, vars(a).get(k)) for k, v in _m["args"].items() if vars(a).get(k) != v and k not in ("out", "save_state", "load_state", "at", "save_exit")}
+    P("★ [load] %s:存檔 t=%.3f(%s,第 %d 步 / 第 %d 幀)%s" % (a.load_state, _m["t"], _m["at"], _m["step"], _m["fr"], ";存檔時整鏈 wall %.0f s" % _m["wall"]))
+    P("  [load] 與存檔不同的旗標:%s" % (_dif or "無"))
+    if st.GetPrimAtPath("/World/attach").IsValid(): st.RemovePrim(Sdf.Path("/World/attach"))
+    st.GetPrimAtPath("/World/mug").GetAttribute("physics:kinematicEnabled").Set(not _m["ST"]["released"])
+    _xf_set("/World/mug", _m["mug_p"], _m["mug_q"])
+    for _pth, (_p, _q) in _m["box"].items(): _xf_set(_pth, _p, _q)
+    if _m["ST"].get("pads_gone"):
+        for q_ in PADS: _xf_set(q_["path"], [0, 0, -3.0], [1, 0, 0, 0])
+    if _m["ST"]["inbox"]:
+        for _gp in Usd.PrimRange(st.GetPrimAtPath("/World/defaultGroundPlane")):
+            if _gp.HasAPI(UsdPhysics.CollisionAPI): UsdPhysics.CollisionAPI(_gp).CreateCollisionEnabledAttr(False)
+        _dl.GetIntensityAttr().Set(3500.0); _dl2.GetIntensityAttr().Set(2200.0)
+    P("  [load] reset 前:移除錨點綁定、杯 %s 姿態 %s mm、箱/蓋 %d 個剛體、側板 %s、地板碰撞 %s"
+      % ("dynamic" if _m["ST"]["released"] else "kinematic", np.round(np.array(_m["mug_p"]) * 1e3, 1), len(_m["box"]), "撤到 z=-3" if _m["ST"].get("pads_gone") else "原位", "關" if _m["ST"]["inbox"] else "開"))
 world.reset(); cam.initialize()
 for k_ in range(3):
     sim.update()
+if LOADED is not None:                                                        # [speed2] 布:body 照常以平板建立(rest = 平、自碰撞過濾同整鏈),reset 後才把 points 寫成存檔值(USD 寫入 → PhysX 更新 sim 節點)、速度歸零
+    _P0 = PLATE.pts()
+    PLATE.pa.Set(Vt.Vec3fArray.FromNumpy(LOADED["pts"].astype(np.float32)))
+    PLATE.tm.GetVelocitiesAttr().Set(Vt.Vec3fArray.FromNumpy(LOADED["vel"].astype(np.float32)))   # 速度歸零會讓布一載入就睡著(凍住不動,smokeR 實測)→ 寫回存檔速度
+    P("  [load] reset 後寫入布 points(%d 點;collision mesh = sim mesh 同一個 TetMesh)、velocities = 存檔值(|v| 最大 %.3f m/s);寫入前 max|P - 存檔| = %.1f mm(平板)"
+      % (len(LOADED["pts"]), np.abs(LOADED["vel"]).max(), np.abs(_P0 - LOADED["pts"]).max() * 1e3))
 ANCV = world.physics_sim_view.create_rigid_body_view([A["path"] for A in ANC])
 _vp = list(ANCV.prim_paths); _pi = {A["path"]: i_ for i_, A in enumerate(ANC)}
 ANC_ORD = np.array([_pi[p_] for p_ in _vp]); ANC_IDX = np.arange(ANCV.count, dtype=np.int32)
@@ -765,7 +811,7 @@ T_OPEN0 = T_MOVE1 + 2.0
 T_OPEN1 = T_OPEN0 + a.open_span
 T_OPEN2 = T_OPEN1 + a.open_span
 T_END_ALL = T_OPEN2 + 3.0
-T_END = {"fold": T_INBOX + 0.6, "box": T_MOVE0, "move": T_OPEN0, "all": T_END_ALL}[a.until]
+T_END = {"fold": T_INBOX + 0.6, "box": T_MOVE0, "move": T_OPEN0, "all": T_END_ALL, "yn": T_END_ALL}[a.until]
 # 抓取段時間表(相對每片的 S0;yn 在 open hold 完 + settle 1s 開始)
 GT = dict(rod_above=1.0, rod_down=1.0, rod_in=1.0, rod_lift=1.0, pick_hold=0.5, lo_above=0.8, lo_down=0.8, lo_in=1.0,
           rod_out=0.6, rod_up=0.5, up_above=0.8, up_down=0.7, close=0.8, grip_hold=0.3, peel_hold=2.0, rel_open=0.5, rel_slide=0.5, rel_up=0.7)
@@ -782,7 +828,7 @@ G_RT = 4.0                                                                      
 G_SHEET = G_RT * a.grasp_retry + G_TGRIP + G_LF + G_EXT + a.peel_t + GT["peel_hold"] + GT["rel_open"] + GT["rel_slide"] + GT["rel_up"] + 0.3 + G_EXT2
 G_SEQ = (["yn", "yp"] if a.second else ["yn"]) if a.grasp else []
 TG0 = T_END_ALL + 1.0
-if a.grasp and a.until == "all":
+if a.grasp and a.until in ("all", "yn"):                                  # [speed2] yn = 只 yn 片
     T_END = TG0 + G_SHEET * len(G_SEQ) + a.grasp_tail_s                     # [plastic] grasp_tail_s 預設 0
     P("抓取段:open hold 完 %.2f → settle → %s 每片 %.1fs(挑角 0~%.1f、下指進 ~%.1f、夾好 %.1f、掀 %.1fs、停 %.1fs、放開);結束 %.2f"
       % (T_END_ALL, " / ".join("%s@%.2f" % (sd, TG0 + k_*G_SHEET) for k_, sd in enumerate(G_SEQ)), G_SHEET, G_TPICK, G_TLOIN,
@@ -1094,6 +1140,10 @@ if a.grasp:
         if a.grasp_site == "state" and ATT_MODE and cands:
             _rv = {r["v"]: r for r in rows}; pick = _rv[cands[0]["v"]]
             why = "★ state 選點:候選表第 1(預估綁 %d、%s、下方空隙 %.1f)" % (cands[0]["n_att"], "被壓" if cands[0]["press"] else "沒被壓", cands[0]["gap"])
+        if WIDE:                                                              # [pgrasp] 寬指沿整條自由邊:取自由邊(tip)離邊中點最近的頂點
+            _tp = [r for r in rows if r["kind"] == "tip"] or rows; _xs = [r["flat"][0] for r in _tp]; _xc = (min(_xs) + max(_xs)) / 2
+            pick = min(_tp, key=lambda r: abs(r["flat"][0] - _xc))
+            why = "[pgrasp] 寬指 %.0fx%.0fx%.0fmm 指間 %.1fmm:自由邊中點(flat x %.0f~%.0f,選 x=%.0f)" % (*(GFS * 1e3), a.gap_mm, min(_xs), max(_xs), pick["flat"][0])
         v = pick["v"]
         R0, slope = GPL.frame(Pl, v, rows=a.chord); tt_, uu, nn_ = R0[:, 0], R0[:, 1], R0[:, 2]
         M = GPL.mid(Pl); half = np.linalg.norm(Pl[v + N1] - Pl[v]) / 2
@@ -1868,8 +1918,37 @@ KEYF = {k: int(round(v * FPS)) - 1 for k, v in KEYS.items()}
 LOGR = []; SNAP = {}; TRAJ_T = []; TRAJ_P = []; TRAJ_M = []
 EV = {}
 t0w = time.time(); step = 0; tcur = 0.0; nan = False
+FR0 = 0                                                                       # [speed2]
+CAMS = {}
+T_SAVE = {"grasp": TG0 if a.grasp else T_END_ALL, "opened": T_END_ALL}.get(a.at) if not a.at.replace(".", "", 1).isdigit() else float(a.at)
+if a.save_state:
+    assert T_ANC + 0.1 <= T_SAVE <= (TG0 if a.grasp else T_END_ALL) + 1e-9, "--at 要在放錨點(%.2f)之後、掀開段(%.2f)之前" % (T_ANC, TG0)
+    P("[save] 會在 t=%.3f(%s)前的最後一幀存 %s" % (T_SAVE, a.at, a.save_state))
+def state_save(path, fr_):
+    """[speed2] 存檔:布 points/velocities、杯姿態、箱/蓋世界姿態、ST、時間、SNAP/EV/LOGR/軌跡、RNG"""
+    import pickle as _pk
+    Pp = PLATE.pts(); _v = PLATE.tm.GetVelocitiesAttr().Get(); vel = np.array(_v, float).reshape(-1, 3) if _v is not None and len(_v) == len(Pp) else np.zeros_like(Pp)
+    mp_, mq_ = mugx.get_world_pose()
+    box = {"/World/Box/base": (BASE_P0 + box_off(tcur), BASE_Q0)}
+    for L in LIDS: box["/World/Box/" + L["nm"]] = lid_pose(L, lid_deg(L, tcur), box_off(tcur))
+    meta = dict(t=tcur, step=step, fr=fr_, at=a.at, ST={k: v for k, v in ST.items()}, SNAP=SNAP, EV=EV, LOGR=LOGR, rng=np.random.get_state(),
+                args=vars(a).copy(), mug_p=np.array(mp_, float), mug_q=np.array(mq_, float), box={k: (np.array(p_, float), np.array(q_, float)) for k, (p_, q_) in box.items()},
+                wall=time.time() - t0w, TG0=TG0 if a.grasp else None, T_END_ALL=T_END_ALL, dt=a.dt, cam=CAMS.get("look"))
+    np.savez_compressed(path, pts=Pp.astype(np.float64), vel=vel, traj_t=np.array(TRAJ_T), traj_p=np.array(TRAJ_P, np.float32), traj_m=np.array(TRAJ_M),
+                        meta=np.frombuffer(_pk.dumps(meta), np.uint8))
+    P("★ t=%.3f [save] 存檔 → %s(布 %d 點、|v| 最大 %.3f m/s、杯 %s mm、wall %.0f s)" % (tcur, path, len(Pp), np.abs(vel).max(), np.round(np.array(mp_) * 1e3, 1), meta["wall"]))
+if LOADED is not None:                                                        # [speed2] 續跑:接回量測狀態、時間、RNG
+    _m = LOADED
+    assert abs(_m["T_END_ALL"] - T_END_ALL) < 1e-6 and (not a.grasp or _m["TG0"] is None or abs(_m["TG0"] - TG0) < 1e-6), "存檔的時間表(折/蓋/搬)跟這次旗標不同"
+    ST.update(_m["ST"]); SNAP.update(_m["SNAP"]); EV.update(_m["EV"]); LOGR.extend(_m["LOGR"])
+    TRAJ_T.extend(_m["traj_t"]); TRAJ_P.extend(_m["traj_p"]); TRAJ_M.extend(_m["traj_m"])
+    np.random.set_state(_m["rng"])
+    tcur = _m["t"]; step = int(round(tcur / a.dt)); FR0 = _m["fr"] + 1
+    if _m.get("cam"): G.look(cam, *_m["cam"])
+    P("  [load] 從第 %d 幀(t=%.3f、第 %d 步)續跑到 %.2f;量測 %d 筆、快照 %s" % (FR0, tcur, step, T_END, len(LOGR), sorted(SNAP)))
+SAVED = False
 P("渲染 %d fps,每幀 %d 物理步;共 %d 幀 | quality %s:影片 %d fps %s(vid_every %d)" % (FPS, SPF, NFR, a.quality, max(1, round(FPS / a.vid_every)), a.vid_res, a.vid_every))
-for fr in range(NFR):
+for fr in range(FR0, NFR):                                                       # [speed2] FR0 = 0(續跑時 = 存檔幀 + 1)
     _vid = (fr % a.vid_every == 0) or fr == NFR - 1 or fr in KEYF.values()
     for k in range(SPF):
         step += 1; tcur = step * a.dt
@@ -1910,7 +1989,7 @@ for fr in range(NFR):
             _R = 0.64
             EB = np.array([_R*1.55, -_R*1.70, _R*2.05]) + MOVE/2 + ST["OFF_IN"] * [1, 1, 0]
             TB = np.array([0, 0, 0.030]) + MOVE/2 + ST["OFF_IN"] * [1, 1, 0]
-            G.look(cam, list(EB), list(TB))
+            G.look(cam, list(EB), list(TB)); CAMS["look"] = (list(EB), list(TB))   # [speed2] 存檔要記相機
         if not ST["released"] and tcur >= T_ANC:
             Pp = PLATE.pts(); mp, Rq, MW = mug_world()
             r_, _, _ = measure(tcur, full=True); SNAP["closed_pre_release"] = (Pp.copy(), MW.copy(), r_)
@@ -2030,6 +2109,11 @@ for fr in range(NFR):
             SNAP[nm_] = (_P.copy(), _MW.copy(), r_)
             if nm_ == "before_move":
                 SNAP[nm_] = (_P.copy(), _MW.copy(), r_, box_off(tcur).copy(), mugx.get_world_pose()[0].copy())
+    if LOADED is not None and fr == FR0:                                      # [speed2] 續跑第 1 幀:布有沒有真的從存檔狀態開始
+        P("  [load] 續跑第 1 幀 t=%.3f:max|布 - 存檔| = %.2f mm(1 幀內的運動;>50 mm = points 寫入沒生效)" % (tcur, np.abs(PLATE.pts() - LOADED["pts"]).max() * 1e3))
+    if a.save_state and not SAVED and tcur + SPF * a.dt >= T_SAVE - 1e-9:      # [speed2] 下一幀會碰到存檔點 → 現在存
+        state_save(a.save_state, fr); SAVED = True
+        if a.save_exit: break
 writer.close()
 wall = time.time() - t0w
 P("\n影片 → %s/wrap.mp4(%d 幀);wall %.1fs / sim %.2fs = %.2f" % (a.out, fr + 1, wall, tcur, wall / max(tcur, 1e-9)))

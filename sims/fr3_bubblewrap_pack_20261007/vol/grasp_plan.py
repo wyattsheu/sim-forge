@@ -19,6 +19,182 @@ import trimesh
 
 T = 0.004; FAR = 0.045
 S = {}
+# [speed2] 快取 / 加速(結果不變,speed2/prof_plan.py 對 old 逐欄比對):
+#   杯 Trimesh 依 MUGl 內容快取(gap_below 沒傳 mugm 時每次重建 49664 面的 rtree);
+#   杯 contains 改用垂直射線(trimesh 預設斜射線的 bbox 很大 → rtree 候選面上萬;垂直射線結果逐點相同,1 s → 0.01 s);
+#   他層最近距離只對「離最近頂點 < 門檻 + 最長邊」的取樣點算 closest_point(三角形內任一點離某頂點 <= 最長邊 → 精確剔除)。
+_MUGC = {}
+_BLAS = {}
+def _blas_lib():
+    """[speed2] 行程裡已載入的 OpenBLAS(numpy 內建)→ (lib, get, set) 或 None"""
+    if "lib" not in _BLAS:
+        _BLAS["lib"] = None
+        try:
+            import ctypes
+            paths = sorted({l.split()[-1] for l in open("/proc/self/maps") if "openblas" in l.lower() and l.split()[-1].startswith("/")})
+            for pth in paths:
+                lib = ctypes.CDLL(pth)
+                for sfx in ("64_", "_64_", ""):
+                    if hasattr(lib, "openblas_set_num_threads" + sfx) and hasattr(lib, "openblas_get_num_threads" + sfx):
+                        _BLAS["lib"] = (getattr(lib, "openblas_get_num_threads" + sfx), getattr(lib, "openblas_set_num_threads" + sfx)); break
+                if _BLAS["lib"]: break
+        except Exception:
+            _BLAS["lib"] = None
+    return _BLAS["lib"]
+
+class blas1:
+    """[speed2] 規劃期間 OpenBLAS 改單執行緒、結束還原。numpy 預設 32 執行緒對這些 (N,3)@(3,3) 小矩陣只會空轉:
+    extract6/X2 yn rank 4.6 s wall / 106 s CPU → 2.5 s / 2.5 s(還會搶同機模擬的 CPU)。逐元素結果不變(k 維只有 3,不切)。"""
+    def __enter__(self):
+        b = _blas_lib(); self.n = None
+        if b: self.n = b[0](); b[1](1)
+    def __exit__(self, *e):
+        b = _blas_lib()
+        if b and self.n: b[1](self.n)
+
+def mug_mesh(MUGl):
+    k = hash(np.ascontiguousarray(MUGl).tobytes())
+    if k not in _MUGC:
+        _MUGC.clear(); _MUGC[k] = trimesh.Trimesh(MUGl, S["MF"], process=False)
+    return _MUGC[k]
+
+def _xygrid(mesh, h=0.003):
+    """[speed2] 三角形 xy AABB(+1e-5,同 trimesh ray_bounds 的 buffer)→ 2D 格 CSR,快取在 mesh 上"""
+    g = getattr(mesh, "_sp2_grid", None)
+    if g is not None: return g
+    tri = mesh.triangles.view(np.ndarray); lo = tri.min(1)[:, :2] - 2e-5; hi = tri.max(1)[:, :2] + 2e-5
+    o = lo.min(0); i0 = np.floor((lo - o) / h).astype(int); i1 = np.floor((hi - o) / h).astype(int); nx_ = int(i1[:, 0].max()) + 1; ny_ = int(i1[:, 1].max()) + 1
+    cells, tids = [], []
+    for dx in range(int((i1 - i0)[:, 0].max()) + 1):
+        for dy in range(int((i1 - i0)[:, 1].max()) + 1):
+            m = (i0[:, 0] + dx <= i1[:, 0]) & (i0[:, 1] + dy <= i1[:, 1]); t = np.where(m)[0]
+            cells.append((i0[t, 0] + dx) * ny_ + (i0[t, 1] + dy)); tids.append(t)
+    cells = np.concatenate(cells); tids = np.concatenate(tids); od = np.argsort(cells, kind="stable")
+    start = np.searchsorted(cells[od], np.arange(nx_ * ny_ + 1))
+    g = dict(h=h, o=o, nx=nx_, ny=ny_, tids=tids[od], start=start, lo=lo, hi=hi, tri=tri, nrm=mesh.face_normals)
+    mesh._sp2_grid = g
+    return g
+
+def contains_v(mesh, pts):
+    """[speed2] = trimesh.ray.ray_util.contains_points(mesh.ray, pts, check_direction=+z)(垂直射線;同一套 planes_lines / barycentric / forward /
+    unique_rows / 正反向一致才算),但候選三角形用 2D 格(xy AABB 含點、pad 1e-5 = rtree 的 ray_bounds 超集),不走 rtree。
+    與 trimesh 預設斜射線版本逐點比對相同(speed2/prof_plan.py)。"""
+    from trimesh import intersections as IS, triangles as TR, bounds as BD, grouping as GR
+    pts = np.asanyarray(pts, dtype=np.float64); out = np.zeros(len(pts), bool)
+    ia = np.where(BD.contains(mesh.bounds, pts))[0]
+    if not len(ia): return out
+    g = _xygrid(mesh); Q = pts[ia]
+    ci = np.floor((Q[:, :2] - g["o"]) / g["h"]).astype(int)
+    okc = (ci >= 0).all(1) & (ci[:, 0] < g["nx"]) & (ci[:, 1] < g["ny"])
+    cid = np.where(okc, ci[:, 0] * g["ny"] + ci[:, 1], 0)
+    n_ = np.where(okc, g["start"][cid + 1] - g["start"][cid], 0)
+    if n_.sum() == 0: return out
+    qp = np.repeat(np.arange(len(Q)), n_); off = np.arange(n_.sum()) - np.repeat(np.cumsum(n_) - n_, n_)
+    qt = g["tids"][np.repeat(g["start"][cid], n_) + off]
+    keep = (g["lo"][qt] <= Q[qp, :2] + 1e-5).all(1) & (g["hi"][qt] >= Q[qp, :2] - 1e-5).all(1)
+    qp, qt = qp[keep], qt[keep]
+    cnt = [np.zeros(len(Q), bool), np.zeros(len(Q), bool)]
+    D = np.zeros((len(qp), 3)); D[:, 2] = 1.0; tc = g["tri"][qt]                 # ±z 的交點 / valid / barycentric 逐位元相同(只差正負號)→ 算一次
+    loc, valid = IS.planes_lines(plane_origins=tc[:, 0, :], plane_normals=g["nrm"][qt], line_origins=Q[qp], line_directions=D)
+    if valid.any():
+        bc = TR.points_to_barycentric(tc[valid], loc)
+        hit = (bc > -trimesh.tol.zero).all(1) & (bc < 1 + trimesh.tol.zero).all(1)
+        rr0 = qp[valid][hit]; lh0 = loc[hit]; dzh = lh0[:, 2] - Q[rr0, 2]
+        for k, fw in enumerate((dzh > -1e-6, -dzh > -1e-6)):
+            rr, lh = rr0[fw], lh0[fw]
+            if len(rr):
+                u = GR.unique_rows(np.column_stack((lh, rr)))[0]
+                cnt[k] = np.bincount(rr[u], minlength=len(Q)) % 2 == 1
+    agree = cnt[0] == cnt[1]
+    out[ia[agree]] = cnt[0][agree]
+    nr = ia[_near_surface(mesh, Q, 2e-5) | ~agree]                           # 離表面 < 20 µm 或正反向不一致(射線方向會影響結果的點)→ 用原本的 mesh.contains
+    if len(nr): out[nr] = mesh.contains(pts[nr])
+    return out
+
+def _near_surface(mesh, Q, eps):
+    """[speed2] Q 中離 mesh 表面 < eps 的布林遮罩。小三角形(形心到頂點 <= 99 百分位):形心 KD-tree 半徑 eps + 該上限(精確超集);
+    大三角形(杯 STL 有少數細長面):AABB + eps 逐對篩。候選對再用 trimesh.triangles.closest_point。"""
+    from scipy.spatial import cKDTree
+    from trimesh import triangles as TR
+    g = getattr(mesh, "_sp2_ckd", None)
+    if g is None:
+        tri = mesh.triangles.view(np.ndarray); c = tri.mean(1); ri = np.linalg.norm(tri - c[:, None], axis=2).max(1)
+        rs = float(np.percentile(ri, 99)); sm = np.where(ri <= rs)[0]; bg = np.where(ri > rs)[0]
+        g = mesh._sp2_ckd = (tri, sm, cKDTree(c[sm]), rs, bg, tri[bg].min(1), tri[bg].max(1), c[sm], ri[sm])
+    tri, sm, kt, rs, bg, blo, bhi, cs, rs_i = g; best = np.full(len(Q), np.inf)
+    def acc(qp, qt):
+        if not len(qp): return
+        dv = Q[qp] - TR.closest_point(tri[qt], Q[qp]); np.minimum.at(best, qp, np.einsum("ij,ij->i", dv, dv))
+    d0, _ = kt.query(Q, distance_upper_bound=eps + rs + 1e-9); sel = np.where(np.isfinite(d0))[0]
+    if len(sel):
+        lists = kt.query_ball_point(Q[sel], eps + rs + 1e-9)
+        qn = np.array([len(l) for l in lists]); qp = np.repeat(sel, qn); qk = np.concatenate([np.asarray(l, int) for l in lists])
+        dc = Q[qp] - cs[qk]; k = np.einsum("ij,ij->i", dc, dc) < (eps + rs_i[qk] + 1e-9) ** 2      # 逐對:該三角形自己的形心到頂點距離
+        acc(qp[k], sm[qk[k]])
+    if len(bg):
+        pi, bi = np.where(((Q[:, None, :] >= blo[None] - eps) & (Q[:, None, :] <= bhi[None] + eps)).all(2)); acc(pi, bg[bi])
+    return np.sqrt(best) < eps
+
+def near_count(om, pts, thr):
+    """[speed2] = int((trimesh.proximity.closest_point(om, pts)[1] < thr).sum())。
+    候選三角形:形心 KD-tree 半徑 thr + 最大形心到頂點距離,再逐對用該三角形自己的形心到頂點距離篩(三角形上任一點離形心 <= 它 → 精確超集);
+    某頂點離點 < thr 的直接算(到三角形距離 <= 到頂點距離);其餘逐對用同一個 trimesh.triangles.closest_point。"""
+    from scipy.spatial import cKDTree
+    from trimesh import triangles as TR
+    tri = om.triangles.view(np.ndarray); c = tri.mean(1); ri = np.linalg.norm(tri - c[:, None], axis=2).max(1); rc = float(ri.max())
+    kt = cKDTree(c); rr = thr + rc + 1e-9
+    d0, _ = kt.query(pts, distance_upper_bound=rr); sel = np.where(np.isfinite(d0))[0]
+    if not len(sel): return 0
+    fv = np.unique(om.faces); dv, _ = cKDTree(om.vertices[fv]).query(pts[sel], distance_upper_bound=thr)
+    sure = np.isfinite(dv) & (dv < thr - 2e-5); n_sure = int(sure.sum()); sel = sel[~sure]
+    if not len(sel): return n_sure
+    lists = kt.query_ball_point(pts[sel], rr)
+    qn = np.array([len(l) for l in lists]); qt = np.concatenate([np.asarray(l, int) for l in lists]); qp = np.repeat(sel, qn)
+    dc = pts[qp] - c[qt]; k = np.einsum("ij,ij->i", dc, dc) < (thr + ri[qt] + 1e-9) ** 2; qp, qt = qp[k], qt[k]
+    if not len(qp): return n_sure
+    cl = TR.closest_point(tri[qt], pts[qp]); dvv = pts[qp] - cl; d2 = np.einsum("ij,ij->i", dvv, dvv)
+    best = np.full(len(pts), np.inf); np.minimum.at(best, qp, d2); best = np.sqrt(best)
+    amb = np.where(np.abs(best - thr) < 2e-5)[0]                              # 離門檻 < 20 µm:trimesh 的「兩面等距時換面」會讓回報距離差 ~1e-6 → 這幾點直接用 trimesh
+    if len(amb):
+        _, dd, _ = trimesh.proximity.closest_point(om, pts[amb]); best[amb] = dd
+    return n_sure + int((best < thr).sum())
+
+def ray_first(mesh, O, D, bounds=None):
+    """[speed2] = mesh.ray.intersects_location(O, D, multiple_hits=False) 的「每條射線第一個交點離起點距離」(沒交到 = inf)。
+    不建 rtree:先用射線(截在 mesh AABB 內)聯集 bbox 剔三角形(精確超集),逐對用 trimesh 同一套 planes_lines / points_to_barycentric / forward > -1e-6。"""
+    from trimesh import intersections as IS, triangles as TR
+    cb = getattr(mesh, "_sp2_tb", None)
+    if cb is None: cb = mesh._sp2_tb = (mesh.triangles.view(np.ndarray), mesh.face_normals, mesh.triangles.view(np.ndarray).min(1), mesh.triangles.view(np.ndarray).max(1))
+    tri, nrm, tl, th_ = cb
+    lo, hi = (mesh.bounds if bounds is None else bounds); lo = lo - 1e-6; hi = hi + 1e-6
+    out = np.full(len(O), np.inf)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        t0 = (lo - O) / D; t1 = (hi - O) / D
+    tn = np.nanmax(np.where(np.isfinite(t0), np.minimum(t0, t1), -np.inf), axis=1); tx = np.nanmin(np.where(np.isfinite(t1), np.maximum(t0, t1), np.inf), axis=1)
+    inside_slab = np.all(np.where(D == 0, (O >= lo) & (O <= hi), True), axis=1)
+    tn = np.maximum(tn, -1e-3); ok = inside_slab & (tx >= tn)
+    if not ok.any(): return out
+    E0 = O[ok] + D[ok] * tn[ok, None]; E1 = O[ok] + D[ok] * tx[ok, None]
+    blo = np.minimum(E0, E1).min(0) - 1e-6; bhi = np.maximum(E0, E1).max(0) + 1e-6
+    tm = np.all((th_ >= blo) & (tl <= bhi), axis=1); fi = np.where(tm)[0]
+    if not len(fi): return out
+    ri = np.where(ok)[0]
+    pr = np.repeat(ri, len(fi)); pf = np.tile(fi, len(ri))
+    S0 = np.minimum(E0, E1) - 1e-6; S1 = np.maximum(E0, E1) + 1e-6; k_ = np.repeat(np.arange(len(ri)), len(fi))   # 每條射線自己的線段 AABB 再篩一次
+    kp = np.all((th_[pf] >= S0[k_]) & (tl[pf] <= S1[k_]), axis=1); pr, pf = pr[kp], pf[kp]
+    if not len(pr): return out
+    tc = tri[pf]
+    loc, valid = IS.planes_lines(plane_origins=tc[:, 0, :], plane_normals=nrm[pf], line_origins=O[pr], line_directions=D[pr])
+    if not valid.any(): return out
+    bc = TR.points_to_barycentric(tc[valid], loc)
+    hit = (bc > -trimesh.tol.zero).all(1) & (bc < 1 + trimesh.tol.zero).all(1)
+    rr = pr[valid][hit]; loc = loc[hit]
+    dist = np.einsum("ij,ij->i", loc - O[rr], D[rr]); fw = dist > -1e-6
+    rr, loc, dist = rr[fw], loc[fw], dist[fw]
+    for r_ in np.unique(rr):
+        g = np.where(rr == r_)[0]; q = loc[g[dist[g].argmin()]]
+        out[r_] = np.linalg.norm(q - O[r_])
+    return out
 
 def setup(FLAT, NX, CX, CY, mug_faces, thick=0.004):
     global T
@@ -73,26 +249,28 @@ def gap_below(Pl, MUGl, v, R, box, om=None, mugm=None):
     N1 = S["N1"]; M = mid(Pl); p = M[v]; n = R[:, 2]
     half = np.linalg.norm(Pl[v + N1] - Pl[v]) / 2
     if om is None: om, _ = _other_mesh(Pl, v)
-    if mugm is None: mugm = trimesh.Trimesh(MUGl, S["MF"], process=False)
+    if mugm is None: mugm = mug_mesh(MUGl)                                     # [speed2] 快取
     O = samples_box(p, R, [-0.010, -0.015, -half - 1e-4], [0.010, 0.005, -half - 1e-4], step=0.005)
     D = np.tile(-n, (len(O), 1)); dist = np.full(len(O), np.inf)
     if -n[2] < -1e-6:
         dist = np.minimum(dist, (O[:, 2] - box["ZFLOOR"]) / n[2])
     for mesh, off in ((om, T / 2), (mugm, 0.0)):
         if mesh is None or not len(mesh.faces): continue
-        loc, ir, _ = mesh.ray.intersects_location(O, D, multiple_hits=False)
-        for q, r_ in zip(loc, ir):
-            dist[r_] = min(dist[r_], np.linalg.norm(q - O[r_]) - off)
+        dist = np.minimum(dist, ray_first(mesh, O, D) - off)                   # [speed2] 不建 rtree、同一套交點數學
     return float(dist.min())
 
 def rank(Pl, MUGl, sd, box):
+    with blas1():                                                             # [speed2]
+        return _rank(Pl, MUGl, sd, box)
+
+def _rank(Pl, MUGl, sd, box):
     N1, F2, ii, jj, NX = S["N1"], S["F2"], S["ii"], S["jj"], S["NX"]
     sg = -1.0 if sd == "yn" else 1.0
     M = mid(Pl); ZLO = np.minimum(Pl[:N1, 2], Pl[N1:, 2]); ZHI = np.maximum(Pl[:N1, 2], Pl[N1:, 2])
     THK = np.linalg.norm(Pl[N1:] - Pl[:N1], axis=1)
     bnd = (ii == 0) | (ii == NX) | (jj == 0) | (jj == NX)
     cand = np.where(bnd & (sg * F2[:, 1] > S["CY"] - 1e-9))[0]
-    mugm = trimesh.Trimesh(MUGl, S["MF"], process=False)
+    mugm = mug_mesh(MUGl)                                                      # [speed2] 快取
     IX, IY, ZF, ZO = box["IX"], box["IY"], box["ZFLOOR"], box["ZOBST"]
     rows = []
     for v in cand:
@@ -110,11 +288,10 @@ def rank(Pl, MUGl, sd, box):
         fls = samples_box(p, R, [-0.010, -0.015, -half - 0.0085], [0.010, 0.027, -half - 0.0005], step=0.003)
         S_ = np.vstack([fu, flc, fls])
         outside = (np.abs(S_[:, 0]) > IX) | (np.abs(S_[:, 1]) > IY)
-        nw = int((outside & (S_[:, 2] < ZO)).sum()); nf = int((S_[:, 2] < ZF).sum()); nm = int(mugm.contains(S_).sum())
+        nw = int((outside & (S_[:, 2] < ZO)).sum()); nf = int((S_[:, 2] < ZF).sum()); nm = int(contains_v(mugm, S_).sum())   # [speed2] 垂直射線
         nc = 0
         if om is not None and len(om.faces):
-            _, dd, _ = trimesh.proximity.closest_point(om, S_)
-            nc = int((dd < T / 2 + 0.0005).sum())
+            nc = near_count(om, S_, T / 2 + 0.0005)                           # [speed2] 先剔除遠點
         uh = np.array([u[0], u[1]]); uh /= np.linalg.norm(uh)
         r = dict(v=int(v), kind=kind, side=str(S["SIDE"][v]), flat=F2[v] * 1e3, p=p * 1e3, slope=slope, u=uh, thick=THK[v] * 1e3,
                  zlo=ZLO[v] * 1e3, zhi=ZHI[v] * 1e3, a=na, gap=gap * 1e3, b=(nw, nf, nm, nc),
@@ -201,7 +378,11 @@ def site_filter(cs, xmax_mm=0., walltop=0, iy=None, ztop=None):
         (rej.append((c, ";".join(why))) if why else keep.append(c))
     return keep, rej
 
-def site_candidates(Pl, sd, gap, pad, nk=7, r_mm=16., dz_mm=2., press_frac=0.3, chord=1, x_margin=0.040):
+def site_candidates(*args, **kw):
+    with blas1():                                                             # [speed2]
+        return _site_candidates(*args, **kw)
+
+def _site_candidates(Pl, sd, gap, pad, nk=7, r_mm=16., dz_mm=2., press_frac=0.3, chord=1, x_margin=0.040):
     """[robust] --grasp_site state:在片 sd 的自由邊(layer_order 的 TOP 邊,j=0/NX 那排)沿邊等距取 nk 個候選,
     對每個候選照 wrap_vol 綁定模式的夾爪框(邊內 12mm、指沿 t 置中於 v 與鄰點之間)離線算
       n_att = |t|,|u| < pad、n ∈ [-(gap/2+4), gap/2+4] mm、歸屬 sd 的頂點數(上下層都算,同 wrap_vol 綁定規則)

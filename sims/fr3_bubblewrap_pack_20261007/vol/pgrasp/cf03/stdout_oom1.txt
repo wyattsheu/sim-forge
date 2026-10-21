@@ -1,0 +1,1069 @@
+[Info] [carb] Logging to file: /isaac-sim/kit/logs/Kit/Isaac-Sim Python/5.1/kit_20261021_080905.log
+2026-10-21T08:09:05Z [1ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4018c4ac-c109-45e1-ed1161a9-aa1e51e2.dmp'
+2026-10-21T08:09:05Z [1ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/d5fb54e6-ecd2-4276-15a39aa4-993d0f5f.dmp'
+2026-10-21T08:09:05Z [1ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/cb2ba0c7-8e37-4b7e-b052c1ac-db86de6b.dmp'
+2026-10-21T08:09:05Z [1ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/fcd78e17-0a0c-4f81-f5d28689-09428de7.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/fcd78e17-0a0c-4f81-f5d28689-09428de7.dmp.toml could not be opened for parsing
+2026-10-21T08:09:05Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/fcd78e17-0a0c-4f81-f5d28689-09428de7.dmp'
+2026-10-21T08:09:05Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/d31ed63d-ad5b-4926-a06dd0bf-7143a53a.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/d31ed63d-ad5b-4926-a06dd0bf-7143a53a.dmp.toml could not be opened for parsing
+2026-10-21T08:09:05Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/d31ed63d-ad5b-4926-a06dd0bf-7143a53a.dmp'
+2026-10-21T08:09:05Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/8882ef46-93b7-4a73-5758e9be-ed6e9f82.dmp'
+2026-10-21T08:09:05Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/8a1c22b2-18e5-4d50-223925be-bff10cec.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/8a1c22b2-18e5-4d50-223925be-bff10cec.dmp.toml could not be opened for parsing
+2026-10-21T08:09:05Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/8a1c22b2-18e5-4d50-223925be-bff10cec.dmp'
+2026-10-21T08:09:05Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/6618cecc-5e34-49c3-140f2e83-39c44ddc.dmp'
+2026-10-21T08:09:05Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/5a67a501-2b62-4af7-87168d9d-7ff5af02.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/5a67a501-2b62-4af7-87168d9d-7ff5af02.dmp.toml could not be opened for parsing
+2026-10-21T08:09:05Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/5a67a501-2b62-4af7-87168d9d-7ff5af02.dmp'
+2026-10-21T08:09:05Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/8943d230-16c8-4ea3-3abf9bb8-811523be.dmp'
+2026-10-21T08:09:05Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/3a2e1aca-80b6-4dd6-1d9f0eba-59ab8d6e.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/3a2e1aca-80b6-4dd6-1d9f0eba-59ab8d6e.dmp.toml could not be opened for parsing
+2026-10-21T08:09:05Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/3a2e1aca-80b6-4dd6-1d9f0eba-59ab8d6e.dmp'
+2026-10-21T08:09:05Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/a66adc53-a750-46bd-2b2cbb91-96f48119.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/a66adc53-a750-46bd-2b2cbb91-96f48119.dmp.toml could not be opened for parsing
+2026-10-21T08:09:05Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/a66adc53-a750-46bd-2b2cbb91-96f48119.dmp'
+2026-10-21T08:09:05Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/8918008d-40c4-4d5c-dae68ba9-56aacf23.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/8918008d-40c4-4d5c-dae68ba9-56aacf23.dmp.toml could not be opened for parsing
+2026-10-21T08:09:05Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/8918008d-40c4-4d5c-dae68ba9-56aacf23.dmp'
+2026-10-21T08:09:05Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/d13a1ba8-8b62-48c4-b308e7bc-1f6475c4.dmp'
+2026-10-21T08:09:05Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/9e264fed-0b04-49a6-70d8dba7-d4bede93.dmp'
+2026-10-21T08:09:05Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/83b1eceb-19c8-40cb-8c428887-348e8c27.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/83b1eceb-19c8-40cb-8c428887-348e8c27.dmp.toml could not be opened for parsing
+2026-10-21T08:09:05Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/83b1eceb-19c8-40cb-8c428887-348e8c27.dmp'
+2026-10-21T08:09:05Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/1e4107e5-34a9-4068-4cb734a6-e8b6ed68.dmp'
+2026-10-21T08:09:05Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/3770a91a-676a-43d6-f7370c85-f456c0f1.dmp'
+2026-10-21T08:09:05Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/b113ff62-b532-4357-eb1eee8d-3caeb0cd.dmp'
+2026-10-21T08:09:05Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/85b8f34f-ccf2-4fbe-0f0b228d-d04313de.dmp'
+2026-10-21T08:09:05Z [5ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/64961c0a-1455-48c7-8f135483-6b694bca.dmp'
+2026-10-21T08:09:05Z [5ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/949d4cb7-b33f-4837-4c40bfbb-312196f6.dmp'
+2026-10-21T08:09:05Z [5ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/9de96518-d9b7-40d7-c029ef8a-a1ff8e24.dmp'
+2026-10-21T08:09:05Z [5ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/87ddd565-4c68-4c67-3e5e0dbb-794c0e7e.dmp'
+2026-10-21T08:09:05Z [5ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/7c244895-2284-464f-204b19b6-94ae3b6a.dmp'
+2026-10-21T08:09:05Z [6ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/14b0f6cf-baa4-42ac-f7439791-366015b7.dmp'
+2026-10-21T08:09:05Z [7ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/2a5be1d9-622b-489a-68d7a7b5-40b980fd.dmp'
+2026-10-21T08:09:05Z [7ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/85b3c27a-b598-428a-b919fdb3-39769603.dmp'
+2026-10-21T08:09:05Z [7ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/dc0f9a38-93af-494e-9d6f5185-0f049818.dmp'
+2026-10-21T08:09:05Z [8ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/643d5565-b1d8-4a5f-6576a4bc-9439f4f8.dmp'
+2026-10-21T08:09:05Z [8ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/45d6d730-262d-460e-e03aeea6-e6688bf7.dmp'
+2026-10-21T08:09:05Z [8ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/328b2399-0b25-4e61-8a520984-5e29605a.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/328b2399-0b25-4e61-8a520984-5e29605a.dmp.toml could not be opened for parsing
+2026-10-21T08:09:05Z [8ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/328b2399-0b25-4e61-8a520984-5e29605a.dmp'
+2026-10-21T08:09:05Z [8ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4836427e-d879-45da-5e650f96-688caaa4.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4836427e-d879-45da-5e650f96-688caaa4.dmp.toml could not be opened for parsing
+2026-10-21T08:09:05Z [8ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4836427e-d879-45da-5e650f96-688caaa4.dmp'
+2026-10-21T08:09:05Z [9ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/1a4fb8c5-c888-4339-59cea286-98b05965.dmp'
+2026-10-21T08:09:05Z [9ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/7ef71ee0-61ee-4674-0d052a9f-bff1f595.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/7ef71ee0-61ee-4674-0d052a9f-bff1f595.dmp.toml could not be opened for parsing
+2026-10-21T08:09:05Z [9ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/7ef71ee0-61ee-4674-0d052a9f-bff1f595.dmp'
+2026-10-21T08:09:05Z [9ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/a34b2cd6-51a5-480a-c11eeba7-b366538e.dmp'
+2026-10-21T08:09:05Z [10ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/272a5acb-b848-415b-a773cca1-6680e33f.dmp'
+2026-10-21T08:09:05Z [10ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/9c805a12-2af6-460c-9d737496-40fe3e7a.dmp'
+2026-10-21T08:09:05Z [10ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/64b025a5-c13a-40b6-aade17ad-5a302a09.dmp'
+2026-10-21T08:09:05Z [10ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/40301e2d-7d7b-408b-573c1eab-ebd468ba.dmp'
+2026-10-21T08:09:05Z [10ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/0a8893e7-4ba2-46e9-9555d0b0-26e223bd.dmp'
+2026-10-21T08:09:05Z [10ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/3af4ce4e-eaba-4e43-026f7ca0-4df8ede5.dmp'
+2026-10-21T08:09:05Z [10ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/993c5fad-48c2-4685-8b6edab3-6a22c27f.dmp'
+2026-10-21T08:09:05Z [10ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/fb56405e-12ba-4cd3-9f1ff887-0dc8898b.dmp'
+2026-10-21T08:09:05Z [10ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4f600334-c71b-4482-85db5b9f-f04f137f.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4f600334-c71b-4482-85db5b9f-f04f137f.dmp.toml could not be opened for parsing
+2026-10-21T08:09:05Z [11ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4f600334-c71b-4482-85db5b9f-f04f137f.dmp'
+2026-10-21T08:09:05Z [11ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/f73f703d-6097-430f-d35826ac-aad6d3dc.dmp'
+2026-10-21T08:09:05Z [11ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4861b20d-fbb2-480f-9b79ff94-c68a3940.dmp'
+2026-10-21T08:09:05Z [11ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/83b25c98-cfc0-4c70-6d932789-9686e6aa.dmp'
+2026-10-21T08:09:05Z [11ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/04d92423-df22-4516-f800ad88-5001dd06.dmp'
+2026-10-21T08:09:05Z [11ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/60f0c2d1-adcb-4ecc-d06115ad-3c6abce5.dmp'
+2026-10-21T08:09:05Z [11ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/e1bafb25-5d68-44e9-ecb00091-f55b059d.dmp'
+2026-10-21T08:09:05Z [11ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/0e1478ee-e277-469e-9f9d9680-b4429682.dmp'
+[0.040s] [ext: omni.kit.async_engine-0.0.3] startup
+[0.344s] [ext: omni.metrics.core-0.0.3] startup
+[0.345s] [ext: omni.client.lib-1.1.0] startup
+[0.354s] [ext: omni.blobkey-1.1.2] startup
+[0.354s] [ext: omni.stats-1.0.1] startup
+[0.355s] [ext: omni.datastore-0.0.0] startup
+[0.358s] [ext: omni.client-1.3.0] startup
+[0.360s] [ext: omni.ujitso.default-1.0.0] startup
+[0.362s] [ext: omni.hsscclient-1.1.2] startup
+[0.366s] [ext: omni.gpu_foundation.shadercache.vulkan-1.0.0] startup
+[0.367s] [ext: omni.assets.plugins-0.0.0] startup
+[0.368s] [ext: omni.gpu_foundation-0.0.0] startup
+[0.374s] [ext: carb.windowing.plugins-1.0.0] startup
+2026-10-21T08:09:05Z [359ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-21T08:09:05Z [359ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+[0.374s] [ext: omni.kit.renderer.init-0.0.0] startup
+2026-10-21T08:09:05Z [372ms] [Warning] [omni.platforminfo.plugin] failed to open the default display.  Can't verify X Server version.
+
+|---------------------------------------------------------------------------------------------|
+| Driver Version: 580.173.02    | Graphics API: Vulkan
+|=============================================================================================|
+| GPU | Name                             | Active | LDA | GPU Memory | Vendor-ID | LUID       |
+|     |                                  |        |     |            | Device-ID | UUID       |
+|     |                                  |        |     |            | Bus-ID    |            |
+|---------------------------------------------------------------------------------------------|
+| 0   | NVIDIA GeForce RTX 5090          | Yes: 0 |     | 32607   MB | 10de      | 0          |
+|     |                                  |        |     |            | 2b85      | 1bc29a6a.. |
+|     |                                  |        |     |            | 1         |            |
+|=============================================================================================|
+| OS: 24.04.2 LTS (Noble Numbat) ubuntu, Version: 24.04.2, Kernel: 7.0.0-28-generic
+| Processor: AMD Ryzen 9 9950X3D 16-Core Processor
+| Cores: 16 | Logical Cores: 32
+|---------------------------------------------------------------------------------------------|
+| Total Memory (MB): 190838 | Free Memory: 131265
+| Total Page/Swap (MB): 8191 | Free Page/Swap: 2131
+|---------------------------------------------------------------------------------------------|
+2026-10-21T08:09:06Z [1,262ms] [Warning] [gpu.foundation.plugin] CPU performance profile is set to powersave. This profile sets the CPU to the lowest frequency reducing performance.
+2026-10-21T08:09:06Z [1,272ms] [Warning] [gpu.foundation.plugin] PCIe link width current (8) and maximum (16) for device 0 don't match.
+2026-10-21T08:09:06Z [1,272ms] [Warning] [gpu.foundation.plugin] IOMMU is enabled.
+[1.424s] [ext: omni.kit.pipapi-0.0.0] startup
+[1.425s] [ext: omni.kit.pip_archive-0.0.0] startup
+[1.425s] [ext: omni.pip.compute-1.6.3] startup
+[1.425s] [ext: omni.materialx.libs-1.0.7] startup
+[1.431s] [ext: omni.pip.cloud-1.4.3] startup
+[1.434s] [ext: omni.isaac.core_archive-3.0.0] startup
+[1.434s] [ext: omni.usd.config-1.0.6] startup
+[1.436s] [ext: omni.gpucompute.plugins-0.0.0] startup
+[1.437s] [ext: omni.usd.libs-1.0.1] startup
+[1.494s] [ext: omni.mdl-56.0.3] startup
+[1.513s] [ext: omni.iray.libs-0.0.0] startup
+[1.518s] [ext: omni.mdl.neuraylib-0.2.12] startup
+[1.521s] [ext: omni.kit.usd.mdl-1.1.5] startup
+[1.617s] [ext: omni.services.pip_archive-0.16.0] startup
+[1.617s] [ext: omni.isaac.ml_archive-3.0.4] startup
+[1.617s] [ext: omni.kit.telemetry-0.5.2] startup
+[1.647s] [ext: omni.kit.loop-isaac-1.3.7] startup
+[1.649s] [ext: omni.kit.test-2.0.1] startup
+[1.692s] [ext: omni.appwindow-1.1.10] startup
+2026-10-21T08:09:07Z [1,678ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-21T08:09:07Z [1,678ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+[1.695s] [ext: omni.kit.renderer.core-1.1.0] startup
+2026-10-21T08:09:07Z [1,696ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-21T08:09:07Z [1,696ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+2026-10-21T08:09:07Z [1,702ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-21T08:09:07Z [1,702ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+[1.718s] [ext: omni.kit.renderer.capture-0.0.0] startup
+[1.719s] [ext: omni.kit.renderer.imgui-2.0.5] startup
+2026-10-21T08:09:07Z [1,706ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-21T08:09:07Z [1,706ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+2026-10-21T08:09:07Z [1,707ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-21T08:09:07Z [1,707ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+2026-10-21T08:09:07Z [1,708ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-21T08:09:07Z [1,708ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+[1.763s] [ext: omni.ui-2.27.1] startup
+[1.773s] [ext: omni.kit.mainwindow-1.0.3] startup
+[1.774s] [ext: carb.audio-0.1.0] startup
+[1.778s] [ext: omni.uiaudio-1.0.0] startup
+[1.779s] [ext: omni.kit.uiapp-0.0.0] startup
+[1.779s] [ext: omni.usd.schema.metrics.assembler-107.3.1] startup
+[1.781s] [ext: omni.anim.behavior.schema-107.3.0] startup
+[1.789s] [ext: omni.usd.schema.omnigraph-1.0.0] startup
+[1.795s] [ext: omni.usd.schema.geospatial-0.0.0] startup
+[1.797s] [ext: omni.usd.schema.anim-0.0.0] startup
+[1.811s] [ext: omni.usd.schema.audio-0.0.0] startup
+[1.813s] [ext: isaacsim.robot.schema-3.6.0] startup
+[1.820s] [ext: omni.usd_resolver-1.0.0] startup
+[1.823s] [ext: omni.usd.core-1.5.3] startup
+[1.825s] [ext: omni.usd.schema.omni_sensors-0.0.0] startup
+[1.839s] [ext: omni.usd.schema.semantics-0.0.0] startup
+[1.841s] [ext: omni.usd.schema.omni_lens_distortion-0.0.0] startup
+[1.841s] [ext: omni.usd.schema.render_settings.rtx-0.0.0] startup
+[1.842s] [ext: omni.graph.exec-0.9.6] startup
+[1.843s] [ext: omni.kit.actions.core-1.0.0] startup
+[1.845s] [ext: omni.kit.usd_undo-0.1.8] startup
+[1.845s] [ext: omni.kit.exec.core-0.13.4] startup
+[1.846s] [ext: omni.kit.commands-1.4.10] startup
+[1.850s] [ext: omni.kit.window.popup_dialog-2.0.24] startup
+[1.854s] [ext: omni.activity.core-1.0.3] startup
+[1.855s] [ext: omni.resourcemonitor-107.0.1] startup
+[1.857s] [ext: omni.timeline-1.0.14] startup
+[1.859s] [ext: omni.kit.widget.nucleus_connector-2.0.1] startup
+[1.861s] [ext: usdrt.scenegraph-7.6.1] startup
+[1.900s] [ext: omni.kit.audiodeviceenum-1.0.2] startup
+[1.902s] [ext: omni.hydra.usdrt_delegate-7.5.1] startup
+[1.907s] [ext: omni.hydra.scene_delegate-0.3.4] startup
+[1.911s] [ext: omni.usd-1.13.10] startup
+[1.928s] [ext: omni.kit.asset_converter-5.0.17] startup
+[1.936s] [ext: omni.usd.schema.physx-107.3.26] startup
+[1.958s] [ext: omni.anim.navigation.schema-107.3.3] startup
+[1.960s] [ext: omni.inspect-1.0.2] startup
+[1.960s] [ext: omni.kit.notification_manager-1.0.10] startup
+[1.962s] [ext: omni.graph.core-2.184.5] startup
+[1.963s] [ext: isaacsim.core.deprecation_manager-0.2.7] startup
+[1.964s] [ext: omni.usd.schema.omniscripting-1.0.0] startup
+[1.966s] [ext: omni.usd.schema.flow-107.1.1] startup
+[1.967s] [ext: omni.anim.graph.schema-107.3.3] startup
+[1.970s] [ext: omni.usd.schema.isaac-3.0.5] startup
+[1.970s] [ext: isaacsim.core.version-2.0.6] startup
+[1.971s] [ext: omni.ui.scene-1.11.5] startup
+[1.974s] [ext: isaacsim.storage.native-1.5.1] startup
+[1.975s] [ext: omni.kit.widget.options_menu-1.1.6] startup
+[1.976s] [ext: omni.kit.menu.core-1.1.2] startup
+[1.977s] [ext: omni.graph.tools-1.79.2] startup
+[1.993s] [ext: omni.kit.widget.filter-1.1.4] startup
+[1.994s] [ext: omni.kit.menu.utils-2.0.5] startup
+[2.000s] [ext: omni.graph-1.141.2] startup
+[2.026s] [ext: omni.kit.hotkeys.core-1.3.10] startup
+[2.027s] [ext: omni.anim.curve.core-1.3.1] startup
+[2.036s] [ext: omni.kit.clipboard-1.0.5] startup
+[2.038s] [ext: omni.usdphysics-107.3.26] startup
+[2.040s] [ext: omni.physx.foundation-107.3.26] startup
+[2.042s] [ext: omni.kit.widget.context_menu-1.2.5] startup
+[2.043s] [ext: omni.kit.helper.file_utils-0.1.9] startup
+[2.045s] [ext: omni.kit.widget.path_field-2.0.11] startup
+[2.046s] [ext: omni.kvdb-107.3.26] startup
+[2.047s] [ext: omni.kit.widget.options_button-1.0.3] startup
+[2.048s] [ext: omni.kit.widget.filebrowser-2.12.3] startup
+[2.051s] [ext: omni.kit.widget.browser_bar-2.0.10] startup
+[2.052s] [ext: omni.localcache-107.3.26] startup
+[2.053s] [ext: omni.convexdecomposition-107.3.26] startup
+[2.055s] [ext: omni.kit.window.filepicker-2.13.4] startup
+[2.066s] [ext: omni.physx.cooking-107.3.26] startup
+[2.068s] [ext: omni.physics-107.3.26] startup
+[2.071s] [ext: omni.kit.window.file_exporter-1.0.33] startup
+[2.072s] [ext: omni.kit.stage_template.core-1.1.22] startup
+[2.074s] [ext: omni.physx-107.3.26] startup
+[2.079s] [ext: omni.kit.usd.layers-2.2.11] startup
+[2.084s] [ext: omni.kit.window.file_importer-1.1.18] startup
+[2.085s] [ext: omni.physics.physx-107.3.26] startup
+2026-10-21T08:09:07Z [2,071ms] [Warning] [carb] Acquiring non optional plugin interface which is not listed as dependency: [omni::physx::IPhysxBenchmarks v1.0] (plugin: <default plugin>), by client: omni.physics.physx.plugin. Add it to CARB_PLUGIN_IMPL_DEPS() macro of a client.
+[2.086s] [ext: omni.kit.numpy.common-0.1.3] startup
+[2.087s] [ext: omni.kit.window.file-2.0.5] startup
+[2.089s] [ext: omni.physics.stageupdate-107.3.26] startup
+[2.091s] [ext: omni.kit.window.drop_support-1.0.5] startup
+[2.092s] [ext: omni.kit.window.content_browser_registry-0.0.6] startup
+[2.093s] [ext: omni.isaac.dynamic_control-2.0.7] startup
+2026-10-21T08:09:07Z [2,081ms] [Warning] [omni.isaac.dynamic_control] omni.isaac.dynamic_control is deprecated as of Isaac Sim 4.5. No action is needed from end-users.
+[2.097s] [ext: omni.kit.window.content_browser-3.1.3] startup
+[2.105s] [ext: omni.graph.action_core-1.1.7] startup
+[2.106s] [ext: omni.kit.usd.collect-2.4.5] startup
+[2.109s] [ext: isaacsim.gui.content_browser-0.1.11] startup
+[2.111s] [ext: omni.graph.action_nodes-1.50.4] startup
+[2.113s] [ext: omni.kit.widget.prompt-1.0.7] startup
+[2.115s] [ext: omni.graph.action-1.130.0] startup
+[2.116s] [ext: omni.kit.tool.collect-2.2.18] startup
+[2.121s] [ext: omni.index.libs-380600.8087.0] startup
+[2.121s] [ext: omni.ujitso.client-0.0.0] startup
+[2.122s] [ext: omni.index-1.0.1] startup
+[2.123s] [ext: omni.volume-0.5.2] startup
+[2.125s] [ext: omni.hydra.rtx.shadercache.vulkan-1.0.0] startup
+[2.127s] [ext: omni.kit.context_menu-1.8.6] startup
+[2.129s] [ext: omni.hydra.rtx-1.0.0] startup
+2026-10-21T08:09:07Z [2,125ms] [Warning] [omni.log] Source: omni.hydra was already registered.
+[2.151s] [ext: omni.kit.material.library-2.0.7] startup
+[2.161s] [ext: omni.hydra.engine.stats-1.0.3] startup
+[2.163s] [ext: omni.kit.widget.stage_icons-1.0.8] startup
+[2.164s] [ext: omni.kit.viewport.scene_camera_model-1.0.6] startup
+[2.166s] [ext: omni.kit.hydra_texture-1.4.6] startup
+[2.169s] [ext: omni.kit.viewport.legacy_gizmos-1.0.19] startup
+[2.170s] [ext: omni.kit.widget.searchfield-1.1.8] startup
+[2.172s] [ext: omni.kit.widget.viewport-107.1.3] startup
+[2.175s] [ext: omni.kit.viewport.registry-104.0.6] startup
+[2.176s] [ext: omni.kit.raycast.query-1.1.0] startup
+[2.178s] [ext: omni.kit.widget.stage-3.1.4] startup
+[2.188s] [ext: omni.kit.widget.zoombar-1.0.6] startup
+[2.188s] [ext: omni.kit.viewport.window-107.2.0] startup
+[2.201s] [ext: omni.kit.window.stage-2.6.1] startup
+[2.204s] [ext: omni.kit.browser.core-2.3.13] startup
+[2.207s] [ext: omni.kit.menu.stage-1.2.7] startup
+[2.208s] [ext: omni.kit.browser.folder.core-1.10.9] startup
+[2.212s] [ext: omni.kit.property.adapter.core-1.0.2] startup
+[2.215s] [ext: omni.kit.widget.highlight_label-1.0.3] startup
+[2.216s] [ext: omni.kit.property.adapter.usd-1.0.2] startup
+[2.217s] [ext: omni.ui_query-1.1.8] startup
+[2.218s] [ext: omni.kit.window.property-1.12.1] startup
+[2.220s] [ext: omni.kit.property.adapter.fabric-1.0.3] startup
+[2.221s] [ext: omni.kit.ui_test-1.3.7] startup
+[2.222s] [ext: omni.kit.property.usd-4.5.12] startup
+[2.228s] [ext: omni.kit.viewport.utility-1.1.2] startup
+[2.230s] [ext: omni.kit.manipulator.viewport-107.0.1] startup
+[2.231s] [ext: omni.kit.usdz_export-1.0.9] startup
+[2.234s] [ext: omni.kit.window.extensions-1.4.27] startup
+[2.239s] [ext: omni.graph.visualization.nodes-2.1.3] startup
+[2.245s] [ext: omni.kit.tool.asset_importer-4.3.2] startup
+[2.253s] [ext: isaacsim.gui.components-1.2.1] startup
+[2.260s] [ext: isaacsim.examples.browser-0.2.1] startup
+[2.266s] [ext: isaacsim.asset.importer.urdf-2.4.30] startup
+[2.403s] [ext: omni.kit.menu.create-2.0.1] startup
+[2.407s] [ext: omni.physics.tensors-107.3.26] startup
+[2.421s] [ext: omni.usd.metrics.assembler-107.3.1] startup
+[2.425s] [ext: omni.kit.widget.graph-2.0.0] startup
+[2.430s] [ext: omni.kit.widget.searchable_combobox-1.0.6] startup
+[2.431s] [ext: omni.warp.core-1.8.2] startup
+[2.631s] [ext: omni.usd.metrics.assembler.physics-107.3.26] startup
+[2.634s] [ext: omni.kit.graph.delegate.default-1.2.3] startup
+[2.635s] [ext: omni.kit.scripting-107.3.2] startup
+[2.639s] [ext: omni.physx.tensors-107.3.26] startup
+[2.645s] [ext: isaacsim.core.utils-3.5.1] startup
+[2.647s] [ext: omni.anim.asset-107.3.0] startup
+[2.649s] [ext: isaacsim.core.simulation_manager-1.4.4] startup
+[3.582s] [ext: omni.graph.scriptnode-1.50.0] startup
+[3.586s] [ext: omni.kit.graph.editor.core-1.5.3] startup
+[3.589s] [ext: omni.kit.widget.settings-1.2.6] startup
+[3.591s] [ext: omni.kit.primitive.mesh-1.0.17] startup
+[3.599s] [ext: isaacsim.core.prims-0.6.1] startup
+[3.619s] [ext: omni.kit.widget.material_preview-1.0.16] startup
+[3.622s] [ext: omni.kit.graph.usd.commands-1.3.1] startup
+[3.623s] [ext: omni.graph.image.core-0.6.1] startup
+[3.624s] [ext: omni.kit.window.preferences-1.8.0] startup
+[3.628s] [ext: omni.kit.stage_templates-2.0.0] startup
+[3.629s] [ext: isaacsim.asset.browser-1.3.23] startup
+[3.691s] [ext: omni.graph.image.nodes-1.3.1] startup
+[3.692s] [ext: omni.kit.viewport.menubar.core-107.2.1] startup
+[3.702s] [ext: isaacsim.core.api-4.8.0] startup
+[3.710s] [ext: omni.kit.window.material_graph-1.9.1] startup
+[3.717s] [ext: omni.kit.viewport.actions-107.0.2] startup
+[3.720s] [ext: omni.graph.nodes-1.170.10] startup
+[3.727s] [ext: omni.syntheticdata-0.6.13] startup
+[3.744s] [ext: omni.isaac.assets_check-0.3.13] startup
+2026-10-21T08:09:09Z [3,730ms] [Warning] [omni.isaac.assets_check] omni.isaac.assets_check has been deprecated in favor of isaacsim.asset.browser. Please update your code accordingly.
+[3.745s] [ext: isaacsim.core.cloner-1.4.10] startup
+[3.748s] [ext: omni.kit.viewport.menubar.display-107.0.3] startup
+[3.750s] [ext: omni.graph.ui_nodes-1.50.5] startup
+[3.753s] [ext: omni.videoencoding-0.1.2] startup
+[3.758s] [ext: omni.isaac.cloner-1.0.7] startup
+2026-10-21T08:09:09Z [3,745ms] [Warning] [omni.isaac.cloner] omni.isaac.cloner has been deprecated in favor of isaacsim.core.cloner. Please update your code accordingly.
+[3.762s] [ext: isaacsim.gui.sensors.icon-2.0.3] startup
+[3.780s] [ext: omni.warp-1.8.2] startup
+[3.785s] [ext: omni.anim.retarget.core-107.3.3] startup
+[3.792s] [ext: omni.debugdraw-0.1.4] startup
+[3.795s] [ext: omni.replicator.core-1.12.27] startup
+2026-10-21T08:09:09Z [3,788ms] [Warning] [pxr.Semantics] pxr.Semantics is deprecated - please use Semantics instead
+2026-10-21T08:09:09Z [3,906ms] [Warning] [omni.graph.core.plugin] Found duplicate of category 'Replicator' - was 'Annotators', adding 'Fabric Reader'
+2026-10-21T08:09:09Z [3,906ms] [Warning] [omni.graph.core.plugin] Category 'Replicator' not accepted on node type 'omni.replicator.core.FabricReader' in extension 'omni.replicator.core'
+2026-10-21T08:09:09Z [3,907ms] [Warning] [omni.replicator.core.scripts.extension] No material configuration file, adding configuration to material settings directly.
+[3.928s] [ext: omni.kit.quicklayout-1.0.8] startup
+[3.934s] [ext: omni.anim.navigation.core-107.3.8] startup
+[3.946s] [ext: omni.anim.graph.core-107.3.4] startup
+[3.958s] [ext: omni.metropolis.utils-0.1.20] startup
+[3.989s] [ext: isaacsim.asset.importer.mjcf-2.5.13] startup
+[3.999s] [ext: omni.anim.people-0.7.9] startup
+2026-10-21T08:09:09Z [3,990ms] [Warning] [omni.graph.core._impl._registration.register_python_ogn] Python import process in omni.anim.graph.core failed - 'NoneType' object is not subscriptable. Aborting Python node registration
+[4.017s] [ext: isaacsim.test.docstring-1.1.0] startup
+[4.024s] [ext: isaacsim.core.experimental.utils-0.3.0] startup
+[4.032s] [ext: isaacsim.anim.robot-0.0.15] startup
+[4.061s] [ext: isaacsim.core.experimental.prims-0.8.1] startup
+[4.105s] [ext: isaacsim.core.nodes-3.4.3] startup
+[4.131s] [ext: omni.flowusd-107.1.8] startup
+2026-10-21T08:09:09Z [4,119ms] [Warning] [omni.stageupdate.plugin] Deprecated: direct use of IStageUpdate callbacks is deprecated. Use IStageUpdate::getStageUpdate instead.
+[4.151s] [ext: omni.sensors.nv.common-3.0.0] startup
+[4.210s] [ext: isaacsim.core.experimental.materials-0.4.0] startup
+[4.223s] [ext: omni.isaac.core-4.0.7] startup
+2026-10-21T08:09:09Z [4,247ms] [Warning] [omni.isaac.core.physics_context.physics_context] omni.isaac.core.physics_context.physics_context has been deprecated in favor of isaacsim.core.api.physics_context.physics_context. Please update your code accordingly.
+2026-10-21T08:09:09Z [4,249ms] [Warning] [omni.isaac.core.simulation_context.simulation_context] omni.isaac.core.simulation_context.simulation_context has been deprecated in favor of isaacsim.core.api.simulation_context.simulation_context. Please update your code accordingly.
+2026-10-21T08:09:09Z [4,267ms] [Warning] [omni.isaac.core.world.world] omni.isaac.core.world.world has been deprecated in favor of isaacsim.core.api.world.world. Please update your code accordingly.
+2026-10-21T08:09:09Z [4,267ms] [Warning] [omni.isaac.core] omni.isaac.core has been deprecated in favor of isaacsim.core.api. Please update your code accordingly.
+[4.285s] [ext: isaacsim.replicator.incident-0.1.28] startup
+[4.476s] [ext: omni.sensors.net-1.0.0] startup
+[4.479s] [ext: omni.sensors.nv.materials-2.0.0] startup
+[4.484s] [ext: isaacsim.sensors.camera-1.3.6] startup
+[4.492s] [ext: omni.sensors.nv.wpm-3.0.0] startup
+[4.495s] [ext: isaacsim.util.debug_draw-3.1.0] startup
+[4.501s] [ext: omni.sensors.nv.ids-2.0.0] startup
+[4.506s] [ext: omni.sensors.nv.lidar-3.0.0] startup
+[4.511s] [ext: omni.sensors.nv.radar-3.0.0] startup
+[4.516s] [ext: isaacsim.sensors.physics-0.4.3] startup
+[4.521s] [ext: isaacsim.robot_motion.lula-4.0.8] startup
+[4.528s] [ext: isaacsim.robot.surface_gripper-3.3.1] startup
+[4.538s] [ext: isaacsim.sensors.rtx-15.8.4] startup
+[4.547s] [ext: omni.kit.mesh.raycast-107.0.1] startup
+[4.554s] [ext: isaacsim.robot_motion.motion_generation-8.0.26] startup
+[4.573s] [ext: isaacsim.robot.manipulators-3.3.6] startup
+[4.582s] [ext: isaacsim.core.experimental.objects-0.4.0] startup
+[4.588s] [ext: omni.isaac.core_nodes-2.0.6] startup
+2026-10-21T08:09:10Z [4,576ms] [Warning] [omni.isaac.core_nodes] omni.isaac.core_nodes has been deprecated in favor of isaacsim.core.nodes. Please update your code accordingly.
+[4.591s] [ext: isaacsim.replicator.agent.core-0.7.28] startup
+[4.604s] [ext: isaacsim.robot.manipulators.examples-1.1.2] startup
+[4.607s] [ext: isaacsim.simulation_app-2.12.2] startup
+[4.608s] [ext: omni.kit.selection-0.1.6] startup
+[4.610s] [ext: omni.isaac.franka-1.0.7] startup
+2026-10-21T08:09:10Z [4,596ms] [Warning] [omni.isaac.franka] omni.isaac.franka has been deprecated in favor of isaacsim.robot.manipulators.examples.franka. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,596ms] [Warning] [omni.isaac.franka.franka] omni.isaac.franka has been deprecated in favor of isaacsim.robot.manipulators.examples.franka. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,611ms] [Warning] [omni.isaac.franka.kinematics_solver] omni.isaac.franka has been deprecated in favor of isaacsim.robot.manipulators.examples.franka. Please update your code accordingly.
+[4.626s] [ext: isaacsim.robot_motion.lula_test_widget-1.0.12] startup
+[4.630s] [ext: omni.isaac.kit-2.0.6] startup
+2026-10-21T08:09:10Z [4,616ms] [Warning] [omni.isaac.kit] omni.isaac.kit has been deprecated in favor of isaacsim.simulation_app. Please update your code accordingly.
+[4.631s] [ext: isaacsim.gui.menu-2.4.4] startup
+[4.635s] [ext: omni.isaac.asset_browser-1.0.6] startup
+2026-10-21T08:09:10Z [4,622ms] [Warning] [omni.isaac.asset_browser] omni.isaac.asset_browser has been deprecated in favor of isaacsim.asset.browser. Please update your code accordingly.
+[4.637s] [ext: omni.isaac.lula_test_widget-1.0.6] startup
+2026-10-21T08:09:10Z [4,624ms] [Warning] [omni.isaac.lula_test_widget] omni.isaac.lula_test_widget has been deprecated in favor of isaacsim.robot_motion.lula_test_widget. Please update your code accordingly.
+[4.639s] [ext: omni.isaac.manipulators-3.0.7] startup
+2026-10-21T08:09:10Z [4,625ms] [Warning] [omni.isaac.manipulators] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,625ms] [Warning] [omni.isaac.manipulators.controllers] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,627ms] [Warning] [omni.isaac.manipulators.controllers.pick_place_controller] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,627ms] [Warning] [omni.isaac.manipulators.controllers.stacking_controller] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,627ms] [Warning] [omni.isaac.manipulators.grippers] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,627ms] [Warning] [omni.isaac.manipulators.grippers.gripper] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,628ms] [Warning] [omni.isaac.manipulators.grippers.parallel_gripper] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,628ms] [Warning] [omni.isaac.manipulators.grippers.surface_gripper] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,628ms] [Warning] [omni.isaac.manipulators.manipulators] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,628ms] [Warning] [omni.isaac.manipulators.manipulators.single_manipulator] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+[4.643s] [ext: omni.isaac.menu-1.0.6] startup
+2026-10-21T08:09:10Z [4,630ms] [Warning] [omni.isaac.menu] omni.isaac.menu has been deprecated in favor of isaacsim.gui.menu. Please update your code accordingly.
+[4.645s] [ext: isaacsim.robot.policy.examples-4.1.11] startup
+[4.652s] [ext: isaacsim.sensors.physx-2.3.2] startup
+[4.658s] [ext: omni.isaac.motion_generation-8.0.7] startup
+2026-10-21T08:09:10Z [4,643ms] [Warning] [omni.isaac.motion_generation] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,644ms] [Warning] [omni.isaac.motion_generation.articulation_kinematics_solver] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,644ms] [Warning] [omni.isaac.motion_generation.articulation_motion_policy] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,644ms] [Warning] [omni.isaac.motion_generation.articulation_trajectory] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,644ms] [Warning] [omni.isaac.motion_generation.kinematics_interface] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,644ms] [Warning] [omni.isaac.motion_generation.lula] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,644ms] [Warning] [omni.isaac.motion_generation.lula.kinematics] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,645ms] [Warning] [omni.isaac.motion_generation.lula.motion_policies] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,645ms] [Warning] [omni.isaac.motion_generation.lula.path_planners] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,646ms] [Warning] [omni.isaac.motion_generation.lula.trajectory_generator] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,646ms] [Warning] [omni.isaac.motion_generation.motion_policy_controller] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,646ms] [Warning] [omni.isaac.motion_generation.motion_policy_interface] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,646ms] [Warning] [omni.isaac.motion_generation.path_planner_visualizer] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,646ms] [Warning] [omni.isaac.motion_generation.path_planning_interface] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,646ms] [Warning] [omni.isaac.motion_generation.trajectory] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,646ms] [Warning] [omni.isaac.motion_generation.world_interface] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+[4.662s] [ext: omni.isaac.nucleus-1.0.6] startup
+2026-10-21T08:09:10Z [4,648ms] [Warning] [omni.isaac.nucleus] omni.isaac.nucleus has been deprecated in favor of isaacsim.storage.native. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,648ms] [Warning] [omni.isaac.nucleus.nucleus] omni.isaac.nucleus.nucleus has been deprecated in favor of isaacsim.storage.native. Please update your code accordingly.
+[4.664s] [ext: omni.isaac.quadruped-3.0.7] startup
+2026-10-21T08:09:10Z [4,649ms] [Warning] [omni.isaac.quadruped] omni.isaac.quadruped has been deprecated in favor of isaacsim.robot.policy.examples. Please update your code accordingly.
+[4.665s] [ext: omni.isaac.range_sensor-4.0.6] startup
+2026-10-21T08:09:10Z [4,651ms] [Warning] [omni.isaac.range_sensor] omni.isaac.range_sensor has been deprecated in favor of isaacsim.sensors.physx. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,652ms] [Warning] [omni.isaac.range_sensor.commands] omni.isaac.range_sensor.commands has been deprecated in favor of isaacsim.sensors.physx.commands. Please update your code accordingly.
+[4.668s] [ext: omni.isaac.sensor-13.0.7] startup
+2026-10-21T08:09:10Z [4,655ms] [Warning] [omni.isaac.sensor] omni.isaac.sensor has been deprecated in favor of isaacsim.sensors.camera, isaacsim.sensors.physics, isaacsim.sensors.physx, and isaacsim.sensors.rtx. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,655ms] [Warning] [omni.isaac.sensor.camera] omni.isaac.sensor.camera has been deprecated in favor of isaacsim.sensors.camera.camera. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,656ms] [Warning] [omni.isaac.sensor.camera_view] omni.isaac.sensor.camera_view has been deprecated in favor of isaacsim.sensors.camera.camera_view. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,657ms] [Warning] [omni.isaac.sensor.commands] omni.isaac.sensor.commands has been deprecated in favor of isaacsim.sensors.physics.commands, isaacsim.sensors.physx.commands, and isaacsim.sensors.rtx.commands. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,657ms] [Warning] [omni.isaac.sensor.contact_sensor] omni.isaac.sensor.contact_sensor has been deprecated in favor of isaacsim.sensors.physics.contact_sensor. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,657ms] [Warning] [omni.isaac.sensor.imu_sensor] omni.isaac.sensor.imu_sensor has been deprecated in favor of isaacsim.sensors.physics.imu_sensor. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,658ms] [Warning] [omni.isaac.sensor.lidar_rtx] omni.isaac.sensor.lidar_rtx has been deprecated in favor of isaacsim.sensors.rtx.lidar_rtx. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,658ms] [Warning] [omni.isaac.sensor.rotating_lidar_physX] omni.isaac.sensor.imu_sensor has been deprecated in favor of isaacsim.sensors.physix.rotating_lidar_physX. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,658ms] [Warning] [omni.isaac.sensor.scripts.samples.contact_sensor] omni.isaac.sensor.scripts.samples.contact_sensor has been deprecated in favor of isaacsim.sensors.physics.scripts.samples.contact_sensor. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,658ms] [Warning] [omni.isaac.sensor.scripts.samples.imu_sensor] omni.isaac.sensor.scripts.samples.imu_sensor has been deprecated in favor of isaacsim.sensors.physics.scripts.samples.imu_sensor. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,658ms] [Warning] [omni.isaac.sensor.scripts.samples.lightbeam_sensor] omni.isaac.sensor.scripts.samples.lightbeam_sensor has been deprecated in favor of isaacsim.sensors.physx.scripts.samples.lightbeam_sensor. Please update your code accordingly.
+[4.674s] [ext: omni.isaac.surface_gripper-2.0.6] startup
+2026-10-21T08:09:10Z [4,660ms] [Warning] [omni.isaac.surface_gripper] omni.isaac.surface_gripper has been deprecated in favor of isaacsim.robot.surface_gripper. Please update your code accordingly.
+[4.676s] [ext: omni.kit.widget.toolbar-2.0.1] startup
+[4.689s] [ext: omni.kit.manipulator.transform-107.0.0] startup
+[4.693s] [ext: omni.kit.manipulator.selector-1.1.3] startup
+[4.694s] [ext: isaacsim.app.about-2.0.11] startup
+[4.699s] [ext: isaacsim.cortex.framework-1.0.12] startup
+[4.700s] [ext: omni.kit.manipulator.tool.snap-1.5.13] startup
+[4.704s] [ext: omni.isaac.universal_robots-1.0.6] startup
+2026-10-21T08:09:10Z [4,689ms] [Warning] [omni.isaac.universal_robots] omni.isaac.universal_robots has been deprecated in favor of isaacsim.robot.manipulators.examples.universal_robots. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,690ms] [Warning] [omni.isaac.universal_robots.kinematics_solver] omni.isaac.franka has been deprecated in favor of isaacsim.robot.manipulators.examples.universal_robots. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,690ms] [Warning] [omni.isaac.universal_robots.ur10] omni.isaac.franka has been deprecated in favor of isaacsim.robot.manipulators.examples.universal_robots. Please update your code accordingly.
+[4.706s] [ext: omni.isaac.utils-2.0.6] startup
+[4.708s] [ext: omni.isaac.cortex-1.0.5] startup
+2026-10-21T08:09:10Z [4,694ms] [Warning] [omni.isaac.cortex] omni.isaac.cortex has been deprecated in favor of isaacsim.cortex.framework. Please update your code accordingly.
+[4.710s] [ext: omni.kit.viewport.manipulator.transform-107.0.4] startup
+[4.713s] [ext: omni.isaac.window.about-2.0.7] startup
+2026-10-21T08:09:10Z [4,699ms] [Warning] [omni.isaac.window.about] omni.isaac.window.about has been deprecated in favor of isaacsim.app.about. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,699ms] [Warning] [omni.isaac.window.about.about] omni.isaac.window.about.about has been deprecated in favor of isaacsim.app.about.about. Please update your code accordingly.
+[4.715s] [ext: omni.kit.manipulator.camera-106.0.4] startup
+[4.718s] [ext: omni.kit.property.audio-1.0.16] startup
+[4.719s] [ext: omni.fabric.commands-1.1.6] startup
+[4.721s] [ext: omni.kit.manipulator.prim.core-107.0.8] startup
+[4.727s] [ext: omni.kit.property.camera-1.0.10] startup
+[4.728s] [ext: omni.kit.property.geometry-2.0.4] startup
+[4.731s] [ext: omni.kit.property.light-1.0.12] startup
+[4.742s] [ext: omni.hydra.scene_api-0.1.2] startup
+[4.746s] [ext: omni.kit.manipulator.prim.fabric-107.0.4] startup
+[4.749s] [ext: omni.kit.manipulator.prim.usd-107.0.3] startup
+[4.750s] [ext: omni.kit.property.material-1.11.9] startup
+[4.754s] [ext: omni.kit.property.render-1.2.1] startup
+[4.755s] [ext: omni.kit.property.transform-1.5.13] startup
+[4.758s] [ext: isaacsim.gui.property-1.1.3] startup
+[4.760s] [ext: omni.kit.manipulator.prim-107.0.0] startup
+[4.761s] [ext: omni.kit.manipulator.selection-106.0.1] startup
+[4.762s] [ext: omni.isaac.lula-4.0.6] startup
+2026-10-21T08:09:10Z [4,747ms] [Warning] [omni.isaac.lula] omni.isaac.lula has been deprecated in favor of isaacsim.robot_motion.lula. Please update your code accordingly.
+[4.762s] [ext: omni.kit.property.bundle-1.4.1] startup
+[4.764s] [ext: omni.kit.property.isaac-1.0.6] startup
+2026-10-21T08:09:10Z [4,749ms] [Warning] [omni.kit.property.isaac] omni.kit.property.isaac has been deprecated in favor of isaacsim.gui.property. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,749ms] [Warning] [omni.kit.property.isaac.widgets] omni.kit.property.isaac.widgets has been deprecated in favor of isaacsim.gui.property.widgets. Please update your code accordingly.
+[4.765s] [ext: isaacsim.replicator.writers-1.0.17] startup
+[4.775s] [ext: omni.kit.viewport.menubar.camera-107.0.6] startup
+[4.782s] [ext: omni.kit.viewport.menubar.lighting-107.3.1] startup
+[4.787s] [ext: omni.kit.viewport.menubar.render-107.0.10] startup
+[4.790s] [ext: omni.kit.viewport.menubar.settings-107.0.3] startup
+[4.792s] [ext: isaacsim.replicator.domain_randomization-1.0.16] startup
+[4.794s] [ext: isaacsim.replicator.examples-1.3.6] startup
+[4.796s] [ext: omni.ocio-0.1.1] startup
+[4.798s] [ext: omni.rtx.window.settings-0.6.19] startup
+[4.804s] [ext: omni.kit.window.console-1.1.4] startup
+[4.810s] [ext: omni.kit.window.status_bar-0.1.9] startup
+[4.815s] [ext: omni.kit.window.toolbar-2.0.0] startup
+[4.818s] [ext: omni.replicator.isaac-2.0.8] startup
+2026-10-21T08:09:10Z [4,803ms] [Warning] [omni.replicator.isaac] omni.replicator.isaac has been deprecated in favor of isaacsim.replicator.domain_randomization, isaacsim.replicator.examples, isaacsim.replicator.writers. Please update your code accordingly.
+[4.819s] [ext: omni.replicator.replicator_yaml-2.0.11] startup
+[4.824s] [ext: omni.rtx.settings.core-0.6.5] startup
+[4.828s] [ext: omni.usd.metrics.assembler.ui-107.3.1] startup
+[4.837s] [ext: isaacsim.robot.wheeled_robots-4.0.24] startup
+[4.841s] [ext: isaacsim.cortex.behaviors-2.0.14] startup
+[4.842s] [ext: omni.isaac.version-2.0.7] startup
+2026-10-21T08:09:10Z [4,829ms] [Warning] [omni.isaac.version] omni.isaac.version has been deprecated in favor of isaacsim.core.version. Please update your code accordingly.
+[4.845s] [ext: semantics.schema.editor-2.0.2] startup
+[4.851s] [ext: omni.kit.ui.actions-1.0.5] startup
+[4.852s] [ext: semantics.schema.property-2.0.1] startup
+[4.854s] [ext: omni.isaac.wheeled_robots-3.0.7] startup
+2026-10-21T08:09:10Z [4,839ms] [Warning] [omni.isaac.wheeled_robots] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,840ms] [Warning] [omni.isaac.wheeled_robots.controllers] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,840ms] [Warning] [omni.isaac.wheeled_robots.controllers.ackermann_controller] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,840ms] [Warning] [omni.isaac.wheeled_robots.controllers.differential_controller] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,840ms] [Warning] [omni.isaac.wheeled_robots.controllers.holonomic_controller] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,840ms] [Warning] [omni.isaac.wheeled_robots.controllers.quintic_path_planner] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,840ms] [Warning] [omni.isaac.wheeled_robots.controllers.stanley_control] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,841ms] [Warning] [omni.isaac.wheeled_robots.controllers.wheel_base_pose_controller] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,841ms] [Warning] [omni.isaac.wheeled_robots.impl] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,841ms] [Warning] [omni.isaac.wheeled_robots.robots] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,841ms] [Warning] [omni.isaac.wheeled_robots.robots.holonomic_robot_usd_setup] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T08:09:10Z [4,841ms] [Warning] [omni.isaac.wheeled_robots.robots.wheeled_robot] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+[4.857s] [ext: omni.isaac.cortex.sample_behaviors-2.0.5] startup
+2026-10-21T08:09:10Z [4,843ms] [Warning] [omni.isaac.cortex.sample_behaviors] omni.isaac.cortex.sample_behaviors has been deprecated in favor of isaacsim.cortex.behaviors. Please update your code accordingly.
+[4.859s] [ext: isaacsim.replicator.behavior-1.1.16] startup
+[4.861s] [ext: isaacsim.core.throttling-2.2.2] startup
+[4.867s] [ext: omni.kit.menu.common-2.0.1] startup
+[4.871s] [ext: isaacsim.exp.base-5.1.0] startup
+[4.871s] [ext: isaacsim.exp.base.python-5.1.0] startup
+[4.874s] Simulation App Starting
+2026-10-21T08:09:11Z [5,653ms] [Warning] [omni.kvdb.plugin] Disabling key-value database because another kit process is locking it
+2026-10-21T08:09:11Z [5,658ms] [Warning] [carb.audio.device] audio device is misconfigured or broken {deviceIndex = 0, name = 'default'} (The device is likely misconfigured, check your $HOME/.asoundrc)
+2026-10-21T08:09:11Z [5,658ms] [Warning] [carb.audio.output] failed to retrieve the capabilities for device 0 {result = eDeviceLost (2)}
+2026-10-21T08:09:11Z [5,658ms] [Warning] [carb.audio.context] failed to set the requested output during context creation.  Using a null streamer instead {result = eDeviceLost (2)}
+2026-10-21T08:09:11Z [5,675ms] [Warning] [omni.fabric.plugin] Warning: attribute viewPickingId not found for bucket id 9
+
+[5.721s] app ready
+2026-10-21T08:09:14Z [8,692ms] [Error] [carb.graphics-vulkan.plugin] Out of GPU memory allocating resource 'MemoryManager-allocate' [size: unknown]
+2026-10-21T08:09:14Z [8,692ms] [Error] [carb.graphics-vulkan.plugin] Failure injector rule to repro:
+{
+    debugName="MemoryManager-allocate",
+}
+2026-10-21T08:09:14Z [8,693ms] [Error] [carb.graphics-vulkan.plugin] VkResult: ERROR_OUT_OF_DEVICE_MEMORY
+2026-10-21T08:09:14Z [8,693ms] [Error] [carb.graphics-vulkan.plugin] vkAllocateMemory failed for flags: 2.
+2026-10-21T08:09:14Z [8,693ms] [Error] [gpu.foundation.plugin] Texture creation failed for the device: 0.
+2026-10-21T08:09:14Z [8,693ms] [Error] [gpu.foundation.plugin] Failed to update params for RenderOp 23
+2026-10-21T08:09:14Z [8,693ms] [Error] [gpu.foundation.plugin] Failed to update params for RenderOp Deferred Sampled Lighting RT. Will not execute this or subsequent RenderGraph operations. Aborting RenderGraph execution
+2026-10-21T08:09:14Z [8,693ms] [Error] [carb.scenerenderer-rtx.plugin] Failed to execute RenderGraph on device 0. Error Code: 7
+2026-10-21T08:09:14Z [8,693ms] [Warning] [omni.hydra] Rendering failed.
+2026-10-21T08:09:14Z [8,693ms] [Error] [omni.usd] HydraEngine::render failed to end the compute graph: error code 6
+Starting kit application with the following args:  ['/isaac-sim/exts/isaacsim.simulation_app/isaacsim/simulation_app/simulation_app.py', '/isaac-sim/apps/isaacsim.exp.base.python.kit', '--/app/tokens/exe-path=/isaac-sim/kit', '--/persistent/app/viewport/displayOptions=3094', '--/rtx/materialDb/syncLoads=True', '--/rtx/hydra/materialSyncLoads=True', '--/omni.kit.plugin/syncUsdLoads=True', '--/app/renderer/resolution/width=1280', '--/app/renderer/resolution/height=720', '--/app/window/width=1440', '--/app/window/height=900', '--/renderer/multiGpu/enabled=True', '--/app/fastShutdown=True', '--/app/installSignalHandlers=0', '--ext-folder', '/isaac-sim/exts', '--ext-folder', '/isaac-sim/apps', '--/physics/cudaDevice=0', '--/plugins/carb.tasking.plugin/threadCount=32', '--/plugins/omni.tbb.globalcontrol/maxThreadCount=32', '--portable', '--no-window', '--/app/window/hideUi=1', '--allow-root']
+Passing the following args to the base kit application:  ['--tag', 'cf03', '--only', '6,7,10,11', '--fric', '0.3']
+Warp 1.8.2 initialized:
+   CUDA Toolkit 12.8, Driver 13.0
+   Devices:
+     "cpu"      : "x86_64"
+     "cuda:0"   : "NVIDIA GeForce RTX 5090" (31 GiB, sm_120, mempool enabled)
+   Kernel cache:
+     /root/.cache/warp/1.8.2
+Warp DeprecationWarning: The `warp.sim` module is deprecated and will be removed in v1.10. Please transition to using the forthcoming Newton library instead.
+[isaacsim.replicator.incident] started
+=== pgrasp probe_edge cf03 ===
+args: {'Ls': '100,150,200', 'mus': '1.0,1.5,2.0', 'gaps': '3.0,2.5', 'only': '6,7,10,11', 'video': False, 'fd_mm': 20.0, 'ft_mm': 6.0, 'start_out_mm': 30.0, 'insert_mm': 25.0, 'below_mm': 6.0, 'overhang_mm': 30.0, 'kR': 0.9, 'theta_deg': 110.0, 'pull_mm': 60.0, 'peel_t': 6.0, 'pull_frac': 0.25, 'hold_t': 0.5, 'stay_t': 1.0, 'fcont': 0.001, 'frest': 0.0, 'table_fric': 0.8, 'young': 2000.0, 'poisson': 0.45, 'thick_mm': 4.0, 'areal': 0.1, 'fric': 0.3, 'cell_mm': 14.285714285714286, 'cont': 0.002, 'rest': 0.0005, 'solver': 48, 'dt': 0.008333333333333333, 'focal': 3.0, 'cam': '-0.62,-0.42,0.30,0.0,0.02,0.05', 'tag': 'cf03'}
+組: ['6:L150_mu1.0_g3.0', '7:L150_mu1.0_g2.5', '10:L150_mu2.0_g3.0', '11:L150_mu2.0_g2.5']
+[8.729s] Simulation App Startup Complete
+2026-10-21T08:09:14Z [8,775ms] [Error] [carb.graphics-vulkan.plugin] Out of GPU memory allocating resource 'Tonemapping Output' [size: unknown]
+2026-10-21T08:09:14Z [8,775ms] [Error] [carb.graphics-vulkan.plugin] Failure injector rule to repro:
+{
+    debugName="Tonemapping Output",
+}
+2026-10-21T08:09:14Z [8,776ms] [Error] [carb.graphics-vulkan.plugin] VkResult: ERROR_OUT_OF_DEVICE_MEMORY
+2026-10-21T08:09:14Z [8,776ms] [Error] [carb.graphics-vulkan.plugin] vkAllocateMemory failed.
+2026-10-21T08:09:14Z [8,776ms] [Error] [gpu.foundation.plugin] Texture creation failed for the device: 0.
+2026-10-21T08:09:14Z [8,776ms] [Error] [omni.usd] HydraEngine::render failed to end the compute graph: error code 6
+set_physics_volume_deformable_body(/World/s6_sheet) -> True
+  collider /World/s6_sheet:schema 預設 contactOffset=-inf restOffset=-inf → 設 0.002 / 0.0005
+VtxXformAttachment /World/s6_sheet_rootatt:88 個頂點,src0=/World/s6_sheet src1=/World/s6_anc stiff=inf damp=0
+板 300x200x4mm 網格 21x14x1(間距 14.29x14.29mm);根部綁 88 點(y>=80.0,鉸點 y=85.7);桌緣 y=-70.0(懸空 30mm)
+指 D 20 T 6;下指前緣 -130 → -75 mm(邊 -100),夾心 y -85.0;cont 1.0mm rest 0.0mm
+2026-10-21T08:09:16Z [11,007ms] [Error] [carb.graphics-vulkan.plugin] Out of GPU memory allocating resource 'Foundation Resource Allocator' [size: unknown]
+2026-10-21T08:09:16Z [11,007ms] [Error] [carb.graphics-vulkan.plugin] Failure injector rule to repro:
+{
+    debugName="Foundation Resource Allocator",
+}
+2026-10-21T08:09:16Z [11,007ms] [Error] [carb.graphics-vulkan.plugin] VkResult: ERROR_OUT_OF_DEVICE_MEMORY
+2026-10-21T08:09:16Z [11,007ms] [Error] [carb.graphics-vulkan.plugin] vkAllocateMemory failed for flags: 0.
+2026-10-21T08:09:16Z [11,007ms] [Error] [gpu.foundation.plugin] Failed to allocate memory for resource allocator Foundation Resource Allocator
+2026-10-21T08:09:16Z [11,007ms] [Error] [gpu.foundation.plugin] Failed to create a heap for pool Foundation Resource Allocator memory pool
+2026-10-21T08:09:16Z [11,007ms] [Error] [gpu.foundation.plugin] Releasing memory that isn't owned by the sub-allocator Foundation Resource Allocator
+2026-10-21T08:09:16Z [11,007ms] [Error] [gpu.foundation.plugin] Failed to allocate mip-tail memory for texture Wireframe_blue_110_1_0_1760470665_111895_6.ovtex
+
+2026-10-21T08:09:16Z [11,009ms] [Error] [carb.graphics-vulkan.plugin] Out of GPU memory allocating resource 'Foundation Resource Allocator' [size: unknown]
+2026-10-21T08:09:16Z [11,009ms] [Error] [carb.graphics-vulkan.plugin] Failure injector rule to repro:
+{
+    debugName="Foundation Resource Allocator",
+}
+2026-10-21T08:09:16Z [11,009ms] [Error] [carb.graphics-vulkan.plugin] VkResult: ERROR_OUT_OF_DEVICE_MEMORY
+2026-10-21T08:09:16Z [11,009ms] [Error] [carb.graphics-vulkan.plugin] vkAllocateMemory failed for flags: 0.
+2026-10-21T08:09:16Z [11,009ms] [Error] [gpu.foundation.plugin] Failed to allocate memory for resource allocator Foundation Resource Allocator
+2026-10-21T08:09:16Z [11,009ms] [Error] [gpu.foundation.plugin] Failed to create a heap for pool Foundation Resource Allocator memory pool
+2026-10-21T08:09:16Z [11,009ms] [Error] [gpu.foundation.plugin] Releasing memory that isn't owned by the sub-allocator Foundation Resource Allocator
+2026-10-21T08:09:16Z [11,009ms] [Error] [gpu.foundation.plugin] Failed to allocate mip-tail memory for texture WireframeBlur_basecolor_110_1_0_1760470665_436257_6.ovtex
+
+2026-10-21T08:09:16Z [11,012ms] [Error] [carb.graphics-vulkan.plugin] Out of GPU memory allocating resource 'Foundation Resource Allocator' [size: unknown]
+2026-10-21T08:09:16Z [11,012ms] [Error] [carb.graphics-vulkan.plugin] Failure injector rule to repro:
+{
+    debugName="Foundation Resource Allocator",
+}
+2026-10-21T08:09:16Z [11,012ms] [Error] [carb.graphics-vulkan.plugin] VkResult: ERROR_OUT_OF_DEVICE_MEMORY
+2026-10-21T08:09:16Z [11,012ms] [Error] [carb.graphics-vulkan.plugin] vkAllocateMemory failed for flags: 0.
+2026-10-21T08:09:16Z [11,012ms] [Error] [gpu.foundation.plugin] Failed to allocate memory for resource allocator Foundation Resource Allocator
+2026-10-21T08:09:16Z [11,012ms] [Error] [gpu.foundation.plugin] Failed to create a heap for pool Foundation Resource Allocator memory pool
+2026-10-21T08:09:16Z [11,012ms] [Error] [gpu.foundation.plugin] Releasing memory that isn't owned by the sub-allocator Foundation Resource Allocator
+2026-10-21T08:09:16Z [11,012ms] [Error] [gpu.foundation.plugin] Failed to allocate mip-tail memory for texture WireframeBlur_blue_112_1_0_1760470665_1474958_6.ovtex
+
+2026-10-21T08:09:17Z [11,481ms] [Error] [carb.graphics-vulkan.plugin] Out of GPU memory allocating resource 'Indirect diffuse texture' [size: unknown]
+2026-10-21T08:09:17Z [11,481ms] [Error] [carb.graphics-vulkan.plugin] Failure injector rule to repro:
+{
+    debugName="Indirect diffuse texture",
+}
+2026-10-21T08:09:17Z [11,481ms] [Error] [carb.graphics-vulkan.plugin] VkResult: ERROR_OUT_OF_DEVICE_MEMORY
+2026-10-21T08:09:17Z [11,481ms] [Error] [carb.graphics-vulkan.plugin] vkAllocateMemory failed.
+2026-10-21T08:09:17Z [11,481ms] [Error] [gpu.foundation.plugin] Texture creation failed for the device: 0.
+2026-10-21T08:09:17Z [11,482ms] [Error] [omni.usd] HydraEngine::render failed to end the compute graph: error code 6
+2026-10-21T08:09:19Z [13,819ms] [Warning] [carb.graphics-vulkan.plugin] GPU pagefault occured on virtual address(0x000000016b38e000)
+2026-10-21T08:09:19Z [13,819ms] [Warning] [carb.graphics-vulkan.plugin] GPU pagefault no associated data found closest allocations were:
+2026-10-21T08:09:19Z [13,819ms] [Warning] [carb.graphics-vulkan.plugin] 1: AddressRange(0x0000000000000000 - 0x0000000000000000) with name(dummy to ignore)
+2026-10-21T08:09:19Z [13,819ms] [Warning] [carb.graphics-vulkan.plugin] 2: AddressRange(0xffffffffffffffff - 0xffffffffffffffff) with name(dummy to ignore)
+2026-10-21T08:09:19Z [13,820ms] [Warning] [carb.graphics-vulkan.plugin] aftermath reports no active shader during GPU crash
+2026-10-21T08:09:19Z [13,820ms] [Error] [carb.graphics-vulkan.plugin] GPU crash is detected. Trying to write crash dump into: /isaac-sim/kit/logs/Kit/Isaac-Sim Python/5.1/kit_20261021_080905-0.nv-gpudmp
+2026-10-21T08:09:19Z [13,823ms] [Error] [carb.graphics-vulkan.plugin] GPU crash dump is successfully written
+2026-10-21T08:09:19Z [13,988ms] [Error] [omni.physx.plugin] PhysX error: PxgCudaDeviceMemoryAllocator failed to allocate memory 67108864 bytes! Result = 2, FILE /builds/omniverse/physics/physx/source/gpucommon/src/PxgCudaMemoryAllocator.cpp, LINE 140
+2026-10-21T08:09:19Z [14,011ms] [Error] [omni.physx.plugin] PhysX ABORT error: PhysX cannot start GPU simulation because the PxCudaContextManager is still in out-of-memory state!
+, FILE /builds/omniverse/physics/physx/source/physx/src/NpScene.cpp, LINE 3036
+2026-10-21T08:09:19Z [14,011ms] [Error] [omni.physx.plugin] PhysX error: Exceeding maximum number of PhysX errors (1000). omni.physx will ignore logging subsequent errors to user interface until simulation stop
+2026-10-21T08:09:19Z [14,011ms] [Error] [omni.physx.plugin] PhysX error: PxScene::fetchResults: fetchResults() called illegally! It must be called after advance() or simulate(), FILE /builds/omniverse/physics/physx/source/physx/src/NpSceneFetchResults.cpp, LINE 236
+2026-10-21T08:09:19Z [14,014ms] [Error] [omni.physx.plugin] PhysX ABORT error: PhysX cannot start GPU simulation because the PxCudaContextManager is still in out-of-memory state!
+, FILE /builds/omniverse/physics/physx/source/physx/src/NpScene.cpp, LINE 3036
+2026-10-21T08:09:19Z [14,014ms] [Error] [omni.physx.plugin] PhysX error: Exceeding maximum number of PhysX errors (1000). omni.physx will ignore logging subsequent errors to user interface until simulation stop
+2026-10-21T08:09:19Z [14,014ms] [Error] [omni.physx.plugin] PhysX error: PxScene::fetchResults: fetchResults() called illegally! It must be called after advance() or simulate(), FILE /builds/omniverse/physics/physx/source/physx/src/NpSceneFetchResults.cpp, LINE 236
+2026-10-21T08:09:19Z [14,016ms] [Error] [carb.graphics-vulkan.plugin] VkResult: ERROR_DEVICE_LOST
+2026-10-21T08:09:19Z [14,016ms] [Error] [carb.graphics-vulkan.plugin] vkWaitForFences failed for command queue.
+2026-10-21T08:09:19Z [14,016ms] [Error] [gpu.foundation.plugin] A GPU crash occurred. Exiting the application...
+Reasons for the failure: a device lost, out of memory, or an unexpected bug.
+2026-10-21T08:09:19Z [14,016ms] [Warning] [gpu.foundation.plugin] polling aftermath dump status ...
+2026-10-21T08:09:19Z [14,066ms] [Warning] [gpu.foundation.plugin] successfully waited and produced aftermath dump
+2026-10-21T08:09:20Z [0ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash] A crash has occurred.  If a debugger should be attached, please set the '/crashreporter/debuggerAttachTimeoutMs' setting to a timeout in milliseconds.  This can be used to allow the crash reporter to wait for up to that long for a debugger to attach before processing or sending the crash report.
+2026-10-21T08:09:20Z [29ms] [Error] [carb.crashreporter-breakpad.plugin] [crash] Wrote dump file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/d497d7db-dd89-45a8-256dad97-caf9c528.dmp'
+2026-10-21T08:09:20Z [32ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/d497d7db-dd89-45a8-256dad97-caf9c528.dmp'
+2026-10-21T08:09:20Z [35ms] [Error] [carb.crashreporter-breakpad.plugin] [crash]     dump file size is 4305832 bytes, file is readable.
+2026-10-21T08:09:20Z [39ms] [Fatal] [carb.crashreporter-breakpad.plugin] [crash] Crash detected in pid 1774367 thread 1774367
+2026-10-21T08:09:20Z [42ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash] Crash metadata:
+2026-10-21T08:09:20Z [45ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  BuildGitlabJobID = '209507876'
+2026-10-21T08:09:20Z [48ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  CarbSdkVersion = '206.6+release.9587.07f17b1b.gl'
+2026-10-21T08:09:20Z [51ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  CrashTime = 'Wed Oct 21 08:09:20 2026 GMT'
+2026-10-21T08:09:20Z [54ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  DriverShaderCacheWrapper = 'disabled'
+2026-10-21T08:09:20Z [57ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  DumpId = 'd497d7db-dd89-45a8-256dad97-caf9c528'
+2026-10-21T08:09:20Z [60ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  LastUploadStatus = '0'
+2026-10-21T08:09:20Z [63ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  ProductName = 'OmniverseKit'
+2026-10-21T08:09:20Z [66ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  PythonTracebackStatus = ''py-spy' successfully wrote info to '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/d497d7db-dd89-45a8-256dad97-caf9c528.py.txt''
+2026-10-21T08:09:20Z [69ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  RetryCount = '0'
+2026-10-21T08:09:20Z [72ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  StartupTime = '1792570145'
+2026-10-21T08:09:20Z [75ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  UploadSuccessful = '0'
+2026-10-21T08:09:20Z [78ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  UptimeSeconds = '15'
+2026-10-21T08:09:20Z [81ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  UserStory = ''
+2026-10-21T08:09:20Z [84ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  UserStoryStatus = 'Running in headless mode; not gathering user story'
+2026-10-21T08:09:20Z [87ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  Version = '107.3.3+production.229672.69cbf6ad.gl'
+2026-10-21T08:09:20Z [90ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  aftermath_active_shader_count = '0'
+2026-10-21T08:09:20Z [93ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  aftermath_enabled = '1'
+2026-10-21T08:09:20Z [96ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  aftermath_flags = '3'
+2026-10-21T08:09:20Z [99ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  aftermath_status = 'auto-enabled'
+2026-10-21T08:09:20Z [102ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  aftermath_version = '2024.1'
+2026-10-21T08:09:20Z [105ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  appName = 'Isaac-Sim Python'
+2026-10-21T08:09:20Z [108ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  appState = 'started'
+2026-10-21T08:09:20Z [111ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  appVersion = '5.1.0'
+2026-10-21T08:09:20Z [114ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  autoloadExts = ''
+2026-10-21T08:09:20Z [117ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildBranch = 'production'
+2026-10-21T08:09:20Z [120ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildCi = 'gl'
+2026-10-21T08:09:20Z [124ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildConfig = 'release'
+2026-10-21T08:09:20Z [127ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildGitlabJobName = 'kit-build-release-linux-x86_64'
+2026-10-21T08:09:20Z [130ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildGitlabJobStage = 'kit-build'
+2026-10-21T08:09:20Z [133ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildGitlabPipelineID = '34875094'
+2026-10-21T08:09:20Z [136ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildHash = '69cbf6ad'
+2026-10-21T08:09:20Z [139ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildMajor = '107'
+2026-10-21T08:09:20Z [142ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildMinor = '3'
+2026-10-21T08:09:20Z [145ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildNumber = '229672'
+2026-10-21T08:09:20Z [148ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildPatch = '3'
+2026-10-21T08:09:20Z [151ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  buildVersion = '107.3.3'
+2026-10-21T08:09:20Z [154ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  carboniteFrameworkVersion = '206.6+release.9587.07f17b1b.gl'
+2026-10-21T08:09:20Z [157ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  carboniteSdkVersion = '206.6+release.9587.07f17b1b.gl'
+2026-10-21T08:09:20Z [160ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  commandLine = '/isaac-sim/kit/python/bin/python3 probe_edge.py --tag cf03 --only 6,7,10,11 --fric 0.3'
+2026-10-21T08:09:20Z [163ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  cpuCoreLimited = '32'
+2026-10-21T08:09:20Z [166ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  cpuId = 'Intel64 Family 26 Model 68 Stepping 0'
+2026-10-21T08:09:20Z [170ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  cpuLogicalCoresBareMetal = '32'
+2026-10-21T08:09:20Z [173ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  cpuName = 'AMD Ryzen 9 9950X3D 16-Core Processor'
+2026-10-21T08:09:20Z [176ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  cpuPhysicalCoresBareMetal = '16'
+2026-10-21T08:09:20Z [180ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  cpuUsageQuota = '-1.000000'
+2026-10-21T08:09:20Z [183ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  cpuVendor = 'AuthenticAMD'
+2026-10-21T08:09:20Z [186ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  environmentName = 'Individual'
+2026-10-21T08:09:20Z [189ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  externalBuild = '1'
+2026-10-21T08:09:20Z [192ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  gpuCrash = '1'
+2026-10-21T08:09:20Z [195ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  gpuDriver_0 = '580.173'
+2026-10-21T08:09:20Z [198ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  gpuOutOfMemory = 'oom'
+2026-10-21T08:09:20Z [201ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  gpuVRAM_0 = '34190917632'
+2026-10-21T08:09:20Z [204ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  gpu_0 = 'NVIDIA GeForce RTX 5090'
+2026-10-21T08:09:20Z [207ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  kitRendererDriverVersion = '580.173'
+2026-10-21T08:09:20Z [210ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  lastCommand = 'MJCFCreateImportConfig'
+2026-10-21T08:09:20Z [213ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  lastCommands = 'URDFCreateImportConfig,MJCFCreateImportConfig'
+2026-10-21T08:09:20Z [216ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  lib_isaacSim_buildBranch = 'release'
+2026-10-21T08:09:20Z [219ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  lib_isaacSim_buildDate = 'Fri Oct 17 03:55:10 2025 +0000'
+2026-10-21T08:09:20Z [222ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  lib_isaacSim_buildHash = '9c81211'
+2026-10-21T08:09:20Z [225ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  lib_isaacSim_buildRepo = 'https://gitlab-master.nvidia.com/omniverse/isaac/omni_isaac_sim.git'
+2026-10-21T08:09:20Z [228ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  lib_isaacSim_buildVersion = '5.1.0-rc.19'
+2026-10-21T08:09:20Z [231ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  lib_physx_buildBranch = 'HEAD'
+2026-10-21T08:09:20Z [234ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  lib_physx_buildDate = 'Oct-03-2025'
+2026-10-21T08:09:20Z [237ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  lib_physx_buildHash = '3a61992'
+2026-10-21T08:09:20Z [240ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  lib_physx_buildRepo = 'gitlab-master.nvidia.com/omniverse/physics'
+2026-10-21T08:09:20Z [243ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  lib_physx_buildVersion = '107.3.26'
+2026-10-21T08:09:20Z [246ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  memoryStats = '(avail/total) RAM: 123.173/186.365GB, Swap: 2.08142/8GB, VM: 1.71799e+10/1.71799e+10GB'
+2026-10-21T08:09:20Z [249ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  nvidia-smi = '
+==============NVSMI LOG==============
+
+Timestamp                                              : Wed Oct 21 08:09:06 2026
+Driver Version                                         : 580.173.02
+CUDA Version                                           : 13.0
+
+Attached GPUs                                          : 1
+GPU 00000000:01:00.0
+    Product Name                                       : NVIDIA GeForce RTX 5090
+    Product Brand                                      : GeForce
+    Product Architecture                               : Blackwell
+    Display Mode                                       : Requested functionality has been deprecated
+    Display Attached                                   : Yes
+    Display Active                                     : Enabled
+    Persistence Mode                                   : Disabled
+    Addressing Mode                                    : HMM
+    MIG Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    Accounting Mode                                    : Disabled
+    Accounting Mode Buffer Size                        : 4000
+    Driver Model
+        Current                                        : N/A
+        Pending                                        : N/A
+    Serial Number                                      : 0
+    GPU UUID                                           : GPU-1bc29a6a-bf10-6375-2cfb-0d5564944d31
+    GPU PDI                                            : 0xa53bd5766385fa1b
+    Minor Number                                       : 0
+    VBIOS Version                                      : 98.02.2E.80.45
+    MultiGPU Board                                     : No
+    Board ID                                           : 0x100
+    Board Part Number                                  : N/A
+    GPU Part Number                                    : 2B85-300-A1
+    FRU Part Number                                    : N/A
+    Platform Info
+        Chassis Serial Number                          : 
+        Slot Number                                    : 0
+        Tray Index                                     : 0
+        Host ID                                        : 1
+        Peer Type                                      : Direct Connected
+        Module Id                                      : 1
+        GPU Fabric GUID                                : 0x0000000000000000
+    Inforom Version
+        Image Version                                  : G005.0000.98.01
+        OEM Object                                     : 2.1
+        ECC Object                                     : N/A
+        Power Management Object                        : N/A
+    Inforom BBX Object Flush
+        Latest Timestamp                               : N/A
+        Latest Duration                                : N/A
+    GPU Operation Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    GPU C2C Mode                                       : Disabled
+    GPU Virtualization Mode
+        Virtualization Mode                            : None
+        Host VGPU Mode                                 : N/A
+        vGPU Heterogeneous Mode                        : N/A
+    GPU Recovery Action                                : None
+    GSP Firmware Version                               : 580.173.02
+    IBMNPU
+        Relaxed Ordering Mode                          : N/A
+    PCI
+        Bus                                            : 0x01
+        Device                                         : 0x00
+        Domain                                         : 0x0000
+        Base Classcode                                 : 0x3
+        Sub Classcode                                  : 0x0
+        Device Id                                      : 0x2B8510DE
+        Bus Id                                         : 00000000:01:00.0
+        Sub System Id                                  : 0x41B51458
+        GPU Link Info
+            PCIe Generation
+                Max                                    : 5
+                Current                                : 5
+                Device Current                         : 5
+                Device Max                             : 5
+                Host Max                               : 5
+            Link Width
+                Max                                    : 16x
+                Current                                : 8x
+        Bridge Chip
+            Type                                       : N/A
+            Firmware                                   : N/A
+        Replays Since Reset                            : 2
+        Replay Number Rollovers                        : 0
+        Tx Throughput                                  : 7911911 KB/s
+        Rx Throughput                                  : 1954674 KB/s
+        Atomic Caps Outbound                           : N/A
+        Atomic Caps Inbound                            : FETCHADD_32 FETCHADD_64 SWAP_32 SWAP_64 CAS_32 CAS_64 
+    Fan Speed                                          : 30 %
+    Performance State                                  : P1
+    Clocks Event Reasons
+        Idle                                           : Not Active
+        Applications Clocks Setting                    : Not Active
+        SW Power Cap                                   : Not Active
+        HW Slowdown                                    : Not Active
+            HW Thermal Slowdown                        : Not Active
+            HW Power Brake Slowdown                    : Not Active
+        Sync Boost                                     : Not Active
+        SW Thermal Slowdown                            : Not Active
+        Display Clock Setting                          : Not Active
+    Clocks Event Reasons Counters
+        SW Power Capping                               : 258710 us
+        Sync Boost                                     : 0 us
+        SW Thermal Slowdown                            : 0 us
+        HW Thermal Slowdown                            : 0 us
+        HW Power Braking                               : 0 us
+    Sparse Operation Mode                              : N/A
+    FB Memory Usage
+        Total                                          : 32607 MiB
+        Reserved                                       : 498 MiB
+        Used                                           : 30145 MiB
+        Free                                           : 1965 MiB
+    BAR1 Memory Usage
+        Total                                          : 32768 MiB
+        Used                                           : 276 MiB
+        Free                                           : 32492 MiB
+    Conf Compute Protected Memory Usage
+        Total                                          : 0 MiB
+        Used                                           : 0 MiB
+        Free                                           : 0 MiB
+    Compute Mode                                       : Default
+    Utilization
+        GPU                                            : 96 %
+        Memory                                         : 3 %
+        Encoder                                        : 0 %
+        Decoder                                        : 0 %
+        JPEG                                           : 0 %
+        OFA                                            : 0 %
+    Encoder Stats
+        Active Sessions                                : 0
+        Average FPS                                    : 0
+        Average Latency                                : 0
+    FBC Stats
+        Active Sessions                                : 0
+        Average FPS                                    : 0
+        Average Latency                                : 0
+    DRAM Encryption Mode
+        Current                                        : Disabled
+        Pending                                        : Disabled
+    ECC Mode
+        Current                                        : N/A
+        Pending                                        : N/A
+    ECC Errors
+        Volatile
+            SRAM Correctable                           : N/A
+            SRAM Uncorrectable Parity                  : N/A
+            SRAM Uncorrectable SEC-DED                 : N/A
+            DRAM Correctable                           : N/A
+            DRAM Uncorrectable                         : N/A
+        Aggregate
+            SRAM Correctable                           : N/A
+            SRAM Uncorrectable Parity                  : N/A
+            SRAM Uncorrectable SEC-DED                 : N/A
+            DRAM Correctable                           : N/A
+            DRAM Uncorrectable                         : N/A
+            SRAM Threshold Exceeded                    : N/A
+        Aggregate Uncorrectable SRAM Sources
+            SRAM L2                                    : N/A
+            SRAM SM                                    : N/A
+            SRAM Microcontroller                       : N/A
+            SRAM PCIE                                  : N/A
+            SRAM Other                                 : N/A
+        Channel Repair Pending                         : No
+        TPC Repair Pending                             : No
+        Unrepairable Memory                            : N/A
+    Retired Pages
+        Single Bit ECC                                 : N/A
+        Double Bit ECC                                 : N/A
+        Pending Page Blacklist                         : N/A
+    Remapped Rows                                      : N/A
+    Temperature
+        GPU Current Temp                               : 44 C
+        GPU T.Limit Temp                               : 46 C
+        GPU Shutdown T.Limit Temp                      : -5 C
+        GPU Slowdown T.Limit Temp                      : -2 C
+        GPU Max Operating T.Limit Temp                 : 0 C
+        GPU Target Temperature                         : N/A
+        Memory Current Temp                            : N/A
+        Memory Max Operating T.Limit Temp              : N/A
+    GPU Power Readings
+        Average Power Draw                             : 146.70 W
+        Instantaneous Power Draw                       : 141.90 W
+        Current Power Limit                            : 600.00 W
+        Requested Power Limit                          : 600.00 W
+        Default Power Limit                            : 600.00 W
+        Min Power Limit                                : 400.00 W
+        Max Power Limit                                : 600.00 W
+    GPU Memory Power Readings 
+        Average Power Draw                             : N/A
+        Instantaneous Power Draw                       : N/A
+    Module Power Readings
+        Average Power Draw                             : N/A
+        Instantaneous Power Draw                       : N/A
+        Current Power Limit                            : N/A
+        Requested Power Limit                          : N/A
+        Default Power Limit                            : N/A
+        Min Power Limit                                : N/A
+        Max Power Limit                                : N/A
+    Power Smoothing                                    : N/A
+    Workload Power Profiles
+        Requested Profiles                             : N/A
+        Enforced Profiles                              : N/A
+    Clocks
+        Graphics                                       : 3030 MHz
+        SM                                             : 3030 MHz
+        Memory                                         : 13801 MHz
+        Video                                          : 2355 MHz
+    Applications Clocks
+        Graphics                                       : N/A
+        Memory                                         : N/A
+    Default Applications Clocks
+        Graphics                                       : N/A
+        Memory                                         : N/A
+    Deferred Clocks
+        Memory                                         : N/A
+    Max Clocks
+        Graphics                                       : 3210 MHz
+        SM                                             : 3210 MHz
+        Memory                                         : 14001 MHz
+        Video                                          : 3090 MHz
+    Max Customer Boost Clocks
+        Graphics                                       : N/A
+    Clock Policy
+        Auto Boost                                     : N/A
+        Auto Boost Default                             : N/A
+    Fabric
+        State                                          : N/A
+        Status                                         : N/A
+        CliqueId                                       : N/A
+        ClusterUUID                                    : N/A
+        Health
+            Summary                                    : N/A
+            Bandwidth                                  : N/A
+            Route Recovery in progress                 : N/A
+            Route Unhealthy                            : N/A
+            Access Timeout Recovery                    : N/A
+            Incorrect Configuration                    : N/A
+            Partition Assigned                         : N/A
+    Processes
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 439304
+            Type                          : C+G
+            Name                          : /isaac-sim/kit/kit
+            Used GPU Memory               : 3382 MiB
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 439304
+            Type                          : C
+            Name                          : /isaac-sim/kit/kit
+            Used GPU Memory               : 3382 MiB
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 1629839
+            Type                          : C+G
+            Name                          : /isaac-sim.............../python3
+            Used GPU Memory               : 4332 MiB
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 1629839
+            Type                          : C
+            Name                          : /isaac-sim.............../python3
+            Used GPU Memory               : 4332 MiB
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 1751547
+            Type                          : C+G
+            Name                          : /isaac-sim.............../python3
+            Used GPU Memory               : 5638 MiB
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 1751547
+            Type                          : C
+            Name                          : /isaac-sim.............../python3
+            Used GPU Memory               : 5638 MiB
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 1772443
+            Type                          : C+G
+            Name                          : /isaac-sim.............../python3
+            Used GPU Memory               : 4574 MiB
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 1772443
+            Type                          : C
+            Name                          : /isaac-sim.............../python3
+            Used GPU Memory               : 4574 MiB
+        GPU instance ID                   : N/A
+        Compute instance ID               : N/A
+        Process ID                        : 1774367
+            Type                          : G
+            Name                          : /isaac-sim.............../python3
+            Used GPU Memory               : 6 MiB
+    Capabilities
+        EGM                                            : disabled
+
+'
+2026-10-21T08:09:20Z [252ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  osDistro = 'ubuntu'
+2026-10-21T08:09:20Z [255ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  osName = '24.04.2 LTS (Noble Numbat)'
+2026-10-21T08:09:20Z [258ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  osVersion = '24.04.2'
+2026-10-21T08:09:20Z [261ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  portableMode = '1'
+2026-10-21T08:09:20Z [265ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  runEnvironment = 'Individual'
+2026-10-21T08:09:20Z [268ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  runningInContainer = '1'
+2026-10-21T08:09:20Z [271ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  shaderdb_debugSymbols = '0'
+2026-10-21T08:09:20Z [275ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  shaderdb_dumpIncludeOverrides = '0'
+2026-10-21T08:09:20Z [278ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  shaderdb_dumpIntermediates = '0'
+2026-10-21T08:09:20Z [281ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  shaderdb_obfuscateCode = '1'
+2026-10-21T08:09:20Z [284ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  shaderdb_optimizationLevel = '1'
+2026-10-21T08:09:20Z [287ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  systemInfo = '
+|---------------------------------------------------------------------------------------------|
+| Driver Version: 580.173.02    | Graphics API: Vulkan
+|=============================================================================================|
+| GPU | Name                             | Active | LDA | GPU Memory | Vendor-ID | LUID       |
+|     |                                  |        |     |            | Device-ID | UUID       |
+|     |                                  |        |     |            | Bus-ID    |            |
+|---------------------------------------------------------------------------------------------|
+| 0   | NVIDIA GeForce RTX 5090          | Yes: 0 |     | 32607   MB | 10de      | 0          |
+|     |                                  |        |     |            | 2b85      | 1bc29a6a.. |
+|     |                                  |        |     |            | 1         |            |
+|=============================================================================================|
+| OS: 24.04.2 LTS (Noble Numbat) ubuntu, Version: 24.04.2, Kernel: 7.0.0-28-generic
+| Processor: AMD Ryzen 9 9950X3D 16-Core Processor
+| Cores: 16 | Logical Cores: 32
+|---------------------------------------------------------------------------------------------|
+| Total Memory (MB): 190838 | Free Memory: 131265
+| Total Page/Swap (MB): 8191 | Free Page/Swap: 2131
+|---------------------------------------------------------------------------------------------|
+'
+2026-10-21T08:09:20Z [290ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  telemetrySessionId = '6039722063474483759'
+2026-10-21T08:09:20Z [293ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  terminatedByAbort = '0'
+2026-10-21T08:09:20Z [297ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  totalRamBareMetalMB = '190838'
+2026-10-21T08:09:20Z [300ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  totalRamLimitedMB = '190838'
+2026-10-21T08:09:20Z [303ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  totalSwapBareMetalMB = '8191'
+2026-10-21T08:09:20Z [306ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  totalSwapLimitedMB = '8191'
+2026-10-21T08:09:20Z [309ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  userId = 'default'
+2026-10-21T08:09:20Z [312ms] [Warning] [carb.crashreporter-breakpad.plugin] [crash]  workingDirectory = '/isaac-sim/test_scripts/manip_fr3/handoff_20260929/vol/pgrasp'
+2026-10-21T08:09:20Z [315ms] [Fatal] [carb.crashreporter-breakpad.plugin] [crash] Thread 1774367 backtrace follows:
+2026-10-21T08:09:20Z [328ms] [Fatal] [carb.crashreporter-breakpad.plugin] 000: libc.so.6!__sigaction+0x50 (??:?)
+2026-10-21T08:09:20Z [338ms] [Fatal] [carb.crashreporter-breakpad.plugin] 001: libgpu.foundation.plugin.so!carbOnPluginStartup+0x3a54 (??:?)
+2026-10-21T08:09:20Z [347ms] [Fatal] [carb.crashreporter-breakpad.plugin] 002: libomni.kit.renderer.plugin.so!void std::vector<void*, std::allocator<void*> >::_M_realloc_insert<void* const&>(__gnu_cxx::__normal_iterator<void**, std::vector<void*, std::allocator<void*> > >, void* const&)+0x5e34 (??:?)
+2026-10-21T08:09:20Z [355ms] [Fatal] [carb.crashreporter-breakpad.plugin] 003: libomni.kit.renderer.plugin.so!carbOnPluginPostShutdown+0x104e (??:?)
+2026-10-21T08:09:20Z [364ms] [Fatal] [carb.crashreporter-breakpad.plugin] 004: libomni.kit.renderer.plugin.so!carbOnPluginPreStartup+0x674e (??:?)
+2026-10-21T08:09:20Z [373ms] [Fatal] [carb.crashreporter-breakpad.plugin] 005: libcarb.eventdispatcher.plugin.so!carbOnPluginRegisterEx+0x3441 (??:?)
+2026-10-21T08:09:20Z [380ms] [Fatal] [carb.crashreporter-breakpad.plugin] 006: libomni.kit.loop-isaac.plugin.so!void std::__detail::__to_chars_10_impl<unsigned int>(char*, unsigned int, unsigned int)+0x1a48d (??:?)
+2026-10-21T08:09:20Z [386ms] [Fatal] [carb.crashreporter-breakpad.plugin] 007: libomni.kit.app.plugin.so!+0x235e1
+2026-10-21T08:09:20Z [396ms] [Fatal] [carb.crashreporter-breakpad.plugin] 008: libomni.kit.app.plugin.so!carbOnPluginPreStartup+0x1fa0 (??:?)
+2026-10-21T08:09:20Z [407ms] [Fatal] [carb.crashreporter-breakpad.plugin] 009: _app.cpython-311-x86_64-linux-gnu.so!std::__detail::_Map_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, void*>, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, void*> >, std::__detail::_Select1st, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true>, true>::operator[](std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&)+0xcfd7 (??:?)
+2026-10-21T08:09:20Z [418ms] [Fatal] [carb.crashreporter-breakpad.plugin] 010: _app.cpython-311-x86_64-linux-gnu.so!std::__detail::_Map_base<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, void*>, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, void*> >, std::__detail::_Select1st, std::equal_to<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::hash<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::__detail::_Mod_range_hashing, std::__detail::_Default_ranged_hash, std::__detail::_Prime_rehash_policy, std::__detail::_Hashtable_traits<true, false, true>, true>::operator[](std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&&)+0x88ae (??:?)
+2026-10-21T08:09:20Z [477ms] [Fatal] [carb.crashreporter-breakpad.plugin] 011: libpython3.11.so.1.0!cfunction_call+0x37 (/builds/omniverse/externals/python-build/_build/Python-3.11.13/Objects/methodobject.c:542)
+2026-10-21T08:09:20Z [505ms] [Fatal] [carb.crashreporter-breakpad.plugin] 012: libpython3.11.so.1.0!_PyObject_MakeTpCall+0x95 (/builds/omniverse/externals/python-build/_build/Python-3.11.13/./Include/internal/pycore_ceval.h:123)
+2026-10-21T08:09:20Z [569ms] [Fatal] [carb.crashreporter-breakpad.plugin] 013: libpython3.11.so.1.0!_PyEval_EvalFrameDefault+0x8b8c (/builds/omniverse/externals/python-build/_build/Python-3.11.13/Python/ceval.c:7285)
+2026-10-21T08:09:20Z [636ms] [Fatal] [carb.crashreporter-breakpad.plugin] 014: libpython3.11.so.1.0!PyEval_EvalCode+0x4ba (/builds/omniverse/externals/python-build/_build/Python-3.11.13/./Include/internal/pycore_ceval.h:73)
+2026-10-21T08:09:20Z [719ms] [Fatal] [carb.crashreporter-breakpad.plugin] 015: libpython3.11.so.1.0!run_mod+0xa5 (/builds/omniverse/externals/python-build/_build/Python-3.11.13/Python/pythonrun.c:1742)
+2026-10-21T08:09:20Z [804ms] [Fatal] [carb.crashreporter-breakpad.plugin] 016: libpython3.11.so.1.0!_PyRun_SimpleFileObject+0x130 (/builds/omniverse/externals/python-build/_build/Python-3.11.13/Python/pythonrun.c:1662)
+2026-10-21T08:09:20Z [881ms] [Fatal] [carb.crashreporter-breakpad.plugin] 017: libpython3.11.so.1.0!_PyRun_AnyFileObject+0x3c (/builds/omniverse/externals/python-build/_build/Python-3.11.13/Python/pythonrun.c:79)
+2026-10-21T08:09:21Z [967ms] [Fatal] [carb.crashreporter-breakpad.plugin] 018: libpython3.11.so.1.0!Py_RunMain+0x793 (/builds/omniverse/externals/python-build/_build/Python-3.11.13/Modules/main.c:361)
+2026-10-21T08:09:21Z [1,071ms] [Fatal] [carb.crashreporter-breakpad.plugin] 019: libpython3.11.so.1.0!Py_BytesMain+0x43 (/builds/omniverse/externals/python-build/_build/Python-3.11.13/Modules/main.c:739)
+2026-10-21T08:09:21Z [1,088ms] [Fatal] [carb.crashreporter-breakpad.plugin] 020: libc.so.6!__libc_init_first+0x8a (??:?)
+2026-10-21T08:09:21Z [1,140ms] [Fatal] [carb.crashreporter-breakpad.plugin] 021: libc.so.6!__libc_start_main+0x8b (??:?)
+2026-10-21T08:09:21Z [1,148ms] [Fatal] [carb.crashreporter-breakpad.plugin] 022: python3!_start+0x29 (??:?)
+/isaac-sim/python.sh: line 73: 1774367 Segmentation fault      (core dumped) $python_exe "${filtered_args[@]}" $args
+There was an error running python
+EXIT 1
