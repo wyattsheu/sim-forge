@@ -1,7 +1,7 @@
 # JAW:三隻手都改成「夾」(兩指夾爪)— 2026-10-21
 
 ## 結論
-三隻手在影片裡都改成兩指夾爪「張開 → 下降 → 合指 → 才綁 / 才帶走」:手 1 補上原本看不到的下指(attach 模式下指一直停在 park,影片只有一塊上指方塊),手 2 從「藍方塊直接綁」改成兩指捏、合指完成才綁指間足跡頂點,手 3 從「方塊壓杯頂」改成兩指夾杯兩端、合指接觸後杯才跟手。物理路徑沿用 extract4(綁定 / kinematic 跟隨),extract6/X1:yn、yp 都拿住到結束、守衛沒觸發、穿杯 0、出箱落地,落地布被帶起 34.8%(extract4 33.8 / 19.1 / 36.6%)→ 不比 extract4 差,影片已換成夾爪版。**純摩擦(不綁定)不可行**:F1/F2 合指後指間都是 0 個頂點,yn 越線 1% / 0%(要 ≥50%)。
+三隻手在影片裡都改成兩指夾爪「張開 → 下降 → 合指 → 才綁 / 才帶走」:手 1 補上原本看不到的下指(attach 模式下指一直停在 park,影片只有一塊上指方塊),手 2 從「藍方塊直接綁」改成兩指捏、合指完成才綁指間足跡頂點,手 3 從「方塊壓杯頂」改成兩指夾杯兩端、合指接觸後杯才跟手。物理路徑沿用 extract4(綁定 / kinematic 跟隨),extract6/X1:yn、yp 都拿住到結束、守衛沒觸發、穿杯 0、出箱落地,落地布被帶起 34.8%;extract6/X2(加 `--edamp 0.02`)同樣全拿住、守衛沒觸發、穿杯 0,落地布被帶起 **22.0%**(<30%),yn 越線 88% → 80%(extract4 33.8 / 19.1 / 36.6%)→ 不比 extract4 差,影片換成夾爪版 X2。**純摩擦(不綁定)不可行**:F1/F2 合指後指間都是 0 個頂點,yn 越線 1% / 0%(要 ≥50%)。
 
 ## 三隻手的夾法(`--hand1_jaw 1 --hand2 jaw --extract_grip jaw`)
 | 手 | 之前看起來 | 現在 | 物理(拿住靠什麼) |
@@ -36,11 +36,12 @@
 | extract4/X2 | 14 / 42 | 56% → 99%(11 → 16%)| 22 | 98% → 97% | 都沒觸發 | 121.55 | 0 | 22.0% / 19.3% / 19.1% | (17.5,-299.7,39.6) | 81.1% |
 | extract4/X3 | 14 / 43 | 1% → 0%(16 → 14%)| 19 | 97% → 96% | 都沒觸發 | 121.55 | 0 | 35.5% / 35.5% / 36.6% | (15.0,-285.0,39.7) | 83.3% |
 | extract6/X1 | 12 / 32 | nan% → nan%(18 → 16%)| 15 | 71% → 97% | 都沒觸發 | 121.85 | 0 | 31.7% / 31.7% / 34.8% | (10.0,-284.9,39.8) | 80.6% |
-| extract6/X2(`--edamp 0.02`)| 跑中(交件時未完成,完成後補)| | | | | | | | | |
+| extract6/X2(`--edamp 0.02`)| 18 / 27 | 88% → 80%(16 → 15%)| 19 | 75% → 72% | 都沒觸發 | 121.85 | 0 | 23.5% / 19.7% / 22.0% | (9.3,-291.1,39.9) | 86.2% |
 
 - X1 對照 extract4:手 2 綁 32 點(extract4 42~67;指間足跡比 40×30 方塊小)但 yn 一樣拿住到結束(壁外 lift+2 18% → 結束 16%,extract4 11~19%);yn 越線 nan = 這次 yn 的 TOPS(折線內側頂點)是空的,指標失效(同 PEEL4 L1),看壁外 %。
 - yp 取杯前 71% → 結束 97%(取杯過程把 yp 再往外帶),守衛都沒觸發。出箱 121.85(比 extract4 晚 0.3 s:合指 0.8 s 取代 0.3 s 綁)。
-- 布被帶起 抬起 / 離箱 / 落地 31.7 / 31.7 / 34.8%,在 extract4 三次範圍內(19.1~36.6%),<30% 這次沒達到。
+- 布被帶起 抬起 / 離箱 / 落地:X1 31.7 / 31.7 / 34.8%,X2 23.5 / 19.7 / 22.0%,都在 extract4 三次範圍內(19.1~36.6%);<30% 1/2(X2)。
+- X2:手 2 綁 27 點,yn 越線 lift+2 88% → 結束 80%(壁外 16 → 15%),yp 取杯前 75% → 結束 72%,布在箱內 86.2%。
 
 ## 改的檔與旗標(預設 = 舊行為;備份 `wrap_vol.py.before_jaw2`、`../publish_sim_forge.sh.before_jaw2`;wrap_vol diff 105 行)
 - `--hand1_jaw 0|1`(預設 0):第一隻手補畫下指(只在 `--grasp_attach 1` 有作用)。
@@ -53,7 +54,7 @@
 ## 正式 demo 旗標(夾爪版;FINAL_PLAN §2 已改)
 ```
 cd vol
-extract6/run.sh X1 [--edamp 0.02]
+extract6/run.sh X2 --edamp 0.02     # demo 用的那次
 # = /isaac-sim/python.sh wrap_vol.py --sheet_mm 500 --grasp 1 --grasp_attach 1 --attach_pad_mm 24 --attach_layer both --arc2 1 --arc_k 0.8 --peel_t 6 --gap_mm 4 --clear_mm 6 --steep_deg 45 --second 1 --young 2e3 --grasp_site state --grasp_retry 2 --site_xmax_mm 60 --grasp_site_k 13 --arc2_over_cap 0 --arc2_over_mm 30 --hand2 jaw --hand2_pad_mm 15 --hand2_keep 1 --hold_yp 1 --extract 1 --guard_yp 2.6 --guard_n 2 --extract_mode slide --extract_out_mm 280 --guard_yn 2.6 --slide_clear_mm 40 --hand1_jaw 1 --extract_grip jaw --out extract6/X1
 python3 extract6/table.py extract6/X1
 extract6/cut_short.sh extract6/X1/wrap.mp4 videos/DEMO_twohand_extract_short.mp4
@@ -61,8 +62,8 @@ fric/run.sh F1                 # 純摩擦(yn 一片,~74 s 模擬)
 ```
 
 ## 影片
-- `videos/VOL_twohand_extract.mp4` = extract6/X1(130.5 s,夾爪版;舊 extract4/X2 版被覆蓋)。
-- `videos/DEMO_twohand_extract_short.mp4` = `extract6/cut_short.sh extract6/X1/wrap.mp4`,18.2 s:手 1 yn 合指 52–54 ×1 → yn 掀 54–64 ×4 → 手 2 下降+合指 64–66.2 ×1 → yp 夾+掀 88–102 ×4 → 取杯 下降+合指+抬 117.3–120 ×1 → 出箱+放地+張開 120–130.5 ×2。三次合指都是 1 倍速。
+- `videos/VOL_twohand_extract.mp4` = extract6/X2(130.5 s,夾爪版 + edamp 0.02;舊 extract4/X2 版被覆蓋)。
+- `videos/DEMO_twohand_extract_short.mp4` = `extract6/cut_short.sh extract6/X2/wrap.mp4`,18.2 s:手 1 yn 合指 52–54 ×1 → yn 掀 54–64 ×4 → 手 2 下降+合指 64–66.2 ×1 → yp 夾+掀 88–102 ×4 → 取杯 下降+合指+抬 117.3–120 ×1 → 出箱+放地+張開 120–130.5 ×2。三次合指都是 1 倍速。
 - 已知外觀:手 2 在抓取段相機(focal 2.8)畫面左上邊緣,只露出指尖 + 掌一部分;純視覺下指在布底下會跟下層布有幾 mm 重疊。
 
 ## 事故紀錄
