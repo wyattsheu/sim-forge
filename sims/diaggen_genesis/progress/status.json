@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T12:20:26+08:00",
+  "updated_at": "2026-10-21T12:20:42+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T04:05:19.455387+00:00",
-      "updated_at": "2026-10-21T12:20:26+08:00",
+      "updated_at": "2026-10-21T12:20:42+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -154,7 +154,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T04:05:19.462238+00:00",
-      "updated_at": "2026-10-21T12:20:26+08:00",
+      "updated_at": "2026-10-21T12:20:43+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -275,7 +275,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T04:12:53.485565+00:00",
-      "updated_at": "2026-10-21T12:20:26+08:00",
+      "updated_at": "2026-10-21T12:20:43+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -294,11 +294,11 @@
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "running",
-          "ledger_status": "pending",
+          "status": "failed",
+          "ledger_status": "failed",
           "ok": false,
           "started_at": "2026-10-21T04:20:25.283189+00:00",
-          "finished_at": null
+          "finished_at": "2026-10-21T04:20:37.502053+00:00"
         },
         {
           "name": "omnipart_generate_parts",
@@ -369,6 +369,16 @@
           "path": "media/baseball_cap_cleaned_image.png",
           "bytes": 2504852,
           "sha256": "366f64f4600faecbbef4310c332a4df42479efdbb3e012ebf7b60f4083af5a4c"
+        },
+        {
+          "path": "media/baseball_cap_processed_white_bg_png.png",
+          "bytes": 218454,
+          "sha256": "99fe415d3d7e43d12f11b5b4da3e9f827ad1df232c25a29ba17f18e7e61513db"
+        },
+        {
+          "path": "media/baseball_cap_processed_rgba.png",
+          "bytes": 240726,
+          "sha256": "a804a9cb030a1704a976c42ef6d76c28dab205ba226bed1330daadbcb7b48b82"
         }
       ],
       "id": "baseball_cap",
@@ -386,7 +396,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:20:26+08:00",
+      "updated_at": "2026-10-21T12:20:43+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -491,7 +501,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:20:26+08:00",
+      "updated_at": "2026-10-21T12:20:43+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -596,7 +606,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:20:26+08:00",
+      "updated_at": "2026-10-21T12:20:43+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -701,7 +711,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:20:26+08:00",
+      "updated_at": "2026-10-21T12:20:43+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -806,7 +816,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:20:26+08:00",
+      "updated_at": "2026-10-21T12:20:43+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -911,7 +921,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:20:26+08:00",
+      "updated_at": "2026-10-21T12:20:43+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1041,7 +1051,17 @@
       "path": "media/baseball_cap_cleaned_image.png",
       "bytes": 2504852,
       "sha256": "366f64f4600faecbbef4310c332a4df42479efdbb3e012ebf7b60f4083af5a4c"
+    },
+    {
+      "path": "media/baseball_cap_processed_white_bg_png.png",
+      "bytes": 218454,
+      "sha256": "99fe415d3d7e43d12f11b5b4da3e9f827ad1df232c25a29ba17f18e7e61513db"
+    },
+    {
+      "path": "media/baseball_cap_processed_rgba.png",
+      "bytes": 240726,
+      "sha256": "a804a9cb030a1704a976c42ef6d76c28dab205ba226bed1330daadbcb7b48b82"
     }
   ],
-  "signature": "97c3f379eb7662dba693e7841ad855448f11c42f1568dddf18350fc2b144950e"
+  "signature": "c6f204b505b61443ba9a1456c4ede844029caa054fdd0ed5182a2118699499ab"
 }

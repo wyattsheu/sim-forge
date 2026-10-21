@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T12:20:26+08:00（Asia/Taipei）
+更新：2026-10-21T12:20:42+08:00（Asia/Taipei）
 
 共 9 件：等待 6、執行中 1、完成 0、失敗 2、取消 0。
 
@@ -80,7 +80,7 @@ Run：`genesis_baseball_cap_20261021`；執行中。
 | 階段 | 狀態 |
 |---|---|
 | 圖片清理 | success |
-| SAM3 分割 | running |
+| SAM3 分割 | failed |
 | OmniPart 幾何生成 | pending |
 | 材料推估 | pending |
 | 材料參數配置 | pending |
@@ -92,6 +92,10 @@ Run：`genesis_baseball_cap_20261021`；執行中。
 Genesis 診斷 episode 數：0。
 
 ![baseball_cap_cleaned_image](media/baseball_cap_cleaned_image.png)
+
+![baseball_cap_processed_white_bg_png](media/baseball_cap_processed_white_bg_png.png)
+
+![baseball_cap_processed_rgba](media/baseball_cap_processed_rgba.png)
 
 
 ## curling_iron
