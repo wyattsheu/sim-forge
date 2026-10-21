@@ -1,0 +1,727 @@
+[Info] [carb] Logging to file: /isaac-sim/kit/logs/Kit/Isaac-Sim Python/5.1/kit_20261021_091559.log
+2026-10-21T09:15:59Z [1ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4bb63968-26bc-4ee8-7ff530b4-ba3419d6.dmp'
+2026-10-21T09:15:59Z [1ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/9e82ae1b-f81a-4580-88c30fbf-b251a4ec.dmp'
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/d497d7db-dd89-45a8-256dad97-caf9c528.dmp'
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4018c4ac-c109-45e1-ed1161a9-aa1e51e2.dmp'
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/d5fb54e6-ecd2-4276-15a39aa4-993d0f5f.dmp'
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/cb2ba0c7-8e37-4b7e-b052c1ac-db86de6b.dmp'
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/fcd78e17-0a0c-4f81-f5d28689-09428de7.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/fcd78e17-0a0c-4f81-f5d28689-09428de7.dmp.toml could not be opened for parsing
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/fcd78e17-0a0c-4f81-f5d28689-09428de7.dmp'
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/d31ed63d-ad5b-4926-a06dd0bf-7143a53a.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/d31ed63d-ad5b-4926-a06dd0bf-7143a53a.dmp.toml could not be opened for parsing
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/d31ed63d-ad5b-4926-a06dd0bf-7143a53a.dmp'
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/8882ef46-93b7-4a73-5758e9be-ed6e9f82.dmp'
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/8a1c22b2-18e5-4d50-223925be-bff10cec.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/8a1c22b2-18e5-4d50-223925be-bff10cec.dmp.toml could not be opened for parsing
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/8a1c22b2-18e5-4d50-223925be-bff10cec.dmp'
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/6618cecc-5e34-49c3-140f2e83-39c44ddc.dmp'
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/5a67a501-2b62-4af7-87168d9d-7ff5af02.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/5a67a501-2b62-4af7-87168d9d-7ff5af02.dmp.toml could not be opened for parsing
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/5a67a501-2b62-4af7-87168d9d-7ff5af02.dmp'
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/8943d230-16c8-4ea3-3abf9bb8-811523be.dmp'
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/3a2e1aca-80b6-4dd6-1d9f0eba-59ab8d6e.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/3a2e1aca-80b6-4dd6-1d9f0eba-59ab8d6e.dmp.toml could not be opened for parsing
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/3a2e1aca-80b6-4dd6-1d9f0eba-59ab8d6e.dmp'
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/a66adc53-a750-46bd-2b2cbb91-96f48119.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/a66adc53-a750-46bd-2b2cbb91-96f48119.dmp.toml could not be opened for parsing
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/a66adc53-a750-46bd-2b2cbb91-96f48119.dmp'
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/8918008d-40c4-4d5c-dae68ba9-56aacf23.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/8918008d-40c4-4d5c-dae68ba9-56aacf23.dmp.toml could not be opened for parsing
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/8918008d-40c4-4d5c-dae68ba9-56aacf23.dmp'
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/d13a1ba8-8b62-48c4-b308e7bc-1f6475c4.dmp'
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/9e264fed-0b04-49a6-70d8dba7-d4bede93.dmp'
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/83b1eceb-19c8-40cb-8c428887-348e8c27.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/83b1eceb-19c8-40cb-8c428887-348e8c27.dmp.toml could not be opened for parsing
+2026-10-21T09:15:59Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/83b1eceb-19c8-40cb-8c428887-348e8c27.dmp'
+2026-10-21T09:15:59Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/1e4107e5-34a9-4068-4cb734a6-e8b6ed68.dmp'
+2026-10-21T09:15:59Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/3770a91a-676a-43d6-f7370c85-f456c0f1.dmp'
+2026-10-21T09:15:59Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/b113ff62-b532-4357-eb1eee8d-3caeb0cd.dmp'
+2026-10-21T09:15:59Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/85b8f34f-ccf2-4fbe-0f0b228d-d04313de.dmp'
+2026-10-21T09:15:59Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/64961c0a-1455-48c7-8f135483-6b694bca.dmp'
+2026-10-21T09:15:59Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/949d4cb7-b33f-4837-4c40bfbb-312196f6.dmp'
+2026-10-21T09:15:59Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/9de96518-d9b7-40d7-c029ef8a-a1ff8e24.dmp'
+2026-10-21T09:15:59Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/87ddd565-4c68-4c67-3e5e0dbb-794c0e7e.dmp'
+2026-10-21T09:15:59Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/7c244895-2284-464f-204b19b6-94ae3b6a.dmp'
+2026-10-21T09:15:59Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/14b0f6cf-baa4-42ac-f7439791-366015b7.dmp'
+2026-10-21T09:15:59Z [5ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/2a5be1d9-622b-489a-68d7a7b5-40b980fd.dmp'
+2026-10-21T09:15:59Z [5ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/85b3c27a-b598-428a-b919fdb3-39769603.dmp'
+2026-10-21T09:15:59Z [5ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/dc0f9a38-93af-494e-9d6f5185-0f049818.dmp'
+2026-10-21T09:15:59Z [5ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/643d5565-b1d8-4a5f-6576a4bc-9439f4f8.dmp'
+2026-10-21T09:15:59Z [5ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/45d6d730-262d-460e-e03aeea6-e6688bf7.dmp'
+2026-10-21T09:15:59Z [5ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/328b2399-0b25-4e61-8a520984-5e29605a.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/328b2399-0b25-4e61-8a520984-5e29605a.dmp.toml could not be opened for parsing
+2026-10-21T09:15:59Z [6ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/328b2399-0b25-4e61-8a520984-5e29605a.dmp'
+2026-10-21T09:15:59Z [6ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4836427e-d879-45da-5e650f96-688caaa4.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4836427e-d879-45da-5e650f96-688caaa4.dmp.toml could not be opened for parsing
+2026-10-21T09:15:59Z [6ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4836427e-d879-45da-5e650f96-688caaa4.dmp'
+2026-10-21T09:15:59Z [6ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/1a4fb8c5-c888-4339-59cea286-98b05965.dmp'
+2026-10-21T09:15:59Z [6ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/7ef71ee0-61ee-4674-0d052a9f-bff1f595.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/7ef71ee0-61ee-4674-0d052a9f-bff1f595.dmp.toml could not be opened for parsing
+2026-10-21T09:15:59Z [6ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/7ef71ee0-61ee-4674-0d052a9f-bff1f595.dmp'
+2026-10-21T09:15:59Z [6ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/a34b2cd6-51a5-480a-c11eeba7-b366538e.dmp'
+2026-10-21T09:15:59Z [7ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/272a5acb-b848-415b-a773cca1-6680e33f.dmp'
+2026-10-21T09:15:59Z [7ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/9c805a12-2af6-460c-9d737496-40fe3e7a.dmp'
+2026-10-21T09:15:59Z [7ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/64b025a5-c13a-40b6-aade17ad-5a302a09.dmp'
+2026-10-21T09:15:59Z [7ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/40301e2d-7d7b-408b-573c1eab-ebd468ba.dmp'
+2026-10-21T09:15:59Z [7ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/0a8893e7-4ba2-46e9-9555d0b0-26e223bd.dmp'
+2026-10-21T09:15:59Z [7ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/3af4ce4e-eaba-4e43-026f7ca0-4df8ede5.dmp'
+2026-10-21T09:15:59Z [7ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/993c5fad-48c2-4685-8b6edab3-6a22c27f.dmp'
+2026-10-21T09:15:59Z [8ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/fb56405e-12ba-4cd3-9f1ff887-0dc8898b.dmp'
+2026-10-21T09:15:59Z [8ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4f600334-c71b-4482-85db5b9f-f04f137f.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4f600334-c71b-4482-85db5b9f-f04f137f.dmp.toml could not be opened for parsing
+2026-10-21T09:15:59Z [8ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4f600334-c71b-4482-85db5b9f-f04f137f.dmp'
+2026-10-21T09:15:59Z [8ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/f73f703d-6097-430f-d35826ac-aad6d3dc.dmp'
+2026-10-21T09:15:59Z [8ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4861b20d-fbb2-480f-9b79ff94-c68a3940.dmp'
+2026-10-21T09:15:59Z [8ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/83b25c98-cfc0-4c70-6d932789-9686e6aa.dmp'
+2026-10-21T09:15:59Z [8ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/04d92423-df22-4516-f800ad88-5001dd06.dmp'
+2026-10-21T09:15:59Z [8ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/60f0c2d1-adcb-4ecc-d06115ad-3c6abce5.dmp'
+2026-10-21T09:15:59Z [8ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/e1bafb25-5d68-44e9-ecb00091-f55b059d.dmp'
+2026-10-21T09:15:59Z [8ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/0e1478ee-e277-469e-9f9d9680-b4429682.dmp'
+[0.032s] [ext: omni.kit.async_engine-0.0.3] startup
+[0.345s] [ext: omni.metrics.core-0.0.3] startup
+[0.345s] [ext: omni.client.lib-1.1.0] startup
+[0.354s] [ext: omni.blobkey-1.1.2] startup
+[0.354s] [ext: omni.stats-1.0.1] startup
+[0.355s] [ext: omni.datastore-0.0.0] startup
+[0.359s] [ext: omni.client-1.3.0] startup
+[0.362s] [ext: omni.ujitso.default-1.0.0] startup
+[0.363s] [ext: omni.hsscclient-1.1.2] startup
+[0.369s] [ext: omni.gpu_foundation.shadercache.vulkan-1.0.0] startup
+[0.371s] [ext: omni.assets.plugins-0.0.0] startup
+[0.372s] [ext: omni.gpu_foundation-0.0.0] startup
+[0.377s] [ext: carb.windowing.plugins-1.0.0] startup
+2026-10-21T09:15:59Z [366ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-21T09:15:59Z [366ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+[0.377s] [ext: omni.kit.renderer.init-0.0.0] startup
+2026-10-21T09:15:59Z [380ms] [Warning] [omni.platforminfo.plugin] failed to open the default display.  Can't verify X Server version.
+
+|---------------------------------------------------------------------------------------------|
+| Driver Version: 580.173.02    | Graphics API: Vulkan
+|=============================================================================================|
+| GPU | Name                             | Active | LDA | GPU Memory | Vendor-ID | LUID       |
+|     |                                  |        |     |            | Device-ID | UUID       |
+|     |                                  |        |     |            | Bus-ID    |            |
+|---------------------------------------------------------------------------------------------|
+| 0   | NVIDIA GeForce RTX 5090          | Yes: 0 |     | 32607   MB | 10de      | 0          |
+|     |                                  |        |     |            | 2b85      | 1bc29a6a.. |
+|     |                                  |        |     |            | 1         |            |
+|=============================================================================================|
+| OS: 24.04.2 LTS (Noble Numbat) ubuntu, Version: 24.04.2, Kernel: 7.0.0-28-generic
+| Processor: AMD Ryzen 9 9950X3D 16-Core Processor
+| Cores: 16 | Logical Cores: 32
+|---------------------------------------------------------------------------------------------|
+| Total Memory (MB): 190838 | Free Memory: 137711
+| Total Page/Swap (MB): 8191 | Free Page/Swap: 2142
+|---------------------------------------------------------------------------------------------|
+2026-10-21T09:16:00Z [933ms] [Warning] [gpu.foundation.plugin] CPU performance profile is set to powersave. This profile sets the CPU to the lowest frequency reducing performance.
+2026-10-21T09:16:00Z [942ms] [Warning] [gpu.foundation.plugin] PCIe link width current (8) and maximum (16) for device 0 don't match.
+2026-10-21T09:16:00Z [942ms] [Warning] [gpu.foundation.plugin] IOMMU is enabled.
+[1.103s] [ext: omni.kit.pipapi-0.0.0] startup
+[1.104s] [ext: omni.kit.pip_archive-0.0.0] startup
+[1.105s] [ext: omni.pip.compute-1.6.3] startup
+[1.105s] [ext: omni.materialx.libs-1.0.7] startup
+[1.110s] [ext: omni.pip.cloud-1.4.3] startup
+[1.112s] [ext: omni.isaac.core_archive-3.0.0] startup
+[1.113s] [ext: omni.usd.config-1.0.6] startup
+[1.115s] [ext: omni.gpucompute.plugins-0.0.0] startup
+[1.115s] [ext: omni.usd.libs-1.0.1] startup
+[1.167s] [ext: omni.mdl-56.0.3] startup
+[1.182s] [ext: omni.iray.libs-0.0.0] startup
+[1.187s] [ext: omni.mdl.neuraylib-0.2.12] startup
+[1.189s] [ext: omni.kit.usd.mdl-1.1.5] startup
+[1.254s] [ext: omni.services.pip_archive-0.16.0] startup
+[1.254s] [ext: omni.isaac.ml_archive-3.0.4] startup
+[1.254s] [ext: omni.kit.telemetry-0.5.2] startup
+[1.282s] [ext: omni.kit.loop-isaac-1.3.7] startup
+[1.284s] [ext: omni.kit.test-2.0.1] startup
+[1.319s] [ext: omni.appwindow-1.1.10] startup
+2026-10-21T09:16:00Z [1,309ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-21T09:16:00Z [1,309ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+[1.323s] [ext: omni.kit.renderer.core-1.1.0] startup
+2026-10-21T09:16:00Z [1,325ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-21T09:16:00Z [1,325ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+2026-10-21T09:16:00Z [1,332ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-21T09:16:00Z [1,332ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+[1.345s] [ext: omni.kit.renderer.capture-0.0.0] startup
+[1.346s] [ext: omni.kit.renderer.imgui-2.0.5] startup
+2026-10-21T09:16:00Z [1,337ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-21T09:16:00Z [1,337ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+2026-10-21T09:16:00Z [1,338ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-21T09:16:00Z [1,338ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+2026-10-21T09:16:00Z [1,338ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-21T09:16:00Z [1,338ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+[1.391s] [ext: omni.ui-2.27.1] startup
+[1.398s] [ext: omni.kit.mainwindow-1.0.3] startup
+[1.399s] [ext: carb.audio-0.1.0] startup
+[1.402s] [ext: omni.uiaudio-1.0.0] startup
+[1.402s] [ext: omni.kit.uiapp-0.0.0] startup
+[1.402s] [ext: omni.usd.schema.metrics.assembler-107.3.1] startup
+[1.404s] [ext: omni.anim.behavior.schema-107.3.0] startup
+[1.411s] [ext: omni.usd.schema.omnigraph-1.0.0] startup
+[1.414s] [ext: omni.usd.schema.geospatial-0.0.0] startup
+[1.416s] [ext: omni.usd.schema.anim-0.0.0] startup
+[1.426s] [ext: omni.usd.schema.audio-0.0.0] startup
+[1.427s] [ext: isaacsim.robot.schema-3.6.0] startup
+[1.432s] [ext: omni.usd_resolver-1.0.0] startup
+[1.435s] [ext: omni.usd.core-1.5.3] startup
+[1.437s] [ext: omni.usd.schema.omni_sensors-0.0.0] startup
+[1.449s] [ext: omni.usd.schema.semantics-0.0.0] startup
+[1.450s] [ext: omni.usd.schema.omni_lens_distortion-0.0.0] startup
+[1.451s] [ext: omni.usd.schema.render_settings.rtx-0.0.0] startup
+[1.452s] [ext: omni.graph.exec-0.9.6] startup
+[1.452s] [ext: omni.kit.actions.core-1.0.0] startup
+[1.454s] [ext: omni.kit.usd_undo-0.1.8] startup
+[1.454s] [ext: omni.kit.exec.core-0.13.4] startup
+[1.455s] [ext: omni.kit.commands-1.4.10] startup
+[1.458s] [ext: omni.kit.window.popup_dialog-2.0.24] startup
+[1.461s] [ext: omni.activity.core-1.0.3] startup
+[1.462s] [ext: omni.resourcemonitor-107.0.1] startup
+[1.463s] [ext: omni.timeline-1.0.14] startup
+[1.464s] [ext: omni.kit.widget.nucleus_connector-2.0.1] startup
+[1.465s] [ext: usdrt.scenegraph-7.6.1] startup
+[1.491s] [ext: omni.kit.audiodeviceenum-1.0.2] startup
+[1.492s] [ext: omni.hydra.usdrt_delegate-7.5.1] startup
+[1.496s] [ext: omni.hydra.scene_delegate-0.3.4] startup
+[1.498s] [ext: omni.usd-1.13.10] startup
+[1.513s] [ext: omni.kit.asset_converter-5.0.17] startup
+[1.522s] [ext: omni.usd.schema.physx-107.3.26] startup
+[1.544s] [ext: omni.anim.navigation.schema-107.3.3] startup
+[1.546s] [ext: omni.inspect-1.0.2] startup
+[1.547s] [ext: omni.kit.notification_manager-1.0.10] startup
+[1.548s] [ext: omni.graph.core-2.184.5] startup
+[1.550s] [ext: isaacsim.core.deprecation_manager-0.2.7] startup
+[1.551s] [ext: omni.usd.schema.omniscripting-1.0.0] startup
+[1.553s] [ext: omni.usd.schema.flow-107.1.1] startup
+[1.554s] [ext: omni.anim.graph.schema-107.3.3] startup
+[1.558s] [ext: omni.usd.schema.isaac-3.0.5] startup
+[1.558s] [ext: isaacsim.core.version-2.0.6] startup
+[1.558s] [ext: omni.ui.scene-1.11.5] startup
+[1.561s] [ext: isaacsim.storage.native-1.5.1] startup
+[1.562s] [ext: omni.kit.widget.options_menu-1.1.6] startup
+[1.564s] [ext: omni.kit.menu.core-1.1.2] startup
+[1.565s] [ext: omni.graph.tools-1.79.2] startup
+[1.580s] [ext: omni.kit.widget.filter-1.1.4] startup
+[1.581s] [ext: omni.kit.menu.utils-2.0.5] startup
+[1.586s] [ext: omni.graph-1.141.2] startup
+[1.614s] [ext: omni.kit.hotkeys.core-1.3.10] startup
+[1.614s] [ext: omni.anim.curve.core-1.3.1] startup
+[1.624s] [ext: omni.kit.clipboard-1.0.5] startup
+[1.625s] [ext: omni.usdphysics-107.3.26] startup
+[1.627s] [ext: omni.physx.foundation-107.3.26] startup
+[1.629s] [ext: omni.kit.widget.context_menu-1.2.5] startup
+[1.630s] [ext: omni.kit.helper.file_utils-0.1.9] startup
+[1.631s] [ext: omni.kit.widget.path_field-2.0.11] startup
+[1.632s] [ext: omni.kvdb-107.3.26] startup
+[1.633s] [ext: omni.kit.widget.options_button-1.0.3] startup
+[1.634s] [ext: omni.kit.widget.filebrowser-2.12.3] startup
+[1.637s] [ext: omni.kit.widget.browser_bar-2.0.10] startup
+[1.638s] [ext: omni.localcache-107.3.26] startup
+[1.639s] [ext: omni.convexdecomposition-107.3.26] startup
+[1.640s] [ext: omni.kit.window.filepicker-2.13.4] startup
+[1.650s] [ext: omni.physx.cooking-107.3.26] startup
+[1.652s] [ext: omni.physics-107.3.26] startup
+[1.654s] [ext: omni.kit.window.file_exporter-1.0.33] startup
+[1.656s] [ext: omni.kit.stage_template.core-1.1.22] startup
+[1.657s] [ext: omni.physx-107.3.26] startup
+[1.662s] [ext: omni.kit.usd.layers-2.2.11] startup
+[1.667s] [ext: omni.kit.window.file_importer-1.1.18] startup
+[1.668s] [ext: omni.physics.physx-107.3.26] startup
+2026-10-21T09:16:00Z [1,658ms] [Warning] [carb] Acquiring non optional plugin interface which is not listed as dependency: [omni::physx::IPhysxBenchmarks v1.0] (plugin: <default plugin>), by client: omni.physics.physx.plugin. Add it to CARB_PLUGIN_IMPL_DEPS() macro of a client.
+[1.669s] [ext: omni.kit.numpy.common-0.1.3] startup
+[1.671s] [ext: omni.kit.window.file-2.0.5] startup
+[1.673s] [ext: omni.physics.stageupdate-107.3.26] startup
+[1.675s] [ext: omni.kit.window.drop_support-1.0.5] startup
+[1.675s] [ext: omni.kit.window.content_browser_registry-0.0.6] startup
+[1.676s] [ext: omni.isaac.dynamic_control-2.0.7] startup
+2026-10-21T09:16:00Z [1,668ms] [Warning] [omni.isaac.dynamic_control] omni.isaac.dynamic_control is deprecated as of Isaac Sim 4.5. No action is needed from end-users.
+[1.679s] [ext: omni.kit.window.content_browser-3.1.3] startup
+[1.688s] [ext: omni.graph.action_core-1.1.7] startup
+[1.689s] [ext: omni.kit.usd.collect-2.4.5] startup
+[1.691s] [ext: isaacsim.gui.content_browser-0.1.11] startup
+[1.693s] [ext: omni.graph.action_nodes-1.50.4] startup
+[1.695s] [ext: omni.kit.widget.prompt-1.0.7] startup
+[1.696s] [ext: omni.graph.action-1.130.0] startup
+[1.696s] [ext: omni.kit.tool.collect-2.2.18] startup
+[1.699s] [ext: omni.index.libs-380600.8087.0] startup
+[1.699s] [ext: omni.ujitso.client-0.0.0] startup
+[1.700s] [ext: omni.index-1.0.1] startup
+[1.701s] [ext: omni.volume-0.5.2] startup
+[1.702s] [ext: omni.hydra.rtx.shadercache.vulkan-1.0.0] startup
+[1.704s] [ext: omni.kit.context_menu-1.8.6] startup
+[1.706s] [ext: omni.hydra.rtx-1.0.0] startup
+2026-10-21T09:16:00Z [1,706ms] [Warning] [omni.log] Source: omni.hydra was already registered.
+[1.727s] [ext: omni.kit.material.library-2.0.7] startup
+[1.738s] [ext: omni.hydra.engine.stats-1.0.3] startup
+[1.740s] [ext: omni.kit.widget.stage_icons-1.0.8] startup
+[1.741s] [ext: omni.kit.viewport.scene_camera_model-1.0.6] startup
+[1.743s] [ext: omni.kit.hydra_texture-1.4.6] startup
+[1.745s] [ext: omni.kit.viewport.legacy_gizmos-1.0.19] startup
+[1.747s] [ext: omni.kit.widget.searchfield-1.1.8] startup
+[1.748s] [ext: omni.kit.widget.viewport-107.1.3] startup
+[1.751s] [ext: omni.kit.viewport.registry-104.0.6] startup
+[1.751s] [ext: omni.kit.raycast.query-1.1.0] startup
+[1.754s] [ext: omni.kit.widget.stage-3.1.4] startup
+[1.762s] [ext: omni.kit.widget.zoombar-1.0.6] startup
+[1.763s] [ext: omni.kit.viewport.window-107.2.0] startup
+[1.776s] [ext: omni.kit.window.stage-2.6.1] startup
+[1.779s] [ext: omni.kit.browser.core-2.3.13] startup
+[1.782s] [ext: omni.kit.menu.stage-1.2.7] startup
+[1.783s] [ext: omni.kit.browser.folder.core-1.10.9] startup
+[1.786s] [ext: omni.kit.property.adapter.core-1.0.2] startup
+[1.788s] [ext: omni.kit.widget.highlight_label-1.0.3] startup
+[1.789s] [ext: omni.kit.property.adapter.usd-1.0.2] startup
+[1.790s] [ext: omni.ui_query-1.1.8] startup
+[1.790s] [ext: omni.kit.window.property-1.12.1] startup
+[1.792s] [ext: omni.kit.property.adapter.fabric-1.0.3] startup
+[1.793s] [ext: omni.kit.ui_test-1.3.7] startup
+[1.794s] [ext: omni.kit.property.usd-4.5.12] startup
+[1.801s] [ext: omni.kit.viewport.utility-1.1.2] startup
+[1.802s] [ext: omni.kit.manipulator.viewport-107.0.1] startup
+[1.803s] [ext: omni.kit.usdz_export-1.0.9] startup
+[1.805s] [ext: omni.kit.window.extensions-1.4.27] startup
+[1.808s] [ext: omni.graph.visualization.nodes-2.1.3] startup
+[1.812s] [ext: omni.kit.tool.asset_importer-4.3.2] startup
+[1.818s] [ext: isaacsim.gui.components-1.2.1] startup
+[1.823s] [ext: isaacsim.examples.browser-0.2.1] startup
+[1.828s] [ext: isaacsim.asset.importer.urdf-2.4.30] startup
+[1.869s] [ext: omni.kit.menu.create-2.0.1] startup
+[1.872s] [ext: omni.physics.tensors-107.3.26] startup
+[1.881s] [ext: omni.usd.metrics.assembler-107.3.1] startup
+[1.883s] [ext: omni.kit.widget.graph-2.0.0] startup
+[1.887s] [ext: omni.kit.widget.searchable_combobox-1.0.6] startup
+[1.888s] [ext: omni.warp.core-1.8.2] startup
+[2.018s] [ext: omni.usd.metrics.assembler.physics-107.3.26] startup
+[2.020s] [ext: omni.kit.graph.delegate.default-1.2.3] startup
+[2.022s] [ext: omni.kit.scripting-107.3.2] startup
+[2.025s] [ext: omni.physx.tensors-107.3.26] startup
+[2.029s] [ext: isaacsim.core.utils-3.5.1] startup
+[2.031s] [ext: omni.anim.asset-107.3.0] startup
+[2.032s] [ext: isaacsim.core.simulation_manager-1.4.4] startup
+[2.925s] [ext: omni.graph.scriptnode-1.50.0] startup
+[2.928s] [ext: omni.kit.graph.editor.core-1.5.3] startup
+[2.932s] [ext: omni.kit.widget.settings-1.2.6] startup
+[2.935s] [ext: omni.kit.primitive.mesh-1.0.17] startup
+[2.941s] [ext: isaacsim.core.prims-0.6.1] startup
+[2.959s] [ext: omni.kit.widget.material_preview-1.0.16] startup
+[2.962s] [ext: omni.kit.graph.usd.commands-1.3.1] startup
+[2.962s] [ext: omni.graph.image.core-0.6.1] startup
+[2.963s] [ext: omni.kit.window.preferences-1.8.0] startup
+[2.967s] [ext: omni.kit.stage_templates-2.0.0] startup
+[2.969s] [ext: isaacsim.asset.browser-1.3.23] startup
+[3.030s] [ext: omni.graph.image.nodes-1.3.1] startup
+[3.031s] [ext: omni.kit.viewport.menubar.core-107.2.1] startup
+[3.041s] [ext: isaacsim.core.api-4.8.0] startup
+[3.047s] [ext: omni.kit.window.material_graph-1.9.1] startup
+[3.054s] [ext: omni.kit.viewport.actions-107.0.2] startup
+[3.057s] [ext: omni.graph.nodes-1.170.10] startup
+[3.063s] [ext: omni.syntheticdata-0.6.13] startup
+[3.081s] [ext: omni.isaac.assets_check-0.3.13] startup
+2026-10-21T09:16:02Z [3,070ms] [Warning] [omni.isaac.assets_check] omni.isaac.assets_check has been deprecated in favor of isaacsim.asset.browser. Please update your code accordingly.
+[3.082s] [ext: isaacsim.core.cloner-1.4.10] startup
+[3.085s] [ext: omni.kit.viewport.menubar.display-107.0.3] startup
+[3.088s] [ext: omni.graph.ui_nodes-1.50.5] startup
+[3.095s] [ext: omni.videoencoding-0.1.2] startup
+[3.097s] [ext: omni.isaac.cloner-1.0.7] startup
+2026-10-21T09:16:02Z [3,086ms] [Warning] [omni.isaac.cloner] omni.isaac.cloner has been deprecated in favor of isaacsim.core.cloner. Please update your code accordingly.
+[3.098s] [ext: isaacsim.gui.sensors.icon-2.0.3] startup
+[3.113s] [ext: omni.warp-1.8.2] startup
+[3.119s] [ext: omni.anim.retarget.core-107.3.3] startup
+[3.129s] [ext: omni.debugdraw-0.1.4] startup
+[3.133s] [ext: omni.replicator.core-1.12.27] startup
+2026-10-21T09:16:02Z [3,147ms] [Warning] [pxr.Semantics] pxr.Semantics is deprecated - please use Semantics instead
+2026-10-21T09:16:02Z [3,247ms] [Warning] [omni.graph.core.plugin] Found duplicate of category 'Replicator' - was 'Annotators', adding 'Fabric Reader'
+2026-10-21T09:16:02Z [3,247ms] [Warning] [omni.graph.core.plugin] Category 'Replicator' not accepted on node type 'omni.replicator.core.FabricReader' in extension 'omni.replicator.core'
+2026-10-21T09:16:02Z [3,248ms] [Warning] [omni.replicator.core.scripts.extension] No material configuration file, adding configuration to material settings directly.
+[3.261s] [ext: omni.kit.quicklayout-1.0.8] startup
+[3.263s] [ext: omni.anim.navigation.core-107.3.8] startup
+[3.268s] [ext: omni.anim.graph.core-107.3.4] startup
+[3.274s] [ext: omni.metropolis.utils-0.1.20] startup
+[3.293s] [ext: isaacsim.asset.importer.mjcf-2.5.13] startup
+[3.299s] [ext: omni.anim.people-0.7.9] startup
+2026-10-21T09:16:02Z [3,292ms] [Warning] [omni.graph.core._impl._registration.register_python_ogn] Python import process in omni.anim.graph.core failed - 'NoneType' object is not subscriptable. Aborting Python node registration
+[3.309s] [ext: isaacsim.test.docstring-1.1.0] startup
+[3.316s] [ext: isaacsim.core.experimental.utils-0.3.0] startup
+[3.322s] [ext: isaacsim.anim.robot-0.0.15] startup
+[3.342s] [ext: isaacsim.core.experimental.prims-0.8.1] startup
+[3.381s] [ext: isaacsim.core.nodes-3.4.3] startup
+[3.388s] [ext: omni.flowusd-107.1.8] startup
+2026-10-21T09:16:02Z [3,379ms] [Warning] [omni.stageupdate.plugin] Deprecated: direct use of IStageUpdate callbacks is deprecated. Use IStageUpdate::getStageUpdate instead.
+[3.402s] [ext: omni.sensors.nv.common-3.0.0] startup
+[3.425s] [ext: isaacsim.core.experimental.materials-0.4.0] startup
+[3.443s] [ext: omni.isaac.core-4.0.7] startup
+2026-10-21T09:16:02Z [3,441ms] [Warning] [omni.isaac.core.physics_context.physics_context] omni.isaac.core.physics_context.physics_context has been deprecated in favor of isaacsim.core.api.physics_context.physics_context. Please update your code accordingly.
+2026-10-21T09:16:02Z [3,447ms] [Warning] [omni.isaac.core.simulation_context.simulation_context] omni.isaac.core.simulation_context.simulation_context has been deprecated in favor of isaacsim.core.api.simulation_context.simulation_context. Please update your code accordingly.
+2026-10-21T09:16:02Z [3,451ms] [Warning] [omni.isaac.core.world.world] omni.isaac.core.world.world has been deprecated in favor of isaacsim.core.api.world.world. Please update your code accordingly.
+2026-10-21T09:16:02Z [3,451ms] [Warning] [omni.isaac.core] omni.isaac.core has been deprecated in favor of isaacsim.core.api. Please update your code accordingly.
+[3.488s] [ext: isaacsim.replicator.incident-0.1.28] startup
+[3.671s] [ext: omni.sensors.net-1.0.0] startup
+[3.681s] [ext: omni.sensors.nv.materials-2.0.0] startup
+[3.694s] [ext: isaacsim.sensors.camera-1.3.6] startup
+[3.747s] [ext: omni.sensors.nv.wpm-3.0.0] startup
+[3.749s] [ext: isaacsim.util.debug_draw-3.1.0] startup
+[3.757s] [ext: omni.sensors.nv.ids-2.0.0] startup
+[3.762s] [ext: omni.sensors.nv.lidar-3.0.0] startup
+[3.771s] [ext: omni.sensors.nv.radar-3.0.0] startup
+[3.774s] [ext: isaacsim.sensors.physics-0.4.3] startup
+[3.779s] [ext: isaacsim.robot_motion.lula-4.0.8] startup
+[3.787s] [ext: isaacsim.robot.surface_gripper-3.3.1] startup
+[3.791s] [ext: isaacsim.sensors.rtx-15.8.4] startup
+[3.800s] [ext: omni.kit.mesh.raycast-107.0.1] startup
+[3.804s] [ext: isaacsim.robot_motion.motion_generation-8.0.26] startup
+[3.824s] [ext: isaacsim.robot.manipulators-3.3.6] startup
+[3.828s] [ext: isaacsim.core.experimental.objects-0.4.0] startup
+[3.840s] [ext: omni.isaac.core_nodes-2.0.6] startup
+2026-10-21T09:16:03Z [3,832ms] [Warning] [omni.isaac.core_nodes] omni.isaac.core_nodes has been deprecated in favor of isaacsim.core.nodes. Please update your code accordingly.
+[3.845s] [ext: isaacsim.replicator.agent.core-0.7.28] startup
+[3.857s] [ext: isaacsim.robot.manipulators.examples-1.1.2] startup
+[3.860s] [ext: isaacsim.simulation_app-2.12.2] startup
+[3.861s] [ext: omni.kit.selection-0.1.6] startup
+[3.864s] [ext: omni.isaac.franka-1.0.7] startup
+2026-10-21T09:16:03Z [3,856ms] [Warning] [omni.isaac.franka] omni.isaac.franka has been deprecated in favor of isaacsim.robot.manipulators.examples.franka. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,856ms] [Warning] [omni.isaac.franka.franka] omni.isaac.franka has been deprecated in favor of isaacsim.robot.manipulators.examples.franka. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,871ms] [Warning] [omni.isaac.franka.kinematics_solver] omni.isaac.franka has been deprecated in favor of isaacsim.robot.manipulators.examples.franka. Please update your code accordingly.
+[3.883s] [ext: isaacsim.robot_motion.lula_test_widget-1.0.12] startup
+[3.886s] [ext: omni.isaac.kit-2.0.6] startup
+2026-10-21T09:16:03Z [3,875ms] [Warning] [omni.isaac.kit] omni.isaac.kit has been deprecated in favor of isaacsim.simulation_app. Please update your code accordingly.
+[3.887s] [ext: isaacsim.gui.menu-2.4.4] startup
+[3.891s] [ext: omni.isaac.asset_browser-1.0.6] startup
+2026-10-21T09:16:03Z [3,881ms] [Warning] [omni.isaac.asset_browser] omni.isaac.asset_browser has been deprecated in favor of isaacsim.asset.browser. Please update your code accordingly.
+[3.893s] [ext: omni.isaac.lula_test_widget-1.0.6] startup
+2026-10-21T09:16:03Z [3,883ms] [Warning] [omni.isaac.lula_test_widget] omni.isaac.lula_test_widget has been deprecated in favor of isaacsim.robot_motion.lula_test_widget. Please update your code accordingly.
+[3.895s] [ext: omni.isaac.manipulators-3.0.7] startup
+2026-10-21T09:16:03Z [3,885ms] [Warning] [omni.isaac.manipulators] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,886ms] [Warning] [omni.isaac.manipulators.controllers] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,886ms] [Warning] [omni.isaac.manipulators.controllers.pick_place_controller] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,887ms] [Warning] [omni.isaac.manipulators.controllers.stacking_controller] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,887ms] [Warning] [omni.isaac.manipulators.grippers] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,887ms] [Warning] [omni.isaac.manipulators.grippers.gripper] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,887ms] [Warning] [omni.isaac.manipulators.grippers.parallel_gripper] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,887ms] [Warning] [omni.isaac.manipulators.grippers.surface_gripper] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,887ms] [Warning] [omni.isaac.manipulators.manipulators] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,887ms] [Warning] [omni.isaac.manipulators.manipulators.single_manipulator] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+[3.899s] [ext: omni.isaac.menu-1.0.6] startup
+2026-10-21T09:16:03Z [3,889ms] [Warning] [omni.isaac.menu] omni.isaac.menu has been deprecated in favor of isaacsim.gui.menu. Please update your code accordingly.
+[3.900s] [ext: isaacsim.robot.policy.examples-4.1.11] startup
+[3.903s] [ext: isaacsim.sensors.physx-2.3.2] startup
+[3.910s] [ext: omni.isaac.motion_generation-8.0.7] startup
+2026-10-21T09:16:03Z [3,900ms] [Warning] [omni.isaac.motion_generation] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,900ms] [Warning] [omni.isaac.motion_generation.articulation_kinematics_solver] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,900ms] [Warning] [omni.isaac.motion_generation.articulation_motion_policy] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,900ms] [Warning] [omni.isaac.motion_generation.articulation_trajectory] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,900ms] [Warning] [omni.isaac.motion_generation.kinematics_interface] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,900ms] [Warning] [omni.isaac.motion_generation.lula] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,900ms] [Warning] [omni.isaac.motion_generation.lula.kinematics] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,901ms] [Warning] [omni.isaac.motion_generation.lula.motion_policies] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,901ms] [Warning] [omni.isaac.motion_generation.lula.path_planners] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,901ms] [Warning] [omni.isaac.motion_generation.lula.trajectory_generator] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,901ms] [Warning] [omni.isaac.motion_generation.motion_policy_controller] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,901ms] [Warning] [omni.isaac.motion_generation.motion_policy_interface] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,901ms] [Warning] [omni.isaac.motion_generation.path_planner_visualizer] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,902ms] [Warning] [omni.isaac.motion_generation.path_planning_interface] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,903ms] [Warning] [omni.isaac.motion_generation.trajectory] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,903ms] [Warning] [omni.isaac.motion_generation.world_interface] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+[3.914s] [ext: omni.isaac.nucleus-1.0.6] startup
+2026-10-21T09:16:03Z [3,904ms] [Warning] [omni.isaac.nucleus] omni.isaac.nucleus has been deprecated in favor of isaacsim.storage.native. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,904ms] [Warning] [omni.isaac.nucleus.nucleus] omni.isaac.nucleus.nucleus has been deprecated in favor of isaacsim.storage.native. Please update your code accordingly.
+[3.916s] [ext: omni.isaac.quadruped-3.0.7] startup
+2026-10-21T09:16:03Z [3,905ms] [Warning] [omni.isaac.quadruped] omni.isaac.quadruped has been deprecated in favor of isaacsim.robot.policy.examples. Please update your code accordingly.
+[3.918s] [ext: omni.isaac.range_sensor-4.0.6] startup
+2026-10-21T09:16:03Z [3,908ms] [Warning] [omni.isaac.range_sensor] omni.isaac.range_sensor has been deprecated in favor of isaacsim.sensors.physx. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,909ms] [Warning] [omni.isaac.range_sensor.commands] omni.isaac.range_sensor.commands has been deprecated in favor of isaacsim.sensors.physx.commands. Please update your code accordingly.
+[3.921s] [ext: omni.isaac.sensor-13.0.7] startup
+2026-10-21T09:16:03Z [3,911ms] [Warning] [omni.isaac.sensor] omni.isaac.sensor has been deprecated in favor of isaacsim.sensors.camera, isaacsim.sensors.physics, isaacsim.sensors.physx, and isaacsim.sensors.rtx. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,911ms] [Warning] [omni.isaac.sensor.camera] omni.isaac.sensor.camera has been deprecated in favor of isaacsim.sensors.camera.camera. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,911ms] [Warning] [omni.isaac.sensor.camera_view] omni.isaac.sensor.camera_view has been deprecated in favor of isaacsim.sensors.camera.camera_view. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,912ms] [Warning] [omni.isaac.sensor.commands] omni.isaac.sensor.commands has been deprecated in favor of isaacsim.sensors.physics.commands, isaacsim.sensors.physx.commands, and isaacsim.sensors.rtx.commands. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,912ms] [Warning] [omni.isaac.sensor.contact_sensor] omni.isaac.sensor.contact_sensor has been deprecated in favor of isaacsim.sensors.physics.contact_sensor. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,912ms] [Warning] [omni.isaac.sensor.imu_sensor] omni.isaac.sensor.imu_sensor has been deprecated in favor of isaacsim.sensors.physics.imu_sensor. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,912ms] [Warning] [omni.isaac.sensor.lidar_rtx] omni.isaac.sensor.lidar_rtx has been deprecated in favor of isaacsim.sensors.rtx.lidar_rtx. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,912ms] [Warning] [omni.isaac.sensor.rotating_lidar_physX] omni.isaac.sensor.imu_sensor has been deprecated in favor of isaacsim.sensors.physix.rotating_lidar_physX. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,913ms] [Warning] [omni.isaac.sensor.scripts.samples.contact_sensor] omni.isaac.sensor.scripts.samples.contact_sensor has been deprecated in favor of isaacsim.sensors.physics.scripts.samples.contact_sensor. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,913ms] [Warning] [omni.isaac.sensor.scripts.samples.imu_sensor] omni.isaac.sensor.scripts.samples.imu_sensor has been deprecated in favor of isaacsim.sensors.physics.scripts.samples.imu_sensor. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,913ms] [Warning] [omni.isaac.sensor.scripts.samples.lightbeam_sensor] omni.isaac.sensor.scripts.samples.lightbeam_sensor has been deprecated in favor of isaacsim.sensors.physx.scripts.samples.lightbeam_sensor. Please update your code accordingly.
+[3.924s] [ext: omni.isaac.surface_gripper-2.0.6] startup
+2026-10-21T09:16:03Z [3,914ms] [Warning] [omni.isaac.surface_gripper] omni.isaac.surface_gripper has been deprecated in favor of isaacsim.robot.surface_gripper. Please update your code accordingly.
+[3.926s] [ext: omni.kit.widget.toolbar-2.0.1] startup
+[3.940s] [ext: omni.kit.manipulator.transform-107.0.0] startup
+[3.943s] [ext: omni.kit.manipulator.selector-1.1.3] startup
+[3.944s] [ext: isaacsim.app.about-2.0.11] startup
+[3.949s] [ext: isaacsim.cortex.framework-1.0.12] startup
+[3.951s] [ext: omni.kit.manipulator.tool.snap-1.5.13] startup
+[3.953s] [ext: omni.isaac.universal_robots-1.0.6] startup
+2026-10-21T09:16:03Z [3,943ms] [Warning] [omni.isaac.universal_robots] omni.isaac.universal_robots has been deprecated in favor of isaacsim.robot.manipulators.examples.universal_robots. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,943ms] [Warning] [omni.isaac.universal_robots.kinematics_solver] omni.isaac.franka has been deprecated in favor of isaacsim.robot.manipulators.examples.universal_robots. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,943ms] [Warning] [omni.isaac.universal_robots.ur10] omni.isaac.franka has been deprecated in favor of isaacsim.robot.manipulators.examples.universal_robots. Please update your code accordingly.
+[3.955s] [ext: omni.isaac.utils-2.0.6] startup
+[3.957s] [ext: omni.isaac.cortex-1.0.5] startup
+2026-10-21T09:16:03Z [3,947ms] [Warning] [omni.isaac.cortex] omni.isaac.cortex has been deprecated in favor of isaacsim.cortex.framework. Please update your code accordingly.
+[3.959s] [ext: omni.kit.viewport.manipulator.transform-107.0.4] startup
+[3.961s] [ext: omni.isaac.window.about-2.0.7] startup
+2026-10-21T09:16:03Z [3,951ms] [Warning] [omni.isaac.window.about] omni.isaac.window.about has been deprecated in favor of isaacsim.app.about. Please update your code accordingly.
+2026-10-21T09:16:03Z [3,951ms] [Warning] [omni.isaac.window.about.about] omni.isaac.window.about.about has been deprecated in favor of isaacsim.app.about.about. Please update your code accordingly.
+[3.963s] [ext: omni.kit.manipulator.camera-106.0.4] startup
+[3.965s] [ext: omni.kit.property.audio-1.0.16] startup
+[3.966s] [ext: omni.fabric.commands-1.1.6] startup
+[3.968s] [ext: omni.kit.manipulator.prim.core-107.0.8] startup
+[3.974s] [ext: omni.kit.property.camera-1.0.10] startup
+[3.975s] [ext: omni.kit.property.geometry-2.0.4] startup
+[3.978s] [ext: omni.kit.property.light-1.0.12] startup
+[3.993s] [ext: omni.hydra.scene_api-0.1.2] startup
+[3.997s] [ext: omni.kit.manipulator.prim.fabric-107.0.4] startup
+[3.998s] [ext: omni.kit.manipulator.prim.usd-107.0.3] startup
+[4.000s] [ext: omni.kit.property.material-1.11.9] startup
+[4.004s] [ext: omni.kit.property.render-1.2.1] startup
+[4.005s] [ext: omni.kit.property.transform-1.5.13] startup
+[4.008s] [ext: isaacsim.gui.property-1.1.3] startup
+[4.010s] [ext: omni.kit.manipulator.prim-107.0.0] startup
+[4.010s] [ext: omni.kit.manipulator.selection-106.0.1] startup
+[4.011s] [ext: omni.isaac.lula-4.0.6] startup
+2026-10-21T09:16:03Z [4,000ms] [Warning] [omni.isaac.lula] omni.isaac.lula has been deprecated in favor of isaacsim.robot_motion.lula. Please update your code accordingly.
+[4.012s] [ext: omni.kit.property.bundle-1.4.1] startup
+[4.013s] [ext: omni.kit.property.isaac-1.0.6] startup
+2026-10-21T09:16:03Z [4,003ms] [Warning] [omni.kit.property.isaac] omni.kit.property.isaac has been deprecated in favor of isaacsim.gui.property. Please update your code accordingly.
+2026-10-21T09:16:03Z [4,003ms] [Warning] [omni.kit.property.isaac.widgets] omni.kit.property.isaac.widgets has been deprecated in favor of isaacsim.gui.property.widgets. Please update your code accordingly.
+[4.014s] [ext: isaacsim.replicator.writers-1.0.17] startup
+[4.024s] [ext: omni.kit.viewport.menubar.camera-107.0.6] startup
+[4.030s] [ext: omni.kit.viewport.menubar.lighting-107.3.1] startup
+[4.034s] [ext: omni.kit.viewport.menubar.render-107.0.10] startup
+[4.039s] [ext: omni.kit.viewport.menubar.settings-107.0.3] startup
+[4.043s] [ext: isaacsim.replicator.domain_randomization-1.0.16] startup
+[4.044s] [ext: isaacsim.replicator.examples-1.3.6] startup
+[4.046s] [ext: omni.ocio-0.1.1] startup
+[4.049s] [ext: omni.rtx.window.settings-0.6.19] startup
+[4.057s] [ext: omni.kit.window.console-1.1.4] startup
+[4.065s] [ext: omni.kit.window.status_bar-0.1.9] startup
+[4.069s] [ext: omni.kit.window.toolbar-2.0.0] startup
+[4.071s] [ext: omni.replicator.isaac-2.0.8] startup
+2026-10-21T09:16:03Z [4,061ms] [Warning] [omni.replicator.isaac] omni.replicator.isaac has been deprecated in favor of isaacsim.replicator.domain_randomization, isaacsim.replicator.examples, isaacsim.replicator.writers. Please update your code accordingly.
+[4.072s] [ext: omni.replicator.replicator_yaml-2.0.11] startup
+[4.077s] [ext: omni.rtx.settings.core-0.6.5] startup
+[4.081s] [ext: omni.usd.metrics.assembler.ui-107.3.1] startup
+[4.091s] [ext: isaacsim.robot.wheeled_robots-4.0.24] startup
+[4.095s] [ext: isaacsim.cortex.behaviors-2.0.14] startup
+[4.096s] [ext: omni.isaac.version-2.0.7] startup
+2026-10-21T09:16:03Z [4,087ms] [Warning] [omni.isaac.version] omni.isaac.version has been deprecated in favor of isaacsim.core.version. Please update your code accordingly.
+[4.099s] [ext: semantics.schema.editor-2.0.2] startup
+[4.103s] [ext: omni.kit.ui.actions-1.0.5] startup
+[4.105s] [ext: semantics.schema.property-2.0.1] startup
+[4.107s] [ext: omni.isaac.wheeled_robots-3.0.7] startup
+2026-10-21T09:16:03Z [4,096ms] [Warning] [omni.isaac.wheeled_robots] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T09:16:03Z [4,096ms] [Warning] [omni.isaac.wheeled_robots.controllers] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T09:16:03Z [4,096ms] [Warning] [omni.isaac.wheeled_robots.controllers.ackermann_controller] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T09:16:03Z [4,097ms] [Warning] [omni.isaac.wheeled_robots.controllers.differential_controller] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T09:16:03Z [4,097ms] [Warning] [omni.isaac.wheeled_robots.controllers.holonomic_controller] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T09:16:03Z [4,097ms] [Warning] [omni.isaac.wheeled_robots.controllers.quintic_path_planner] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T09:16:03Z [4,097ms] [Warning] [omni.isaac.wheeled_robots.controllers.stanley_control] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T09:16:03Z [4,097ms] [Warning] [omni.isaac.wheeled_robots.controllers.wheel_base_pose_controller] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T09:16:03Z [4,097ms] [Warning] [omni.isaac.wheeled_robots.impl] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T09:16:03Z [4,098ms] [Warning] [omni.isaac.wheeled_robots.robots] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T09:16:03Z [4,098ms] [Warning] [omni.isaac.wheeled_robots.robots.holonomic_robot_usd_setup] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T09:16:03Z [4,098ms] [Warning] [omni.isaac.wheeled_robots.robots.wheeled_robot] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+[4.110s] [ext: omni.isaac.cortex.sample_behaviors-2.0.5] startup
+2026-10-21T09:16:03Z [4,100ms] [Warning] [omni.isaac.cortex.sample_behaviors] omni.isaac.cortex.sample_behaviors has been deprecated in favor of isaacsim.cortex.behaviors. Please update your code accordingly.
+[4.112s] [ext: isaacsim.replicator.behavior-1.1.16] startup
+[4.116s] [ext: isaacsim.core.throttling-2.2.2] startup
+[4.118s] [ext: omni.kit.menu.common-2.0.1] startup
+[4.121s] [ext: isaacsim.exp.base-5.1.0] startup
+[4.122s] [ext: isaacsim.exp.base.python-5.1.0] startup
+[4.124s] Simulation App Starting
+2026-10-21T09:16:03Z [4,246ms] [Warning] [carb.audio.device] audio device is misconfigured or broken {deviceIndex = 0, name = 'default'} (The device is likely misconfigured, check your $HOME/.asoundrc)
+2026-10-21T09:16:03Z [4,246ms] [Warning] [carb.audio.output] failed to retrieve the capabilities for device 0 {result = eDeviceLost (2)}
+2026-10-21T09:16:03Z [4,246ms] [Warning] [carb.audio.context] failed to set the requested output during context creation.  Using a null streamer instead {result = eDeviceLost (2)}
+2026-10-21T09:16:03Z [4,264ms] [Warning] [omni.fabric.plugin] Warning: attribute viewPickingId not found for bucket id 9
+
+[4.306s] app ready
+Starting kit application with the following args:  ['/isaac-sim/exts/isaacsim.simulation_app/isaacsim/simulation_app/simulation_app.py', '/isaac-sim/apps/isaacsim.exp.base.python.kit', '--/app/tokens/exe-path=/isaac-sim/kit', '--/persistent/app/viewport/displayOptions=3094', '--/rtx/materialDb/syncLoads=True', '--/rtx/hydra/materialSyncLoads=True', '--/omni.kit.plugin/syncUsdLoads=True', '--/app/renderer/resolution/width=1280', '--/app/renderer/resolution/height=720', '--/app/window/width=1440', '--/app/window/height=900', '--/renderer/multiGpu/enabled=True', '--/app/fastShutdown=True', '--/app/installSignalHandlers=0', '--ext-folder', '/isaac-sim/exts', '--ext-folder', '/isaac-sim/apps', '--/physics/cudaDevice=0', '--/plugins/carb.tasking.plugin/threadCount=32', '--/plugins/omni.tbb.globalcontrol/maxThreadCount=32', '--portable', '--no-window', '--/app/window/hideUi=1', '--allow-root']
+Passing the following args to the base kit application:  ['--tag', 'oh55', '--Ls', '150,200', '--mus', '1.0,2.0', '--gaps', '3.0,2.5', '--overhang_mm', '55']
+Warp 1.8.2 initialized:
+   CUDA Toolkit 12.8, Driver 13.0
+   Devices:
+     "cpu"      : "x86_64"
+     "cuda:0"   : "NVIDIA GeForce RTX 5090" (31 GiB, sm_120, mempool enabled)
+   Kernel cache:
+     /root/.cache/warp/1.8.2
+[isaacsim.replicator.incident] started
+Warp DeprecationWarning: The `warp.sim` module is deprecated and will be removed in v1.10. Please transition to using the forthcoming Newton library instead.
+=== pgrasp probe_edge oh55 ===
+args: {'Ls': '150,200', 'mus': '1.0,2.0', 'gaps': '3.0,2.5', 'only': '', 'video': False, 'fd_mm': 20.0, 'ft_mm': 6.0, 'start_out_mm': 30.0, 'insert_mm': 25.0, 'below_mm': 6.0, 'overhang_mm': 55.0, 'kR': 0.9, 'theta_deg': 110.0, 'pull_mm': 60.0, 'peel_t': 6.0, 'pull_frac': 0.25, 'hold_t': 0.5, 'stay_t': 1.0, 'fcont': 0.001, 'frest': 0.0, 'table_fric': 0.8, 'young': 2000.0, 'poisson': 0.45, 'thick_mm': 4.0, 'areal': 0.1, 'fric': 0.8, 'cell_mm': 14.285714285714286, 'cont': 0.002, 'rest': 0.0005, 'solver': 48, 'dt': 0.008333333333333333, 'focal': 3.0, 'cam': '-0.62,-0.42,0.30,0.0,0.02,0.05', 'tag': 'oh55'}
+組: ['0:L150_mu1.0_g3.0', '1:L150_mu1.0_g2.5', '2:L150_mu2.0_g3.0', '3:L150_mu2.0_g2.5', '4:L200_mu1.0_g3.0', '5:L200_mu1.0_g2.5', '6:L200_mu2.0_g3.0', '7:L200_mu2.0_g2.5']
+set_physics_volume_deformable_body(/World/s0_sheet) -> True
+  collider /World/s0_sheet:schema 預設 contactOffset=-inf restOffset=-inf → 設 0.002 / 0.0005
+VtxXformAttachment /World/s0_sheet_rootatt:88 個頂點,src0=/World/s0_sheet src1=/World/s0_anc stiff=inf damp=0
+板 300x200x4mm 網格 21x14x1(間距 14.29x14.29mm);根部綁 88 點(y>=80.0,鉸點 y=85.7);桌緣 y=-45.0(懸空 55mm)
+指 D 20 T 6;下指前緣 -130 → -75 mm(邊 -100),夾心 y -85.0;cont 1.0mm rest 0.0mm
+時間表:settle 1.0 滑入→2.00 合指→3.00 停→3.50 弧(θ 110°)→8.00 外拉 60mm→9.50 停→10.50
+  [L150_mu1.0_g3.0] t=0.90 邊區(指長內、y<前緣終點)30 點 z -37.97~-23.99 mm(邊頂點 z min -37.97)→ 下指頂 z -43.97;弧半徑 154mm
+  [L150_mu1.0_g2.5] t=0.90 邊區(指長內、y<前緣終點)30 點 z -37.96~-23.99 mm(邊頂點 z min -37.96)→ 下指頂 z -43.96;弧半徑 154mm
+  [L150_mu2.0_g3.0] t=0.90 邊區(指長內、y<前緣終點)30 點 z -37.96~-23.98 mm(邊頂點 z min -37.96)→ 下指頂 z -43.96;弧半徑 154mm
+  [L150_mu2.0_g2.5] t=0.90 邊區(指長內、y<前緣終點)30 點 z -37.97~-23.99 mm(邊頂點 z min -37.97)→ 下指頂 z -43.97;弧半徑 154mm
+  [L200_mu1.0_g3.0] t=0.90 邊區(指長內、y<前緣終點)42 點 z -37.96~-23.95 mm(邊頂點 z min -37.97)→ 下指頂 z -43.96;弧半徑 154mm
+  [L200_mu1.0_g2.5] t=0.90 邊區(指長內、y<前緣終點)42 點 z -37.97~-23.96 mm(邊頂點 z min -37.97)→ 下指頂 z -43.97;弧半徑 154mm
+  [L200_mu2.0_g3.0] t=0.90 邊區(指長內、y<前緣終點)42 點 z -37.97~-23.97 mm(邊頂點 z min -37.98)→ 下指頂 z -43.97;弧半徑 154mm
+  [L200_mu2.0_g2.5] t=0.90 邊區(指長內、y<前緣終點)42 點 z -37.98~-23.98 mm(邊頂點 z min -37.98)→ 下指頂 z -43.98;弧半徑 154mm
+  [L150_mu1.0_g3.0] t= 3.00 hold   θ=  0.0° | 指間  15(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 1 點 0.81mm | 邊長比 1.166 反轉 0 | 自由段過鉸   0% 質心 y -9 z -6 mm
+  [L150_mu1.0_g2.5] t= 3.00 hold   θ=  0.0° | 指間   7(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 0 點 0.00mm | 邊長比 1.070 反轉 0 | 自由段過鉸   0% 質心 y -9 z -5 mm
+  [L150_mu2.0_g3.0] t= 3.00 hold   θ=  0.0° | 指間  18(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 5 點 0.97mm | 邊長比 1.375 反轉 0 | 自由段過鉸   0% 質心 y -9 z -6 mm
+  [L150_mu2.0_g2.5] t= 3.00 hold   θ=  0.0° | 指間  14(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 7 點 0.94mm | 邊長比 1.263 反轉 0 | 自由段過鉸   0% 質心 y -9 z -6 mm
+  [L200_mu1.0_g3.0] t= 3.00 hold   θ=  0.0° | 指間  17(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 0 點 0.00mm | 邊長比 1.140 反轉 0 | 自由段過鉸   0% 質心 y -9 z -6 mm
+  [L200_mu1.0_g2.5] t= 3.00 hold   θ=  0.0° | 指間  10(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 0 點 0.00mm | 邊長比 1.064 反轉 0 | 自由段過鉸   0% 質心 y -9 z -5 mm
+  [L200_mu2.0_g3.0] t= 3.00 hold   θ=  0.0° | 指間  18(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 5 點 1.01mm | 邊長比 1.125 反轉 0 | 自由段過鉸   0% 質心 y -9 z -6 mm
+  [L200_mu2.0_g2.5] t= 3.00 hold   θ=  0.0° | 指間  22(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 10 點 0.87mm | 邊長比 1.220 反轉 0 | 自由段過鉸   0% 質心 y -9 z -6 mm
+  [L150_mu1.0_g3.0] t=3.50 掀前指間頂點 10(頂面 10 底面 0)
+  [L150_mu1.0_g3.0] t= 3.50 arc    θ=  0.0° | 指間  10(夾住集  10/10)| 滑動 中位  0.00 最大   0.00 mm | 穿指 0 點 0.00mm | 邊長比 1.061 反轉 0 | 自由段過鉸   0% 質心 y -9 z -5 mm
+  [L150_mu1.0_g2.5] t=3.50 掀前指間頂點 10(頂面 10 底面 0)
+  [L150_mu1.0_g2.5] t= 3.50 arc    θ=  0.0° | 指間  10(夾住集  10/10)| 滑動 中位  0.00 最大   0.00 mm | 穿指 0 點 0.00mm | 邊長比 1.062 反轉 0 | 自由段過鉸   0% 質心 y -9 z -5 mm
+  [L150_mu2.0_g3.0] t=3.50 掀前指間頂點 14(頂面 10 底面 4)
+  [L150_mu2.0_g3.0] t= 3.50 arc    θ=  0.0° | 指間  14(夾住集  14/14)| 滑動 中位  0.00 最大   0.00 mm | 穿指 3 點 0.94mm | 邊長比 1.135 反轉 0 | 自由段過鉸   0% 質心 y -9 z -6 mm
+  [L150_mu2.0_g2.5] t=3.50 掀前指間頂點 0(頂面 0 底面 0)
+  ★ [L150_mu2.0_g2.5] t=3.50 掉布(指間 0 頂點)θ=0°
+  [L150_mu2.0_g2.5] t= 3.50 arc    θ=  0.0° | 指間   0(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 0 點 0.00mm | 邊長比 1.063 反轉 0 | 自由段過鉸   0% 質心 y -10 z -5 mm
+  [L200_mu1.0_g3.0] t=3.50 掀前指間頂點 14(頂面 14 底面 0)
+  [L200_mu1.0_g3.0] t= 3.50 arc    θ=  0.0° | 指間  14(夾住集  14/14)| 滑動 中位  0.00 最大   0.00 mm | 穿指 0 點 0.00mm | 邊長比 1.059 反轉 0 | 自由段過鉸   0% 質心 y -9 z -5 mm
+  [L200_mu1.0_g2.5] t=3.50 掀前指間頂點 13(頂面 13 底面 0)
+  [L200_mu1.0_g2.5] t= 3.50 arc    θ=  0.0° | 指間  13(夾住集  13/13)| 滑動 中位  0.00 最大   0.00 mm | 穿指 0 點 0.00mm | 邊長比 1.060 反轉 0 | 自由段過鉸   0% 質心 y -9 z -5 mm
+  [L200_mu2.0_g3.0] t=3.50 掀前指間頂點 13(頂面 13 底面 0)
+  [L200_mu2.0_g3.0] t= 3.50 arc    θ=  0.0° | 指間  13(夾住集  13/13)| 滑動 中位  0.00 最大   0.00 mm | 穿指 0 點 0.00mm | 邊長比 1.061 反轉 0 | 自由段過鉸   0% 質心 y -10 z -5 mm
+  [L200_mu2.0_g2.5] t=3.50 掀前指間頂點 13(頂面 13 底面 0)
+  [L200_mu2.0_g2.5] t= 3.50 arc    θ=  0.0° | 指間  13(夾住集  13/13)| 滑動 中位  0.00 最大   0.00 mm | 穿指 0 點 0.00mm | 邊長比 1.060 反轉 0 | 自由段過鉸   0% 質心 y -10 z -5 mm
+  ★ [L200_mu2.0_g2.5] t=3.75 掉布(指間 0 頂點)θ=1°
+  ★ [L150_mu1.0_g2.5] t=3.90 掉布(指間 0 頂點)θ=2°
+  ★ [L200_mu1.0_g2.5] t=3.90 掉布(指間 0 頂點)θ=2°
+  [L150_mu1.0_g3.0] t= 4.00 arc    θ=  3.8° | 指間   1(夾住集   1/10)| 滑動 中位  0.42 最大   0.78 mm | 穿指 0 點 0.00mm | 邊長比 1.093 反轉 0 | 自由段過鉸   1% 質心 y -8 z -3 mm
+  [L150_mu1.0_g2.5] t= 4.00 arc    θ=  3.8° | 指間   1(夾住集   1/10)| 滑動 中位  0.25 最大   0.72 mm | 穿指 0 點 0.00mm | 邊長比 1.092 反轉 0 | 自由段過鉸   1% 質心 y -8 z -3 mm
+  [L150_mu2.0_g3.0] t= 4.00 arc    θ=  3.8° | 指間   9(夾住集   9/14)| 滑動 中位  2.90 最大   4.66 mm | 穿指 0 點 0.00mm | 邊長比 1.094 反轉 0 | 自由段過鉸   1% 質心 y -8 z -3 mm
+  [L150_mu2.0_g2.5] t= 4.00 arc    θ=  3.8° | 指間   0(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 0 點 0.00mm | 邊長比 1.093 反轉 0 | 自由段過鉸   1% 質心 y -8 z -3 mm
+  [L200_mu1.0_g3.0] t= 4.00 arc    θ=  3.8° | 指間  12(夾住集  12/14)| 滑動 中位  0.12 最大   0.45 mm | 穿指 2 點 0.31mm | 邊長比 1.090 反轉 0 | 自由段過鉸   2% 質心 y -8 z -3 mm
+  [L200_mu1.0_g2.5] t= 4.00 arc    θ=  3.8° | 指間   0(夾住集   0/13)| 滑動 中位  0.27 最大   0.47 mm | 穿指 0 點 0.00mm | 邊長比 1.089 反轉 0 | 自由段過鉸   2% 質心 y -8 z -3 mm
+  [L200_mu2.0_g3.0] t= 4.00 arc    θ=  3.8° | 指間  12(夾住集  12/13)| 滑動 中位  0.09 最大   0.27 mm | 穿指 0 點 0.00mm | 邊長比 1.089 反轉 0 | 自由段過鉸   2% 質心 y -8 z -3 mm
+  [L200_mu2.0_g2.5] t= 4.00 arc    θ=  3.8° | 指間   0(夾住集   0/13)| 滑動 中位  0.09 最大   0.36 mm | 穿指 0 點 0.00mm | 邊長比 1.090 反轉 0 | 自由段過鉸   2% 質心 y -8 z -3 mm
+  -- t=4.00 wall 5s
+  ★ [L150_mu1.0_g3.0] t=4.15 掉布(指間 0 頂點)θ=6°
+  ★ [L200_mu2.0_g3.0] t=4.25 掉布(指間 0 頂點)θ=8°
+  ★ [L150_mu2.0_g3.0] t=4.30 掉布(指間 0 頂點)θ=9°
+  ★ [L200_mu1.0_g3.0] t=4.30 掉布(指間 0 頂點)θ=9°
+  [L150_mu1.0_g3.0] t= 4.50 arc    θ= 13.9° | 指間   0(夾住集   0/10)| 滑動 中位  6.21 最大   6.94 mm | 穿指 0 點 0.00mm | 邊長比 1.052 反轉 0 | 自由段過鉸   2% 質心 y -9 z -3 mm
+  [L150_mu1.0_g2.5] t= 4.50 arc    θ= 13.9° | 指間   0(夾住集   0/10)| 滑動 中位  8.55 最大   8.99 mm | 穿指 0 點 0.00mm | 邊長比 1.046 反轉 0 | 自由段過鉸   2% 質心 y -10 z -3 mm
+  [L150_mu2.0_g3.0] t= 4.50 arc    θ= 13.9° | 指間   0(夾住集   0/14)| 滑動 中位  3.48 最大   5.39 mm | 穿指 0 點 0.00mm | 邊長比 1.138 反轉 0 | 自由段過鉸   2% 質心 y -5 z 6 mm
+  [L150_mu2.0_g2.5] t= 4.50 arc    θ= 13.9° | 指間   0(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 0 點 0.00mm | 邊長比 1.129 反轉 0 | 自由段過鉸   2% 質心 y -6 z 4 mm
+  [L200_mu1.0_g3.0] t= 4.50 arc    θ= 13.9° | 指間   0(夾住集   0/14)| 滑動 中位  0.71 最大   1.18 mm | 穿指 0 點 0.00mm | 邊長比 1.114 反轉 0 | 自由段過鉸   2% 質心 y -6 z 5 mm
+  [L200_mu1.0_g2.5] t= 4.50 arc    θ= 13.9° | 指間   0(夾住集   0/13)| 滑動 中位  2.91 最大   2.99 mm | 穿指 0 點 0.00mm | 邊長比 1.054 反轉 0 | 自由段過鉸   2% 質心 y -8 z -3 mm
+  [L200_mu2.0_g3.0] t= 4.50 arc    θ= 13.9° | 指間   0(夾住集   0/13)| 滑動 中位  0.55 最大   0.66 mm | 穿指 0 點 0.00mm | 邊長比 1.126 反轉 0 | 自由段過鉸   2% 質心 y -5 z 7 mm
+  [L200_mu2.0_g2.5] t= 4.50 arc    θ= 13.9° | 指間   0(夾住集   0/13)| 滑動 中位  0.52 最大   0.69 mm | 穿指 0 點 0.00mm | 邊長比 1.124 反轉 0 | 自由段過鉸   2% 質心 y -5 z 7 mm
+  [L150_mu1.0_g3.0] t= 5.00 arc    θ= 28.5° | 指間   0(夾住集   0/10)| 滑動 中位  4.43 最大   4.49 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu1.0_g2.5] t= 5.00 arc    θ= 28.5° | 指間   0(夾住集   0/10)| 滑動 中位  4.27 最大   4.34 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu2.0_g3.0] t= 5.00 arc    θ= 28.5° | 指間   0(夾住集   0/14)| 滑動 中位  3.60 最大   5.50 mm | 穿指 0 點 0.00mm | 邊長比 1.172 反轉 0 | 自由段過鉸   2% 質心 y 1 z 18 mm
+  [L150_mu2.0_g2.5] t= 5.00 arc    θ= 28.5° | 指間   0(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 0 點 0.00mm | 邊長比 1.137 反轉 0 | 自由段過鉸   2% 質心 y -6 z 8 mm
+  [L200_mu1.0_g3.0] t= 5.00 arc    θ= 28.5° | 指間   0(夾住集   0/14)| 滑動 中位  4.08 最大   4.13 mm | 穿指 0 點 0.00mm | 邊長比 1.043 反轉 0 | 自由段過鉸   2% 質心 y -9 z -3 mm
+  [L200_mu1.0_g2.5] t= 5.00 arc    θ= 28.5° | 指間   0(夾住集   0/13)| 滑動 中位  3.92 最大   3.98 mm | 穿指 0 點 0.00mm | 邊長比 1.043 反轉 0 | 自由段過鉸   2% 質心 y -9 z -3 mm
+  [L200_mu2.0_g3.0] t= 5.00 arc    θ= 28.5° | 指間   0(夾住集   0/13)| 滑動 中位  0.72 最大   0.88 mm | 穿指 0 點 0.00mm | 邊長比 1.166 反轉 0 | 自由段過鉸   2% 質心 y 3 z 20 mm
+  [L200_mu2.0_g2.5] t= 5.00 arc    θ= 28.5° | 指間   0(夾住集   0/13)| 滑動 中位  0.64 最大   0.82 mm | 穿指 0 點 0.00mm | 邊長比 1.164 反轉 0 | 自由段過鉸   2% 質心 y 3 z 20 mm
+  [L150_mu1.0_g3.0] t= 5.50 arc    θ= 45.9° | 指間   0(夾住集   0/10)| 滑動 中位 30.21 最大  30.25 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu1.0_g2.5] t= 5.50 arc    θ= 45.9° | 指間   0(夾住集   0/10)| 滑動 中位 29.87 最大  29.94 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu2.0_g3.0] t= 5.50 arc    θ= 45.9° | 指間   2(夾住集   2/14)| 滑動 中位  3.39 最大   5.24 mm | 穿指 0 點 0.00mm | 邊長比 1.240 反轉 0 | 自由段過鉸   2% 質心 y 10 z 23 mm
+  [L150_mu2.0_g2.5] t= 5.50 arc    θ= 45.9° | 指間   0(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 0 點 0.00mm | 邊長比 1.058 反轉 0 | 自由段過鉸   0% 質心 y -11 z -4 mm
+  [L200_mu1.0_g3.0] t= 5.50 arc    θ= 45.9° | 指間   0(夾住集   0/14)| 滑動 中位 30.09 最大  30.12 mm | 穿指 0 點 0.00mm | 邊長比 1.044 反轉 0 | 自由段過鉸   2% 質心 y -9 z -3 mm
+  [L200_mu1.0_g2.5] t= 5.50 arc    θ= 45.9° | 指間   0(夾住集   0/13)| 滑動 中位 29.76 最大  29.80 mm | 穿指 0 點 0.00mm | 邊長比 1.043 反轉 0 | 自由段過鉸   2% 質心 y -9 z -3 mm
+  [L200_mu2.0_g3.0] t= 5.50 arc    θ= 45.9° | 指間  13(夾住集  13/13)| 滑動 中位  0.44 最大   0.68 mm | 穿指 0 點 0.00mm | 邊長比 1.210 反轉 0 | 自由段過鉸   2% 質心 y 12 z 24 mm
+  [L200_mu2.0_g2.5] t= 5.50 arc    θ= 45.9° | 指間   2(夾住集   2/13)| 滑動 中位  0.37 最大   0.74 mm | 穿指 0 點 0.00mm | 邊長比 1.202 反轉 0 | 自由段過鉸   2% 質心 y 13 z 24 mm
+  [L150_mu1.0_g3.0] t= 6.00 arc    θ= 64.1° | 指間   0(夾住集   0/10)| 滑動 中位 68.40 最大  68.42 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu1.0_g2.5] t= 6.00 arc    θ= 64.1° | 指間   0(夾住集   0/10)| 滑動 中位 68.00 最大  68.05 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu2.0_g3.0] t= 6.00 arc    θ= 64.1° | 指間   0(夾住集   0/14)| 滑動 中位 58.62 最大  60.50 mm | 穿指 0 點 0.00mm | 邊長比 1.046 反轉 0 | 自由段過鉸   0% 質心 y -13 z -2 mm
+  [L150_mu2.0_g2.5] t= 6.00 arc    θ= 64.1° | 指間   0(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 0 點 0.00mm | 邊長比 1.058 反轉 0 | 自由段過鉸   0% 質心 y -11 z -4 mm
+  [L200_mu1.0_g3.0] t= 6.00 arc    θ= 64.1° | 指間   0(夾住集   0/14)| 滑動 中位 68.32 最大  68.36 mm | 穿指 0 點 0.00mm | 邊長比 1.044 反轉 0 | 自由段過鉸   2% 質心 y -9 z -3 mm
+  [L200_mu1.0_g2.5] t= 6.00 arc    θ= 64.1° | 指間   0(夾住集   0/13)| 滑動 中位 67.96 最大  67.98 mm | 穿指 0 點 0.00mm | 邊長比 1.043 反轉 0 | 自由段過鉸   2% 質心 y -9 z -3 mm
+  [L200_mu2.0_g3.0] t= 6.00 arc    θ= 64.1° | 指間   0(夾住集   0/13)| 滑動 中位 51.07 最大  51.12 mm | 穿指 0 點 0.00mm | 邊長比 1.037 反轉 0 | 自由段過鉸   0% 質心 y -13 z -2 mm
+  [L200_mu2.0_g2.5] t= 6.00 arc    θ= 64.1° | 指間   0(夾住集   0/13)| 滑動 中位 39.78 最大  39.98 mm | 穿指 0 點 0.00mm | 邊長比 1.036 反轉 0 | 自由段過鉸   0% 質心 y -14 z 0 mm
+  -- t=6.00 wall 7s
+  [L150_mu1.0_g3.0] t= 6.50 arc    θ= 81.5° | 指間   0(夾住集   0/10)| 滑動 中位 111.80 最大 111.84 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu1.0_g2.5] t= 6.50 arc    θ= 81.5° | 指間   0(夾住集   0/10)| 滑動 中位 111.37 最大 111.49 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu2.0_g3.0] t= 6.50 arc    θ= 81.5° | 指間   0(夾住集   0/14)| 滑動 中位 122.41 最大 122.94 mm | 穿指 0 點 0.00mm | 邊長比 1.071 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L150_mu2.0_g2.5] t= 6.50 arc    θ= 81.5° | 指間   0(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 0 點 0.00mm | 邊長比 1.058 反轉 0 | 自由段過鉸   0% 質心 y -11 z -4 mm
+  [L200_mu1.0_g3.0] t= 6.50 arc    θ= 81.5° | 指間   0(夾住集   0/14)| 滑動 中位 111.79 最大 111.83 mm | 穿指 0 點 0.00mm | 邊長比 1.045 反轉 0 | 自由段過鉸   2% 質心 y -9 z -3 mm
+  [L200_mu1.0_g2.5] t= 6.50 arc    θ= 81.5° | 指間   0(夾住集   0/13)| 滑動 中位 111.39 最大 111.41 mm | 穿指 0 點 0.00mm | 邊長比 1.043 反轉 0 | 自由段過鉸   2% 質心 y -9 z -3 mm
+  [L200_mu2.0_g3.0] t= 6.50 arc    θ= 81.5° | 指間   0(夾住集   0/13)| 滑動 中位 119.48 最大 119.56 mm | 穿指 0 點 0.00mm | 邊長比 1.070 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L200_mu2.0_g2.5] t= 6.50 arc    θ= 81.5° | 指間   0(夾住集   0/13)| 滑動 中位 119.40 最大 119.53 mm | 穿指 0 點 0.00mm | 邊長比 1.069 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L150_mu1.0_g3.0] t= 7.00 arc    θ= 96.1° | 指間   0(夾住集   0/10)| 滑動 中位 150.84 最大 150.96 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu1.0_g2.5] t= 7.00 arc    θ= 96.1° | 指間   0(夾住集   0/10)| 滑動 中位 150.42 最大 150.61 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu2.0_g3.0] t= 7.00 arc    θ= 96.1° | 指間   0(夾住集   0/14)| 滑動 中位 160.32 最大 161.41 mm | 穿指 0 點 0.00mm | 邊長比 1.070 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L150_mu2.0_g2.5] t= 7.00 arc    θ= 96.1° | 指間   0(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 0 點 0.00mm | 邊長比 1.058 反轉 0 | 自由段過鉸   0% 質心 y -11 z -4 mm
+  [L200_mu1.0_g3.0] t= 7.00 arc    θ= 96.1° | 指間   0(夾住集   0/14)| 滑動 中位 150.88 最大 150.92 mm | 穿指 0 點 0.00mm | 邊長比 1.044 反轉 0 | 自由段過鉸   2% 質心 y -9 z -3 mm
+  [L200_mu1.0_g2.5] t= 7.00 arc    θ= 96.1° | 指間   0(夾住集   0/13)| 滑動 中位 150.49 最大 150.52 mm | 穿指 0 點 0.00mm | 邊長比 1.043 反轉 0 | 自由段過鉸   2% 質心 y -9 z -3 mm
+  [L200_mu2.0_g3.0] t= 7.00 arc    θ= 96.1° | 指間   0(夾住集   0/13)| 滑動 中位 157.92 最大 158.00 mm | 穿指 0 點 0.00mm | 邊長比 1.068 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L200_mu2.0_g2.5] t= 7.00 arc    θ= 96.1° | 指間   0(夾住集   0/13)| 滑動 中位 157.83 最大 157.96 mm | 穿指 0 點 0.00mm | 邊長比 1.069 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L150_mu1.0_g3.0] t= 7.50 arc    θ=106.2° | 指間   0(夾住集   0/10)| 滑動 中位 177.69 最大 177.86 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu1.0_g2.5] t= 7.50 arc    θ=106.2° | 指間   0(夾住集   0/10)| 滑動 中位 177.28 最大 177.53 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu2.0_g3.0] t= 7.50 arc    θ=106.2° | 指間   0(夾住集   0/14)| 滑動 中位 186.49 最大 188.08 mm | 穿指 0 點 0.00mm | 邊長比 1.070 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L150_mu2.0_g2.5] t= 7.50 arc    θ=106.2° | 指間   0(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 0 點 0.00mm | 邊長比 1.059 反轉 0 | 自由段過鉸   0% 質心 y -11 z -4 mm
+  [L200_mu1.0_g3.0] t= 7.50 arc    θ=106.2° | 指間   0(夾住集   0/14)| 滑動 中位 177.79 最大 177.82 mm | 穿指 0 點 0.00mm | 邊長比 1.044 反轉 0 | 自由段過鉸   2% 質心 y -9 z -3 mm
+  [L200_mu1.0_g2.5] t= 7.50 arc    θ=106.2° | 指間   0(夾住集   0/13)| 滑動 中位 177.39 最大 177.44 mm | 穿指 0 點 0.00mm | 邊長比 1.043 反轉 0 | 自由段過鉸   2% 質心 y -9 z -3 mm
+  [L200_mu2.0_g3.0] t= 7.50 arc    θ=106.2° | 指間   0(夾住集   0/13)| 滑動 中位 184.55 最大 184.63 mm | 穿指 0 點 0.00mm | 邊長比 1.068 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L200_mu2.0_g2.5] t= 7.50 arc    θ=106.2° | 指間   0(夾住集   0/13)| 滑動 中位 184.39 最大 184.51 mm | 穿指 0 點 0.00mm | 邊長比 1.069 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L150_mu1.0_g3.0] t= 8.00 pull   θ=110.0° | 指間   0(夾住集   0/10)| 滑動 中位 187.48 最大 187.67 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu1.0_g2.5] t= 8.00 pull   θ=110.0° | 指間   0(夾住集   0/10)| 滑動 中位 187.08 最大 187.34 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu2.0_g3.0] t= 8.00 pull   θ=110.0° | 指間   0(夾住集   0/14)| 滑動 中位 196.02 最大 197.74 mm | 穿指 0 點 0.00mm | 邊長比 1.070 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L150_mu2.0_g2.5] t= 8.00 pull   θ=110.0° | 指間   0(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 0 點 0.00mm | 邊長比 1.059 反轉 0 | 自由段過鉸   0% 質心 y -11 z -4 mm
+  [L200_mu1.0_g3.0] t= 8.00 pull   θ=110.0° | 指間   0(夾住集   0/14)| 滑動 中位 187.60 最大 187.64 mm | 穿指 0 點 0.00mm | 邊長比 1.044 反轉 0 | 自由段過鉸   2% 質心 y -9 z -3 mm
+  [L200_mu1.0_g2.5] t= 8.00 pull   θ=110.0° | 指間   0(夾住集   0/13)| 滑動 中位 187.22 最大 187.27 mm | 穿指 0 點 0.00mm | 邊長比 1.043 反轉 0 | 自由段過鉸   2% 質心 y -9 z -3 mm
+  [L200_mu2.0_g3.0] t= 8.00 pull   θ=110.0° | 指間   0(夾住集   0/13)| 滑動 中位 194.18 最大 194.27 mm | 穿指 0 點 0.00mm | 邊長比 1.068 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L200_mu2.0_g2.5] t= 8.00 pull   θ=110.0° | 指間   0(夾住集   0/13)| 滑動 中位 194.02 最大 194.13 mm | 穿指 0 點 0.00mm | 邊長比 1.068 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  -- t=8.00 wall 10s
+  [L150_mu1.0_g3.0] t= 8.50 pull   θ=110.0° | 指間   0(夾住集   0/10)| 滑動 中位 192.80 最大 192.99 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu1.0_g2.5] t= 8.50 pull   θ=110.0° | 指間   0(夾住集   0/10)| 滑動 中位 192.40 最大 192.66 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu2.0_g3.0] t= 8.50 pull   θ=110.0° | 指間   0(夾住集   0/14)| 滑動 中位 201.34 最大 203.07 mm | 穿指 0 點 0.00mm | 邊長比 1.070 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L150_mu2.0_g2.5] t= 8.50 pull   θ=110.0° | 指間   0(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 0 點 0.00mm | 邊長比 1.059 反轉 0 | 自由段過鉸   0% 質心 y -11 z -4 mm
+  [L200_mu1.0_g3.0] t= 8.50 pull   θ=110.0° | 指間   0(夾住集   0/14)| 滑動 中位 192.93 最大 192.97 mm | 穿指 0 點 0.00mm | 邊長比 1.044 反轉 0 | 自由段過鉸   2% 質心 y -9 z -3 mm
+  [L200_mu1.0_g2.5] t= 8.50 pull   θ=110.0° | 指間   0(夾住集   0/13)| 滑動 中位 192.56 最大 192.60 mm | 穿指 0 點 0.00mm | 邊長比 1.043 反轉 0 | 自由段過鉸   2% 質心 y -9 z -3 mm
+  [L200_mu2.0_g3.0] t= 8.50 pull   θ=110.0° | 指間   0(夾住集   0/13)| 滑動 中位 199.51 最大 199.59 mm | 穿指 0 點 0.00mm | 邊長比 1.068 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L200_mu2.0_g2.5] t= 8.50 pull   θ=110.0° | 指間   0(夾住集   0/13)| 滑動 中位 199.33 最大 199.41 mm | 穿指 0 點 0.00mm | 邊長比 1.068 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L150_mu1.0_g3.0] t= 9.00 pull   θ=110.0° | 指間   0(夾住集   0/10)| 滑動 中位 202.69 最大 202.87 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu1.0_g2.5] t= 9.00 pull   θ=110.0° | 指間   0(夾住集   0/10)| 滑動 中位 202.28 最大 202.55 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu2.0_g3.0] t= 9.00 pull   θ=110.0° | 指間   0(夾住集   0/14)| 滑動 中位 211.22 最大 212.95 mm | 穿指 0 點 0.00mm | 邊長比 1.070 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L150_mu2.0_g2.5] t= 9.00 pull   θ=110.0° | 指間   0(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 0 點 0.00mm | 邊長比 1.059 反轉 0 | 自由段過鉸   0% 質心 y -11 z -4 mm
+  [L200_mu1.0_g3.0] t= 9.00 pull   θ=110.0° | 指間   0(夾住集   0/14)| 滑動 中位 202.82 最大 202.86 mm | 穿指 0 點 0.00mm | 邊長比 1.045 反轉 0 | 自由段過鉸   2% 質心 y -9 z -3 mm
+  [L200_mu1.0_g2.5] t= 9.00 pull   θ=110.0° | 指間   0(夾住集   0/13)| 滑動 中位 202.44 最大 202.49 mm | 穿指 0 點 0.00mm | 邊長比 1.042 反轉 0 | 自由段過鉸   1% 質心 y -9 z -3 mm
+  [L200_mu2.0_g3.0] t= 9.00 pull   θ=110.0° | 指間   0(夾住集   0/13)| 滑動 中位 209.40 最大 209.48 mm | 穿指 0 點 0.00mm | 邊長比 1.068 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L200_mu2.0_g2.5] t= 9.00 pull   θ=110.0° | 指間   0(夾住集   0/13)| 滑動 中位 209.21 最大 209.31 mm | 穿指 0 點 0.00mm | 邊長比 1.068 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L150_mu1.0_g3.0] t= 9.50 stay   θ=110.0° | 指間   0(夾住集   0/10)| 滑動 中位 208.01 最大 208.19 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu1.0_g2.5] t= 9.50 stay   θ=110.0° | 指間   0(夾住集   0/10)| 滑動 中位 207.60 最大 207.87 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu2.0_g3.0] t= 9.50 stay   θ=110.0° | 指間   0(夾住集   0/14)| 滑動 中位 216.54 最大 218.27 mm | 穿指 0 點 0.00mm | 邊長比 1.070 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L150_mu2.0_g2.5] t= 9.50 stay   θ=110.0° | 指間   0(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 0 點 0.00mm | 邊長比 1.059 反轉 0 | 自由段過鉸   0% 質心 y -11 z -4 mm
+  [L200_mu1.0_g3.0] t= 9.50 stay   θ=110.0° | 指間   0(夾住集   0/14)| 滑動 中位 208.15 最大 208.19 mm | 穿指 0 點 0.00mm | 邊長比 1.044 反轉 0 | 自由段過鉸   2% 質心 y -9 z -3 mm
+  [L200_mu1.0_g2.5] t= 9.50 stay   θ=110.0° | 指間   0(夾住集   0/13)| 滑動 中位 207.78 最大 207.81 mm | 穿指 0 點 0.00mm | 邊長比 1.042 反轉 0 | 自由段過鉸   1% 質心 y -9 z -3 mm
+  [L200_mu2.0_g3.0] t= 9.50 stay   θ=110.0° | 指間   0(夾住集   0/13)| 滑動 中位 214.71 最大 214.80 mm | 穿指 0 點 0.00mm | 邊長比 1.068 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L200_mu2.0_g2.5] t= 9.50 stay   θ=110.0° | 指間   0(夾住集   0/13)| 滑動 中位 214.51 最大 214.61 mm | 穿指 0 點 0.00mm | 邊長比 1.068 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L150_mu1.0_g3.0] t=10.00 stay   θ=110.0° | 指間   0(夾住集   0/10)| 滑動 中位 208.01 最大 208.19 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu1.0_g2.5] t=10.00 stay   θ=110.0° | 指間   0(夾住集   0/10)| 滑動 中位 207.60 最大 207.87 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu2.0_g3.0] t=10.00 stay   θ=110.0° | 指間   0(夾住集   0/14)| 滑動 中位 216.53 最大 218.28 mm | 穿指 0 點 0.00mm | 邊長比 1.069 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L150_mu2.0_g2.5] t=10.00 stay   θ=110.0° | 指間   0(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 0 點 0.00mm | 邊長比 1.059 反轉 0 | 自由段過鉸   0% 質心 y -11 z -4 mm
+  [L200_mu1.0_g3.0] t=10.00 stay   θ=110.0° | 指間   0(夾住集   0/14)| 滑動 中位 208.16 最大 208.20 mm | 穿指 0 點 0.00mm | 邊長比 1.044 反轉 0 | 自由段過鉸   1% 質心 y -9 z -3 mm
+  [L200_mu1.0_g2.5] t=10.00 stay   θ=110.0° | 指間   0(夾住集   0/13)| 滑動 中位 207.78 最大 207.82 mm | 穿指 0 點 0.00mm | 邊長比 1.042 反轉 0 | 自由段過鉸   1% 質心 y -9 z -3 mm
+  [L200_mu2.0_g3.0] t=10.00 stay   θ=110.0° | 指間   0(夾住集   0/13)| 滑動 中位 214.71 最大 214.80 mm | 穿指 0 點 0.00mm | 邊長比 1.068 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L200_mu2.0_g2.5] t=10.00 stay   θ=110.0° | 指間   0(夾住集   0/13)| 滑動 中位 214.50 最大 214.60 mm | 穿指 0 點 0.00mm | 邊長比 1.068 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  -- t=10.00 wall 12s
+  [L150_mu1.0_g3.0] t=10.50 stay   θ=110.0° | 指間   0(夾住集   0/10)| 滑動 中位 208.01 最大 208.19 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu1.0_g2.5] t=10.50 stay   θ=110.0° | 指間   0(夾住集   0/10)| 滑動 中位 207.60 最大 207.87 mm | 穿指 0 點 0.00mm | 邊長比 1.049 反轉 0 | 自由段過鉸   1% 質心 y -10 z -3 mm
+  [L150_mu2.0_g3.0] t=10.50 stay   θ=110.0° | 指間   0(夾住集   0/14)| 滑動 中位 216.54 最大 218.27 mm | 穿指 0 點 0.00mm | 邊長比 1.069 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L150_mu2.0_g2.5] t=10.50 stay   θ=110.0° | 指間   0(夾住集   0/0)| 滑動 中位   nan 最大    nan mm | 穿指 0 點 0.00mm | 邊長比 1.059 反轉 0 | 自由段過鉸   0% 質心 y -11 z -4 mm
+  [L200_mu1.0_g3.0] t=10.50 stay   θ=110.0° | 指間   0(夾住集   0/14)| 滑動 中位 208.17 最大 208.21 mm | 穿指 0 點 0.00mm | 邊長比 1.044 反轉 0 | 自由段過鉸   2% 質心 y -9 z -3 mm
+  [L200_mu1.0_g2.5] t=10.50 stay   θ=110.0° | 指間   0(夾住集   0/13)| 滑動 中位 207.79 最大 207.83 mm | 穿指 0 點 0.00mm | 邊長比 1.042 反轉 0 | 自由段過鉸   1% 質心 y -9 z -3 mm
+  [L200_mu2.0_g3.0] t=10.50 stay   θ=110.0° | 指間   0(夾住集   0/13)| 滑動 中位 214.70 最大 214.79 mm | 穿指 0 點 0.00mm | 邊長比 1.068 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+  [L200_mu2.0_g2.5] t=10.50 stay   θ=110.0° | 指間   0(夾住集   0/13)| 滑動 中位 214.51 最大 214.60 mm | 穿指 0 點 0.00mm | 邊長比 1.068 反轉 0 | 自由段過鉸   0% 質心 y -11 z -5 mm
+
+===== 判讀 pgrasp probe_edge =====
+判準:掀開全程(peel 起到 stay 結束)不掉布(指間頂點 > 0)且 夾住集滑動中位 < 5mm
+ROW  0 L150_mu1.0_g3.0  | 掀前指間  10 | 掀中指間 min   0 弧末   0 結束   0 | 滑動中位 弧末 187.48 結束 208.01 最大 208.01 | 滑動最大  208.19 mm | 掉布 t=4.15 θ=6° | 邊長比 1.185 | 穿指 2 點 0.81mm | 反轉 0 | 過鉸 弧末   1% 結束   1% 質心 y -10 z -3 | FAIL
+SLIPDIR  0 L150_mu1.0_g3.0  結束時夾住集位移中位 局部 x(沿邊)-0.44 y(+ = 往鉸點)208.01 mm
+ROW  1 L150_mu1.0_g2.5  | 掀前指間  10 | 掀中指間 min   0 弧末   0 結束   0 | 滑動中位 弧末 187.08 結束 207.60 最大 207.60 | 滑動最大  207.87 mm | 掉布 t=3.90 θ=2° | 邊長比 1.155 | 穿指 1 點 0.18mm | 反轉 0 | 過鉸 弧末   1% 結束   1% 質心 y -10 z -3 | FAIL
+SLIPDIR  1 L150_mu1.0_g2.5  結束時夾住集位移中位 局部 x(沿邊)0.28 y(+ = 往鉸點)207.60 mm
+ROW  2 L150_mu2.0_g3.0  | 掀前指間  14 | 掀中指間 min   0 弧末   0 結束   0 | 滑動中位 弧末 196.02 結束 216.54 最大 216.54 | 滑動最大  218.28 mm | 掉布 t=4.30 θ=9° | 邊長比 1.375 | 穿指 5 點 0.97mm | 反轉 0 | 過鉸 弧末   0% 結束   0% 質心 y -11 z -5 | FAIL
+SLIPDIR  2 L150_mu2.0_g3.0  結束時夾住集位移中位 局部 x(沿邊)-0.17 y(+ = 往鉸點)216.54 mm
+[6.180s] Simulation App Startup Complete
+2026-10-21T09:16:21Z [22,600ms] [Error] [omni.kit.app._impl] [py stderr]: /isaac-sim/test_scripts/manip_fr3/handoff_20260929/vol/pgrasp/probe_edge.py:290: RuntimeWarning: All-NaN slice encountered
+  slip_med_arc=float(sm[i_arc]) * 1e3, slip_med_end=float(sm[-1]) * 1e3, slip_med_max=float(np.nanmax(sm[pe])) * 1e3,
+2026-10-21T09:16:21Z [22,601ms] [Error] [omni.kit.app._impl] [py stderr]: /isaac-sim/test_scripts/manip_fr3/handoff_20260929/vol/pgrasp/probe_edge.py:291: RuntimeWarning: All-NaN slice encountered
+  slip_max_max=float(np.nanmax(sx[pe])) * 1e3, drop_t=s["drop_t"],
+ROW  3 L150_mu2.0_g2.5  | 掀前指間   0 | 掀中指間 min   0 弧末   0 結束   0 | 滑動中位 弧末    nan 結束    nan 最大    nan | 滑動最大     nan mm | 掉布 t=3.50 θ=0° | 邊長比 1.263 | 穿指 7 點 0.94mm | 反轉 0 | 過鉸 弧末   0% 結束   0% 質心 y -11 z -4 | FAIL
+SLIPDIR  3 L150_mu2.0_g2.5  結束時夾住集位移中位 局部 x(沿邊)nan y(+ = 往鉸點)nan mm
+ROW  4 L200_mu1.0_g3.0  | 掀前指間  14 | 掀中指間 min   0 弧末   0 結束   0 | 滑動中位 弧末 187.60 結束 208.17 最大 208.17 | 滑動最大  208.21 mm | 掉布 t=4.30 θ=9° | 邊長比 1.140 | 穿指 3 點 0.31mm | 反轉 0 | 過鉸 弧末   2% 結束   2% 質心 y -9 z -3 | FAIL
+SLIPDIR  4 L200_mu1.0_g3.0  結束時夾住集位移中位 局部 x(沿邊)0.11 y(+ = 往鉸點)208.17 mm
+ROW  5 L200_mu1.0_g2.5  | 掀前指間  13 | 掀中指間 min   0 弧末   0 結束   0 | 滑動中位 弧末 187.22 結束 207.79 最大 207.79 | 滑動最大  207.83 mm | 掉布 t=3.90 θ=2° | 邊長比 1.110 | 穿指 3 點 0.14mm | 反轉 0 | 過鉸 弧末   2% 結束   1% 質心 y -9 z -3 | FAIL
+SLIPDIR  5 L200_mu1.0_g2.5  結束時夾住集位移中位 局部 x(沿邊)0.21 y(+ = 往鉸點)207.79 mm
+ROW  6 L200_mu2.0_g3.0  | 掀前指間  13 | 掀中指間 min   0 弧末   0 結束   0 | 滑動中位 弧末 194.18 結束 214.70 最大 214.72 | 滑動最大  214.80 mm | 掉布 t=4.25 θ=8° | 邊長比 1.258 | 穿指 5 點 1.03mm | 反轉 0 | 過鉸 弧末   0% 結束   0% 質心 y -11 z -5 | FAIL
+SLIPDIR  6 L200_mu2.0_g3.0  結束時夾住集位移中位 局部 x(沿邊)-0.13 y(+ = 往鉸點)214.70 mm
+ROW  7 L200_mu2.0_g2.5  | 掀前指間  13 | 掀中指間 min   0 弧末   0 結束   0 | 滑動中位 弧末 194.02 結束 214.51 最大 214.52 | 滑動最大  214.62 mm | 掉布 t=3.75 θ=1° | 邊長比 1.220 | 穿指 10 點 1.49mm | 反轉 0 | 過鉸 弧末   0% 結束   0% 質心 y -11 z -5 | FAIL
+SLIPDIR  7 L200_mu2.0_g2.5  結束時夾住集位移中位 局部 x(沿邊)0.42 y(+ = 往鉸點)214.51 mm
+wall 12.7s / sim 10.50s | 顯存 4944 MiB(本 process)
+2026-10-21T09:16:22Z [23,130ms] [Warning] [omni.usd] Unexpected reference count of 2 for UsdStage 'anon:0xe2c4130:World0.usd' while being closed in UsdContext (this may indicate it is still resident in memory).
+[23.188s] Simulation App Shutting Down
+EXIT 0

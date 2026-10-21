@@ -8,7 +8,8 @@
 (80×80 mm,中心 x=50)從上方壓到「上層頂 − --press_mm」,停 2 s。
 mode 同 probe_bend:0 對照 / 1 USD restAdjTriPairs+restBendAngles ← 當下 / 2 1+SetActive 重建 / 3 1+整場重載 /
      4 restShapePoints ← 當下 + restShapeDefault + SetActive 重建 / 6 只 SetActive 重建 /
-     11 炸開 disjoint rest(ccommon.explode_rest)+ SetActive 重建
+     11 炸開 disjoint rest(ccommon.explode_rest)+ SetActive 重建(★ PhysX 建不起來 body,無效)
+     12 rest = yieldrule.solve(角 = 當下、邊長 = 原長、疊層在 rest 裡撐開 ≥ --sep_mm)+ SetActive 重建
 量:S1(wrap_sim 定義:邊穿面次數)、上下層 z 差(下層 x<80 mm 的頂點 ↔ xy 最近的上層頂點,上層 = 攤平 x>120 mm),<0 的頂點數 = 穿過。
 """
 import os, sys, argparse, time
@@ -22,6 +23,7 @@ ap.add_argument("--bend", type=float, default=4.0, help="surfaceBendStiffness(wr
 ap.add_argument("--young", type=float, default=2e4)
 ap.add_argument("--bake_at", default="pre", help="pre = 放手前 0.2 s(上層剛疊上、層距 ~2.1 mm);press = 壓住時(t_press+1.2 s,層距 ~1.6 mm,< 2*restOffset)")
 ap.add_argument("--press2_mm", type=float, default=0.0, help="bake_at press 時:改完後壓板再往下多壓幾 mm(t_press+1.5~2.3 s)")
+ap.add_argument("--sep_mm", type=float, default=3.0, help="mode 12:rest 裡疊層撐開的最小距離")
 ap.add_argument("--tag", default="")
 a = ap.parse_args()
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -93,10 +95,18 @@ def do_mode(cur):
         C.sa(prim, "omniphysics:restShapePoints", Vt.Vec3fArray([Gf.Vec3f(*map(float, q)) for q in cur]))
         prim.GetAttribute("omniphysics:restBendAnglesDefault").Set("restShapeDefault")
         msg.append("restShapePoints ← 當下 + restShapeDefault")
+    if m == 12:
+        from yieldrule import YieldRule
+        yr = YieldRule(P0, TRIS, PAIRS, EDG, yield_deg=0.0, lam=1.0); yr.step(cur)
+        X, info = yr.solve(cur, sep=a.sep_mm / 1e3, sep_flat=0.006)
+        C.sa(prim, "omniphysics:restShapePoints", Vt.Vec3fArray([Gf.Vec3f(*map(float, q)) for q in X]))
+        prim.GetAttribute("omniphysics:restBendAnglesDefault").Set("restShapeDefault")
+        msg.append("rest = yieldrule 解(角 = 當下、邊長 = 原長、疊層撐開 ≥ %.0f mm:撐開對 %d 最小 %.1f mm、應變 %.1e、角誤差 max %.1f°)"
+                   % (a.sep_mm, info["nsep"], info["sep_min_mm"], info["strain"], info["ang"]))
     if m == 11:
         C.write_disjoint_rest(st, PATH, C.explode_rest(P0, TRIS, cur), len(TRIS)); prim = st.GetPrimAtPath(PATH)
         msg.append("炸開 disjoint rest(攤平原位 + 轉到當下法線)")
-    if m in (2, 4, 6, 11):
+    if m in (2, 4, 6, 11, 12):
         C.set_pts(st, PATH, cur); prim.SetActive(False); world.step(render=False)
         prim = st.GetPrimAtPath(PATH); prim.SetActive(True); C.set_pts(st, PATH, cur)
         msg.append("SetActive 重建")

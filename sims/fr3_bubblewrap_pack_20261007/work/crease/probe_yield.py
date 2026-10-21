@@ -24,10 +24,11 @@ ap.add_argument("--lam", type=float, default=0.5)
 ap.add_argument("--ydeg", type=float, default=20.0)
 ap.add_argument("--period", type=float, default=0.25)
 ap.add_argument("--sep_mm", type=float, default=3.0)
+ap.add_argument("--sep_flat_mm", type=float, default=6.0, help="攤平時相距超過這個的頂點對才撐開")
 ap.add_argument("--tag", default="")
 a = ap.parse_args()
 HERE = os.path.dirname(os.path.abspath(__file__))
-tag = a.tag or "yield_y%d_b%g_l%g_d%g_s%g" % (a.yld, a.bend, a.lam, a.ydeg, a.sep_mm)
+tag = a.tag or "yield_y%d_b%g_l%g_d%g_s%g_f%g" % (a.yld, a.bend, a.lam, a.ydeg, a.sep_mm, a.sep_flat_mm)
 os.makedirs(os.path.join(HERE, "logs"), exist_ok=True); os.makedirs(os.path.join(HERE, "rec"), exist_ok=True)
 LOG = open(os.path.join(HERE, "logs", tag + ".log"), "w")
 def P(*s):
@@ -60,10 +61,9 @@ YR = YieldRule(P0, TRIS, PAIRS, EDG, yield_deg=a.ydeg, lam=a.lam)
 sp = C.build_cloth(st, PATH, P0, TRIS, selfcol=True, P=P)
 ROW_A = np.where(IJ[:, 0] == N)[0]; ROW_B = np.where(IJ[:, 1] == N)[0]; HINGE_B = np.where(IJ[:, 1] == N // 2)[0]
 PARK = np.array([0.0, 0.0, 1.0])
-for nm in ("A", "B", "C"):
-    C.kin_box(st, "/World/bar" + nm, [0.004, 0.004, 0.004], PARK + (0.0 if nm == "A" else 0.1) * np.array([1, 0, 0]), collide=False)
 BA0 = np.array([L / 2, 0, ZB])
-C.kin_box  # noqa
+for nm in ("A", "B", "C"):
+    C.kin_box(st, "/World/bar" + nm, [0.004, 0.004, 0.004], BA0 if nm == "A" else PARK + (0.1 if nm == "B" else 0.2) * np.array([1, 0, 0]), collide=False)
 C.attach_vtx(st, "/World/att_A", PATH, "/World/barA", ROW_A, P0[ROW_A] - BA0, P=P)
 world.reset()
 bar = {nm: SingleXFormPrim("/World/bar" + nm, name="bar" + nm) for nm in ("A", "B", "C")}
@@ -76,9 +76,9 @@ def quat_x(al):
 
 GA, GB = 0.006, 0.010
 TA0, TA1, TAR = 0.3, 2.3, 2.8
-TB0, TB1, TBR = 3.3, 5.3, 5.8
+TB0, TB1, TBR = 3.35, 5.35, 5.85
 TOBS = 7.8
-TC0, TC1, TCR = 8.0, 9.5, 10.0
+TC0, TC1, TCR = 8.05, 9.55, 10.05
 TEND = 12.0
 
 
@@ -122,6 +122,9 @@ for s in range(1, NS + 1):
         p_, q_ = poseA(t); bar["A"].set_world_pose(position=p_, orientation=q_)
         if t >= TAR - 1e-9:
             st.RemovePrim(Sdf.Path("/World/att_A")); attA = False; EV.append((t, "A release")); P("★ t=%.2f A 放手 | bbox %s" % (t, bbox(C.pts(st, PATH))))
+    for nm, tg in (("B", TB0), ("C", TC0)):
+        if abs(t - (tg - 0.1)) < DT / 2:                       # 先把桿移到抓取點(kinematic 目標要走一步才生效),0.1 s 後才建 attachment
+            cur = C.pts(st, PATH); bar[nm].set_world_pose(position=cur[ROW_B].mean(0), orientation=np.array([1., 0, 0, 0]))
     if not attB and abs(t - TB0) < DT / 2:
         cur = C.pts(st, PATH); c0 = cur[ROW_B].mean(0); B["c0"] = c0
         bar["B"].set_world_pose(position=c0, orientation=np.array([1., 0, 0, 0]))
@@ -152,12 +155,13 @@ for s in range(1, NS + 1):
             cur = C.pts(st, PATH); res["fa_rel"] = flap_angle(cur)
             st.RemovePrim(Sdf.Path("/World/att_C")); attC = False; EV.append((t, "C release"))
             P("★ t=%.2f C 放手:flap 角 %.1f°" % (t, res["fa_rel"]))
-    if a.yld and s % PER == 0 and t < TEND - 0.5:
+    near_grab = min(abs(t - TB0), abs(t - TC0)) < 3 * DT     # attachment 剛建的那幾步不要重建(會變 invalid actors)
+    if a.yld and s % PER == 0 and t < TEND - 0.5 and not near_grab:
         cur = C.pts(st, PATH)
         if a.yld == 1:
             yes, ny, dmax = YR.step(cur)
             if yes:
-                ts = time.time(); X, info = YR.solve(cur, sep=a.sep_mm / 1e3); tsolve += time.time() - ts
+                ts = time.time(); X, info = YR.solve(cur, sep=a.sep_mm / 1e3, sep_flat=a.sep_flat_mm / 1e3); tsolve += time.time() - ts
                 rebuild(cur, X); nreb += 1
                 if nreb <= 3 or nreb % 8 == 0:
                     P("  [yield] t=%.2f 降伏邊 %d(max|dev| %.0f°)| 解 rest:應變 %.1e 角誤差 max %.2f° 中位 %.3f° | 撐開對 %d(最小 %.1f mm)| 第 %d 次重建"

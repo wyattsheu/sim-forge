@@ -12,7 +12,8 @@ for try in $(seq 1 30); do
   source pgrasp/gpuwait.sh
   echo "CMD: wrap_vol.py $BASE $SWEEP $PG $* --out $D" > $D/stdout.txt
   echo "START $(date +%T)" >> $D/stdout.txt
-  /isaac-sim/python.sh wrap_vol.py $BASE $SWEEP $PG "$@" --out $D >> $D/stdout.txt 2>&1; echo "EXIT $? $(date +%T)" >> $D/stdout.txt
+  /isaac-sim/python.sh wrap_vol.py $BASE $SWEEP $PG "$@" --out $D >> $D/stdout.txt 2>&1 &
+  PY=$!; source pgrasp/watchdog.sh $PY $D/stdout.txt; wait $PY; echo "EXIT $? $(date +%T)" >> $D/stdout.txt
   if grep -qi "out-of-memory\|out of memory\|failed to allocate\|OUT_OF_DEVICE_MEMORY\|Scene state is corrupted" $D/stdout.txt; then
     mv $D/stdout.txt $D/stdout_oom$try.txt; sleep 60; continue
   fi

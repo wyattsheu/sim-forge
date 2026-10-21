@@ -49,9 +49,10 @@ class YieldRule:
         self.th_rest[y] = wrap(self.th_rest[y] + self.lam * dev[y])
         return bool(y.any()), int(y.sum()), float(np.degrees(np.abs(dev).max()))
 
-    def solve(self, X0, max_nfev=30, sep=0.0, sep_flat=0.015, w_sep=3.0):
+    def solve(self, X0, max_nfev=30, sep=0.0, sep_flat=0.006, w_sep=3.0, w_len=10.0, commit=True):
         """sep > 0:另外要求「攤平時相距 > sep_flat、現在相距 < sep」的頂點對在 rest 裡至少隔 sep
-        (把疊在一起的層在 rest 裡撐開,讓 rest 層距 > selfCollisionFilterDistance ≥ 2·restOffset,避免自碰撞被過濾)。"""
+        (把疊在一起的層在 rest 裡撐開,讓 rest 層距 > selfCollisionFilterDistance ≥ 2·restOffset,避免自碰撞被過濾)。
+        w_len:邊長殘差權重(rest 要近乎等長,角度讓步);commit:解完把 th_rest 改成 X 的實際二面角。"""
         from scipy.spatial import cKDTree
         from scipy.sparse import vstack
         n = len(X0); ne = len(self.E); npr = len(self.PAIRS)
@@ -69,7 +70,7 @@ class YieldRule:
             S = vstack([self.S, S2.tocsr()]).tocsr()
         def res(z):
             X = z.reshape(n, 3)
-            r1 = (np.linalg.norm(X[self.E[:, 1]] - X[self.E[:, 0]], axis=1) - self.L0) / self.L0
+            r1 = w_len * (np.linalg.norm(X[self.E[:, 1]] - X[self.E[:, 0]], axis=1) - self.L0) / self.L0
             r2 = wrap(self.dihedral(X) - self.th_rest)
             if len(SP):
                 d = np.linalg.norm(X[SP[:, 1]] - X[SP[:, 0]], axis=1)
@@ -77,8 +78,10 @@ class YieldRule:
             return np.concatenate([r1, r2])
         r0 = res(X0.ravel())
         sol = least_squares(res, X0.ravel(), jac_sparsity=S, method="trf", x_scale="jac", max_nfev=max_nfev, tr_solver="lsmr")
-        r = sol.fun
+        r = sol.fun.copy(); r0 = r0.copy(); r[:ne] /= w_len; r0[:ne] /= w_len
         X = sol.x.reshape(n, 3)
+        if commit:                       # 靜止角 = rest 嵌入實際做得到的角(避免累積到不相容的目標)
+            self.th_rest = self.dihedral(X)
         info = dict(strain0=float(np.abs(r0[:ne]).max()), ang0=float(np.degrees(np.abs(r0[ne:ne + npr]).max())),
                     strain=float(np.abs(r[:ne]).max()), ang=float(np.degrees(np.abs(r[ne:ne + npr]).max())),
                     ang_med=float(np.degrees(np.median(np.abs(r[ne:ne + npr])))), nfev=int(sol.nfev), nsep=int(len(SP)),

@@ -20,6 +20,7 @@ mode(runtime,放手前 0.2 s):
      (驗證「逐三角形給 rest」可用 → 降伏規則可以只改部分邊)
   11 炸開 disjoint rest:每三角形 = 攤平時原位的三角形、繞重心轉到當下朝向(ccommon.explode_rest)+ SetActive 重建
      (rest 裡層與層不靠近 → 不該觸發 selfCollisionFilterDistance 過濾)
+  ★ 實測 10 / 11:PhysX 建不起 body(attachment 報 invalid actors,頂點凍住)→ disjoint rest 不可用。結果見 ../CREASE.md
 mode(建立時,不綁桿,只看平布會不會自己彎):
   7 建立時寫 restAdjTriPairs/restBendAngles = 解析 1/4 圓的二面角 × --sign
   8 建立時 restShapePoints = 解析 1/4 圓 + restShapeDefault(正對照)

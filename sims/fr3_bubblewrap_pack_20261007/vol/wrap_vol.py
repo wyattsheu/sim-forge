@@ -1176,7 +1176,7 @@ if a.grasp:
             if slope >= a.steep_deg:
                 lift = 0.0
                 P("  [%s] 布邊坡度 %.1f° >= %.0f° → 角已翹起,不上抬(下指插到位後直接合上指)" % (sd, slope, a.steep_deg))
-            lo_ins = p + R0 @ [0, 0.017 - pin, -(half + a.clear_mm / 1e3 + GFS[2] / 2)]
+            lo_ins = p + R0 @ [0, (GFS[1] / 2 + 0.007 if WIDE else 0.017) - pin, -(half + a.clear_mm / 1e3 + GFS[2] / 2)]   # [pgrasp] 寬指:起點足跡 u∈[+7, +7+指深](20mm 指 = 舊 0.017)
             lo_pre_ = lo_ins + R0 @ [0, pin, 0]; lo_ab_ = lo_pre_ + [0, 0, 0.08]; lo_lift = lo_ins + [0, 0, lift]
             g_lin("lo", S0, GT["rod_above"], W_(lo_ab_), R0)
             t_ = S0 + GT["rod_above"]; g_lin("lo", t_, GT["rod_down"], W_(lo_pre_))
