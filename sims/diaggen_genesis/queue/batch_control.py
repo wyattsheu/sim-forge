@@ -5,6 +5,8 @@ import csv
 import fcntl
 import io
 import json
+import hashlib
+import shutil
 import os
 from pathlib import Path
 import re
@@ -76,6 +78,11 @@ def validate_policy(value):
     if policy["allow_compute_sharing"] is not True:
         raise ValueError("This memory-only queue requires compute sharing")
     return policy
+
+
+def job_accepts_gpu(job, gpu_uuid):
+    """Resumed native states retain their original exact worker GPU token."""
+    return job.get("resume_gpu_uuid") in (None, gpu_uuid)
 
 
 def effective_minimum_free_mib(policy, job):
@@ -156,6 +163,14 @@ class Queue:
             raise ValueError("Job minimum free memory must be a positive integer")
         if "scheduling_note" in job and (not isinstance(job["scheduling_note"], str) or not REASON.fullmatch(job["scheduling_note"])):
             raise ValueError("Scheduling note must be a short lowercase enum")
+
+        if "execution_mode" in job and job["execution_mode"] not in ("fresh", "resume"):
+            raise ValueError("Invalid job execution mode")
+        if job.get("execution_mode") == "resume":
+            validate_identifier(job.get("resume_id"))
+            validate_gpu_uuid(job.get("resume_gpu_uuid"))
+            if not isinstance(job.get("resume_state_sha256"), str) or not re.fullmatch(r"[a-f0-9]{64}", job["resume_state_sha256"]):
+                raise ValueError("Invalid resume state digest")
 
     def _validate_jobs(self, jobs, *, dynamic=False):
         if not isinstance(jobs, list):
@@ -263,7 +278,7 @@ class Queue:
             records = parse_gpu_csv(self.gpu_query())
             return [record["uuid"] for record in records
                     if record["uuid"] not in used and any(
-                        record["free_mib"] >= effective_minimum_free_mib(batch["policy"], job)
+                        job_accepts_gpu(job, record["uuid"]) and record["free_mib"] >= effective_minimum_free_mib(batch["policy"], job)
                         for job in queued)]
 
     def claim(self, gpu_uuid):
@@ -283,7 +298,7 @@ class Queue:
             gpu = next((record for record in records if record["uuid"] == gpu_uuid), None)
             if gpu is None:
                 return None
-            selected = next((job for job in queued if gpu["free_mib"] >= effective_minimum_free_mib(batch["policy"], job)), None)
+            selected = next((job for job in queued if job_accepts_gpu(job, gpu_uuid) and gpu["free_mib"] >= effective_minimum_free_mib(batch["policy"], job)), None)
             if selected is None:
                 return None
             selected.update(status="running", gpu_uuid=gpu_uuid, runner_pid=None,
@@ -312,11 +327,13 @@ class Queue:
             self._save(batch)
 
     def info(self, job_id, field):
-        if field not in ("input", "run_id", "gpu_uuid", "status", "minimum_free_mib"):
+        if field not in ("input", "run_id", "gpu_uuid", "status", "minimum_free_mib", "execution_mode", "resume_id", "resume_frozen_input"):
             raise ValueError("Unsupported job info field")
         with self._locked():
             batch = self._load()
             job = self._job(batch, job_id)
+            if field == "execution_mode":
+                return job.get(field, "fresh")
             if field == "minimum_free_mib":
                 return effective_minimum_free_mib(batch["policy"], job)
             return job.get(field)
@@ -422,7 +439,9 @@ class Queue:
                             queue_history_directory=mapping["queue_logs_to"])
             history.append(previous)
             job.update(run_id=new_run_id, status="queued", gpu_uuid=None, runner_pid=None,
-                       started_at=None, finished_at=None, attempts_history=history)
+                       started_at=None, finished_at=None, attempts_history=history, execution_mode="fresh")
+            for field in ("resume_id", "resume_gpu_uuid", "resume_state_sha256", "resume_frozen_input", "resume_reason"):
+                job.pop(field, None)
             job.pop("reason", None)
             # All queue operations honor batch.lock, so this rename cannot collide
             # with another retry. Native output and its completed archive stay put.
@@ -434,6 +453,198 @@ class Queue:
                 destination.rename(source)
                 raise
             # The batch file is the commit point; this derived view can be rebuilt.
+            atomic_json(self.directory / "status.json", self._summary(batch))
+            return mapping
+
+
+    @staticmethod
+    def _require_dead_runner(job):
+        pid = job.get("runner_pid")
+        if type(pid) is not int or pid <= 0:
+            raise ValueError("Resume requires a recorded prior runner PID")
+        try:
+            os.kill(pid, 0)
+        except ProcessLookupError:
+            return
+        except PermissionError:
+            raise ValueError("Prior runner may still be alive") from None
+        raise ValueError("Prior runner is still alive")
+
+    def _resume_details(self, job, *, check_digest=False):
+        """Read-only admission for a quiescent native run; never repair its ledgers."""
+        root = self.base.parents[1] / "tools" / "diaggen"
+        run_root = root / "outputs" / "agentic_asset_refinement" / job["run_id"]
+        state_path = run_root / "state.json"
+        if state_path.is_symlink() or not state_path.is_file() or not state_path.resolve().is_relative_to(run_root.resolve()):
+            raise ValueError("Resume requires a safe existing native state")
+        state_bytes = state_path.read_bytes()
+        digest = hashlib.sha256(state_bytes).hexdigest()
+        if check_digest and digest != job.get("resume_state_sha256"):
+            raise ValueError("Native state changed after resume admission")
+        state = json.loads(state_bytes)
+        if (not isinstance(state, dict) or state.get("schema_version") != "2026-07-skill-suite-runtime-state-v2"
+                or state.get("run_id") != job["run_id"] or state.get("run_root") != str(run_root)
+                or state.get("repo_root") != str(root) or state.get("run_mode") != "full_image"
+                or state.get("runtime_kind") != "codex_skill" or state.get("status") not in ("seeded", "running", "failed")
+                or state.get("diagnostics", {}).get("enabled") is not True):
+            raise ValueError("Native state is incompatible with same-run Genesis resume")
+        gpu = state.get("worker_isolation", {}).get("gpu_binding", {}).get("effective_cuda_visible_devices")
+        if (not isinstance(gpu, str) or not re.fullmatch(r"GPU-[0-9a-fA-F]{8}(?:-[0-9a-fA-F]{4}){3}-[0-9a-fA-F]{12}", gpu)
+                or gpu != job.get("gpu_uuid") or (check_digest and gpu != job.get("resume_gpu_uuid"))):
+            raise ValueError("Resume must preserve the exact persisted worker GPU UUID")
+        selected_file = self.directory / "jobs" / job["id"] / "selected_input.txt"
+        if selected_file.is_symlink() or not selected_file.is_file():
+            raise ValueError("Frozen input record is missing or unsafe")
+        frozen = Path(selected_file.read_text(encoding="utf-8").strip())
+        declared = state.get("inputs", {}).get("source_image")
+        if (not frozen.is_absolute() or frozen.is_symlink() or not frozen.is_file()
+                or not frozen.resolve().is_relative_to((root / "outputs" / "inputs").resolve())
+                or str(frozen) != declared or str(frozen) != state.get("paths", {}).get("source_image")
+                or hashlib.sha256(frozen.read_bytes()).hexdigest() != job.get("input_sha256")):
+            raise ValueError("Frozen native input is missing, changed, or disagrees with the run")
+        planned, stages = state.get("planned_global_stage_sequence"), state.get("stages")
+        if (not isinstance(planned, list) or not planned or len(planned) != len(set(planned))
+                or not all(isinstance(name, str) for name in planned) or not isinstance(stages, dict)
+                or set(planned) != set(stages)):
+            raise ValueError("Invalid native stage inventory")
+        completed, unfinished = [], []
+        for name in planned:
+            stage = stages[name]
+            if not isinstance(stage, dict):
+                raise ValueError("Invalid native stage record")
+            if stage.get("status") == "success" and stage.get("ok") is True:
+                if unfinished:
+                    raise ValueError("Successful native stages must form a prefix")
+                expected = stage.get("artifacts", {}).get("expected")
+                if not isinstance(expected, list) or not expected:
+                    raise ValueError("Successful upstream stage has no artifact inventory")
+                for artifact in expected:
+                    if artifact.get("required", True):
+                        path = Path(str(artifact.get("path", "")))
+                        if (not path.is_absolute() or path.is_symlink() or not path.is_file() or path.stat().st_size <= 0
+                                or not path.resolve().is_relative_to(run_root.resolve())):
+                            raise ValueError("A required upstream artifact is missing or unsafe")
+                completed.append(name)
+            else:
+                if stage.get("ok") is not False or stage.get("status") not in ("pending", "pending_retry"):
+                    raise ValueError("Resume cannot reopen a failed, halted, or running native stage")
+                if stage.get("status") == "pending_retry" and (unfinished or name != "genesis_live_diagnostic_loop"):
+                    raise ValueError("Only the next diagnostic stage may be pending_retry")
+                unfinished.append(name)
+        if (not completed or completed[0] != "image_cleanup" or not unfinished
+                or state.get("completed_global_stage_sequence") != completed):
+            raise ValueError("Resume requires an intact successful cleanup prefix and unfinished stages")
+        runtime = state.get("stage_runtime", {})
+        if not isinstance(runtime, dict) or any(isinstance(record, dict) and record.get("terminal", {}).get("status") == "halted" for record in runtime.values()):
+            raise ValueError("Resume cannot erase a halted stage terminal")
+        if "sam3_omnipart_2d_segmentation" in completed:
+            paths = state.get("paths", {})
+            for key, count_key in (("segmentation_manifest_path", "sam3_pre_postprocess_mask_count"), ("sam3_raw_metadata_path", "mask_count")):
+                record_path = Path(str(paths.get(key, "")))
+                if not record_path.is_file() or not record_path.resolve().is_relative_to(run_root.resolve()):
+                    raise ValueError("Validated raw SAM3 evidence is missing")
+                count = json.loads(record_path.read_text(encoding="utf-8")).get(count_key)
+                if type(count) is not int or count <= 0:
+                    raise ValueError("Resume rejects an empty raw SAM3 prediction")
+        diagnostics = state["diagnostics"]
+        terminal = diagnostics.get("terminal")
+        ownership = [state]
+        ownership_path = Path(str(state.get("paths", {}).get("sim_diagnostics_dir", ""))) / "runtime_ownership.json"
+        if ownership_path.is_file():
+            if ownership_path.is_symlink() or not ownership_path.resolve().is_relative_to(run_root.resolve()):
+                raise ValueError("Diagnostic ownership record is unsafe")
+            ownership.append(json.loads(ownership_path.read_text(encoding="utf-8")))
+        if stages[unfinished[0]].get("status") == "pending_retry":
+            if not isinstance(terminal, dict) or len(ownership) != 2:
+                raise ValueError("Diagnostic retry needs durable terminal and closed ownership")
+            business, operational = terminal.get("business_outcome", {}), terminal.get("operational_outcome", {})
+            if (terminal.get("status") != "retryable" or business.get("status") not in ("not_authored", "pending")
+                    or business.get("recommendation") is not None or operational.get("retryable") is not True
+                    or operational.get("status") not in ("cleanup_retryable", "lease_expired_retryable")
+                    or operational.get("cleanup_status") != "complete"):
+                raise ValueError("Diagnostics has no clean operational retry without a business recommendation")
+        elif terminal is not None:
+            raise ValueError("Ordinary pending resume must not contain a diagnostic terminal")
+        for ledger in ownership:
+            for key, field, closed in (
+                ("diagnostic_runtime_attachments", "status", ("completed", "failed", "expired", "superseded")),
+                ("diagnostic_runtime_sessions", "lifecycle_state", ("closed", "closed_failed")),
+            ):
+                records = ledger.get(key, [])
+                if not isinstance(records, list) or any(not isinstance(record, dict) or record.get(field) not in closed for record in records):
+                    raise ValueError("Diagnostic ownership is still active or malformed")
+        return {"run_root": str(run_root), "run_id": job["run_id"], "gpu_uuid": gpu,
+                "frozen_input": str(frozen), "input_sha256": job["input_sha256"],
+                "state_sha256": digest, "completed_stage_prefix": completed,
+                "diagnostic_operational_retry": stages[unfinished[0]].get("status") == "pending_retry"}
+
+    def validate_resume(self, job_id):
+        with self._locked():
+            job = self._job(self._load(), job_id)
+            if job.get("execution_mode") != "resume" or job.get("status") not in ("queued", "running"):
+                raise ValueError("Job is not an admitted same-run resume")
+            return self._resume_details(job, check_digest=True)
+
+    def resume(self, job_id, resume_id, reason):
+        """Queue a reviewed same-run continuation without altering native outputs."""
+        validate_identifier(resume_id)
+        if len(resume_id) > 64 or not isinstance(reason, str) or not REASON.fullmatch(reason):
+            raise ValueError("Invalid resume identifier or reason")
+        with self._locked():
+            if not (self.directory / "HOLD").exists():
+                raise ValueError("Resume requires queue/HOLD until repair is reviewed")
+            batch = self._load()
+            job = self._job(batch, job_id)
+            if job.get("status") != "failed":
+                raise ValueError("Only a failed stopped job may resume")
+            self._require_dead_runner(job)
+            details = self._resume_details(job)
+            source = self.directory / "jobs" / job_id
+            destination = self.directory / "job_history" / job_id / (job["run_id"] + "__resume_" + resume_id)
+            archive = self.base / "runs" / job["run_id"]
+            archive_history = self.base / "runs" / "resume_history" / job["run_id"] / resume_id
+            for path, boundary in ((source, self.directory), (destination, self.directory), (archive, self.base / "runs"), (archive_history, self.base / "runs")):
+                if path.is_symlink() or not path.resolve().is_relative_to(boundary.resolve()):
+                    raise ValueError("Resume history path is unsafe")
+            if not source.is_dir() or destination.exists() or archive_history.exists() or (archive.exists() and not archive.is_dir()):
+                raise ValueError("Resume history is missing or already exists")
+            original_input = source / "original_input.txt"
+            if original_input.is_symlink() or not original_input.is_file():
+                raise ValueError("Original input provenance record is missing")
+            mapping = {"job_id": job_id, "run_id": job["run_id"], "resume_id": resume_id, "resume_reason": reason,
+                       "queue_history_directory": str(destination.relative_to(self.directory)), **details}
+            previous = dict(job)
+            history = list(previous.pop("attempts_history", []))
+            previous.update(requeued_at=now(), resume_reason=reason, queue_history_directory=mapping["queue_history_directory"])
+            history.append(previous)
+            job.update(status="queued", runner_pid=None, started_at=None, finished_at=None, attempts_history=history,
+                       execution_mode="resume", resume_id=resume_id, resume_reason=reason, resume_gpu_uuid=details["gpu_uuid"],
+                       resume_state_sha256=details["state_sha256"], resume_frozen_input=details["frozen_input"])
+            job.pop("reason", None)
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            moved_archive = False
+            source.rename(destination)
+            try:
+                source.mkdir()
+                for filename in ("selected_input.txt", "original_input.txt", "selected_gpu.txt"):
+                    prior = destination / filename
+                    if prior.is_symlink() or not prior.is_file():
+                        raise ValueError("Prior input or GPU provenance is missing or unsafe")
+                    shutil.copy2(prior, source / filename)
+                atomic_json(source / "resume.json", mapping)
+                if archive.exists():
+                    archive_history.parent.mkdir(parents=True, exist_ok=True)
+                    archive.rename(archive_history)
+                    moved_archive = True
+                batch["updated_at"] = now()
+                atomic_json(self.path, batch)
+            except BaseException:
+                if moved_archive:
+                    archive_history.rename(archive)
+                if source.exists():
+                    shutil.rmtree(source)
+                destination.rename(source)
+                raise
             atomic_json(self.directory / "status.json", self._summary(batch))
             return mapping
 
@@ -486,6 +697,10 @@ def main(argv=None):
         queue.finish(*rest)
     elif command == "retry" and len(rest) == 3:
         print(json.dumps(queue.retry(*rest), ensure_ascii=False))
+    elif command == "resume" and len(rest) == 3:
+        print(json.dumps(queue.resume(*rest), ensure_ascii=False))
+    elif command == "validate-resume" and len(rest) == 1:
+        print(json.dumps(queue.validate_resume(*rest), ensure_ascii=False))
     elif command == "summary" and not rest:
         print(json.dumps(queue.summary(), ensure_ascii=False))
     elif command == "done" and not rest:

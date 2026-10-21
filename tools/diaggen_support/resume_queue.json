@@ -1,0 +1,16 @@
+{
+  "schema_version": "diaggen-resume-queue-patch-v1",
+  "files": {
+    "sims/diaggen_genesis/queue/batch_control.py": {
+      "before_sha256": "06124f8e67a69c688da2105f9b5e77f23e443e61dd9c4e672e2d051871c8bde8",
+      "before_md5": "11e79c857c1512e3b60c65bf19b144b4",
+      "after_sha256": "8ce4d37e3192f6d39444269f27149e27c98a0156421e521966bfd4de37782674"
+    },
+    "sims/diaggen_genesis/queue/run_one.sh": {
+      "before_sha256": "4e79cd8dfc9dc749004b3e5c715b7552099da49e113f11566cdcfe1377d49d67",
+      "before_md5": "5723d49ffb7147fe4feb587dc03bd7e2",
+      "after_sha256": "1b969183e35e94acaf5d5ca2acab488642961936444848b36f06446d13106c71"
+    }
+  },
+  "policy": "Apply only after all owned workers and supervisor have exited; dry-run first. Never edit native state or reopen terminals."
+}

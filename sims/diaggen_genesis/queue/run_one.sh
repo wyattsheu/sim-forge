@@ -9,9 +9,16 @@ export PYTHONNOUSERSITE=1 PYTHONUNBUFFERED=1
 export CUDA_HOME=/usr/local/cuda-12.8
 export PATH="$CUDA_HOME/bin:$HOME/.local/bin:$HOME/miniforge3/bin:$PATH"
 PYTHON="$DIAGGEN_ROOT/.conda/hag4r/bin/python"
+MESH_PYTHON="$DIAGGEN_ROOT/.conda/hag4r_mesh/bin/python"
 CONTROL="$ROOT_QUEUE/batch_control.py"
 SUPPORT="$ROOT_QUEUE/support.py"
+REQUEST_RESUME=0
+if [[ "${1:-}" == --resume ]]; then
+    REQUEST_RESUME=1
+    shift
+fi
 JOB_ID="${1:?A claimed batch job ID is required}"
+[[ $# == 1 ]] || { printf '%s\n' "Use run_one.sh [--resume] JOB_ID" >&2; exit 2; }
 batch() { "$PYTHON" "$CONTROL" "$@"; }
 state() { "$PYTHON" "$SUPPORT" status "$@"; }
 WORKER_FINALIZED=0
@@ -45,6 +52,12 @@ trap worker_exit EXIT
 batch bind "$JOB_ID" "$$"
 DIAGGEN_QUEUE_RUN_ID="$(batch info "$JOB_ID" run_id)"
 export DIAGGEN_QUEUE_RUN_ID
+EXECUTION_MODE="$(batch info "$JOB_ID" execution_mode)"
+[[ "$EXECUTION_MODE" == fresh || "$EXECUTION_MODE" == resume ]] || exit 2
+if ((REQUEST_RESUME)) && [[ "$EXECUTION_MODE" != resume ]]; then
+    printf '%s\n' "--resume requires Queue.resume admission metadata" >&2
+    exit 2
+fi
 export HAG4R_WORKER_ID="$DIAGGEN_QUEUE_RUN_ID"
 CUDA_VISIBLE_DEVICES="$(batch info "$JOB_ID" gpu_uuid)"
 export CUDA_VISIBLE_DEVICES
@@ -58,7 +71,14 @@ mkdir -p "$DIAGGEN_JOB_QUEUE_DIR"
 exec >> "$DIAGGEN_JOB_QUEUE_DIR/launcher.log" 2>&1
 
 RUN_ROOT="$DIAGGEN_ROOT/outputs/agentic_asset_refinement/$DIAGGEN_QUEUE_RUN_ID"
-if [[ -e "$DIAGGEN_JOB_QUEUE_DIR/STARTED" || -e "$RUN_ROOT/state.json" ]]; then
+if [[ "$EXECUTION_MODE" == resume ]]; then
+    if [[ -e "$DIAGGEN_JOB_QUEUE_DIR/STARTED" || -e "$DIAGGEN_JOB_QUEUE_DIR/RESUMED" ]]; then
+        state failed "Refusing to restart an already launched resume"
+        finish_job failed duplicate_run
+        exit 0
+    fi
+    batch validate-resume "$JOB_ID" > "$DIAGGEN_JOB_QUEUE_DIR/resume_validation.json"
+elif [[ -e "$DIAGGEN_JOB_QUEUE_DIR/STARTED" || -e "$DIAGGEN_JOB_QUEUE_DIR/RESUMED" || -e "$RUN_ROOT/state.json" ]]; then
     state failed "Refusing to overwrite an existing run"
     finish_job failed duplicate_run
     exit 0
@@ -70,7 +90,12 @@ if ! "$PYTHON" "$BASE/preflight/readiness.py" verify --certificate "$ROOT_QUEUE/
     finish_job failed runtime_preflight_failed
     exit 0
 fi
-(set -o noclobber; printf '%s\n' "$DIAGGEN_QUEUE_RUN_ID" > "$DIAGGEN_JOB_QUEUE_DIR/STARTED")
+STAGE_CLI="$WORKSPACE/tools/diaggen_support/stage_tool.py"
+COMPLETION_VALIDATOR="$WORKSPACE/tools/diaggen_support/validate_completed_export.py"
+"$PYTHON" "$STAGE_CLI" --list > "$DIAGGEN_JOB_QUEUE_DIR/stage_tool_preflight.json"
+START_MARKER=STARTED
+[[ "$EXECUTION_MODE" != resume ]] || START_MARKER=RESUMED
+(set -o noclobber; printf '%s\n' "$DIAGGEN_QUEUE_RUN_ID" > "$DIAGGEN_JOB_QUEUE_DIR/$START_MARKER")
 printf '%s\n' "$CUDA_VISIBLE_DEVICES" > "$DIAGGEN_JOB_QUEUE_DIR/selected_gpu.txt"
 printf '%s\n' "$SOURCE_IMAGE" > "$DIAGGEN_JOB_QUEUE_DIR/original_input.txt"
 state running "Shared GPU $CUDA_VISIBLE_DEVICES; Genesis diagnostics enabled"
@@ -113,33 +138,61 @@ if [[ ! "$DISPLAY_NUMBER" =~ ^[0-9]+$ ]] || \
 fi
 export DISPLAY=":$DISPLAY_NUMBER"
 cd "$DIAGGEN_ROOT"
-mkdir -p outputs/inputs
-FROZEN_INPUT="$DIAGGEN_ROOT/outputs/inputs/${DIAGGEN_QUEUE_RUN_ID}.${SOURCE_IMAGE##*.}"
-cp -- "$SOURCE_IMAGE" "$FROZEN_INPUT"
-printf '%s\n' "$FROZEN_INPUT" > "$DIAGGEN_JOB_QUEUE_DIR/selected_input.txt"
-"$PYTHON" -m hag4r.agentic.run_diaggen_pipeline \
-    --source_image "$FROZEN_INPUT" --run_id "$DIAGGEN_QUEUE_RUN_ID" \
-    --output_tag "$DIAGGEN_QUEUE_RUN_ID" \
-    --run_root outputs/agentic_asset_refinement \
-    --config configs/config_genesis_diagnostics_enabled.yaml \
-    > "$DIAGGEN_JOB_QUEUE_DIR/initializer.json"
+if [[ "$EXECUTION_MODE" == resume ]]; then
+    # The queue verified frozen bytes and the native ledger; never recopy input,
+    # rerun the initializer, reopen terminals, or recreate successful stages.
+    FROZEN_INPUT="$(batch info "$JOB_ID" resume_frozen_input)"
+    batch validate-resume "$JOB_ID" > "$DIAGGEN_JOB_QUEUE_DIR/resume_validation.json"
+else
+    mkdir -p outputs/inputs
+    FROZEN_INPUT="$DIAGGEN_ROOT/outputs/inputs/${DIAGGEN_QUEUE_RUN_ID}.${SOURCE_IMAGE##*.}"
+    cp -- "$SOURCE_IMAGE" "$FROZEN_INPUT"
+    printf '%s\n' "$FROZEN_INPUT" > "$DIAGGEN_JOB_QUEUE_DIR/selected_input.txt"
+    "$PYTHON" -m hag4r.agentic.run_diaggen_pipeline \
+        --source_image "$FROZEN_INPUT" --run_id "$DIAGGEN_QUEUE_RUN_ID" \
+        --output_tag "$DIAGGEN_QUEUE_RUN_ID" \
+        --run_root outputs/agentic_asset_refinement \
+        --config configs/config_genesis_diagnostics_enabled.yaml \
+        > "$DIAGGEN_JOB_QUEUE_DIR/initializer.json"
+fi
 
 cat > "$DIAGGEN_JOB_QUEUE_DIR/prompt.txt" <<EOF
 Complete this one user-authorized DiagGen asset-generation run in native Genesis.
 Read and use .agents/skills/run-diaggen-pipeline/SKILL.md; the initialized run is $RUN_ROOT.
+Execution mode is $EXECUTION_MODE. Read the durable state before selecting any stage. Preserve
+successful upstream stages and their terminal records; never initialize another run, repeat
+image cleanup, or regenerate upstream artifacts for a resume. A diagnostic operational retry
+always needs a freshly spawned diagnostic child and fresh agent_invocation_id; it must attach
+through MCP first and never reuse any prior token, attachment, session handle, or live episode.
 You are the Codex orchestrator. Read state.json and delegate each pending stage to a child reading
-its owning stage skill. Use built-in imagegen for image cleanup. Complete Genesis diagnostics,
+its owning stage skill. Only execute pending stages, and inspect existing cleanup candidates
+before considering built-in imagegen. Never repeat already successful cleanup. Complete Genesis diagnostics,
 post-mesh texture and final export, observing all diagnostic ownership, lease and transition rules.
 Use GPT-6 Luna (gpt-6-luna), max reasoning, throughout generation and diagnostics. All children must
 inherit this same model/effort. This is the user-authorized newer version of the paper's GPT-5.6 Luna
 at Max reasoning; do not silently substitute models, lower effort, or reduce the requested fidelity.
 The selected physical GPU token is $CUDA_VISIBLE_DEVICES. Keep that exact token in workers and MCP.
-Before invoking the OmniPart stage tool, require its owning stage child to run this deterministic
-memory guard and wait for its successful exit on the same bound GPU:
-$PYTHON $WORKSPACE/tools/wait_diaggen_gpu_memory.py --gpu-uuid $CUDA_VISIBLE_DEVICES --minimum-free-mib $DIAGGEN_JOB_MINIMUM_FREE_MIB --poll-seconds 15
-The guard must run immediately before the OmniPart tool, after segmentation. Wait on this GPU
-when memory is insufficient; never switch GPUs or reduce output quality. This is a free-memory
-check, not a reservation or a guarantee against OOM. The wrapper owns DISPLAY=$DISPLAY and its
+Non-diagnostic stage tools are existing local Python functions, not MCP stage endpoints.
+Every owning stage child must use this one-call bridge; pass this exact absolute command:
+$PYTHON $STAGE_CLI TOOL_NAME --input-json ABSOLUTE_JSON_PATH
+The JSON file is one object of the native tool's keyword arguments, including run_root, and
+must be written under this run's outputs directory. Run --list to inspect exact tool names
+and signatures. The bridge calls one native tool only; read its nested native result and
+validate actual required outputs before a separate explicit submit or halt call. Never
+claim a named stage tool is unavailable merely because it is absent from the MCP tool list.
+The bridge's OmniPart call enforces the exact bound GPU and configured free-memory gate
+automatically, immediately before invoking OmniPart. Do not reconstruct or separately call
+a guard path. Wait on the bound GPU when memory is insufficient; never switch GPUs or reduce
+output quality. The guard is an observation, not a memory reservation or OOM guarantee.
+For fresh image cleanup, stop after a passing Attempt 1; do not generate Attempt 2 after it
+passes. For a resume with successful cleanup, skip all imagegen and cleanup registration.
+Genesis diagnostics stays exclusively on its authenticated MCP and child-owned lifecycle;
+never use the stage bridge for diagnostic attach, probes, finalization, cleanup, or decisions.
+After successful diagnostic transition, texture, and final export, the parent must run:
+$MESH_PYTHON $COMPLETION_VALIDATOR --run-root $RUN_ROOT --settle
+This deterministic completion check must pass before reporting the full run successful.
+It verifies existing accepted artifacts and records completion; it does not regenerate them.
+The wrapper owns DISPLAY=$DISPLAY and its
 private X server; preserve DISPLAY in stage children and do not start a shared :99 X server.
 The GPU is shared with existing work. Do not stop or alter other processes, claim another GPU,
 install packages, edit project code, start Isaac Sim, or initialize another run. Existing model
@@ -172,13 +225,16 @@ codex exec --approve-for-me --cd "$DIAGGEN_ROOT" --enable multi_agent_v2 \
     < "$DIAGGEN_JOB_QUEUE_DIR/prompt.txt" \
     > "$DIAGGEN_JOB_QUEUE_DIR/codex_events.jsonl" 2> "$DIAGGEN_JOB_QUEUE_DIR/codex_stderr.log"
 codex_rc=$?
+"$MESH_PYTHON" "$COMPLETION_VALIDATOR" --run-root "$RUN_ROOT" \
+    > "$DIAGGEN_JOB_QUEUE_DIR/completion_validation.json" 2> "$DIAGGEN_JOB_QUEUE_DIR/completion_validation.stderr.log"
+completion_rc=$?
 "$PYTHON" "$SUPPORT" archive
 archive_rc=$?
 set -e
-if ((codex_rc == 0 && archive_rc == 0)); then
+if ((codex_rc == 0 && completion_rc == 0 && archive_rc == 0)); then
     state success "Genesis run completed and archived"
     finish_job success
 else
-    state failed "Codex exit=$codex_rc, artifact verification=$archive_rc; available artifacts archived"
+    state failed "Codex exit=$codex_rc, completion verification=$completion_rc, archive verification=$archive_rc; available artifacts archived"
     finish_job failed execution_failed
 fi

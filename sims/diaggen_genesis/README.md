@@ -31,6 +31,10 @@
 
 歷史 session 修補僅允許重新驗證已存在、唯一、已關閉且身份／時間快照完全一致的 settlement；不授權舊 owner 建立新的 close。補丁與前後 SHA256 保留在 `tools/diaggen_support/diagnostic_history_settlement.*`。14 項回歸測試包含原版必定失敗的對照，以及錯誤 owner、重開 session、偽造紀錄等拒絕案例。
 
+`batch_control.py resume JOB RESUME_ID REASON` 可在 HOLD 下安排已停止且符合條件的原 run 續跑。它檢查成功階段的產物、原圖雜湊、原 GPU 綁定與診斷清理狀態；日誌和舊歸檔移至 history 後，才重新排隊。啟動時再次核對 state 雜湊，跳過 initializer 與已成功階段。新一輪 GPU claim 仍須符合原門檻；診斷由全新 child 自行 attach。已 halt 的階段及已有業務推薦的診斷不會被這個入口重開。18 項續跑測試包含實際執行 wrapper 的假引擎測試；這不等同三件續跑已完成。
+
+本輪已將球鞋、USB Hub、樹懶以相同 run ID 重新排隊，恢復 tmux 等待。三件沿用原 GPU UUID，滿足 24 GiB 門檻後依清單順序續跑；其他五件仍保留失敗狀態。啟動前檢查紀錄已更新並再次比對通過。
+
 先前 71 項預檢涵蓋環境與小型 fixture，沒有涵蓋這些完整流程接線、歷史紀錄與最終結案錯誤；不能將預檢通過解讀為九件均可完成。即時數量與續跑狀態以 [progress/](progress/) 為準。
 
 ## 背景執行
@@ -99,7 +103,9 @@ USB Hub 重跑已通過 SAM3 並產生中間 combined mesh；原生程式因缺�
 
 ## 執行前預檢
 
-本次必要檢查 **71 項通過、0 項失敗、0 項未測**；非必要 CMake 未安裝，另標為 optional skip。完整結果摘要見 [preflight/latest.json](preflight/latest.json)。這是環境與小型 fixture 測試，不是九件物品已生成完成。
+初次環境預檢 **71 項通過、0 項失敗、0 項未測**；非必要 CMake 未安裝，另標為 optional skip。下表列出這次環境測試範圍。這是環境與小型 fixture 測試，不是九件物品已生成完成。
+
+晚間修復後的 [最新驗證](preflight/latest.json) 共 **75 個必要檢查項目通過**：沿用未變更的主機／網格／OmniPart 46 項基準，重新執行 Genesis 25 項，再加三項測試收集檢查與一項真實電捲棒完整匯出驗證。測試收集實際執行 **190 個 CPU／回歸測試，0 fail、0 error、0 skip**，並核對執行前後來源雜湊；75 是檢查項目數，190 是其內部測試數，不能相加。新報告明確保留沿用與重測的區別。
 
 | 範圍 | 實際測試 | 必要檢查 |
 | --- | --- | --- |
@@ -113,7 +119,7 @@ USB Hub 重跑已通過 SAM3 並產生中間 combined mesh；原生程式因缺�
 - 官方診斷呼叫 `scripts/generate_simulation_mp4.sh`，但發佈目錄缺檔。新增相容入口，使用實際擷取影格編碼，檢查影格連續、尺寸、幀率與解碼數量；缺少影格時拒絕，不能拿舊 MP4 當新成果。
 - 官方技能要求完整材料標籤覆蓋，原版程式卻只警告；已用一行可重現補丁改為嚴格失敗，保留元件修復的 subset 行為。補丁有原始碼前後 SHA256，遇到不同上游版本會停止套用。
 
-新環境先執行 `bash tools/setup_diaggen_runtime_support.sh` 還原這兩項本地支援。各 probe 位於 `preflight/probe_*.py`，必須使用對應的專案 Python、全新 `tools/diaggen/outputs/preflight/` 子目錄，GPU probe 另需明確 UUID；硬體探針以 `queue/preflight_gpu.lock` 序列執行。
+新環境在所有 DiagGen 工作停止後，執行 `bash tools/setup_diaggen_runtime_support.sh` 還原編碼入口及兩份已驗證補丁（含上述歷史 session 修補）。各 probe 位於 `preflight/probe_*.py`，必須使用對應的專案 Python、全新 `tools/diaggen/outputs/preflight/` 子目錄，GPU probe 另需明確 UUID；硬體探針以 `queue/preflight_gpu.lock` 序列執行。
 
 完整報告通過後，`preflight/readiness.py` 產生本機檢查紀錄。每件工作開始前，會比對輸入、必要來源檔、原生 Python／CUDA 程式、五個環境套件及執行檔；缺少或變更會建立 HOLD，先擋住新工作。只有圖片雜湊、套件列表或設定存在，不能代替實際功能預檢。
 
