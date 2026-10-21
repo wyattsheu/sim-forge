@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T22:57:14+08:00",
+  "updated_at": "2026-10-21T22:58:17+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -28,12 +28,12 @@
       "simulator": "Genesis",
       "run_id": "genesis_first_20261021_exr_retry1_display_retry2",
       "phase": "running",
-      "pipeline_status": "seeded",
+      "pipeline_status": "failed",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-21T22:57:14+08:00",
+      "updated_at": "2026-10-21T22:58:17+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
@@ -195,7 +195,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T07:14:19.925656+00:00",
-      "updated_at": "2026-10-21T22:57:14+08:00",
+      "updated_at": "2026-10-21T22:58:17+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -327,7 +327,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-21T22:57:14+08:00",
+      "updated_at": "2026-10-21T22:58:17+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -433,7 +433,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-21T22:57:14+08:00",
+      "updated_at": "2026-10-21T22:58:17+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -610,7 +610,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-21T22:57:14+08:00",
+      "updated_at": "2026-10-21T22:58:17+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -716,7 +716,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:38:07.768841+00:00",
-      "updated_at": "2026-10-21T22:57:14+08:00",
+      "updated_at": "2026-10-21T22:58:17+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -848,7 +848,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:46:28.056801+00:00",
-      "updated_at": "2026-10-21T22:57:14+08:00",
+      "updated_at": "2026-10-21T22:58:17+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
@@ -1010,7 +1010,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:26:08.183115+00:00",
-      "updated_at": "2026-10-21T22:57:14+08:00",
+      "updated_at": "2026-10-21T22:58:17+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1142,7 +1142,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:39:46.288097+00:00",
-      "updated_at": "2026-10-21T22:57:14+08:00",
+      "updated_at": "2026-10-21T22:58:17+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1606,5 +1606,5 @@
       "sha256": "db4ba55885ed522bc4e367674ec755352c5d4146d558baf33c306ea93dad3f7f"
     }
   ],
-  "signature": "a09607814a47903630f81a6de0771199851a8696aa7c6d28419363ac16cbb1f1"
+  "signature": "2da4e97e7a88a264fec132f6ed78a3d279256fcb308edc7cdcbfceb419f06d2f"
 }
