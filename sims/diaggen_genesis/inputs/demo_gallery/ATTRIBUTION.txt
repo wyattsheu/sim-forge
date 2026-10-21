@@ -1,0 +1,15 @@
+DiagGen demo input-photo crops
+
+Project: DiagGen: Agentic Generation of Deformable Assets with Sim-based
+Diagnostics for Robotic Simulation, Chen et al., 2026.
+Website: https://diaggen.github.io/
+Source video: https://diaggen.github.io/static/videos/gallery.mp4
+Paper: https://arxiv.org/abs/2609.23103
+
+These eight images are cropped input-photo panels from the official gallery
+video. They retain the video resolution and were not redrawn or upscaled.
+Crop coordinates, timestamps and checksums are in ../../demo_image_sources.json.
+
+The project website declares a Creative Commons Attribution-ShareAlike 4.0
+International license: https://creativecommons.org/licenses/by-sa/4.0/
+These website-derived crops retain that attribution and license notice.

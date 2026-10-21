@@ -1,0 +1,175 @@
+{
+  "created_at": "2026-10-21T11:36:39+08:00",
+  "project_url": "https://diaggen.github.io/#method",
+  "source_video": {
+    "url": "https://diaggen.github.io/static/videos/gallery.mp4",
+    "local_path": "references/diaggen_gallery.mp4",
+    "sha256": "f1618192396f1a8ac8f275f8063a8ee37d486bf6a7567485744f411dad1e8a58"
+  },
+  "images": [
+    {
+      "id": "usb_hub",
+      "label_zh": "USB Hub",
+      "path": "inputs/demo_gallery/usb_hub.png",
+      "source_type": "video_frame_crop",
+      "source_url": "https://diaggen.github.io/static/videos/gallery.mp4",
+      "timestamp_seconds": 1.5,
+      "crop_xywh": [
+        150,
+        340,
+        460,
+        470
+      ],
+      "width": 460,
+      "height": 470,
+      "upscaled": false,
+      "sha256": "5850136792643b8e8ed973ff0a8f0c8893614cb4b1d9fee03422f39cece98d78",
+      "description": "Cropped input-photo panel from the official gallery video; not a 3D render or full-resolution source photograph."
+    },
+    {
+      "id": "baseball_cap",
+      "label_zh": "棒球帽",
+      "path": "inputs/demo_gallery/baseball_cap.png",
+      "source_type": "video_frame_crop",
+      "source_url": "https://diaggen.github.io/static/videos/gallery.mp4",
+      "timestamp_seconds": 6.5,
+      "crop_xywh": [
+        150,
+        407,
+        460,
+        346
+      ],
+      "width": 460,
+      "height": 346,
+      "upscaled": false,
+      "sha256": "5d752ee38a076c25b119d7a6bb474ada62c7831d746645e5f52224add4426cfb",
+      "description": "Cropped input-photo panel from the official gallery video; not a 3D render or full-resolution source photograph."
+    },
+    {
+      "id": "curling_iron",
+      "label_zh": "捲髮棒",
+      "path": "inputs/demo_gallery/curling_iron.png",
+      "source_type": "video_frame_crop",
+      "source_url": "https://diaggen.github.io/static/videos/gallery.mp4",
+      "timestamp_seconds": 10.0,
+      "crop_xywh": [
+        150,
+        448,
+        460,
+        264
+      ],
+      "width": 460,
+      "height": 264,
+      "upscaled": false,
+      "sha256": "f43041bfea70e5e5dde6708c63e2e90950c647c3d1655d85139d679157a74c67",
+      "description": "Cropped input-photo panel from the official gallery video; not a 3D render or full-resolution source photograph."
+    },
+    {
+      "id": "sloth",
+      "label_zh": "樹懶玩偶",
+      "path": "inputs/demo_gallery/sloth.png",
+      "source_type": "video_frame_crop",
+      "source_url": "https://diaggen.github.io/static/videos/gallery.mp4",
+      "timestamp_seconds": 15.5,
+      "crop_xywh": [
+        150,
+        425,
+        460,
+        425
+      ],
+      "width": 460,
+      "height": 425,
+      "upscaled": false,
+      "sha256": "75c6c89aac00d6d4a60138a291c5679e9cce6eb2a0a1e6a389d28ac0a4c1b9be",
+      "description": "Cropped input-photo panel from the official gallery video; not a 3D render or full-resolution source photograph."
+    },
+    {
+      "id": "sauce_keeper",
+      "label_zh": "醬料瓶",
+      "path": "inputs/demo_gallery/sauce_keeper.png",
+      "source_type": "video_frame_crop",
+      "source_url": "https://diaggen.github.io/static/videos/gallery.mp4",
+      "timestamp_seconds": 21.5,
+      "crop_xywh": [
+        267,
+        329,
+        228,
+        500
+      ],
+      "width": 228,
+      "height": 500,
+      "upscaled": false,
+      "sha256": "26ce965bef2cd486e4dfdace529b5bc76597e738bfe14d75d79af5375766d092",
+      "description": "Cropped input-photo panel from the official gallery video; not a 3D render or full-resolution source photograph."
+    },
+    {
+      "id": "sneaker",
+      "label_zh": "球鞋",
+      "path": "inputs/demo_gallery/sneaker.png",
+      "source_type": "video_frame_crop",
+      "source_url": "https://diaggen.github.io/static/videos/gallery.mp4",
+      "timestamp_seconds": 25.0,
+      "crop_xywh": [
+        150,
+        412,
+        460,
+        326
+      ],
+      "width": 460,
+      "height": 326,
+      "upscaled": false,
+      "sha256": "523197588ed62e0060b43bee89b91ad06a8d1a5e1511401acb80c9b58b75e88a",
+      "description": "Cropped input-photo panel from the official gallery video; not a 3D render or full-resolution source photograph."
+    },
+    {
+      "id": "kitchen_tongs",
+      "label_zh": "廚房夾",
+      "path": "inputs/demo_gallery/kitchen_tongs.png",
+      "source_type": "video_frame_crop",
+      "source_url": "https://diaggen.github.io/static/videos/gallery.mp4",
+      "timestamp_seconds": 30.5,
+      "crop_xywh": [
+        288,
+        330,
+        186,
+        500
+      ],
+      "width": 186,
+      "height": 500,
+      "upscaled": false,
+      "sha256": "e56bcf23a00af706b6743b6f3c18aff010a88a60a5c7d82499371eaea9490ff7",
+      "description": "Cropped input-photo panel from the official gallery video; not a 3D render or full-resolution source photograph."
+    },
+    {
+      "id": "dragon",
+      "label_zh": "奶龍吊飾",
+      "path": "inputs/demo_gallery/dragon.png",
+      "source_type": "video_frame_crop",
+      "source_url": "https://diaggen.github.io/static/videos/gallery.mp4",
+      "timestamp_seconds": 38.0,
+      "crop_xywh": [
+        266,
+        329,
+        230,
+        500
+      ],
+      "width": 230,
+      "height": 500,
+      "upscaled": false,
+      "sha256": "9b500086b66da89d1363fc44be07b608096bd07caeeef34f07fbf6a04ef62a60",
+      "description": "Cropped input-photo panel from the official gallery video; not a 3D render or full-resolution source photograph."
+    }
+  ],
+  "additional_reference": {
+    "path": "references/official_cleaned/sloth_cleaned.png",
+    "width": 1024,
+    "height": 1024,
+    "source_type": "author_ai_cleaned_reference",
+    "cleanup_model": "gpt-image-2",
+    "source_url": "https://drive.google.com/drive/folders/1FW5MmvtleQC1Hq1ijwIGCci9wzZzjmpc",
+    "archive": "selected_assets_for_video_2026-09-15_v1.zip",
+    "archive_member": "toyandona_sloth/cleaned_image.png",
+    "used_as_first_input": false
+  },
+  "selected_first_input": "inputs/demo_gallery/usb_hub.png"
+}

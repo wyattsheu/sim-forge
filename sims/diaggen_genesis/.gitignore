@@ -1,0 +1,25 @@
+# Machine-local queue state, logs and the isolated publishing checkout.
+queue/*
+!queue/support.py
+!queue/wait_and_run.sh
+!queue/publish_progress.py
+!queue/publish_progress.sh
+
+# Large reference downloads and the complete local execution archive.
+references/
+runs/
+
+# Only the documented official demo crops are part of this experiment.
+inputs/*
+!inputs/demo_gallery/
+inputs/demo_gallery/*
+!inputs/demo_gallery/README.txt
+!inputs/demo_gallery/ATTRIBUTION.txt
+!inputs/demo_gallery/usb_hub.png
+!inputs/demo_gallery/baseball_cap.png
+!inputs/demo_gallery/curling_iron.png
+!inputs/demo_gallery/sloth.png
+!inputs/demo_gallery/sauce_keeper.png
+!inputs/demo_gallery/sneaker.png
+!inputs/demo_gallery/kitchen_tongs.png
+!inputs/demo_gallery/dragon.png
