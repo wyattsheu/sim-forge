@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T15:21:28+08:00",
+  "updated_at": "2026-10-21T15:24:32+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-21T15:21:28+08:00",
+      "updated_at": "2026-10-21T15:24:32+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -145,7 +145,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T07:14:19.925656+00:00",
-      "updated_at": "2026-10-21T15:21:28+08:00",
+      "updated_at": "2026-10-21T15:24:32+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -164,10 +164,10 @@
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "pending",
+          "status": "running",
           "ledger_status": "pending",
           "ok": false,
-          "started_at": null,
+          "started_at": "2026-10-21T07:24:22.575125+00:00",
           "finished_at": null
         },
         {
@@ -239,6 +239,16 @@
           "path": "media/capybara_plush_toy_cleaned_image.png",
           "bytes": 2311951,
           "sha256": "94bffd6c88b772cd5c34fd16919e6edcd2ea6aa78011c2662ffa43dbe4089331"
+        },
+        {
+          "path": "media/capybara_plush_toy_processed_white_bg_png.png",
+          "bytes": 313684,
+          "sha256": "2dece757f870b891fd78c84044bfa56e2479c776311b56f31a44071e740f41ea"
+        },
+        {
+          "path": "media/capybara_plush_toy_processed_rgba.png",
+          "bytes": 364544,
+          "sha256": "a9d1f8e885f3cb0f630435e4b9b0fe4657eae9d2e6cb68007092efa966f27177"
         }
       ],
       "id": "capybara_plush_toy",
@@ -257,7 +267,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-21T15:21:28+08:00",
+      "updated_at": "2026-10-21T15:24:32+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -363,7 +373,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-21T15:21:28+08:00",
+      "updated_at": "2026-10-21T15:24:32+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -495,7 +505,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:21:28+08:00",
+      "updated_at": "2026-10-21T15:24:32+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -601,7 +611,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:21:28+08:00",
+      "updated_at": "2026-10-21T15:24:32+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -707,7 +717,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:21:28+08:00",
+      "updated_at": "2026-10-21T15:24:32+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -813,7 +823,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:21:28+08:00",
+      "updated_at": "2026-10-21T15:24:32+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -919,7 +929,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:21:28+08:00",
+      "updated_at": "2026-10-21T15:24:32+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1027,6 +1037,16 @@
       "sha256": "94bffd6c88b772cd5c34fd16919e6edcd2ea6aa78011c2662ffa43dbe4089331"
     },
     {
+      "path": "media/capybara_plush_toy_processed_white_bg_png.png",
+      "bytes": 313684,
+      "sha256": "2dece757f870b891fd78c84044bfa56e2479c776311b56f31a44071e740f41ea"
+    },
+    {
+      "path": "media/capybara_plush_toy_processed_rgba.png",
+      "bytes": 364544,
+      "sha256": "a9d1f8e885f3cb0f630435e4b9b0fe4657eae9d2e6cb68007092efa966f27177"
+    },
+    {
       "path": "media/curling_iron_cleaned_image.png",
       "bytes": 1248008,
       "sha256": "b90f604fe533cb7ea1e9cbfc8fda0759705a9ae129c708e258f244cec325a02a"
@@ -1052,5 +1072,5 @@
       "sha256": "902248d1abd6f5918be7be558ea48ba16794e388e34004294d06209273b8729f"
     }
   ],
-  "signature": "a9d9fc2c4551ce2a44297530438a9346fa74a2b0925fa41ece09a024205b6e3e"
+  "signature": "a2d8092fb507a059b674d2c1721259e1cd59fb31c1828142826332c3a109bbd5"
 }
