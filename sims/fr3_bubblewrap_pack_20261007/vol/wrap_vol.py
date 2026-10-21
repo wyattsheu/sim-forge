@@ -156,7 +156,7 @@ ap.add_argument("--plastic_on_release", type=int, default=0, help="[plastic] 1 =
 ap.add_argument("--plastic_on_fold", type=int, default=0, help="[plastic] 1 = 關蓋完成、放錨點之前把整張布 rest 改成當下(折好)形狀;0 = 舊行為")
 ap.add_argument("--plastic_pre", type=float, default=0.2, help="[plastic] 放手前幾秒改 rest")
 ap.add_argument("--plastic_region", choices=["all", "side"], default="all", help="[plastic] release 時改哪些頂點:all = 全片;side = 本片 + 鉸線內 30mm(其他頂點 rest 不變)")
-ap.add_argument("--plastic_how", choices=["frame", "step"], default="frame", help="[plastic] SetActive(False)→(True) 在同一幀(frame)或中間多走一步(step)")
+ap.add_argument("--plastic_how", choices=["frame", "step"], default="step", help="[plastic] SetActive(False)→(True) 在同一幀(frame)或中間多走一步(step);frame + edamp 0.02 + jaw_collide 1 曾 segfault(PLASTIC.md)")
 ap.add_argument("--plastic_filter_mm", type=float, default=-1.0, help="[plastic] 重建時把 selfCollisionFilterDistance(以 rest 形狀量)改成這個 mm;折好的 rest 層間 <1mm 會被濾掉自碰撞;<0 = 不改")
 ap.add_argument("--release_watch", type=int, default=0, help="[plastic] 1 = 放手後 0.5/2/10 s 印 越線/壁外/自穿/穿杯/杯位移(--plastic_on_release 1 時自動開)")
 ap.add_argument("--grasp_tail_s", type=float, default=0.0, help="[plastic] 抓取段結束後多觀察幾秒(取杯段之前);0 = 舊行為")
