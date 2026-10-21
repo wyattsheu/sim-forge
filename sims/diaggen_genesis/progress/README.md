@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T17:39:49+08:00（Asia/Taipei）
+更新：2026-10-21T17:44:52+08:00（Asia/Taipei）
 
 共 9 件：等待 0、執行中 1、完成 0、失敗 8、取消 0。
 
@@ -21,7 +21,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢
 | kitchen_tongs | failed | seeded | revision_0000 | 24576 MiB | 2/9 |
 | sauce_keeper | failed | failed | revision_0000 | 24576 MiB | 6/9 |
 | sloth | failed | seeded | revision_0000 | 24576 MiB | 2/9 |
-| sneaker | running | seeded | revision_0000 | 24576 MiB | 0/9 |
+| sneaker | running | seeded | revision_0000 | 24576 MiB | 1/9 |
 
 ## usb_hub
 
@@ -263,7 +263,7 @@ Run：`genesis_sneaker_20261021`；執行中。
 
 | 階段 | 狀態 |
 |---|---|
-| 圖片清理 | pending |
+| 圖片清理 | success |
 | SAM3 分割 | pending |
 | OmniPart 幾何生成 | pending |
 | 材料推估 | pending |
@@ -274,5 +274,7 @@ Run：`genesis_sneaker_20261021`；執行中。
 | 最終匯出 | pending |
 
 Genesis 診斷 episode 數：0。
+
+![sneaker_cleaned_image](media/sneaker_cleaned_image.png)
 
 完整執行紀錄、GPU 識別資訊與失敗細節保留在伺服器。
