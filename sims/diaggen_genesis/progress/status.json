@@ -2,10 +2,10 @@
   "schema_version": "diaggen-public-batch-progress-v1",
   "pipeline": "DiagGen",
   "simulator": "Genesis",
-  "phase": "running",
+  "phase": "waiting_gpu",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T13:12:28+08:00",
+  "updated_at": "2026-10-21T13:14:00+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -14,9 +14,9 @@
   },
   "counts": {
     "queued": 5,
-    "running": 1,
+    "running": 0,
     "success": 0,
-    "failed": 3,
+    "failed": 4,
     "cancelled": 0,
     "unknown": 0,
     "total": 9
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T04:05:19.455387+00:00",
-      "updated_at": "2026-10-21T13:12:28+08:00",
+      "updated_at": "2026-10-21T13:14:00+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -154,7 +154,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T04:05:19.462238+00:00",
-      "updated_at": "2026-10-21T13:12:28+08:00",
+      "updated_at": "2026-10-21T13:14:00+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -275,7 +275,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T04:12:53.485565+00:00",
-      "updated_at": "2026-10-21T13:12:28+08:00",
+      "updated_at": "2026-10-21T13:14:00+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -390,13 +390,13 @@
       "pipeline": "DiagGen",
       "simulator": "Genesis",
       "run_id": "genesis_curling_iron_20261021",
-      "phase": "running",
+      "phase": "failed",
       "pipeline_status": "seeded",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T05:05:25.899087+00:00",
-      "updated_at": "2026-10-21T13:12:28+08:00",
+      "updated_at": "2026-10-21T13:14:00+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -503,7 +503,7 @@
         }
       ],
       "id": "curling_iron",
-      "status": "running",
+      "status": "failed",
       "attempts": 1
     },
     {
@@ -517,7 +517,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:12:28+08:00",
+      "updated_at": "2026-10-21T13:14:00+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -622,7 +622,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:12:28+08:00",
+      "updated_at": "2026-10-21T13:14:00+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -727,7 +727,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:12:28+08:00",
+      "updated_at": "2026-10-21T13:14:00+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -832,7 +832,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:12:28+08:00",
+      "updated_at": "2026-10-21T13:14:00+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -937,7 +937,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:12:28+08:00",
+      "updated_at": "2026-10-21T13:14:00+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1094,5 +1094,5 @@
       "sha256": "6a54e18303096e4791e45126489b323328787d59e943ce3680ebed33980e78e5"
     }
   ],
-  "signature": "6ace61f44a7ede8cfa7f4f8abc8c65912324ffb060a2d7e1edc849f6be8522f2"
+  "signature": "c8affb5782b7c5dcfcf45c7a61c991e08c77635432fd64cadb703be0cd061161"
 }
