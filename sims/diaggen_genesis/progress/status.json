@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T15:24:49+08:00",
+  "updated_at": "2026-10-21T15:36:07+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-21T15:24:49+08:00",
+      "updated_at": "2026-10-21T15:36:07+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -145,7 +145,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T07:14:19.925656+00:00",
-      "updated_at": "2026-10-21T15:24:49+08:00",
+      "updated_at": "2026-10-21T15:36:07+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -277,7 +277,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-21T15:24:49+08:00",
+      "updated_at": "2026-10-21T15:36:07+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -383,7 +383,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-21T15:24:49+08:00",
+      "updated_at": "2026-10-21T15:36:07+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -411,10 +411,10 @@
         {
           "name": "omnipart_generate_parts",
           "label": "OmniPart 幾何生成",
-          "status": "pending",
+          "status": "running",
           "ledger_status": "pending",
           "ok": false,
-          "started_at": null,
+          "started_at": "2026-10-21T07:36:05.570751+00:00",
           "finished_at": null
         },
         {
@@ -515,7 +515,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:24:49+08:00",
+      "updated_at": "2026-10-21T15:36:07+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -621,7 +621,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:24:49+08:00",
+      "updated_at": "2026-10-21T15:36:07+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -727,7 +727,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:24:49+08:00",
+      "updated_at": "2026-10-21T15:36:07+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -833,7 +833,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:24:49+08:00",
+      "updated_at": "2026-10-21T15:36:07+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -939,7 +939,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:24:49+08:00",
+      "updated_at": "2026-10-21T15:36:07+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1092,5 +1092,5 @@
       "sha256": "902248d1abd6f5918be7be558ea48ba16794e388e34004294d06209273b8729f"
     }
   ],
-  "signature": "0aa7832846332211134b615230d8ab519dccd8a1c380910eb6697d1cb96cc4a6"
+  "signature": "261703b0f131f6c996de368a9c7bbe5340c2b69936ed3e6bd9c5e724a80282e7"
 }
