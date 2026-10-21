@@ -26,6 +26,11 @@
 - 抓取:`--grasp 1 --grasp_attach 1 --attach_pad_mm 24 --attach_layer both --arc2 1 --arc_k 0.8 --peel_t 6 --gap_mm 4 --clear_mm 6 --steep_deg 45 --second 1`。
 - 重現指令:`vol/grasp/out_ga3/wrap_vol.log` 第 2 行的 args;影片 `vol/videos/VOL_grasp_attach.mp4`。
 - **demo 正式旗標(夾爪版,2026-10-21,vol/JAW.md)**:三隻手都是兩指夾爪「合指完成才綁 / 才帶走」(使用者:demo 要夾不要黏,之後用夾爪)。`vol/extract6/run.sh` = 抓取旗標 + `--grasp_site state --grasp_retry 2 --site_xmax_mm 60 --grasp_site_k 13 --arc2_over_cap 0 --arc2_over_mm 30 --hand2 jaw --hand2_pad_mm 15 --hand2_keep 1 --hold_yp 1 --extract 1 --guard_yp 2.6 --guard_n 2 --extract_mode slide --extract_out_mm 280 --guard_yn 2.6 --slide_clear_mm 40 --hand1_jaw 1 --extract_grip jaw --edamp 0.02`;2 次驗證都拿住、穿杯 0,落地布被帶起 34.8%(X1,無阻尼)/ 22.0%(X2,edamp 0.02);影片 `vol/videos/VOL_twohand_extract.mp4`、`DEMO_twohand_extract_short.mp4`(extract6/X2)。純摩擦不綁定不可行(fric/F1、F2 指間 0 點)。
+- **v2 正式旗標(v2.1,2026-10-21,`vol/V2_FLOW.md`「整鏈驗證」)**:流程是膠帶 → 入箱 → 搬 → 開蓋 → 整包取出到桌面 → 桌面掀四片 → 取杯。
+  - 指令:`vol/v2/run.sh NAME --quality final --edamp 0.02 --ut_release_up 1 --v2_xmode tapegrip --v2_h2_free 1 --wide_mm 150 --wide_mm_x 300 --v2_xrel_slide 2`
+  - final 整鏈 2 次:V21T/2 全部過關(四片 +10 s 翻片角 0° / 20° / 9° / 8°,取杯前覆蓋 1%,布被帶起 2.8% / 5.4%);V21T/1 只有 xn 沒過(87°)。
+  - 已知限制:x 片的角折回(v2.1 再修)。
+  - 影片:`vol/videos/VOL_v2_full.mp4`、`DEMO_v2_short.mp4`。
 - 輸出格式(給手臂端 / 下游):每個 snapshot 的 `wrap.npz`(sheet、mug、tets、TOP/BOT 層索引)+ `wrap_vol.log` 的判讀表 + `cloth_iface.py` 的介面(OFF、NX/CX/CY、snap_t、lid_deg);手臂端綁定介面見 `arm/INTERFACE.md` §5。
 - 驗收:`work/tests/run_checks.py`(10 函式 23 項)+ 判準:入箱 0 超出、穿杯 0、邊長比 0.95~1.05、yn 越線 ≥ 80%、放手後 ≥ 50%、他片 < 5%。
 

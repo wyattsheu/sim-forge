@@ -150,6 +150,7 @@ ap.add_argument("--hand1_jaw", type=int, default=0, help="[jaw2] 1 = 第一隻�
 ap.add_argument("--extract_grip", choices=["pad", "jaw"], default="pad", help="[jaw2] 取杯手:pad = 舊(方塊壓杯頂、杯轉 kinematic 跟手);jaw = 兩指沿 y 從杯兩端夾:張開下降 → 合指到接觸 → 杯轉 kinematic 跟手 → 放下後張開再抬")
 ap.add_argument("--jaw_collide", type=int, default=0, help="[jaw3] 1 = 夾爪指都是 kinematic 碰撞體(GU.finger,cont 1mm/rest 0,摩擦 ffric):手 1 用實體下指 lo 走下指路徑、手 2 兩指、取杯手兩指;log 指-布最小距離;0 = jaw2 純視覺")
 ap.add_argument("--finger_mm", type=float, default=20.0, help="[jaw2] 第一隻手指面邊長 mm(t,u);預設 20 = 舊")
+ap.add_argument("--wide_mm_x", type=float, default=0.0, help="[v2x2] >0 = x 片(xn/xp)改用這個寬度的寬指(另一組實體指 upW/loW,x 片開始時換手;yn/yp 照 --wide_mm);0 = 全部 --wide_mm(舊)")
 ap.add_argument("--wide_mm", type=float, default=150.0, help="[pgrasp] --pick_mode wide:指長(沿自由邊 t)mm;指面 = wide_mm x wide_depth_mm x wide_thick_mm")
 ap.add_argument("--wide_squeeze_mm", type=float, default=1.0, help="[pgrasp] --pick_mode wide:合指後指間 = 布厚 − 這個(1.0 → 3.0mm、1.5 → 2.5mm;取代 --gap_mm)")
 ap.add_argument("--wide_depth_mm", type=float, default=20.0, help="[pgrasp] 寬指深(u)mm")
@@ -189,7 +190,7 @@ ap.add_argument("--v2_xpress_s", type=float, default=0.0, help="[v2x2] G:x 片(�
 ap.add_argument("--v2_xpress_depth_mm", type=float, default=0.0, help="[v2x2] --v2_xpress_s:>0 = 壓指底 = max(桌面 + T − 1 mm, 下指那一刻足跡內布頂 − 這個值)(G 實測鉸點外有 38 mm 高的拱,壓到桌面 + T − 1 會壓爛:反轉 257、自穿 74);0 = 一律壓到桌面 + T − 1 mm")
 ap.add_argument("--v2_xpress_mm", type=float, default=30.0, help="[v2x2] --v2_xpress_s:壓指中心在鉸點往外幾 mm(指深沿 x)")
 ap.add_argument("--v2_xend_k", type=float, default=0.0, help="[v2x2] x 片(桌面掀法)終點 = 鉸點往外 這個 x 材料長;0 = 跟 --ut_end_k 一樣(舊)")
-ap.add_argument("--v2_xrel_slide", type=int, default=0, help="[v2x2] H:x 片放手時,布上那根只張開 2 mm 就沿 u 往外抽出布外再抬(--ut_release_up 的「張開 20 mm 再垂直抬」會讓片尖跟著指往上、翻回杯上:E/F 實測指-布 0.5 mm 跟到 +20 mm);布下那根照 --ut_release_up;0 = 舊")
+ap.add_argument("--v2_xrel_slide", type=int, default=0, help="[v2x2] H(2 = yn/yp 也用;整鏈 V21S/1 的 yp 同樣是上指張開時布跟著指、+2 s 翻回 129°):x 片放手時,布上那根只張開 2 mm 就沿 u 往外抽出布外再抬(--ut_release_up 的「張開 20 mm 再垂直抬」會讓片尖跟著指往上、翻回杯上:E/F 實測指-布 0.5 mm 跟到 +20 mm);布下那根照 --ut_release_up;0 = 舊")
 ap.add_argument("--quality", choices=["off", "fast", "final"], default="off",
                 help="[quality] fast = 開發用(dt 1/120 solver 48 vid_every 2 960x540);final = 出片(dt 1/240 solver 128);off = 舊行為。個別旗標有明確給時以個別旗標為準")
 ap.add_argument("--save_state", default="", help="[speed2] npz:在 --at 時間點存 布頂點/速度、杯姿態、箱/蓋/側板、時間、量測狀態(SNAP/EV/LOGR/軌跡/RNG),之後照常跑完(--save_exit 1 存完就停)")
@@ -653,6 +654,14 @@ if a.grasp:
         GVIS[k_] = GU.VisBox(st, "/World/gvis_" + k_, GRS if k_ == "rod" else GFS,
                              (0.2, 0.7, 0.25) if k_ == "rod" else (0.9, 0.45, 0.1))
         GVIS[k_].set(GPARK[k_])
+    GFSX = None; SWX = dict(on=False)                                         # [v2x2] --wide_mm_x:x 片用另一組寬指 upW / loW
+    if WIDE and a.wide_mm_x > 0:
+        GFSX = np.array([a.wide_mm_x, a.wide_depth_mm, a.wide_thick_mm]) / 1e3
+        for k_, pk_ in (("upW", [3.0, 4.0, 1.0]), ("loW", [3.0, 4.1, 1.0])):
+            GPARK[k_] = np.array(pk_); GPATH[k_] = "/World/gfing/" + k_
+            GU.finger(st, GPATH[k_], GFSX, GPARK[k_], a.ffric, cont=0.001, rest=0.0)
+            UsdGeom.Imageable(st.GetPrimAtPath(GPATH[k_])).CreateVisibilityAttr().Set(UsdGeom.Tokens.invisible)
+            GVIS[k_] = GU.VisBox(st, "/World/gvis_" + k_, GFSX, (0.9, 0.45, 0.1)); GVIS[k_].set(GPARK[k_])
     class SBox:                                                               # [jaw2] 純視覺方塊(可改尺寸)
         def __init__(s, path, color, size):
             cb = UsdGeom.Cube.Define(st, path); cb.CreateSizeAttr(1.0); xf = UsdGeom.Xformable(cb)
@@ -1100,15 +1109,20 @@ if a.grasp:
             elif t >= t0: return fn(ss((t - t0) / (t1 - t0)))
             else: break
         return cur if cur is not None else (GPARK[k_], np.eye(3))
+    def g_phys(k_, t):                                                        # [v2x2] --wide_mm_x:換手後 up/lo 的路徑由 upW/loW 實體指走,原指停 park
+        if SWX["on"]:
+            if k_ in ("up", "lo"): return GPARK[k_], np.eye(3)
+            if k_ in ("upW", "loW"): return g_pose(k_[:2], t)
+        return g_pose(k_, t)
     def g_drive(t):
         D = np.zeros((len(GKEYS), 7), np.float32)
         for i_, k_ in enumerate(GKEYS):
-            p_, R_ = g_pose(k_, t); q_ = rq(R_)
+            p_, R_ = g_phys(k_, t); q_ = rq(R_)
             D[i_, :3] = p_; D[i_, 3:6] = q_[1:]; D[i_, 6] = q_[0]
         GFV.set_kinematic_targets(D[GF_ORD], GF_IDX)
     def g_vis(t):
         for k_ in GKEYS:
-            p_, R_ = g_pose(k_, t); GVIS[k_].set(p_, rq(R_))
+            p_, R_ = g_phys(k_, t); GVIS[k_].set(p_, rq(R_))
         if "lov" in GF:                                                       # [jaw2] 第一隻手下指(jaw2 純視覺;jaw3 = 實體 lo 同 pose)
             p_, R_ = lov_pose(t); JVS["lov"] = (p_, R_)
             if "lov" in JV: JV["lov"].set(p_, rq(R_))
@@ -1783,7 +1797,7 @@ if a.grasp:
             p1 = Pf1[k_] + offw; A_ = p1 + sgn * n_e * 0.010; B_ = A_ + u_e * (GFS[1] + 0.020)
             if a.ut_release_up:                                               # [v2x] 張開到 +20 mm;布上那根垂直抬、不往外抽;布下那根(已在桌面下)在桌面下沿 u 出布外再抬
                 A_ = p1 + sgn * n_e * 0.020; B_ = A_ + u_e * (GFS[1] + 0.020) if sgn * n_e[2] < 0 else A_
-                if a.v2_xrel_slide and ax == 0 and sgn * n_e[2] >= 0:             # [v2x2] H:布上那根張開 2 mm → 沿 u 抽出布外 → 抬
+                if a.v2_xrel_slide and (ax == 0 or a.v2_xrel_slide == 2) and sgn * n_e[2] >= 0:   # [v2x2] H:布上那根張開 2 mm → 沿 u 抽出布外 → 抬(2 = yn/yp 也用)
                     A_ = p1 + sgn * n_e * 0.002; B_ = A_ + u_e * (GFS[1] + 0.020)
             g_lin(k_, TR, GT["rel_open"], A_); g_lin(k_, TR + GT["rel_open"], GT["rel_slide"], B_)
             g_lin(k_, TR + GT["rel_open"] + GT["rel_slide"], GT["rel_up"], B_ + [0, 0, 0.08])
@@ -2569,6 +2583,9 @@ for fr in range(FR0, NFR):                                                      
         drive(tcur)
         if a.tape_follow or TK: v2_events(tcur)                               # [v2]
         if a.grasp and tcur >= TG0 - 1e-9:
+            if GFSX is not None and not SWX["on"] and T_XS is not None and tcur >= T_XS - 1e-9:   # [v2x2] x 片開始:換成 x 片寬指
+                SWX["on"] = True; GFS = GFSX
+                P("★ t=%.2f [v2x2] x 片開始:手 1 換成寬指 %s mm(upW/loW;yn/yp 用的 up/lo 停 park)" % (tcur, np.round(GFSX * 1e3)))
             g_events(tcur); g_drive(tcur)
             if a.plastic_on_release or a.release_watch: plastic_watch(tcur)   # [plastic]
         if a.extract and tcur >= T_X0 - 1e-9: x_events(tcur)                   # [extract]
