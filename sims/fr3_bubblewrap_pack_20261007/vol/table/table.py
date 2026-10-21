@@ -8,7 +8,7 @@ def runs(d):
 def f(x, fmt="%.0f"):
     return "-" if x is None or (isinstance(x, float) and not np.isfinite(x)) else fmt % x
 H = ["run", "片", "夾法", "綁點 / 指間", "掀中指間 min", "守衛", "鉸點 y / L mm", "放手前 翻片角 / 越線", "+2s 翻片角", "+2s 越線", "+2s 質心 往外/高",
-     "+10s 翻片角", "+10s 越線", "+10s 質心 往外/高", "+10s 主片在鉸線外", "他片 >10mm(10s)", "杯位移 mm(10s)", "穿杯 max", "杯頂覆蓋(10s)", "達標", "wall s"]
+     "+10s 翻片角", "+10s 越線", "+10s 質心 往外/高", "+10s 主片在鉸線外", "他片 >10mm(10s)", "杯位移 mm 夾好時 / 10s", "穿杯 max 夾取段 / 掀開起", "杯頂覆蓋(10s)", "達標", "wall s"]
 print("| " + " | ".join(H) + " |"); print("|" + "---|" * len(H))
 for d in sys.argv[1:]:
     for r in runs(d):
@@ -24,7 +24,9 @@ for d in sys.argv[1:]:
             rows = [q for q in J["rows"] if q["sd"] == sd and s.get("TP0") and s["TP0"] - 1e-6 <= q["t"] <= s["events"].get("held", 1e9)]
             nmin = min([q["ngrip"] for q in rows]) if rows else None
             gd = re.findall(r"t=([\d.]+) \[%s\] 守衛:" % sd, so)
-            inm = max([q["inmug"] for q in J["rows"] if q["sd"] == sd] + [0])
+            mg = [q["mug_d"] for q in J["rows"] if q["sd"] == sd and s.get("TP0") and q["t"] <= s["TP0"] - 0.9]
+            _t1 = (s.get("TP0") or 1e9) - 0.9
+            inm = "%d / %d" % (max([q["inmug"] for q in J["rows"] if q["sd"] == sd and q["t"] < _t1] + [0]), max([q["inmug"] for q in J["rows"] if q["sd"] == sd and q["t"] >= _t1] + [0]))
             pre, a2, a10 = u.get("pre", {}), u.get("after2", {}), u.get("after10", {})
             ok = a10 and a10["ang"] < 45 and a10["cross"] >= 80
             print("| " + " | ".join([r, sd, "寬指 純摩擦" if wide else "綁定", "%s / %s" % (natt[-1] if natt else "-", ngr[-1] if ngr else "-"),
@@ -33,5 +35,5 @@ for d in sys.argv[1:]:
                   "%s° / %s%%" % (f(pre.get("ang")), f(pre.get("cross"))),
                   f(a2.get("ang"), "%.0f°"), f(a2.get("cross"), "%.0f%%"), "%s / %s" % (f(a2.get("oc")), f(a2.get("zc"))),
                   f(a10.get("ang"), "%.0f°"), f(a10.get("cross"), "%.0f%%"), "%s / %s" % (f(a10.get("oc")), f(a10.get("zc"))), f(a10.get("out"), "%.0f%%"),
-                  f(a10.get("oth"), "%.1f%%"), f(a10.get("mug"), "%.1f"), "%d" % inm, f(a10.get("cov"), "%.0f%%"),
+                  f(a10.get("oth"), "%.1f%%"), "%s / %s" % (f(mg[-1] if mg else None, "%.1f"), f(a10.get("mug"), "%.1f")), inm, f(a10.get("cov"), "%.0f%%"),
                   "✓" if ok else "✗", el]) + " |")

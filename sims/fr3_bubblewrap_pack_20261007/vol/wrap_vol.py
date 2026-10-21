@@ -171,6 +171,7 @@ ap.add_argument("--ut_lift_mm", type=float, default=40.0, help="[table] 夾好�
 ap.add_argument("--ut_lift_t", type=float, default=1.0, help="[table] 抬起用時 s")
 ap.add_argument("--ut_arc_k", type=float, default=0.9, help="[table] 翻轉弧半徑 = 這個 x 材料長(桌面鉸點 → 夾爪中心)")
 ap.add_argument("--ut_end_k", type=float, default=1.0, help="[table] 終點夾爪中心離鉸點(往外)= 這個 x 材料長,z = 桌面 + T")
+ap.add_argument("--ut_tape", type=int, default=1, help="[table] 1 = 放錨點時錨點不移除(當膠帶封住四片;不入箱時全放 → 整包 1.5 s 內自己彈開攤平,table/smoke 實測),掀某片夾好那一刻才移除那片的錨點;0 = 照舊全部移除")
 ap.add_argument("--quality", choices=["off", "fast", "final"], default="off",
                 help="[quality] fast = 開發用(dt 1/120 solver 48 vid_every 2 960x540);final = 出片(dt 1/240 solver 128);off = 舊行為。個別旗標有明確給時以個別旗標為準")
 ap.add_argument("--save_state", default="", help="[speed2] npz:在 --at 時間點存 布頂點/速度、杯姿態、箱/蓋/側板、時間、量測狀態(SNAP/EV/LOGR/軌跡/RNG),之後照常跑完(--save_exit 1 存完就停)")
@@ -1535,6 +1536,10 @@ if a.grasp:
         抬起 ut_lift_mm → 繞鉸點弧線(半徑 r0 → ut_arc_k*L(前 30%)→ 保持 → 最後 25% 到終點),夾爪同時繞 x 轉 180°;
         終點夾爪中心 = 鉸點往外 ut_end_k*L、z = 桌面 + T;停 peel_hold → 兩指沿 n 張開 10mm → 沿 u 往外抽(指深 + 20mm)→ 抬 80mm。"""
         sd, sg, v = pl["sd"], pl["sg"], pl["v"]; M = GPL.mid(Pl); zg = BOXL["ZFLOOR"]
+        if a.ut_tape:                                                         # 剪掉這片的膠帶(錨點)
+            _sc = [A["scope"] for A in ANC if A["side"] == sd and st.GetPrimAtPath(A["scope"]).IsValid()]
+            for _s in _sc: st.RemovePrim(Sdf.Path(_s))
+            P("★ t=%.2f [%s] [table] 夾好 → 移除 %s 片錨點 %d 個(膠帶);其他片仍封著" % (t, sd, sd, len(_sc)))
         col = np.where((GPL.S["ii"] == v % (a.nxy + 1)) & (sg * GF2[:, 1] > CY - 1e-9))[0]; col = col[np.argsort(sg * GF2[col, 1])]
         k = 0
         while k + 1 < len(col) and M[col[k + 1], 2] < zg + T + 0.003: k += 1
@@ -2089,7 +2094,8 @@ for fr in range(FR0, NFR):                                                      
             Pp = PLATE.pts(); mp, Rq, MW = mug_world()
             r_, _, _ = measure(tcur, full=True); SNAP["closed_pre_release"] = (Pp.copy(), MW.copy(), r_)
             if a.plastic_on_fold: plastic_bake("關蓋完成、放錨點前(全片)", tcur)   # [plastic]
-            st.RemovePrim(Sdf.Path("/World/attach"))
+            if UT and a.ut_tape: P("\n★ t=%.3f [table] --ut_tape 1:錨點保留(當膠帶),掀哪片夾好時才移除那片的" % tcur)   # [table]
+            else: st.RemovePrim(Sdf.Path("/World/attach"))
             kin.Set(False)
             ST["released"] = True
             P("\n★ t=%.3f 關蓋完成 → RemovePrim 全部錨點(4 scope);杯子轉 dynamic" % tcur)
