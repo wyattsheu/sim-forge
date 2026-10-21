@@ -165,6 +165,12 @@ ap.add_argument("--plastic_filter_mm", type=float, default=-1.0, help="[plastic]
 ap.add_argument("--plastic_spread_mm", type=float, default=0.0, help="[spread] >0 = 烘焙(全片)時 rest 用 plastic/spread_rest.solve 把疊層撐開到表面間距 >= d mm(邊長 = 當下);自碰撞以 rest 距離濾除,d >= 5 才保得住(PLASTIC.md A2);0 = 舊行為(rest = 當下)")
 ap.add_argument("--release_watch", type=int, default=0, help="[plastic] 1 = 放手後 0.5/2/10 s 印 越線/壁外/自穿/穿杯/杯位移(--plastic_on_release 1 時自動開)")
 ap.add_argument("--grasp_tail_s", type=float, default=0.0, help="[plastic] 抓取段結束後多觀察幾秒(取杯段之前);0 = 舊行為")
+ap.add_argument("--unwrap_on_table", type=int, default=0, help="[table] 1 = 四折+收耳、放錨點後不入箱(箱子留在旁邊、桌面=地面),settle --ut_settle_s 後直接在桌面上掀:抬起 → 繞桌面鉸點往外翻 180° 攤平(取代越壁弧線);0 = 舊行為")
+ap.add_argument("--ut_settle_s", type=float, default=2.0, help="[table] 放錨點後停幾秒才開始掀")
+ap.add_argument("--ut_lift_mm", type=float, default=40.0, help="[table] 夾好後先垂直抬起 mm")
+ap.add_argument("--ut_lift_t", type=float, default=1.0, help="[table] 抬起用時 s")
+ap.add_argument("--ut_arc_k", type=float, default=0.9, help="[table] 翻轉弧半徑 = 這個 x 材料長(桌面鉸點 → 夾爪中心)")
+ap.add_argument("--ut_end_k", type=float, default=1.0, help="[table] 終點夾爪中心離鉸點(往外)= 這個 x 材料長,z = 桌面 + T")
 ap.add_argument("--quality", choices=["off", "fast", "final"], default="off",
                 help="[quality] fast = 開發用(dt 1/120 solver 48 vid_every 2 960x540);final = 出片(dt 1/240 solver 128);off = 舊行為。個別旗標有明確給時以個別旗標為準")
 ap.add_argument("--save_state", default="", help="[speed2] npz:在 --at 時間點存 布頂點/速度、杯姿態、箱/蓋/側板、時間、量測狀態(SNAP/EV/LOGR/軌跡/RNG),之後照常跑完(--save_exit 1 存完就停)")
@@ -183,6 +189,8 @@ if a.tuck == 0:
     a.squeeze_t = 0.0
 if a.until == "yn":                                                           # [speed2] 只跑到 yn 片結束
     a.second = 0; a.extract = 0
+UT = bool(a.unwrap_on_table)                                                 # [table] 桌面上掀開(不入箱、不取杯)
+if UT: a.extract = 0
 LOADED = None
 if a.load_state:                                                              # [speed2] 讀存檔(場景建好、world.reset 之前套用)
     import pickle as _pk
@@ -812,6 +820,7 @@ T_OPEN0 = T_MOVE1 + 2.0
 T_OPEN1 = T_OPEN0 + a.open_span
 T_OPEN2 = T_OPEN1 + a.open_span
 T_END_ALL = T_OPEN2 + 3.0
+if UT: T_MOVE0 = T_MOVE1 = T_OPEN0 = T_OPEN1 = T_OPEN2 = T_END_ALL = T_ANC + a.ut_settle_s   # [table] 不入箱:沒有搬/開蓋,放錨點 settle 完就掀
 T_END = {"fold": T_INBOX + 0.6, "box": T_MOVE0, "move": T_OPEN0, "all": T_END_ALL, "yn": T_END_ALL}[a.until]
 # 抓取段時間表(相對每片的 S0;yn 在 open hold 完 + settle 1s 開始)
 GT = dict(rod_above=1.0, rod_down=1.0, rod_in=1.0, rod_lift=1.0, pick_hold=0.5, lo_above=0.8, lo_down=0.8, lo_in=1.0,
@@ -824,12 +833,13 @@ G_LF = a.lift_first_t if a.lift_first_mm > 0 else 0.0                           
 G_EXT = a.arc2_ext_t if a.arc2_ext_mm > 0 else 0.0                                                # [drag2]
 G_EXT += (a.arc2_cl_t + 1.0 if a.arc2_target == "centroid" else a.arc2_over_t if a.arc2_over_mm > 0 else 0.0) + (0.5 if a.release_press_mm > 0 else 0.0) + a.release_settle_s   # [peel]
 G_EXT += a.arc2_lay_t if a.arc2_lay else 0.0                                                      # [peel4]
+if UT: G_EXT = a.ut_lift_t                                                                          # [table] 越壁/延伸都不做,換成抬起
 G_EXT2 = (a.hand2_hold_s + 3.0) if a.hand2 != "off" else 0.0                                      # [hand2] 放手後:壓 hold_s + 抬 1s + 觀察 2s
 G_RT = 4.0                                                                                             # [robust] 每次重夾:抬 0.5 + 移 0.8 + 降 0.8 + 合 0.8 + 停 0.7 + 餘
 G_SHEET = G_RT * a.grasp_retry + G_TGRIP + G_LF + G_EXT + a.peel_t + GT["peel_hold"] + GT["rel_open"] + GT["rel_slide"] + GT["rel_up"] + 0.3 + G_EXT2
 G_SEQ = (["yn", "yp"] if a.second else ["yn"]) if a.grasp else []
 TG0 = T_END_ALL + 1.0
-if a.grasp and a.until in ("all", "yn"):                                  # [speed2] yn = 只 yn 片
+if a.grasp and (a.until in ("all", "yn") or UT):                          # [speed2] yn = 只 yn 片;[table] UT 時 --until fold 也接掀開段
     T_END = TG0 + G_SHEET * len(G_SEQ) + a.grasp_tail_s                     # [plastic] grasp_tail_s 預設 0
     P("抓取段:open hold 完 %.2f → settle → %s 每片 %.1fs(挑角 0~%.1f、下指進 ~%.1f、夾好 %.1f、掀 %.1fs、停 %.1fs、放開);結束 %.2f"
       % (T_END_ALL, " / ".join("%s@%.2f" % (sd, TG0 + k_*G_SHEET) for k_, sd in enumerate(G_SEQ)), G_SHEET, G_TPICK, G_TLOIN,
@@ -991,6 +1001,7 @@ if a.grasp:
     GPL.setup(FLAT, a.nxy, CX, CY, np.asarray(m_.faces), thick=T)
     GSIDE2 = GPL.S["SIDE2"]; GF2 = GPL.S["F2"]
     BOXL = dict(IX=IX, IY=IY, ZFLOOR=CDZ, ZOBST=max(CBOX["top"], CBOX["top_y"], CBOX["hz_up"]) + 0.005)
+    if UT: BOXL.update(IX=1.0, IY=1.0)                                        # [table] 沒有箱壁(地面 = ZFLOOR)
     GAPG = a.gap_mm / 1e3
     GF = {k_: dict(segs=[], last=(GPARK[k_].copy(), np.eye(3))) for k_ in GPARK}
     GS = dict(k=-1, plans=[], rows=[])
@@ -1047,6 +1058,7 @@ if a.grasp:
             off += 0.020 * ss((t - pl["TR"]) / GT["rel_open"])
         return pu - Ru @ [0, 0, off], Ru
     def g_offw():
+        if UT: return np.array([0.0, 0.0, -CDZ])                             # [table] = 入箱(側板以原點收)時的局部框:桌面 z = CDZ
         return box_off(T_END_ALL) + np.array([BOXC[0], BOXC[1], 0.0])
     def g_state():
         offw = g_offw(); Pw = PLATE.pts(); mp, Rq, MW = mug_world()
@@ -1357,6 +1369,7 @@ if a.grasp:
               % (t, sd, len(HV), dict(zip(*np.unique(GSIDE2[HV], return_counts=True))) if len(HV) else {}, a.hold_pad_mm, a.hold_layer,
                  (Pw[HV, 2].min() - offw[2]) * 1e3 if len(HV) else np.nan, (Pw[HV, 2].max() - offw[2]) * 1e3 if len(HV) else np.nan, a.hold_mode))
         SNAP["g_%s_grip" % sd] = (Pw.copy(), mug_world()[2].copy(), measure(t)[0])
+        if UT: return g_ut_arc(pl, t, offw, Pl)                               # [table]
         col_i = v % (a.nxy + 1)
         hy, hz, hfy, ym, zm, nc = GPL.hinge(Pl, sd, col_i)
         if not (np.isfinite(hy) and np.isfinite(hz)) and a.hinge_from_state:
@@ -1517,6 +1530,68 @@ if a.grasp:
              ("繞箱壁頂角 半徑 %.1fmm 轉到 180°" % (R2 * 1e3)) if two else ("略過(半徑剩 %.1fmm;--arc2 %d)" % (R2 * 1e3, a.arc2)),
              (zclear - T - 0.002) * 1e3, zclear * 1e3, *(pl["end_local"] * 1e3), a.peel_t, GT["peel_hold"]))
 
+    def g_ut_arc(pl, t, offw, Pl):
+        """[table] 桌面上掀開:鉸點 = 夾點那欄從折線往外仍貼桌面(z < 桌面 + T + 3mm)的最外頂點;材料長 L = 鉸點 → 夾持頂點(flat 中位);
+        抬起 ut_lift_mm → 繞鉸點弧線(半徑 r0 → ut_arc_k*L(前 30%)→ 保持 → 最後 25% 到終點),夾爪同時繞 x 轉 180°;
+        終點夾爪中心 = 鉸點往外 ut_end_k*L、z = 桌面 + T;停 peel_hold → 兩指沿 n 張開 10mm → 沿 u 往外抽(指深 + 20mm)→ 抬 80mm。"""
+        sd, sg, v = pl["sd"], pl["sg"], pl["v"]; M = GPL.mid(Pl); zg = BOXL["ZFLOOR"]
+        col = np.where((GPL.S["ii"] == v % (a.nxy + 1)) & (sg * GF2[:, 1] > CY - 1e-9))[0]; col = col[np.argsort(sg * GF2[col, 1])]
+        k = 0
+        while k + 1 < len(col) and M[col[k + 1], 2] < zg + T + 0.003: k += 1
+        h = int(col[k]); hy = float(M[h, 1]); Bz = zg + T / 2
+        if pl.get("att", {}).get("n", 0): gv = np.asarray(pl["att"]["vids"]) % N1
+        else:
+            gv = np.asarray(pl.get("G", []), int) % N1; gv = gv[GSIDE2[gv] == sd] if len(gv) else gv
+            if not len(gv): gv = np.array([v])
+        L = abs(float(np.median(GF2[gv, 1])) - float(GF2[h, 1]))
+        up_f, lo_f, R0 = pl["up_f"], pl["lo_f"], pl["R0"]
+        gc0 = (up_f + lo_f) / 2; ol = {"up": R0.T @ (up_f - gc0), "lo": R0.T @ (lo_f - gc0)}
+        KS = ("up",) if a.grasp_attach else ("up", "lo")
+        dl = np.array([0.0, 0.0, a.ut_lift_mm / 1e3])
+        for k_ in KS: g_lin(k_, t, a.ut_lift_t, pl[k_ + "_f"] + dl + offw, R0)
+        TP0 = t + a.ut_lift_t; gs = gc0 + dl
+        os_, zs = sg * (gs[1] - hy), gs[2] - Bz; ph_s = float(np.arctan2(zs, os_)); r_s = float(np.hypot(os_, zs))
+        oe, ze = a.ut_end_k * L, zg + T - Bz; ph_e = float(np.arctan2(ze, oe)); r_e = float(np.hypot(oe, ze)); Rr = a.ut_arc_k * L
+        Rend = np.column_stack([[-sg, 0.0, 0.0], [0.0, sg, 0.0], [0.0, 0.0, -1.0]])   # t,u,n:u 往外(離開包裹)、n 朝下(翻面)
+        Rpi = lambda w: rotm([sg, 0.0, 0.0], -np.pi * w)
+        Cv = _Rot.from_matrix((Rpi(1.0) @ R0).T @ Rend).as_rotvec()
+        if np.linalg.norm(Cv) > np.radians(60):
+            P("  [%s] [table] ★ 終點姿態修正 %.0f° > 60°,不修正(只繞 x 轉 180°)" % (sd, np.degrees(np.linalg.norm(Cv)))); Cv = np.zeros(3)
+        def at(w):
+            ph = ph_s + (ph_e - ph_s) * w
+            r = (r_s + (Rr - r_s) * min(1.0, w / 0.3)) if w < 0.75 else (Rr + (r_e - Rr) * (w - 0.75) / 0.25)
+            gc = np.array([gs[0], hy + sg * r * np.cos(ph), Bz + r * np.sin(ph)])
+            Rf = Rpi(w) @ R0 @ _Rot.from_rotvec(Cv * w).as_matrix()
+            return {k_: gc + Rf @ ol[k_] for k_ in ol}, Rf
+        for k_ in KS: g_fn(k_, TP0, a.peel_t, lambda w, k_=k_: (at(w)[0][k_] + offw, at(w)[1]))
+        TP1 = TP0 + a.peel_t; TR = TP1 + GT["peel_hold"]
+        Pf1, Rf1 = at(1.0); n_e, u_e = Rf1[:, 2], Rf1[:, 1]
+        for k_, sgn in ((("up", 1.0),) if a.grasp_attach else (("up", 1.0), ("lo", -1.0))):
+            if a.hold_yp and sd == "yp": continue
+            p1 = Pf1[k_] + offw; A_ = p1 + sgn * n_e * 0.010; B_ = A_ + u_e * (GFS[1] + 0.020)
+            g_lin(k_, TR, GT["rel_open"], A_); g_lin(k_, TR + GT["rel_open"], GT["rel_slide"], B_)
+            g_lin(k_, TR + GT["rel_open"] + GT["rel_slide"], GT["rel_up"], B_ + [0, 0, 0.08])
+        pl.update(TP0=TP0, TP1=TP1, TR=TR, hinge=(hy, Bz), Lcur=L, Lflat=L, Rr=Rr, r0=r_s, th0=ph_s, th1=ph_e, R2=None, two=False, zclear=None,
+                  end_local=(Pf1["up"] + Pf1["lo"]) / 2, ut=dict(h=h, hy=hy, Bz=Bz, L=L, flat_h=float(GF2[h, 1]), n_gv=len(gv)))
+        P("  [%s] [table] 桌面鉸點 v%d y=%.1f z=%.1f mm(flat y %.1f;折線 %+.1f)| 材料長 鉸點→夾持頂點(%d 點 flat 中位)%.1f mm | 抬 %.0f mm(%.1f s)→ 弧 %.0f° → %.0f°、半徑 %.1f → %.1f(%.2f L)→ %.1f mm、夾爪繞 x 轉 180°(%.1f s)| 終點夾爪中心 (%.1f,%.1f,%.1f) mm;停 %.1f s 放手 @%.2f"
+          % (sd, h, hy * 1e3, Bz * 1e3, GF2[h, 1] * 1e3, sg * CY * 1e3, len(gv), L * 1e3, a.ut_lift_mm, a.ut_lift_t, np.degrees(ph_s), np.degrees(ph_e),
+             r_s * 1e3, Rr * 1e3, a.ut_arc_k, r_e * 1e3, a.peel_t, *(pl["end_local"] * 1e3), GT["peel_hold"], TR))
+
+    def ut_stat(pl, Pw=None):
+        """[table] 翻片角 = 片外段方向(flat 離折線 50~70% 那帶 → 85~100% 那帶的質心連線)在 (往外, z) 平面的角度:0° 攤平往外、90° 直立、180° 蓋回;
+        質心 = 主片(|flat x| < CX)中面質心相對鉸線 (往外 o, 高 z) mm;越線 = 規劃時在折線內側的頂點越過折線 %"""
+        Pl = (PLATE.pts() if Pw is None else Pw) - g_offw(); sd, sg = pl["sd"], pl["sg"]; M = GPL.mid(Pl)
+        hy, Bz = pl["ut"]["hy"], pl["ut"]["Bz"]; s = sg * GF2[:, 1] - CY; Ls = WY / 2 + sg * SC[1] - CY
+        main = (GSIDE2[:N1] == sd) & (np.abs(GF2[:, 0]) < CX)
+        bm = main & (s >= 0.50 * Ls) & (s <= 0.70 * Ls); bt = main & (s >= 0.85 * Ls)
+        o = sg * (M[:, 1] - hy); z = M[:, 2] - Bz
+        ang = float(np.degrees(np.arctan2(z[bt].mean() - z[bm].mean(), o[bt].mean() - o[bm].mean())))
+        if ang < -90: ang += 360.0
+        oc, zc = float(o[main].mean()), float(z[main].mean())
+        return dict(ang=ang, angc=float(np.degrees(np.arctan2(zc, oc))), oc=oc * 1e3, zc=zc * 1e3,
+                    cross=float((sg * Pl[pl["TOPS"], 1] > CY).mean()) * 100 if len(pl["TOPS"]) else float("nan"),
+                    out=float((o[main] > 0).mean()) * 100)
+
     def g_metrics(pl, t, Pw=None):
         offw = g_offw()
         if Pw is None: Pw = PLATE.pts()
@@ -1661,6 +1736,7 @@ if a.grasp:
             GS["k"] = k_; g_plan(G_SEQ[k_], S0)
             if k_ == 0:
                 EYE = g_offw() + np.array([0.62, -0.06, 0.50]); TGT = g_offw() + np.array([0.0, -0.06, 0.07])
+                if UT: EYE = g_offw() + np.array([0.78, 0.0, 0.40]); TGT = g_offw() + np.array([0.0, 0.0, 0.05])   # [table] 從 +x 看 y-z 平面(兩片都看得到)
                 cam.set_focal_length(a.gcam_focal)
                 try: cam.set_clipping_range(0.01, 100.0)
                 except Exception: pass
@@ -1913,6 +1989,15 @@ def plastic_watch(t):
                 Pl = Pw - g_offw(); m = GSIDE2 == pl["sd"]; ca = float((pl["sg"] * Pl[m, 1] > CY).mean()) * 100
                 P("★ t=%.2f [%s] [plastic] 放手後 %gs:越線 %.0f%%(全片 %.0f%%)| 壁外 %.0f%% | 質心 y %.1f mm | 自穿 %d | 布穿杯 %d | 杯位移 %.1f mm"
                   % (t, pl["sd"], k_s, cr, ca, wo, cy, rm["pen"], rm["inmug"], float(np.linalg.norm(mug_world()[0] - pl["mug0"])) * 1e3))
+                if UT and "ut" in pl: ut_log(pl, t, nm_, k_s >= 2.0)          # [table]
+        if UT and "ut" in pl and "pre" not in pl["ut"] and t >= pl["TR"] - 0.05: ut_log(pl, t, "pre", True)   # [table] 放手前
+
+def ut_log(pl, t, nm_, full):                                                # [table] 翻片角 / 質心 / 越線 / 他片 / 杯 / 穿杯 / 杯頂覆蓋
+    rm, Pw, _ = measure(t, full=full); u = ut_stat(pl, Pw); r = g_metrics(pl, t, Pw)
+    u.update(t=t, oth=r["oth_pct"], mug=r["mug_d"], inmug=rm["inmug"], pen=rm["pen"], cov=(rm.get("lay") or {}).get("cov", float("nan")) * 100)
+    pl["ut"][nm_] = u
+    P("★ t=%.2f [%s] [table] %s:翻片角 %.1f°(質心角 %.1f°)| 質心相對鉸線 往外 %.1f / 高 %.1f mm | 主片在鉸線外 %.0f%% | 越線 %.0f%% | 他片 >10mm %.1f%% | 杯位移 %.1f mm | 穿杯 %d | 自穿 %d | 杯頂覆蓋 %.0f%%"
+      % (t, pl["sd"], nm_, u["ang"], u["angc"], u["oc"], u["zc"], u["out"], u["cross"], u["oth"], u["mug"], u["inmug"], u["pen"], u["cov"]))
 
 writer = imageio.get_writer(os.path.join(a.out, "wrap.mp4"), fps=max(1, round(FPS / a.vid_every)), quality=7, macro_block_size=1)
 SPF = int(round(1.0 / (FPS * a.dt)))                 # 每個渲染幀幾個物理步
@@ -1959,7 +2044,11 @@ for fr in range(FR0, NFR):                                                      
     for k in range(SPF):
         step += 1; tcur = step * a.dt
         # ── 事件 ──
-        if not ST["inbox"] and tcur >= T_INBOX:
+        if UT and "fold_end" not in SNAP and tcur >= T_INBOX:                 # [table] 不入箱:只記 fold_end;箱子留在旁邊、地面(= 桌面)碰撞保留
+            r_, _, _ = measure(tcur, full=True); SNAP["fold_end"] = (PLATE.pts().copy(), mug_world()[2].copy(), r_)
+            _dl.GetIntensityAttr().Set(3500.0); _dl2.GetIntensityAttr().Set(2200.0)
+            P("\n★ t=%.3f [table] 四折+收耳完成:不入箱(箱子留在 %s mm),包裹留在桌面上;側板 %.2f 撤、放錨點 %.2f、掀開 %.2f" % (tcur, np.round(OFF_SIDE * 1e3), T_REL, T_ANC, TG0))
+        if not ST["inbox"] and not UT and tcur >= T_INBOX:
             Pp = PLATE.pts(); mp, Rq, MW = mug_world()
             r_, _, _ = measure(tcur, full=True); SNAP["fold_end"] = (Pp.copy(), MW.copy(), r_)
             c = (Pp[:, :2].min(0) + Pp[:, :2].max(0)) / 2
@@ -2260,7 +2349,14 @@ if a.grasp:
                  rl.get("hold_d", np.nan), "有 t=%.2f" % ev["hold_guard"] if "hold_guard" in ev else "無"))
             pk = dict(pk, hold=dict(n=pl["hold"]["n"], sides=_hsd, oth_free_held=h.get("oth_pct_free"), oth_free_rel=rl.get("oth_pct_free"),
                                     hold_d_rel=rl.get("hold_d"), guard=ev.get("hold_guard")))
-        GSUM.append(dict(sd=sd, v=pl["v"], pick=pk, grip=ev["grip"]["n"], slip_med=slip_med, slip_max=slip_mx, cross=h["cross"],
+        if pl.get("ut"):                                                      # [table]
+            _u = pl["ut"]; _a = [_u.get(k_, {}) for k_ in ("pre", "after2", "after10")]
+            _ok = bool(_a[2] and _a[2]["ang"] < 45.0 and _a[2]["cross"] >= 80.0)
+            P("  [%s] [table] SUMMARY 鉸點 y %.1f L %.1f mm | 翻片角 放手前/2s/10s = %s° | 越線 %s%% | 質心往外 %s mm | 他片 %s%% | 杯位移 %s mm | 穿杯 %s | 杯頂覆蓋 %s%% ⇒ %s(判準 10s 翻片角 < 45° 且越線 >= 80%%)"
+              % (sd, _u["hy"] * 1e3, _u["L"] * 1e3, *["/".join("%.0f" % q.get(k_, np.nan) if q else "-" for q in _a) for k_ in ("ang", "cross", "oc", "oth", "mug", "inmug", "cov")],
+                 "PASS" if _ok else "FAIL"))
+            _u["PASS"] = _ok
+        GSUM.append(dict(sd=sd, v=pl["v"], pick=pk, grip=ev["grip"]["n"], ut=pl.get("ut"), slip_med=slip_med, slip_max=slip_mx, cross=h["cross"],
                          cross_rel=rl["cross"], oth_n10=h["oth_n10"], oth_pct=h["oth_pct"], oth_max=h["oth_max"], mug=mugmax, pen=pen_mx,
                          inmug=inm_mx, inv=inv_mx, cov0=pl["cov0"], cov_held=h["rm"]["cov"], cov_rel=rl["rm"]["cov"], ok=ok, PASS=allok,
                          hinge=pl.get("hinge"), Lcur=pl.get("Lcur"), Lflat=pl.get("Lflat"), Rr=pl.get("Rr"), r0=pl.get("r0"),
