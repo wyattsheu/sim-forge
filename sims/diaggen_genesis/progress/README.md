@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T17:47:26+08:00（Asia/Taipei）
+更新：2026-10-21T17:47:44+08:00（Asia/Taipei）
 
 共 9 件：等待 0、執行中 1、完成 0、失敗 8、取消 0。
 
@@ -276,5 +276,9 @@ Run：`genesis_sneaker_20261021`；執行中。
 Genesis 診斷 episode 數：0。
 
 ![sneaker_cleaned_image](media/sneaker_cleaned_image.png)
+
+![sneaker_processed_white_bg_png](media/sneaker_processed_white_bg_png.png)
+
+![sneaker_processed_rgba](media/sneaker_processed_rgba.png)
 
 完整執行紀錄、GPU 識別資訊與失敗細節保留在伺服器。

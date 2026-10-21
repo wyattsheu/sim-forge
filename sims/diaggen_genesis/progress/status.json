@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T17:47:26+08:00",
+  "updated_at": "2026-10-21T17:47:44+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-21T17:47:26+08:00",
+      "updated_at": "2026-10-21T17:47:44+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -145,7 +145,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T07:14:19.925656+00:00",
-      "updated_at": "2026-10-21T17:47:26+08:00",
+      "updated_at": "2026-10-21T17:47:44+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -277,7 +277,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-21T17:47:26+08:00",
+      "updated_at": "2026-10-21T17:47:44+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -383,7 +383,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-21T17:47:26+08:00",
+      "updated_at": "2026-10-21T17:47:44+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -560,7 +560,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-21T17:47:26+08:00",
+      "updated_at": "2026-10-21T17:47:44+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -666,7 +666,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:38:07.768841+00:00",
-      "updated_at": "2026-10-21T17:47:26+08:00",
+      "updated_at": "2026-10-21T17:47:44+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -798,7 +798,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:46:28.056801+00:00",
-      "updated_at": "2026-10-21T17:47:26+08:00",
+      "updated_at": "2026-10-21T17:47:44+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
@@ -960,7 +960,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:26:08.183115+00:00",
-      "updated_at": "2026-10-21T17:47:26+08:00",
+      "updated_at": "2026-10-21T17:47:44+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1092,7 +1092,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:39:46.288097+00:00",
-      "updated_at": "2026-10-21T17:47:26+08:00",
+      "updated_at": "2026-10-21T17:47:44+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1186,6 +1186,16 @@
           "path": "media/sneaker_cleaned_image.png",
           "bytes": 2165814,
           "sha256": "f6b03c7d6bd4e326741a69dd40a82f15cf398ecd4df3197ba4dc920ef504df93"
+        },
+        {
+          "path": "media/sneaker_processed_white_bg_png.png",
+          "bytes": 224061,
+          "sha256": "a0348613dd60c4e98db9b41f3267a16807c97249ad2ae64defd882589f1ef259"
+        },
+        {
+          "path": "media/sneaker_processed_rgba.png",
+          "bytes": 254767,
+          "sha256": "75721d2bd86d237487b43f6b3ffab71f692580ac7587741f750403be3b0f0bd6"
         }
       ],
       "id": "sneaker",
@@ -1404,7 +1414,17 @@
       "path": "media/sneaker_cleaned_image.png",
       "bytes": 2165814,
       "sha256": "f6b03c7d6bd4e326741a69dd40a82f15cf398ecd4df3197ba4dc920ef504df93"
+    },
+    {
+      "path": "media/sneaker_processed_white_bg_png.png",
+      "bytes": 224061,
+      "sha256": "a0348613dd60c4e98db9b41f3267a16807c97249ad2ae64defd882589f1ef259"
+    },
+    {
+      "path": "media/sneaker_processed_rgba.png",
+      "bytes": 254767,
+      "sha256": "75721d2bd86d237487b43f6b3ffab71f692580ac7587741f750403be3b0f0bd6"
     }
   ],
-  "signature": "923a00e4872f7d2445fb2a51e3e79f1b294339be45412aeae178b0c39306284f"
+  "signature": "801e84e4e9cc8d5fd83e9c42fe072c483151834e6f2159b84660de15c80656c0"
 }
