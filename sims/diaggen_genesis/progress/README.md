@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T17:16:13+08:00（Asia/Taipei）
+更新：2026-10-21T17:19:16+08:00（Asia/Taipei）
 
 共 9 件：等待 2、執行中 1、完成 0、失敗 6、取消 0。
 
@@ -203,7 +203,7 @@ Run：`genesis_sauce_keeper_20261021`；執行中。
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
-Genesis 診斷 episode 數：0。
+Genesis 診斷 episode 數：1。
 
 ![sauce_keeper_cleaned_image](media/sauce_keeper_cleaned_image.png)
 
