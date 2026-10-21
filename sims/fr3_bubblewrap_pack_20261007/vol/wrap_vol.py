@@ -148,7 +148,14 @@ ap.add_argument("--slide_clear_mm", type=float, default=10.0, help="[extract3] s
 ap.add_argument("--hand2_tuck_mm", type=float, default=0.0, help="[extract3] >0:取杯開始時手 2 把 yn 布往壁外、往下各移 mm(綁杯前完成)")
 ap.add_argument("--guard_n", type=int, default=1, help="[extract2] yp 段守衛需連續 N 次量測超過門檻才放手(預設 1 = 舊)")
 ap.add_argument("--proxy_m", type=float, default=0.005, help="[drag] 代理質量 kg")
+ap.add_argument("--quality", choices=["off", "fast", "final"], default="off",
+                help="[quality] fast = 開發用(dt 1/120 solver 48 vid_every 2 960x540);final = 出片(dt 1/240 solver 128);off = 舊行為。個別旗標有明確給時以個別旗標為準")
 a = ap.parse_args()
+QUALITY_PRESET = {"fast": dict(dt=1/120.0, solver=48, vid_every=2, vid_res="960x540"),   # 1/60+solver 32 自穿 ~100、四折 bbox 差 13 mm → 退到 1/120+48(quality/F1)
+                  "final": dict(dt=1/240.0, solver=128)}.get(a.quality, {})
+_given = {x.split("=")[0][2:] for x in sys.argv[1:] if x.startswith("--")}
+QUALITY_SET = {k: v for k, v in QUALITY_PRESET.items() if k not in _given}
+for _k, _v in QUALITY_SET.items(): setattr(a, _k, _v)
 if a.tuck == 0:
     a.squeeze_t = 0.0
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -195,6 +202,7 @@ import grip_common as G
 import layer_gap as LG
 
 P("=== wrap_vol sheet %.0f ===" % a.sheet_mm); P("args:", vars(a))
+P("quality: %s | dt 1/%.0f solver %d vid_every %d vid_res %s | preset 套用 %s(明確旗標優先)" % (a.quality, 1/a.dt, a.solver, a.vid_every, a.vid_res, sorted(QUALITY_SET) or "無"))
 world = World(physics_dt=a.dt, rendering_dt=a.dt)
 world.scene.add_default_ground_plane()
 st = omni.usd.get_context().get_stage()
@@ -1674,6 +1682,7 @@ L1 = ("VOLUME sheet %.0fx%.0fx%.0fmm n%d | E=%.0e nu=%.2f %.2fkg/m2 mu=%.1f | mu
 L2 = ("solver %d dt 1/%.0f cont %.1f rest %.2f self on | ldamp %g edamp %g | tip=top+lay*(T+1)+2mm %s%s | move %s | carton w131%s"
       % (a.solver, 1/a.dt, a.cont*1e3, a.rest*1e3, a.ldamp, a.edamp, ("extra " + a.tip_extra + " ") if a.tip_extra else "",
          ("slow " + a.slow) if a.slow else "", a.movebox, " | REST=folded" if a.rest_npz else ""))
+if a.quality != "off": L2 += " | Q " + a.quality
 if a.attach_stiff > 0: L2 += " | astiff %g" % a.attach_stiff
 if a.attach_proxy: L2 += " | proxy k%g fmax%g" % (a.proxy_k, a.proxy_fmax)
 def stamp(rgb, t, ph_):
@@ -1695,7 +1704,7 @@ KEYF = {k: int(round(v * FPS)) - 1 for k, v in KEYS.items()}
 LOGR = []; SNAP = {}; TRAJ_T = []; TRAJ_P = []; TRAJ_M = []
 EV = {}
 t0w = time.time(); step = 0; tcur = 0.0; nan = False
-P("渲染 %d fps,每幀 %d 物理步;共 %d 幀" % (FPS, SPF, NFR))
+P("渲染 %d fps,每幀 %d 物理步;共 %d 幀 | quality %s:影片 %d fps %s(vid_every %d)" % (FPS, SPF, NFR, a.quality, max(1, round(FPS / a.vid_every)), a.vid_res, a.vid_every))
 for fr in range(NFR):
     _vid = (fr % a.vid_every == 0) or fr == NFR - 1 or fr in KEYF.values()
     for k in range(SPF):
