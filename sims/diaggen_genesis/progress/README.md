@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T15:51:06+08:00（Asia/Taipei）
+更新：2026-10-21T15:58:09+08:00（Asia/Taipei）
 
 共 9 件：等待 5、執行中 2、完成 0、失敗 2、取消 0。
 
@@ -108,7 +108,7 @@ Run：`genesis_curling_iron_20261021_exr_retry1`；執行中。
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
-Genesis 診斷 episode 數：1。
+Genesis 診斷 episode 數：2。
 
 ![curling_iron_cleaned_image](media/curling_iron_cleaned_image.png)
 
