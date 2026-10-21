@@ -1,0 +1,485 @@
+{
+ "segments": [
+  {
+   "name": "a0 home\u2192READY",
+   "t0": 0.0,
+   "t1": 1.5,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     85.39879457009296,
+     "fyp",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     85.39911962384609,
+     "fyn",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     407.617997467001,
+     "left_gripper_left",
+     "right_gripper_left"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "a1 \u5230\u9810\u5099\u9ede(\u58d3\u7684\u624b / \u6380\u7684\u624b)",
+   "t0": 1.5,
+   "t1": 4.0,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     84.21355361995526,
+     "fyn",
+     "follower_left_link_6"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     60.481250253337706,
+     "fyn",
+     "follower_right_gripper_right"
+    ],
+    "arm_arm": [
+     79.16178643791157,
+     "left_gripper_left",
+     "right_link_6"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "a2 \u58d3\u7684\u624b\u4e0b\u964d\u58d3\u4f4f fyn",
+   "t0": 4.0,
+   "t1": 5.2,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     84.21355361995526,
+     "fyn",
+     "follower_left_link_6"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     0.5980535405153407,
+     "fyn",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     73.65089690783725,
+     "left_gripper_right",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "a2b \u5f8c\u84cb kinematic \u958b\u5230 35\u00b0(\u975e\u624b\u52d5)",
+   "t0": 5.2,
+   "t1": 6.0,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     54.00416060942267,
+     "fyp",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     0.5980535405153407,
+     "fyn",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     73.65089690783725,
+     "left_gripper_right",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "a3 \u6307\u982d\u6cbf\u677f\u9762\u4f38\u9032\u5916\u7de3\u89d2\u843d(\u958b 21mm)",
+   "t0": 6.0,
+   "t1": 7.5,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     8.792494703691403,
+     "fyp",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     0.5980535405153407,
+     "fyn",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     58.85215496469524,
+     "left_link_4",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "a3b \u5408\u6307\u5230 5.0mm(\u593e\u677f\u539a 3mm)",
+   "t0": 7.5,
+   "t1": 8.0,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     0.8183848652480591,
+     "fyp",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     0.5980535405153407,
+     "fyn",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     58.85215496469524,
+     "left_link_4",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "a4 \u6380 fyp \u2192 50\u00b0(\u58d3\u7684\u624b\u58d3\u4f4f fyn)",
+   "t0": 8.0,
+   "t1": 11.0,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     0.05080156166815389,
+     "fyp",
+     "follower_left_gripper_right"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     -0.31549932459518093,
+     "fyp",
+     "follower_right_camera_mount_d405"
+    ],
+    "arm_arm": [
+     14.329780972276,
+     "left_link_4",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "a5 \u958b\u6307",
+   "t0": 11.0,
+   "t1": 11.4,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     0.05080156166815389,
+     "fyp",
+     "follower_left_gripper_right"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     0.5980535405153407,
+     "fyn",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     19.808194134302195,
+     "left_link_4",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "a5 \u6380\u7684\u624b\u9000\u958b(\u653e\u624b,\u5169\u6bb5\u5f0f)",
+   "t0": 11.4,
+   "t1": 12.4,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     7.968119678700817,
+     "fyp",
+     "follower_left_gripper_right"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     0.5980535405153407,
+     "fyn",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     19.41719902761031,
+     "left_link_4",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "a6 \u5169\u624b\u56de READY",
+   "t0": 12.4,
+   "t1": 14.4,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     13.71133681552199,
+     "fyp",
+     "follower_left_gripper_right"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     0.5980535405153407,
+     "fyn",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     36.60496279016373,
+     "left_link_4",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "a7 \u5f8c\u84cb kinematic \u7e8c\u8f49\u5230 180\u00b0(\u5169\u6bb5\u5f0f\u7b2c\u4e8c\u6bb5)",
+   "t0": 14.4,
+   "t1": 15.4,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     145.60139048780366,
+     "fyp",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     145.60045375240648,
+     "fyp",
+     "follower_right_gripper_right"
+    ],
+    "arm_arm": [
+     443.5312130243988,
+     "left_camera_mount_d405",
+     "right_camera_mount_d405"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "b0 \u524d\u84cb fyn \u958b\u5230 260\u00b0",
+   "t0": 15.4,
+   "t1": 16.4,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     145.6250165847844,
+     "fyn",
+     "follower_left_gripper_right"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     145.62355992153232,
+     "fyn",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     443.5312130243988,
+     "left_camera_mount_d405",
+     "right_camera_mount_d405"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "b0 \u4e0b\u84cb fx \u958b\u5230 260\u00b0",
+   "t0": 16.4,
+   "t1": 17.599999999999998,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     96.7294024127648,
+     "fxn",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     96.72847728933425,
+     "fxp",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     443.5312130243988,
+     "left_camera_mount_d405",
+     "right_camera_mount_d405"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "b1 \u53f3\u624b\u5230 #1 \u4e0a\u65b9 60mm\u3001\u958b\u6307 21mm",
+   "t0": 17.599999999999998,
+   "t1": 20.099999999999998,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     211.06317746209692,
+     "fxn",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     46.57243536595715,
+     "fxp",
+     "follower_right_gripper_right"
+    ],
+    "arm_arm": [
+     273.3795805040334,
+     "left_camera_mount_d405",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "b2 \u4e0b\u964d\u5230 #1",
+   "t0": 20.099999999999998,
+   "t1": 21.599999999999998,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     211.06317746209692,
+     "fxn",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     0.32182845452187814,
+     "fyn",
+     "follower_right_link_6"
+    ],
+    "arm_arm": [
+     274.0048770997033,
+     "left_camera_mount_d405",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "b3 \u5408\u6307\u5230 4.5mm",
+   "t0": 21.599999999999998,
+   "t1": 22.099999999999998,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     211.06317746209692,
+     "fxn",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     0.32182845452187814,
+     "fyn",
+     "follower_right_link_6"
+    ],
+    "arm_arm": [
+     285.2004884628588,
+     "left_gripper_right",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "b4 \u62ac 30mm",
+   "t0": 22.099999999999998,
+   "t1": 23.099999999999998,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     211.06317746209692,
+     "fxn",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     0.32182845452187814,
+     "fyn",
+     "follower_right_link_6"
+    ],
+    "arm_arm": [
+     282.1759329167246,
+     "left_gripper_right",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "b5 \u6536\u534a\u5f91 + \u6cbf R60 \u5f27\u7dda\u6380 + \u62ac\u9ad8",
+   "t0": 23.099999999999998,
+   "t1": 27.599999999999998,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     211.06317746209692,
+     "fxn",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 72.7181585678184,
+    "box_right": [
+     12.335687005643583,
+     "base/wyn",
+     "follower_right_gripper_right"
+    ],
+    "arm_arm": [
+     283.149000254158,
+     "left_gripper_right",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "b6 \u505c",
+   "t0": 27.599999999999998,
+   "t1": 28.299999999999997,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     211.06317746209692,
+     "fxn",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     17.682236843250887,
+     "fyn",
+     "follower_right_gripper_right"
+    ],
+    "arm_arm": [
+     375.3367783188326,
+     "left_gripper_right",
+     "right_gripper_left"
+    ]
+   },
+   "collide": []
+  }
+ ],
+ "fail": [],
+ "gap": {
+  "G0": 0.05159899592398903,
+  "GK": 1999.9999999999993,
+  "mimic": 1.0
+ }
+}

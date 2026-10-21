@@ -1,5 +1,7 @@
 # Bubble-Wrapped Mug in a Carton — Volume Wrap Release<br>氣泡布包裹馬克杯入箱 —— volume 包材交付版
 
+> **Newer release / 新版:** [`../fr3_bubblewrap_pack_volume_release_v2_20261022`](../fr3_bubblewrap_pack_volume_release_v2_20261022) — v2: package taken out onto the table, four flaps peeled by a friction-only wide gripper and they stay open after release / v2:整包拿到桌面、寬指純摩擦依序掀開四片,放手後片自己攤在桌上。
+
 **Language / 語言:** [English](#english) · [繁體中文](#繁體中文)
 
 ---

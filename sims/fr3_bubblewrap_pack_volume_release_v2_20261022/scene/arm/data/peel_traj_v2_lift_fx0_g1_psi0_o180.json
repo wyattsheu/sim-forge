@@ -1,0 +1,238 @@
+{
+ "segments": [
+  {
+   "name": "a0 home\u2192READY",
+   "t0": 0.0,
+   "t1": 1.5,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     85.39879457009296,
+     "fyp",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     85.39911962384609,
+     "fyn",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     407.617997467001,
+     "left_gripper_left",
+     "right_gripper_left"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "(a) \u7565\u904e:\u4e0a\u84cb\u76f4\u63a5 kinematic \u958b\u5230 180\u00b0",
+   "t0": 1.5,
+   "t1": 2.5,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     145.6173210890514,
+     "fyp",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     145.61604413525214,
+     "fyn",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     443.5312130243988,
+     "left_camera_mount_d405",
+     "right_camera_mount_d405"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "b0 \u524d\u84cb fyn \u958b\u5230 180\u00b0",
+   "t0": 2.5,
+   "t1": 3.5,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     208.46002834327385,
+     "fxn",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     208.45999268907508,
+     "fxp",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     443.5312130243988,
+     "left_camera_mount_d405",
+     "right_camera_mount_d405"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "b1 \u53f3\u624b\u5230 #1 \u4e0a\u65b9 60mm\u3001\u958b\u6307 21mm",
+   "t0": 3.5,
+   "t1": 6.0,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     208.46002834327385,
+     "fxn",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     41.10242424068774,
+     "fxp",
+     "follower_right_gripper_right"
+    ],
+    "arm_arm": [
+     273.3795805040334,
+     "left_camera_mount_d405",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "b2 \u4e0b\u964d\u5230 #1",
+   "t0": 6.0,
+   "t1": 7.5,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     208.46002834327385,
+     "fxn",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     1.1171547529674974,
+     "fxp",
+     "follower_right_gripper_right"
+    ],
+    "arm_arm": [
+     274.0048770997033,
+     "left_camera_mount_d405",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "b3 \u5408\u6307\u5230 4.5mm",
+   "t0": 7.5,
+   "t1": 8.0,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     208.46002834327385,
+     "fxn",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     1.1171547529674974,
+     "fxp",
+     "follower_right_gripper_right"
+    ],
+    "arm_arm": [
+     282.7054742081631,
+     "left_gripper_right",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "b4 \u62ac 30mm",
+   "t0": 8.0,
+   "t1": 9.0,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     208.46002834327385,
+     "fxn",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     5.722238021700135,
+     "fxp",
+     "follower_right_gripper_right"
+    ],
+    "arm_arm": [
+     282.7054742081631,
+     "left_gripper_right",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "b5 \u6536\u534a\u5f91 + \u6cbf R60 \u5f27\u7dda\u6380 + \u62ac\u9ad8",
+   "t0": 9.0,
+   "t1": 10.666666666666666,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     208.46002834327385,
+     "fxn",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     -0.27850615393728545,
+     "fyn",
+     "follower_right_link_6"
+    ],
+    "arm_arm": [
+     283.05014254350164,
+     "left_gripper_right",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "b6 \u505c",
+   "t0": 10.666666666666666,
+   "t1": 11.366666666666665,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     208.46002834327385,
+     "fxn",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     -0.27850615393728545,
+     "fyn",
+     "follower_right_link_6"
+    ],
+    "arm_arm": [
+     352.7202199275122,
+     "left_gripper_right",
+     "right_link_6"
+    ]
+   },
+   "collide": []
+  }
+ ],
+ "fail": [
+  "(b) \u4e0b\u964d\u4e2d\u65b7",
+  "(b) \u5f27\u7dda\u4e2d\u65b7\u65bc 25/67"
+ ],
+ "gap": {
+  "G0": 0.05159899592398903,
+  "GK": 1999.9999999999993,
+  "mimic": 1.0
+ }
+}

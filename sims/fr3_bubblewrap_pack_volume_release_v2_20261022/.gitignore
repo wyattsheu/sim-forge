@@ -1,0 +1,17 @@
+# 執行輸出:sim/run_release.sh、make_videos.sh、run3.sh、fold_variants.py 每次重建,不進版控
+runs/
+logs/
+sim/variants/
+sim/videos/
+sim/v2/*/
+sim/table/*/
+sim/pgrasp/*/
+sim/.run3_launch.lock
+__pycache__/
+*.pyc
+*.stdout
+# 根目錄 .gitignore 擋掉了 *.usd,這裡放行:紙箱、雙臂場景要讓人 clone 下來就能用
+!*.usd
+!**/*.usd
+# 交付版的 videos/*.mp4 要進版控(使用者 2026-10-21 要求交付版內附影片)
+!videos/*.mp4

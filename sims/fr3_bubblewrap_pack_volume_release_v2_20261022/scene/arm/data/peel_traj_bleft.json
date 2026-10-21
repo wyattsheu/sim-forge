@@ -1,0 +1,440 @@
+{
+ "segments": [
+  {
+   "name": "a1 \u5230\u9810\u5099\u9ede",
+   "t0": 0.0,
+   "t1": 2.5,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     60.48105512649545,
+     "fyp",
+     "follower_left_gripper_right"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     47.98205908322034,
+     "fyp",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     10.121599090505665,
+     "left_link_4",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "a2 \u53f3\u4e0b\u964d\u5230\u5916\u7de3 / \u5de6\u4e0b\u964d\u6309\u58d3",
+   "t0": 2.5,
+   "t1": 4.0,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     6.409768241007554,
+     "fxp",
+     "follower_left_gripper_left"
+    ],
+    "intended_left": [
+     0.5366800209546758,
+     "fyp",
+     "follower_left_gripper_right"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     -1.498949992624451,
+     "fyp",
+     "follower_right_gripper_left"
+    ],
+    "intended_right": [
+     -1.4953682681870393,
+     "fyn",
+     "follower_right_gripper_right"
+    ],
+    "arm_arm": [
+     10.256121220391853,
+     "left_link_4",
+     "right_link_4"
+    ]
+   },
+   "collide": [
+    "box_right"
+   ]
+  },
+  {
+   "name": "a3 \u53f3\u5408\u6307 4.5mm",
+   "t0": 4.0,
+   "t1": 4.5,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     6.409768241007554,
+     "fxp",
+     "follower_left_gripper_left"
+    ],
+    "intended_left": [
+     0.5366800209546758,
+     "fyp",
+     "follower_left_gripper_right"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     -1.4978362115295243,
+     "fyp",
+     "follower_right_gripper_left"
+    ],
+    "intended_right": [
+     -1.4999224092568801,
+     "fyn",
+     "follower_right_gripper_right"
+    ],
+    "arm_arm": [
+     10.503630145578784,
+     "left_link_4",
+     "right_link_4"
+    ]
+   },
+   "collide": [
+    "box_right"
+   ]
+  },
+  {
+   "name": "a4 \u6380 fyn 0\u219279\u00b0(\u5de6\u624b\u58d3\u4f4f fyp)",
+   "t0": 4.5,
+   "t1": 6.633333333333333,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     -1.2031700226393411,
+     "fyn",
+     "follower_left_link_6"
+    ],
+    "intended_left": [
+     0.5366800209546758,
+     "fyp",
+     "follower_left_gripper_right"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     -1.4887863661845486,
+     "fyp",
+     "follower_right_gripper_left"
+    ],
+    "intended_right": [
+     -1.4999120190234452,
+     "fyn",
+     "follower_right_gripper_right"
+    ],
+    "arm_arm": [
+     0.6820514036241039,
+     "left_link_6",
+     "right_camera_mount_d405"
+    ]
+   },
+   "collide": [
+    "box_left",
+    "box_right",
+    "arm_arm"
+   ]
+  },
+  {
+   "name": "a5 \u53f3\u958b\u6307",
+   "t0": 6.633333333333333,
+   "t1": 7.033333333333333,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     0.5366800209546758,
+     "fyp",
+     "follower_left_gripper_right"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     -1.498840838639981,
+     "fyn",
+     "follower_right_gripper_right"
+    ],
+    "arm_arm": [
+     80.376845935796,
+     "left_link_6",
+     "right_gripper_left"
+    ]
+   },
+   "collide": [
+    "box_right"
+   ]
+  },
+  {
+   "name": "a5 \u53f3\u9000 / \u5de6\u62ac",
+   "t0": 7.033333333333333,
+   "t1": 8.033333333333333,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     0.7917487602110882,
+     "fyp",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     -1.493205951588683,
+     "fyn",
+     "follower_right_gripper_right"
+    ],
+    "arm_arm": [
+     73.6704388067626,
+     "left_link_6",
+     "right_gripper_left"
+    ]
+   },
+   "collide": [
+    "box_right"
+   ]
+  },
+  {
+   "name": "a6 \u5230 READY(\u9ad8\u4f4d\u3001\u8b93\u958b\u4e0b\u84cb)",
+   "t0": 8.033333333333333,
+   "t1": 10.033333333333333,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     60.48056876999445,
+     "fyp",
+     "follower_left_gripper_right"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     11.44973727703887,
+     "fyn",
+     "follower_right_link_6"
+    ],
+    "arm_arm": [
+     77.44273567250053,
+     "left_link_6",
+     "right_gripper_left"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "b0 \u4e0a\u84cb fy \u958b\u5230 180\u00b0",
+   "t0": 10.033333333333333,
+   "t1": 11.233333333333333,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     145.6345847564537,
+     "fyp",
+     "follower_left_gripper_right"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     145.63350302576262,
+     "fyp",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     443.5312130243988,
+     "left_camera_mount_d405",
+     "right_camera_mount_d405"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "b0 \u4e0b\u84cb fx \u958b\u5230 180\u00b0",
+   "t0": 11.233333333333333,
+   "t1": 12.433333333333332,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     96.02744496421897,
+     "fxp",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     96.02740833369968,
+     "fxn",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     443.5312130243988,
+     "left_camera_mount_d405",
+     "right_camera_mount_d405"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "b1 \u5230 #1 \u4e0a\u65b9 60mm\u3001\u958b\u6307 21mm",
+   "t0": 12.433333333333332,
+   "t1": 14.933333333333332,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     46.96561016276503,
+     "fxp",
+     "follower_left_gripper_right"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     162.0496273672677,
+     "fxn",
+     "follower_right_link_2"
+    ],
+    "arm_arm": [
+     273.3394431846022,
+     "left_link_4",
+     "right_camera_mount_d405"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "b2 \u4e0b\u964d\u5230 #1",
+   "t0": 14.933333333333332,
+   "t1": 16.43333333333333,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     -1.4927770071316018,
+     "fyn",
+     "follower_left_link_6"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     162.0496273672677,
+     "fxn",
+     "follower_right_link_2"
+    ],
+    "arm_arm": [
+     273.95455465278263,
+     "left_link_4",
+     "right_camera_mount_d405"
+    ]
+   },
+   "collide": [
+    "box_left"
+   ]
+  },
+  {
+   "name": "b3 \u5408\u6307\u5230 4.5mm",
+   "t0": 16.43333333333333,
+   "t1": 16.93333333333333,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     -1.4837803178721785,
+     "fyn",
+     "follower_left_link_6"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     162.0496273672677,
+     "fxn",
+     "follower_right_link_2"
+    ],
+    "arm_arm": [
+     285.19334342761823,
+     "left_link_4",
+     "right_gripper_right"
+    ]
+   },
+   "collide": [
+    "box_left"
+   ]
+  },
+  {
+   "name": "b4 \u62ac 30mm",
+   "t0": 16.93333333333333,
+   "t1": 17.93333333333333,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     -1.4837803178721785,
+     "fyn",
+     "follower_left_link_6"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     162.0496273672677,
+     "fxn",
+     "follower_right_link_2"
+    ],
+    "arm_arm": [
+     282.1665329021996,
+     "left_link_4",
+     "right_gripper_right"
+    ]
+   },
+   "collide": [
+    "box_left"
+   ]
+  },
+  {
+   "name": "b5 \u6cbf\u5f27\u7dda\u6380",
+   "t0": 17.93333333333333,
+   "t1": 20.799999999999997,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     -1.4729040989243456,
+     "fyn",
+     "follower_left_link_6"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     162.0496273672677,
+     "fxn",
+     "follower_right_link_2"
+    ],
+    "arm_arm": [
+     282.1665329021996,
+     "left_link_4",
+     "right_gripper_right"
+    ]
+   },
+   "collide": [
+    "box_left"
+   ]
+  },
+  {
+   "name": "b6 \u505c",
+   "t0": 20.799999999999997,
+   "t1": 21.499999999999996,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     -0.08500341200762263,
+     "fyn",
+     "follower_left_link_6"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     162.0496273672677,
+     "fxn",
+     "follower_right_link_2"
+    ],
+    "arm_arm": [
+     367.6252616058936,
+     "left_gripper_left",
+     "right_gripper_right"
+    ]
+   },
+   "collide": [
+    "box_left"
+   ]
+  }
+ ],
+ "fail": [
+  "(a) fyn \u53ea\u6380\u5230 79\u00b0",
+  "(b) \u5f27\u7dda\u53ea\u8d70\u5230 43/60 \u9ede"
+ ],
+ "gap": {
+  "G0": 0.05159899592398903,
+  "GK": 1999.9999999999993,
+  "mimic": 1.0
+ }
+}

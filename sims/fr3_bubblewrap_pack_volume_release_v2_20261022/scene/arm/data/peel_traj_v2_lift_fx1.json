@@ -1,0 +1,164 @@
+{
+ "segments": [
+  {
+   "name": "a0 home\u2192READY",
+   "t0": 0.0,
+   "t1": 1.5,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     85.39879457009296,
+     "fyp",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     85.39911962384609,
+     "fyn",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     407.617997467001,
+     "left_gripper_left",
+     "right_gripper_left"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "a1 \u5230 READY",
+   "t0": 1.5,
+   "t1": 2.5,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     202.39407421590263,
+     "fyp",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     202.39410801020733,
+     "fyn",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     443.5312130243988,
+     "left_camera_mount_d405",
+     "right_camera_mount_d405"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "a6 \u5169\u624b\u56de READY",
+   "t0": 2.5,
+   "t1": 4.5,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     202.39407421590263,
+     "fyp",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     202.39410801020733,
+     "fyn",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     443.5312130243988,
+     "left_camera_mount_d405",
+     "right_camera_mount_d405"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "a7 \u5f8c\u84cb kinematic \u7e8c\u8f49\u5230 180\u00b0(\u5169\u6bb5\u5f0f\u7b2c\u4e8c\u6bb5)",
+   "t0": 4.5,
+   "t1": 5.5,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     145.6173210890514,
+     "fyp",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     145.61649176513865,
+     "fyp",
+     "follower_right_gripper_right"
+    ],
+    "arm_arm": [
+     443.5312130243988,
+     "left_camera_mount_d405",
+     "right_camera_mount_d405"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "b0 \u524d\u84cb fyn \u958b\u5230 180\u00b0",
+   "t0": 5.5,
+   "t1": 6.5,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     145.6175775245974,
+     "fyn",
+     "follower_left_gripper_right"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     145.61604413525214,
+     "fyn",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     443.5312130243988,
+     "left_camera_mount_d405",
+     "right_camera_mount_d405"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "b0 \u4e0b\u84cb fx \u958b\u5230 180\u00b0",
+   "t0": 6.5,
+   "t1": 7.7,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     96.02744496421897,
+     "fxn",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     96.02740833369968,
+     "fxp",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     443.5312130243988,
+     "left_camera_mount_d405",
+     "right_camera_mount_d405"
+    ]
+   },
+   "collide": []
+  }
+ ],
+ "fail": [
+  "(a) \u58d3\u7684\u624b\u5230\u4e0d\u4e86",
+  "(a) lift:\u5916\u7de3\u89d2\u843d\u4e0b\u65b9\u627e\u4e0d\u5230\u7121\u78b0\u649e\u7684\u6307\u5c16\u59ff\u614b",
+  "(b) \u9810\u5099\u9ede\u7121\u78b0\u649e IK \u5931\u6557"
+ ],
+ "gap": {
+  "G0": 0.05159899592398903,
+  "GK": 1999.9999999999993,
+  "mimic": 1.0
+ }
+}
