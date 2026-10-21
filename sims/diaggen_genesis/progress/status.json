@@ -2,10 +2,10 @@
   "schema_version": "diaggen-public-batch-progress-v1",
   "pipeline": "DiagGen",
   "simulator": "Genesis",
-  "phase": "running",
+  "phase": "waiting_gpu",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T12:20:42+08:00",
+  "updated_at": "2026-10-21T12:22:45+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -14,9 +14,9 @@
   },
   "counts": {
     "queued": 6,
-    "running": 1,
+    "running": 0,
     "success": 0,
-    "failed": 2,
+    "failed": 3,
     "cancelled": 0,
     "unknown": 0,
     "total": 9
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T04:05:19.455387+00:00",
-      "updated_at": "2026-10-21T12:20:42+08:00",
+      "updated_at": "2026-10-21T12:22:45+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -154,7 +154,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T04:05:19.462238+00:00",
-      "updated_at": "2026-10-21T12:20:43+08:00",
+      "updated_at": "2026-10-21T12:22:45+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -269,13 +269,13 @@
       "pipeline": "DiagGen",
       "simulator": "Genesis",
       "run_id": "genesis_baseball_cap_20261021",
-      "phase": "running",
+      "phase": "failed",
       "pipeline_status": "seeded",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T04:12:53.485565+00:00",
-      "updated_at": "2026-10-21T12:20:43+08:00",
+      "updated_at": "2026-10-21T12:22:45+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -382,7 +382,7 @@
         }
       ],
       "id": "baseball_cap",
-      "status": "running",
+      "status": "failed",
       "attempts": 1
     },
     {
@@ -396,7 +396,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:20:43+08:00",
+      "updated_at": "2026-10-21T12:22:45+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -501,7 +501,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:20:43+08:00",
+      "updated_at": "2026-10-21T12:22:45+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -606,7 +606,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:20:43+08:00",
+      "updated_at": "2026-10-21T12:22:45+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -711,7 +711,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:20:43+08:00",
+      "updated_at": "2026-10-21T12:22:45+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -816,7 +816,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:20:43+08:00",
+      "updated_at": "2026-10-21T12:22:45+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -921,7 +921,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:20:43+08:00",
+      "updated_at": "2026-10-21T12:22:45+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1063,5 +1063,5 @@
       "sha256": "a804a9cb030a1704a976c42ef6d76c28dab205ba226bed1330daadbcb7b48b82"
     }
   ],
-  "signature": "c6f204b505b61443ba9a1456c4ede844029caa054fdd0ed5182a2118699499ab"
+  "signature": "5f97e8368d34c28a63c4ed2d07159521f96050878af6a4f1f709238b18866cd9"
 }

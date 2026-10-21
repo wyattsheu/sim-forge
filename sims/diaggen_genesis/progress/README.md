@@ -1,10 +1,10 @@
 # DiagGen / Genesis 批次執行進度
 
-狀態：**執行中**  
+狀態：**等待空閒 GPU**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T12:20:42+08:00（Asia/Taipei）
+更新：2026-10-21T12:22:45+08:00（Asia/Taipei）
 
-共 9 件：等待 6、執行中 1、完成 0、失敗 2、取消 0。
+共 9 件：等待 6、執行中 0、完成 0、失敗 3、取消 0。
 
 GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢查。  
 允許與既有運算共用 GPU：是。
@@ -15,7 +15,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢
 |---|---|---|---|---|
 | usb_hub | failed | seeded | revision_0000 | 1/9 |
 | capybara_plush_toy | failed | seeded | revision_0000 | 1/9 |
-| baseball_cap | running | seeded | revision_0000 | 1/9 |
+| baseball_cap | failed | seeded | revision_0000 | 1/9 |
 | curling_iron | queued | not_initialized | 尚未初始化 | 0/9 |
 | dragon | queued | not_initialized | 尚未初始化 | 0/9 |
 | kitchen_tongs | queued | not_initialized | 尚未初始化 | 0/9 |
@@ -75,7 +75,7 @@ Genesis 診斷 episode 數：0。
 
 ## baseball_cap
 
-Run：`genesis_baseball_cap_20261021`；執行中。
+Run：`genesis_baseball_cap_20261021`；執行失敗。
 
 | 階段 | 狀態 |
 |---|---|
