@@ -14,8 +14,13 @@ def droop(Z, t):
     if o.sum() < 3: return float("nan"), int(o.sum())
     v = P[o][:, 1:].mean(0) - CORNER
     return float(np.degrees(np.arctan2(-v[0], -v[1]))), int(o.sum())
+def atrel(Z, t):                                                     # 放手瞬間(TR 前一個取樣)yn 片質心 y / 壁外 %
+    T = Z["traj_t"]; i = int(np.searchsorted(T, t - 1e-6)) - 1
+    if i < 0: return "-"
+    F = Z["flat"]; yn = (F[:, 1] - F[:, 1].mean()) < -0.0715; P = (Z["traj_tet"][i][yn] - OFF) * 1e3
+    return "%.0f / %.0f%%" % (P[:, 1].mean(), 100 * (P[:, 1] < WALL).mean())
 hdr = ["組", "E", "面密度", "四折 bbox", "關蓋後超出 布/杯", "開蓋後超出 布", "包裝段 自穿最大", "包裝段 反轉最大", "包裝段 布穿杯", "開蓋後杯頂覆蓋",
-       "yn 綁點", "守衛", "抓取段 邊長比最大", "杯位移最大 mm", "掀完越線(held)", "放手 t",
+       "yn 綁點", "守衛", "抓取段 邊長比最大", "杯位移最大 mm", "掀完越線(held)", "放手 t", "放手瞬間 質心 y / 壁外",
        "+2s 越線(全片)", "+2s 壁外", "+2s 質心 y", "+2s 垂下角", "+10s 越線(全片)", "+10s 壁外", "+10s 質心 y", "+10s 垂下角", "+10s 布穿杯", "達標", "影片"]
 print("| " + " | ".join(hdr) + " |"); print("|" + "---|" * len(hdr))
 for d in sys.argv[1:]:
@@ -25,8 +30,8 @@ for d in sys.argv[1:]:
             re.findall(r"\nt=\s*([\d.]+) (.{24}).*?\| 自穿\s+(\d+) \| 布穿杯\s+(\d+) \| 反轉\s+(\d+) \|.*?邊長比 \[[\d.]+,([\d.]+)\]", s)]
     TG0 = float(g(r"open hold 完 ([\d.]+)", s, d="45.9"))
     pk = [r for r in rows if r[0] <= TG0]
-    rel = re.findall(r"★ t=([\d.]+) \[yn\] \[plastic\] 放手後 (\d+)s:越線 (\S+)%(全片 (\d+)%)\| 壁外 (\d+)% \| 質心 y ([-\d.]+) mm \| 自穿 (\d+) \| 布穿杯 (\d+) \| 杯位移 ([\d.]+)", s)
-    W = {int(r[1]): r for r in rel}
+    rel = re.findall(r"★ t=([\d.]+) \[yn\] \[plastic\] 放手後 ([\d.]+)s\S\s*越線 (\S+?)%\S全片 (\d+)%\S\s*\| 壁外 (\d+)% \| 質心 y ([-\d.]+) mm \| 自穿 (\d+) \| 布穿杯 (\d+) \| 杯位移 ([\d.]+)", s)
+    W = {int(float(r[1])) if float(r[1]) >= 1 else 0: r for r in rel}
     TR = float(W[2][0]) - 2 if 2 in W else float(g(r"★ t=([\d.]+) \[yn\] released", s, d="nan"))
     gr = [r for r in rows if TG0 < r[0] <= (TR if TR == TR else 1e9)]
     guards = re.findall(r"★ t=([\d.]+) \[yn\] 守衛:邊長比最大 ([\d.]+)", s)
@@ -48,7 +53,7 @@ for d in sys.argv[1:]:
             str(max([r[2] for r in pk] or [0])) if pk else "-", str(max([r[4] for r in pk] or [0])) if pk else "-", str(max([r[3] for r in pk] or [0])) if pk else "-",
             g(r"\n\s+end\s+t=.*?杯頂俯視覆蓋 (\d+%)", s, d=g(r"開蓋後 3s:.*?杯頂俯視覆蓋 (\d+%)", s)),
             g(r"\[yn\] 綁住 (\d+) 個頂點", s), ("放手 t=%s(%s)" % guards[0]) if guards else "沒觸發",
-            "%.2f" % max([r[5] for r in gr]) if gr else "-", g(r"\[yn\] .*?杯位移最大 ([\d.]+) mm", s), held, "%.2f" % TR if TR == TR else "-",
+            "%.2f" % max([r[5] for r in gr]) if gr else "-", g(r"\[yn\] .*?杯位移最大 ([\d.]+) mm", s), held, "%.2f" % TR if TR == TR else "-", atrel(Z, TR) if (Z is not None and TR == TR) else "-",
             "%s%%(%s%%)" % (W_(2, 2), W_(2, 3)), W_(2, 4) + "%", W_(2, 5), ang(2),
             "%s%%(%s%%)" % (W_(10, 2), W_(10, 3)), W_(10, 4) + "%", W_(10, 5), ang(10), W_(10, 7), ok,
             "vol/matsweep/%s/wrap.mp4" % nm + ("" if "EXIT 0" in s else " (未完成)")]

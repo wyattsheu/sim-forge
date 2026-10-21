@@ -1,0 +1,32 @@
+=== wrap_vol sheet 500 ===
+args: {'sheet_mm': 500.0, 'sheet_x_mm': 0.0, 'sheet_y_mm': 0.0, 'out': 'speed2/smokeR/1', 'mug': 'mug.stl', 'carton': 'carton_w131.usd', 'tex': 'bubble_normal.png', 'tex_mm': 200.0, 'thick_mm': 4.0, 'nxy': 35, 'young': 2000.0, 'ldamp': 0.0, 'edamp': 0.02, 'poisson': 0.45, 'areal': 0.1, 'fric': 0.8, 'cont': 0.002, 'rest': 0.0005, 'solver': 48, 'dt': 0.008333333333333333, 'margin': 0.012, 'wall': 0.006, 'fold_span': 3.0, 'fold_hold': 0.5, 'slow': '', 'tip_extra': '', 'tip_over_mm': 30.0, 'lid_span': 4.0, 'open_span': 3.0, 'movebox': '0,0.20,0.10', 'move_t': 6.0, 'base_collider_pad': 0.02, 'squeeze_t': 2.5, 'squeeze_mm': 3.0, 'until': 'yn', 'rest_npz': '', 'cam_ref': 0.586, 'meas_dt': 0.5, 'vid_every': 2, 'vid_res': '960x540', 'fast_pts': 0, 'fps': 30, 'tuck': 1, 'grasp': 1, 'grasp_rank': 1, 'pick_mm': 25.0, 'pick_in_mm': 25.0, 'arc_k': 0.8, 'peel_t': 6.0, 'gap_mm': 4.0, 'ffric': 2.0, 'pick_mode': 'jaw', 'chord': 1, 'arc2': 1, 'clear_mm': 6.0, 'steep_deg': 45.0, 'second': 0, 'gcam_focal': 2.8, 'grasp_attach': 1, 'attach_pad_mm': 24.0, 'attach_nlo_mm': -1.0, 'attach_layer': 'both', 'attach_mask_own': 0, 'attach_mask_r_mm': 16.0, 'attach_mask_dz_mm': 2.0, 'lift_first_mm': 0.0, 'lift_first_t': 1.0, 'lift_first_dir': 'z', 'attach_stiff': 0.0, 'hold_others': 0, 'hold_pad_mm': 24.0, 'hold_mode': 'attach', 'hold_sides': 'xp,xn', 'hold_layer': 'both', 'hold_region': 'ear', 'hold_min_d_mm': 0.0, 'guard_hold': 0.0, 'lift_first_out_mm': 0.0, 'arc2_ext_mm': 0.0, 'arc2_ext_t': 1.0, 'arc2_over_mm': 30.0, 'arc2_over_cap': 0, 'arc2_target': 'open', 'arc2_margin_mm': 5.0, 'arc2_cl_t': 3.0, 'arc2_cl_max_mm': 80.0, 'arc2_cl_down_mm': 30.0, 'arc2_lay': 0, 'arc2_lay_t': 1.0, 'arc2_er_stop': 0.0, 'arc2_over_t': 1.5, 'arc_grow_max_mm': 0.0, 'release_press_mm': 0.0, 'release_settle_s': 0.0, 'hold_rel_s': 0.5, 'attach_damp': 0.0, 'attach_proxy': 0, 'proxy_k': 500.0, 'proxy_c': -1.0, 'proxy_fmax': 0.5, 'grasp_site': 'state', 'grasp_retry': 2, 'grasp_retry_min': 6, 'site_xmax_mm': 60.0, 'site_exclude_walltop': 0, 'hinge_from_state': 0, 'grasp_site_k': 13, 'fold_order': 'xp,xn,yp,yn', 'mug_off_mm': '0,0', 'mug_yaw_deg': 0.0, 'seed': 0, 'hand2': 'jaw', 'hand2_hold_s': 3.0, 'hand2_lead_s': 0.5, 'hand2_pad_mm': 15.0, 'hand2_keep': 1, 'hold_yp': 1, 'extract': 0, 'extract_lift_mm': 150.0, 'extract_out_mm': 280.0, 'extract_mode': 'slide', 'guard_yp': 2.6, 'guard_yn': 2.6, 'slide_clear_mm': 40.0, 'hand2_tuck_mm': 0.0, 'hand1_jaw': 1, 'extract_grip': 'jaw', 'jaw_collide': 0, 'finger_mm': 20.0, 'guard_n': 2, 'proxy_m': 0.005, 'plastic_on_release': 0, 'plastic_on_fold': 0, 'plastic_pre': 0.2, 'plastic_region': 'all', 'plastic_how': 'step', 'plastic_filter_mm': -1.0, 'release_watch': 0, 'grasp_tail_s': 0.0, 'quality': 'fast', 'save_state': '', 'at': 'grasp', 'save_exit': 0, 'load_state': 'speed2/smokeA/S.npz'}
+quality: fast | dt 1/120 solver 48 vid_every 2 vid_res 960x540 | preset 套用 ['dt', 'solver', 'vid_every', 'vid_res'](明確旗標優先)
+杯子躺平 133 x 107 x 93 mm;杯口 +y、杯耳 +x;watertight=True
+折線 CX=84.63 CY=71.50 mm;折邊長 x 165.4 / y 178.5 mm
+set_physics_volume_deformable_body(/World/plate) -> True
+  collider /World/plate:schema 預設 contactOffset=-inf restOffset=-inf → 設 0.002 / 0.0005
+阻尼 ldamp=0 edamp=0.02
+板 500x500x4mm:2592 點 6125 tets;dxy 14.29mm;solver 48 dt 1/120
+視覺網格 /World/sheet_vis:5180 三角形(上/下/側面),泡泡法線貼圖 bubble_normal.png
+杯子 kinematic,底 z=6.5 頂 z=99.1 mm
+錨 xp:最外圈 72 點中 SIDEPICK 歸本邊 68,綁 20 點(上下兩層)
+錨 xn:最外圈 72 點中 SIDEPICK 歸本邊 68,綁 20 點(上下兩層)
+錨 yp:最外圈 72 點中 SIDEPICK 歸本邊 72,綁 24 點(上下兩層)
+錨 yn:最外圈 72 點中 SIDEPICK 歸本邊 72,綁 24 點(上下兩層)
+  xp:折線 84.6、折邊 165.4、已疊 0 層 → 尖端中面 z=103.1(底面 101.1)、越過頂面 arm 64.7 → 尖端 along=19.9 mm(搆不到中線)
+  xn:折線 84.6、折邊 165.4、已疊 0 層 → 尖端中面 z=103.1(底面 101.1)、越過頂面 arm 64.7 → 尖端 along=19.9 mm(搆不到中線)
+  yp:折線 71.5、折邊 178.5、已疊 1 層 → 尖端中面 z=108.1(底面 106.1)、越過頂面 arm 72.9 → 尖端 along=-1.4 mm(到/越過中線)
+  yn:折線 71.5、折邊 178.5、已疊 2 層 → 尖端中面 z=113.1(底面 111.1)、越過頂面 arm 67.9 → 尖端 along=3.6 mm(搆不到中線)
+錨:26 個 kinematic 錨體(x 邊各 1 根桿;y 邊每欄 1 個,共 24 欄),全部無碰撞;VtxXformAttachment 掛 /World/attach/*
+★ 紙箱 carton_w131.usd(meta carton_w131.meta.json):5 剛體 kinematic;bbox 270x230x134;箱底內面 z=3.0、箱口最高 133.9;內腔 ±132 x ±112;鉸鏈 123.0/129.5
+★ 底板碰撞加厚 20mm(不可見)
+  蓋 fxp:USD 預設中心 z=126.4 → 關;開 = 轉 +180°
+  蓋 fxn:USD 預設中心 z=126.4 → 關;開 = 轉 +180°
+  蓋 fyp:USD 預設中心 z=131.7 → 關;開 = 轉 +180°
+  蓋 fyn:USD 預設中心 z=131.7 → 關;開 = 轉 +180°
+★ 紙箱 reset 前擺到旁邊 [-800.  450.   -3.] mm、蓋子開(180°);箱底內面對齊地面(z 偏 −3.0mm)
+★ --grasp 1:kinematic 指 rod [ 8. 30.  8.] / 上下指 [20. 20.  8.] mm,指面摩擦 2.0(rod 0.5),cont 1 / rest 0;停在 [3. 3. 1.]
+★ --hand2 jaw:第二隻手 /World/gfing/h2 [40. 30.  4.] mm(不碰撞、綁頂點 pad 15 mm);放手前 0.5s 到位,放手後持續 3.0s 再抬起
+★ [load] speed2/smokeA/S.npz:存檔 t=46.867(grasp,第 5624 步 / 第 1405 幀);存檔時整鏈 wall 192 s
+  [load] 與存檔不同的旗標:{'until': ('all', 'yn'), 'second': (1, 0), 'extract': (1, 0)}
+  [load] reset 前:移除錨點綁定、杯 dynamic 姿態 [ 16.2 193.8 138.6] mm、箱/蓋 5 個剛體、側板 撤到 z=-3、地板碰撞 關

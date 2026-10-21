@@ -1,0 +1,2 @@
+yn rank 9.32s (60 rows, ok 8) | site_cands+gap 2.66s (13) | 合計 wall 11.98s CPU 11.96s
+yp rank 109.61s (60 rows, ok 8) | site_cands+gap 2.75s (13) | 合計 wall 112.36s CPU 112.20s

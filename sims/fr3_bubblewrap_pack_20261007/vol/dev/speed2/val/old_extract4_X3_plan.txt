@@ -1,0 +1,2 @@
+yn rank 23.43s (60 rows, ok 14) | site_cands+gap 3.69s (13)
+yp rank 339.69s (60 rows, ok 8) | site_cands+gap 3.55s (13)

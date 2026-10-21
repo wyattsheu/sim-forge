@@ -1,0 +1,744 @@
+CMD: wrap_vol.py --sheet_mm 500 --grasp 1 --grasp_attach 1 --attach_pad_mm 24 --attach_layer both --arc2 1 --arc_k 0.8 --peel_t 6 --gap_mm 4 --clear_mm 6 --steep_deg 45 --second 1 --young 2e3 --grasp_site state --grasp_retry 2 --site_xmax_mm 60 --grasp_site_k 13 --arc2_over_cap 0 --arc2_over_mm 30 --hand2 jaw --hand2_pad_mm 15 --hand2_keep 1 --hold_yp 1 --extract 1 --guard_yp 2.6 --guard_n 2 --extract_mode slide --extract_out_mm 280 --guard_yn 2.6 --slide_clear_mm 40 --hand1_jaw 1 --extract_grip jaw --edamp 0.02 --quality fast --save_state speed2/smokeA/S.npz --save_exit 1 --out speed2/smokeA/1
+[Info] [carb] Logging to file: /isaac-sim/kit/logs/Kit/Isaac-Sim Python/5.1/kit_20261021_071003.log
+2026-10-21T07:10:03Z [1ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/9e264fed-0b04-49a6-70d8dba7-d4bede93.dmp'
+2026-10-21T07:10:03Z [1ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/83b1eceb-19c8-40cb-8c428887-348e8c27.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/83b1eceb-19c8-40cb-8c428887-348e8c27.dmp.toml could not be opened for parsing
+2026-10-21T07:10:03Z [1ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/83b1eceb-19c8-40cb-8c428887-348e8c27.dmp'
+2026-10-21T07:10:03Z [1ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/1e4107e5-34a9-4068-4cb734a6-e8b6ed68.dmp'
+2026-10-21T07:10:03Z [1ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/3770a91a-676a-43d6-f7370c85-f456c0f1.dmp'
+2026-10-21T07:10:03Z [1ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/b113ff62-b532-4357-eb1eee8d-3caeb0cd.dmp'
+2026-10-21T07:10:03Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/85b8f34f-ccf2-4fbe-0f0b228d-d04313de.dmp'
+2026-10-21T07:10:03Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/64961c0a-1455-48c7-8f135483-6b694bca.dmp'
+2026-10-21T07:10:03Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/949d4cb7-b33f-4837-4c40bfbb-312196f6.dmp'
+2026-10-21T07:10:03Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/9de96518-d9b7-40d7-c029ef8a-a1ff8e24.dmp'
+2026-10-21T07:10:03Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/87ddd565-4c68-4c67-3e5e0dbb-794c0e7e.dmp'
+2026-10-21T07:10:03Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/7c244895-2284-464f-204b19b6-94ae3b6a.dmp'
+2026-10-21T07:10:03Z [2ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/14b0f6cf-baa4-42ac-f7439791-366015b7.dmp'
+2026-10-21T07:10:03Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/2a5be1d9-622b-489a-68d7a7b5-40b980fd.dmp'
+2026-10-21T07:10:03Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/85b3c27a-b598-428a-b919fdb3-39769603.dmp'
+2026-10-21T07:10:03Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/dc0f9a38-93af-494e-9d6f5185-0f049818.dmp'
+2026-10-21T07:10:03Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/643d5565-b1d8-4a5f-6576a4bc-9439f4f8.dmp'
+2026-10-21T07:10:03Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/45d6d730-262d-460e-e03aeea6-e6688bf7.dmp'
+2026-10-21T07:10:03Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/328b2399-0b25-4e61-8a520984-5e29605a.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/328b2399-0b25-4e61-8a520984-5e29605a.dmp.toml could not be opened for parsing
+2026-10-21T07:10:03Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/328b2399-0b25-4e61-8a520984-5e29605a.dmp'
+2026-10-21T07:10:03Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4836427e-d879-45da-5e650f96-688caaa4.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4836427e-d879-45da-5e650f96-688caaa4.dmp.toml could not be opened for parsing
+2026-10-21T07:10:03Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4836427e-d879-45da-5e650f96-688caaa4.dmp'
+2026-10-21T07:10:03Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/1a4fb8c5-c888-4339-59cea286-98b05965.dmp'
+2026-10-21T07:10:03Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/7ef71ee0-61ee-4674-0d052a9f-bff1f595.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/7ef71ee0-61ee-4674-0d052a9f-bff1f595.dmp.toml could not be opened for parsing
+2026-10-21T07:10:03Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/7ef71ee0-61ee-4674-0d052a9f-bff1f595.dmp'
+2026-10-21T07:10:03Z [3ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/a34b2cd6-51a5-480a-c11eeba7-b366538e.dmp'
+2026-10-21T07:10:03Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/272a5acb-b848-415b-a773cca1-6680e33f.dmp'
+2026-10-21T07:10:03Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/9c805a12-2af6-460c-9d737496-40fe3e7a.dmp'
+2026-10-21T07:10:03Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/64b025a5-c13a-40b6-aade17ad-5a302a09.dmp'
+2026-10-21T07:10:03Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/40301e2d-7d7b-408b-573c1eab-ebd468ba.dmp'
+2026-10-21T07:10:03Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/0a8893e7-4ba2-46e9-9555d0b0-26e223bd.dmp'
+2026-10-21T07:10:03Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/3af4ce4e-eaba-4e43-026f7ca0-4df8ede5.dmp'
+2026-10-21T07:10:03Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/993c5fad-48c2-4685-8b6edab3-6a22c27f.dmp'
+2026-10-21T07:10:03Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/fb56405e-12ba-4cd3-9f1ff887-0dc8898b.dmp'
+2026-10-21T07:10:03Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] Failed to parse toml file '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4f600334-c71b-4482-85db5b9f-f04f137f.dmp.toml': /isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4f600334-c71b-4482-85db5b9f-f04f137f.dmp.toml could not be opened for parsing
+2026-10-21T07:10:03Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4f600334-c71b-4482-85db5b9f-f04f137f.dmp'
+2026-10-21T07:10:03Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/f73f703d-6097-430f-d35826ac-aad6d3dc.dmp'
+2026-10-21T07:10:03Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/4861b20d-fbb2-480f-9b79ff94-c68a3940.dmp'
+2026-10-21T07:10:03Z [4ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/83b25c98-cfc0-4c70-6d932789-9686e6aa.dmp'
+2026-10-21T07:10:03Z [5ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/04d92423-df22-4516-f800ad88-5001dd06.dmp'
+2026-10-21T07:10:03Z [5ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/60f0c2d1-adcb-4ecc-d06115ad-3c6abce5.dmp'
+2026-10-21T07:10:03Z [5ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/e1bafb25-5d68-44e9-ecb00091-f55b059d.dmp'
+2026-10-21T07:10:03Z [5ms] [Warning] [carb.crashreporter-breakpad.plugin] [previous crash] preventing upload of minidump due to user opt-out: '/isaac-sim/kit/data/Kit/Isaac-Sim Python/5.1/0e1478ee-e277-469e-9f9d9680-b4429682.dmp'
+[0.040s] [ext: omni.kit.async_engine-0.0.3] startup
+[0.455s] [ext: omni.metrics.core-0.0.3] startup
+[0.456s] [ext: omni.client.lib-1.1.0] startup
+[0.472s] [ext: omni.blobkey-1.1.2] startup
+[0.473s] [ext: omni.stats-1.0.1] startup
+[0.475s] [ext: omni.datastore-0.0.0] startup
+[0.484s] [ext: omni.client-1.3.0] startup
+[0.490s] [ext: omni.ujitso.default-1.0.0] startup
+[0.494s] [ext: omni.hsscclient-1.1.2] startup
+[0.507s] [ext: omni.gpu_foundation.shadercache.vulkan-1.0.0] startup
+[0.513s] [ext: omni.assets.plugins-0.0.0] startup
+[0.515s] [ext: omni.gpu_foundation-0.0.0] startup
+[0.526s] [ext: carb.windowing.plugins-1.0.0] startup
+2026-10-21T07:10:03Z [512ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-21T07:10:03Z [512ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+[0.527s] [ext: omni.kit.renderer.init-0.0.0] startup
+2026-10-21T07:10:03Z [541ms] [Warning] [omni.platforminfo.plugin] failed to open the default display.  Can't verify X Server version.
+
+|---------------------------------------------------------------------------------------------|
+| Driver Version: 580.173.02    | Graphics API: Vulkan
+|=============================================================================================|
+| GPU | Name                             | Active | LDA | GPU Memory | Vendor-ID | LUID       |
+|     |                                  |        |     |            | Device-ID | UUID       |
+|     |                                  |        |     |            | Bus-ID    |            |
+|---------------------------------------------------------------------------------------------|
+| 0   | NVIDIA GeForce RTX 5090          | Yes: 0 |     | 32607   MB | 10de      | 0          |
+|     |                                  |        |     |            | 2b85      | 1bc29a6a.. |
+|     |                                  |        |     |            | 1         |            |
+|=============================================================================================|
+| OS: 24.04.2 LTS (Noble Numbat) ubuntu, Version: 24.04.2, Kernel: 7.0.0-28-generic
+| Processor: AMD Ryzen 9 9950X3D 16-Core Processor
+| Cores: 16 | Logical Cores: 32
+|---------------------------------------------------------------------------------------------|
+| Total Memory (MB): 190838 | Free Memory: 120425
+| Total Page/Swap (MB): 8191 | Free Page/Swap: 2117
+|---------------------------------------------------------------------------------------------|
+2026-10-21T07:10:04Z [1,282ms] [Warning] [gpu.foundation.plugin] CPU performance profile is set to powersave. This profile sets the CPU to the lowest frequency reducing performance.
+2026-10-21T07:10:04Z [1,294ms] [Warning] [gpu.foundation.plugin] PCIe link width current (8) and maximum (16) for device 0 don't match.
+2026-10-21T07:10:04Z [1,294ms] [Warning] [gpu.foundation.plugin] IOMMU is enabled.
+[1.475s] [ext: omni.kit.pipapi-0.0.0] startup
+[1.477s] [ext: omni.kit.pip_archive-0.0.0] startup
+[1.477s] [ext: omni.pip.compute-1.6.3] startup
+[1.477s] [ext: omni.materialx.libs-1.0.7] startup
+[1.483s] [ext: omni.pip.cloud-1.4.3] startup
+[1.485s] [ext: omni.isaac.core_archive-3.0.0] startup
+[1.486s] [ext: omni.usd.config-1.0.6] startup
+[1.488s] [ext: omni.gpucompute.plugins-0.0.0] startup
+[1.489s] [ext: omni.usd.libs-1.0.1] startup
+[1.543s] [ext: omni.mdl-56.0.3] startup
+[1.559s] [ext: omni.iray.libs-0.0.0] startup
+[1.563s] [ext: omni.mdl.neuraylib-0.2.12] startup
+[1.565s] [ext: omni.kit.usd.mdl-1.1.5] startup
+[1.642s] [ext: omni.services.pip_archive-0.16.0] startup
+[1.642s] [ext: omni.isaac.ml_archive-3.0.4] startup
+[1.643s] [ext: omni.kit.telemetry-0.5.2] startup
+[1.677s] [ext: omni.kit.loop-isaac-1.3.7] startup
+[1.678s] [ext: omni.kit.test-2.0.1] startup
+[1.726s] [ext: omni.appwindow-1.1.10] startup
+2026-10-21T07:10:04Z [1,712ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-21T07:10:04Z [1,712ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+[1.728s] [ext: omni.kit.renderer.core-1.1.0] startup
+2026-10-21T07:10:04Z [1,727ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-21T07:10:04Z [1,727ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+2026-10-21T07:10:04Z [1,734ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-21T07:10:04Z [1,734ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+[1.750s] [ext: omni.kit.renderer.capture-0.0.0] startup
+[1.752s] [ext: omni.kit.renderer.imgui-2.0.5] startup
+2026-10-21T07:10:04Z [1,739ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-21T07:10:04Z [1,739ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+2026-10-21T07:10:04Z [1,740ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-21T07:10:04Z [1,740ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+2026-10-21T07:10:04Z [1,741ms] [Warning] [carb.windowing-glfw.plugin] GLFW initialization failed.
+2026-10-21T07:10:04Z [1,741ms] [Warning] [carb] Failed to startup plugin carb.windowing-glfw.plugin (interfaces: [carb::windowing::IGLContext v1.0],[carb::windowing::IWindowing v1.5]) (impl: carb.windowing-glfw.plugin)
+[1.798s] [ext: omni.ui-2.27.1] startup
+[1.807s] [ext: omni.kit.mainwindow-1.0.3] startup
+[1.808s] [ext: carb.audio-0.1.0] startup
+[1.811s] [ext: omni.uiaudio-1.0.0] startup
+[1.812s] [ext: omni.kit.uiapp-0.0.0] startup
+[1.812s] [ext: omni.usd.schema.metrics.assembler-107.3.1] startup
+[1.814s] [ext: omni.anim.behavior.schema-107.3.0] startup
+[1.820s] [ext: omni.usd.schema.omnigraph-1.0.0] startup
+[1.824s] [ext: omni.usd.schema.geospatial-0.0.0] startup
+[1.825s] [ext: omni.usd.schema.anim-0.0.0] startup
+[1.835s] [ext: omni.usd.schema.audio-0.0.0] startup
+[1.837s] [ext: isaacsim.robot.schema-3.6.0] startup
+[1.843s] [ext: omni.usd_resolver-1.0.0] startup
+[1.845s] [ext: omni.usd.core-1.5.3] startup
+[1.847s] [ext: omni.usd.schema.omni_sensors-0.0.0] startup
+[1.859s] [ext: omni.usd.schema.semantics-0.0.0] startup
+[1.861s] [ext: omni.usd.schema.omni_lens_distortion-0.0.0] startup
+[1.861s] [ext: omni.usd.schema.render_settings.rtx-0.0.0] startup
+[1.862s] [ext: omni.graph.exec-0.9.6] startup
+[1.862s] [ext: omni.kit.actions.core-1.0.0] startup
+[1.864s] [ext: omni.kit.usd_undo-0.1.8] startup
+[1.864s] [ext: omni.kit.exec.core-0.13.4] startup
+[1.865s] [ext: omni.kit.commands-1.4.10] startup
+[1.868s] [ext: omni.kit.window.popup_dialog-2.0.24] startup
+[1.870s] [ext: omni.activity.core-1.0.3] startup
+[1.871s] [ext: omni.resourcemonitor-107.0.1] startup
+[1.873s] [ext: omni.timeline-1.0.14] startup
+[1.874s] [ext: omni.kit.widget.nucleus_connector-2.0.1] startup
+[1.875s] [ext: usdrt.scenegraph-7.6.1] startup
+[1.904s] [ext: omni.kit.audiodeviceenum-1.0.2] startup
+[1.905s] [ext: omni.hydra.usdrt_delegate-7.5.1] startup
+[1.909s] [ext: omni.hydra.scene_delegate-0.3.4] startup
+[1.911s] [ext: omni.usd-1.13.10] startup
+[1.930s] [ext: omni.kit.asset_converter-5.0.17] startup
+[1.939s] [ext: omni.usd.schema.physx-107.3.26] startup
+[1.963s] [ext: omni.anim.navigation.schema-107.3.3] startup
+[1.965s] [ext: omni.inspect-1.0.2] startup
+[1.966s] [ext: omni.kit.notification_manager-1.0.10] startup
+[1.967s] [ext: omni.graph.core-2.184.5] startup
+[1.970s] [ext: isaacsim.core.deprecation_manager-0.2.7] startup
+[1.970s] [ext: omni.usd.schema.omniscripting-1.0.0] startup
+[1.973s] [ext: omni.usd.schema.flow-107.1.1] startup
+[1.974s] [ext: omni.anim.graph.schema-107.3.3] startup
+[1.978s] [ext: omni.usd.schema.isaac-3.0.5] startup
+[1.978s] [ext: isaacsim.core.version-2.0.6] startup
+[1.978s] [ext: omni.ui.scene-1.11.5] startup
+[1.981s] [ext: isaacsim.storage.native-1.5.1] startup
+[1.983s] [ext: omni.kit.widget.options_menu-1.1.6] startup
+[1.985s] [ext: omni.kit.menu.core-1.1.2] startup
+[1.985s] [ext: omni.graph.tools-1.79.2] startup
+[2.004s] [ext: omni.kit.widget.filter-1.1.4] startup
+[2.005s] [ext: omni.kit.menu.utils-2.0.5] startup
+[2.010s] [ext: omni.graph-1.141.2] startup
+[2.045s] [ext: omni.kit.hotkeys.core-1.3.10] startup
+[2.046s] [ext: omni.anim.curve.core-1.3.1] startup
+[2.061s] [ext: omni.kit.clipboard-1.0.5] startup
+[2.063s] [ext: omni.usdphysics-107.3.26] startup
+[2.064s] [ext: omni.physx.foundation-107.3.26] startup
+[2.066s] [ext: omni.kit.widget.context_menu-1.2.5] startup
+[2.067s] [ext: omni.kit.helper.file_utils-0.1.9] startup
+[2.068s] [ext: omni.kit.widget.path_field-2.0.11] startup
+[2.069s] [ext: omni.kvdb-107.3.26] startup
+[2.070s] [ext: omni.kit.widget.options_button-1.0.3] startup
+[2.070s] [ext: omni.kit.widget.filebrowser-2.12.3] startup
+[2.074s] [ext: omni.kit.widget.browser_bar-2.0.10] startup
+[2.074s] [ext: omni.localcache-107.3.26] startup
+[2.075s] [ext: omni.convexdecomposition-107.3.26] startup
+[2.077s] [ext: omni.kit.window.filepicker-2.13.4] startup
+[2.088s] [ext: omni.physx.cooking-107.3.26] startup
+[2.090s] [ext: omni.physics-107.3.26] startup
+[2.092s] [ext: omni.kit.window.file_exporter-1.0.33] startup
+[2.094s] [ext: omni.kit.stage_template.core-1.1.22] startup
+[2.095s] [ext: omni.physx-107.3.26] startup
+[2.100s] [ext: omni.kit.usd.layers-2.2.11] startup
+[2.105s] [ext: omni.kit.window.file_importer-1.1.18] startup
+[2.106s] [ext: omni.physics.physx-107.3.26] startup
+2026-10-21T07:10:05Z [2,092ms] [Warning] [carb] Acquiring non optional plugin interface which is not listed as dependency: [omni::physx::IPhysxBenchmarks v1.0] (plugin: <default plugin>), by client: omni.physics.physx.plugin. Add it to CARB_PLUGIN_IMPL_DEPS() macro of a client.
+[2.107s] [ext: omni.kit.numpy.common-0.1.3] startup
+[2.108s] [ext: omni.kit.window.file-2.0.5] startup
+[2.110s] [ext: omni.physics.stageupdate-107.3.26] startup
+[2.112s] [ext: omni.kit.window.drop_support-1.0.5] startup
+[2.112s] [ext: omni.kit.window.content_browser_registry-0.0.6] startup
+[2.113s] [ext: omni.isaac.dynamic_control-2.0.7] startup
+2026-10-21T07:10:05Z [2,101ms] [Warning] [omni.isaac.dynamic_control] omni.isaac.dynamic_control is deprecated as of Isaac Sim 4.5. No action is needed from end-users.
+[2.116s] [ext: omni.kit.window.content_browser-3.1.3] startup
+[2.124s] [ext: omni.graph.action_core-1.1.7] startup
+[2.125s] [ext: omni.kit.usd.collect-2.4.5] startup
+[2.127s] [ext: isaacsim.gui.content_browser-0.1.11] startup
+[2.128s] [ext: omni.graph.action_nodes-1.50.4] startup
+[2.130s] [ext: omni.kit.widget.prompt-1.0.7] startup
+[2.131s] [ext: omni.graph.action-1.130.0] startup
+[2.132s] [ext: omni.kit.tool.collect-2.2.18] startup
+[2.139s] [ext: omni.index.libs-380600.8087.0] startup
+[2.139s] [ext: omni.ujitso.client-0.0.0] startup
+[2.140s] [ext: omni.index-1.0.1] startup
+[2.140s] [ext: omni.volume-0.5.2] startup
+[2.143s] [ext: omni.hydra.rtx.shadercache.vulkan-1.0.0] startup
+[2.145s] [ext: omni.kit.context_menu-1.8.6] startup
+[2.148s] [ext: omni.hydra.rtx-1.0.0] startup
+2026-10-21T07:10:05Z [2,148ms] [Warning] [omni.log] Source: omni.hydra was already registered.
+[2.174s] [ext: omni.kit.material.library-2.0.7] startup
+[2.180s] [ext: omni.hydra.engine.stats-1.0.3] startup
+[2.182s] [ext: omni.kit.widget.stage_icons-1.0.8] startup
+[2.183s] [ext: omni.kit.viewport.scene_camera_model-1.0.6] startup
+[2.186s] [ext: omni.kit.hydra_texture-1.4.6] startup
+[2.188s] [ext: omni.kit.viewport.legacy_gizmos-1.0.19] startup
+[2.190s] [ext: omni.kit.widget.searchfield-1.1.8] startup
+[2.191s] [ext: omni.kit.widget.viewport-107.1.3] startup
+[2.195s] [ext: omni.kit.viewport.registry-104.0.6] startup
+[2.195s] [ext: omni.kit.raycast.query-1.1.0] startup
+[2.199s] [ext: omni.kit.widget.stage-3.1.4] startup
+[2.208s] [ext: omni.kit.widget.zoombar-1.0.6] startup
+[2.209s] [ext: omni.kit.viewport.window-107.2.0] startup
+[2.223s] [ext: omni.kit.window.stage-2.6.1] startup
+[2.226s] [ext: omni.kit.browser.core-2.3.13] startup
+[2.229s] [ext: omni.kit.menu.stage-1.2.7] startup
+[2.230s] [ext: omni.kit.browser.folder.core-1.10.9] startup
+[2.233s] [ext: omni.kit.property.adapter.core-1.0.2] startup
+[2.236s] [ext: omni.kit.widget.highlight_label-1.0.3] startup
+[2.237s] [ext: omni.kit.property.adapter.usd-1.0.2] startup
+[2.238s] [ext: omni.ui_query-1.1.8] startup
+[2.239s] [ext: omni.kit.window.property-1.12.1] startup
+[2.241s] [ext: omni.kit.property.adapter.fabric-1.0.3] startup
+[2.242s] [ext: omni.kit.ui_test-1.3.7] startup
+[2.243s] [ext: omni.kit.property.usd-4.5.12] startup
+[2.250s] [ext: omni.kit.viewport.utility-1.1.2] startup
+[2.251s] [ext: omni.kit.manipulator.viewport-107.0.1] startup
+[2.253s] [ext: omni.kit.usdz_export-1.0.9] startup
+[2.255s] [ext: omni.kit.window.extensions-1.4.27] startup
+[2.259s] [ext: omni.graph.visualization.nodes-2.1.3] startup
+[2.264s] [ext: omni.kit.tool.asset_importer-4.3.2] startup
+[2.273s] [ext: isaacsim.gui.components-1.2.1] startup
+[2.277s] [ext: isaacsim.examples.browser-0.2.1] startup
+[2.281s] [ext: isaacsim.asset.importer.urdf-2.4.30] startup
+[2.329s] [ext: omni.kit.menu.create-2.0.1] startup
+[2.332s] [ext: omni.physics.tensors-107.3.26] startup
+[2.341s] [ext: omni.usd.metrics.assembler-107.3.1] startup
+[2.344s] [ext: omni.kit.widget.graph-2.0.0] startup
+[2.348s] [ext: omni.kit.widget.searchable_combobox-1.0.6] startup
+[2.349s] [ext: omni.warp.core-1.8.2] startup
+[2.489s] [ext: omni.usd.metrics.assembler.physics-107.3.26] startup
+[2.491s] [ext: omni.kit.graph.delegate.default-1.2.3] startup
+[2.493s] [ext: omni.kit.scripting-107.3.2] startup
+[2.496s] [ext: omni.physx.tensors-107.3.26] startup
+[2.500s] [ext: isaacsim.core.utils-3.5.1] startup
+[2.504s] [ext: omni.anim.asset-107.3.0] startup
+[2.506s] [ext: isaacsim.core.simulation_manager-1.4.4] startup
+[3.611s] [ext: omni.graph.scriptnode-1.50.0] startup
+[3.614s] [ext: omni.kit.graph.editor.core-1.5.3] startup
+[3.620s] [ext: omni.kit.widget.settings-1.2.6] startup
+[3.624s] [ext: omni.kit.primitive.mesh-1.0.17] startup
+[3.629s] [ext: isaacsim.core.prims-0.6.1] startup
+[3.650s] [ext: omni.kit.widget.material_preview-1.0.16] startup
+[3.653s] [ext: omni.kit.graph.usd.commands-1.3.1] startup
+[3.655s] [ext: omni.graph.image.core-0.6.1] startup
+[3.656s] [ext: omni.kit.window.preferences-1.8.0] startup
+[3.662s] [ext: omni.kit.stage_templates-2.0.0] startup
+[3.663s] [ext: isaacsim.asset.browser-1.3.23] startup
+[3.741s] [ext: omni.graph.image.nodes-1.3.1] startup
+[3.742s] [ext: omni.kit.viewport.menubar.core-107.2.1] startup
+[3.757s] [ext: isaacsim.core.api-4.8.0] startup
+[3.766s] [ext: omni.kit.window.material_graph-1.9.1] startup
+[3.776s] [ext: omni.kit.viewport.actions-107.0.2] startup
+[3.782s] [ext: omni.graph.nodes-1.170.10] startup
+[3.793s] [ext: omni.syntheticdata-0.6.13] startup
+[3.817s] [ext: omni.isaac.assets_check-0.3.13] startup
+2026-10-21T07:10:06Z [3,804ms] [Warning] [omni.isaac.assets_check] omni.isaac.assets_check has been deprecated in favor of isaacsim.asset.browser. Please update your code accordingly.
+[3.819s] [ext: isaacsim.core.cloner-1.4.10] startup
+[3.824s] [ext: omni.kit.viewport.menubar.display-107.0.3] startup
+[3.828s] [ext: omni.graph.ui_nodes-1.50.5] startup
+[3.835s] [ext: omni.videoencoding-0.1.2] startup
+[3.837s] [ext: omni.isaac.cloner-1.0.7] startup
+2026-10-21T07:10:06Z [3,823ms] [Warning] [omni.isaac.cloner] omni.isaac.cloner has been deprecated in favor of isaacsim.core.cloner. Please update your code accordingly.
+[3.838s] [ext: isaacsim.gui.sensors.icon-2.0.3] startup
+[3.857s] [ext: omni.warp-1.8.2] startup
+[3.868s] [ext: omni.anim.retarget.core-107.3.3] startup
+[3.879s] [ext: omni.debugdraw-0.1.4] startup
+[3.883s] [ext: omni.replicator.core-1.12.27] startup
+2026-10-21T07:10:06Z [3,897ms] [Warning] [pxr.Semantics] pxr.Semantics is deprecated - please use Semantics instead
+2026-10-21T07:10:07Z [4,049ms] [Warning] [omni.graph.core.plugin] Found duplicate of category 'Replicator' - was 'Annotators', adding 'Fabric Reader'
+2026-10-21T07:10:07Z [4,049ms] [Warning] [omni.graph.core.plugin] Category 'Replicator' not accepted on node type 'omni.replicator.core.FabricReader' in extension 'omni.replicator.core'
+2026-10-21T07:10:07Z [4,050ms] [Warning] [omni.replicator.core.scripts.extension] No material configuration file, adding configuration to material settings directly.
+[4.071s] [ext: omni.kit.quicklayout-1.0.8] startup
+[4.076s] [ext: omni.anim.navigation.core-107.3.8] startup
+[4.085s] [ext: omni.anim.graph.core-107.3.4] startup
+[4.093s] [ext: omni.metropolis.utils-0.1.20] startup
+[4.115s] [ext: isaacsim.asset.importer.mjcf-2.5.13] startup
+[4.126s] [ext: omni.anim.people-0.7.9] startup
+2026-10-21T07:10:07Z [4,119ms] [Warning] [omni.graph.core._impl._registration.register_python_ogn] Python import process in omni.anim.graph.core failed - 'NoneType' object is not subscriptable. Aborting Python node registration
+[4.142s] [ext: isaacsim.test.docstring-1.1.0] startup
+[4.147s] [ext: isaacsim.core.experimental.utils-0.3.0] startup
+[4.151s] [ext: isaacsim.anim.robot-0.0.15] startup
+[4.205s] [ext: isaacsim.core.experimental.prims-0.8.1] startup
+[4.313s] [ext: isaacsim.core.nodes-3.4.3] startup
+[4.385s] [ext: omni.flowusd-107.1.8] startup
+2026-10-21T07:10:07Z [4,376ms] [Warning] [omni.stageupdate.plugin] Deprecated: direct use of IStageUpdate callbacks is deprecated. Use IStageUpdate::getStageUpdate instead.
+[4.405s] [ext: omni.sensors.nv.common-3.0.0] startup
+[4.461s] [ext: isaacsim.core.experimental.materials-0.4.0] startup
+[4.524s] [ext: omni.isaac.core-4.0.7] startup
+2026-10-21T07:10:07Z [4,517ms] [Warning] [omni.isaac.core.physics_context.physics_context] omni.isaac.core.physics_context.physics_context has been deprecated in favor of isaacsim.core.api.physics_context.physics_context. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,537ms] [Warning] [omni.isaac.core.simulation_context.simulation_context] omni.isaac.core.simulation_context.simulation_context has been deprecated in favor of isaacsim.core.api.simulation_context.simulation_context. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,541ms] [Warning] [omni.isaac.core.world.world] omni.isaac.core.world.world has been deprecated in favor of isaacsim.core.api.world.world. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,541ms] [Warning] [omni.isaac.core] omni.isaac.core has been deprecated in favor of isaacsim.core.api. Please update your code accordingly.
+[4.557s] [ext: isaacsim.replicator.incident-0.1.28] startup
+[4.716s] [ext: omni.sensors.net-1.0.0] startup
+[4.719s] [ext: omni.sensors.nv.materials-2.0.0] startup
+[4.724s] [ext: isaacsim.sensors.camera-1.3.6] startup
+[4.731s] [ext: omni.sensors.nv.wpm-3.0.0] startup
+[4.733s] [ext: isaacsim.util.debug_draw-3.1.0] startup
+[4.741s] [ext: omni.sensors.nv.ids-2.0.0] startup
+[4.745s] [ext: omni.sensors.nv.lidar-3.0.0] startup
+[4.753s] [ext: omni.sensors.nv.radar-3.0.0] startup
+[4.756s] [ext: isaacsim.sensors.physics-0.4.3] startup
+[4.768s] [ext: isaacsim.robot_motion.lula-4.0.8] startup
+[4.780s] [ext: isaacsim.robot.surface_gripper-3.3.1] startup
+[4.788s] [ext: isaacsim.sensors.rtx-15.8.4] startup
+[4.812s] [ext: omni.kit.mesh.raycast-107.0.1] startup
+[4.817s] [ext: isaacsim.robot_motion.motion_generation-8.0.26] startup
+[4.838s] [ext: isaacsim.robot.manipulators-3.3.6] startup
+[4.842s] [ext: isaacsim.core.experimental.objects-0.4.0] startup
+[4.853s] [ext: omni.isaac.core_nodes-2.0.6] startup
+2026-10-21T07:10:07Z [4,843ms] [Warning] [omni.isaac.core_nodes] omni.isaac.core_nodes has been deprecated in favor of isaacsim.core.nodes. Please update your code accordingly.
+[4.859s] [ext: isaacsim.replicator.agent.core-0.7.28] startup
+[4.871s] [ext: isaacsim.robot.manipulators.examples-1.1.2] startup
+[4.873s] [ext: isaacsim.simulation_app-2.12.2] startup
+[4.876s] [ext: omni.kit.selection-0.1.6] startup
+[4.877s] [ext: omni.isaac.franka-1.0.7] startup
+2026-10-21T07:10:07Z [4,863ms] [Warning] [omni.isaac.franka] omni.isaac.franka has been deprecated in favor of isaacsim.robot.manipulators.examples.franka. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,863ms] [Warning] [omni.isaac.franka.franka] omni.isaac.franka has been deprecated in favor of isaacsim.robot.manipulators.examples.franka. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,877ms] [Warning] [omni.isaac.franka.kinematics_solver] omni.isaac.franka has been deprecated in favor of isaacsim.robot.manipulators.examples.franka. Please update your code accordingly.
+[4.891s] [ext: isaacsim.robot_motion.lula_test_widget-1.0.12] startup
+[4.894s] [ext: omni.isaac.kit-2.0.6] startup
+2026-10-21T07:10:07Z [4,881ms] [Warning] [omni.isaac.kit] omni.isaac.kit has been deprecated in favor of isaacsim.simulation_app. Please update your code accordingly.
+[4.895s] [ext: isaacsim.gui.menu-2.4.4] startup
+[4.901s] [ext: omni.isaac.asset_browser-1.0.6] startup
+2026-10-21T07:10:07Z [4,887ms] [Warning] [omni.isaac.asset_browser] omni.isaac.asset_browser has been deprecated in favor of isaacsim.asset.browser. Please update your code accordingly.
+[4.902s] [ext: omni.isaac.lula_test_widget-1.0.6] startup
+2026-10-21T07:10:07Z [4,890ms] [Warning] [omni.isaac.lula_test_widget] omni.isaac.lula_test_widget has been deprecated in favor of isaacsim.robot_motion.lula_test_widget. Please update your code accordingly.
+[4.905s] [ext: omni.isaac.manipulators-3.0.7] startup
+2026-10-21T07:10:07Z [4,892ms] [Warning] [omni.isaac.manipulators] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,892ms] [Warning] [omni.isaac.manipulators.controllers] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,892ms] [Warning] [omni.isaac.manipulators.controllers.pick_place_controller] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,893ms] [Warning] [omni.isaac.manipulators.controllers.stacking_controller] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,893ms] [Warning] [omni.isaac.manipulators.grippers] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,893ms] [Warning] [omni.isaac.manipulators.grippers.gripper] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,893ms] [Warning] [omni.isaac.manipulators.grippers.parallel_gripper] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,893ms] [Warning] [omni.isaac.manipulators.grippers.surface_gripper] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,893ms] [Warning] [omni.isaac.manipulators.manipulators] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,893ms] [Warning] [omni.isaac.manipulators.manipulators.single_manipulator] omni.isaac.manipulators has been deprecated in favor of isaacsim.robot.manipulators. Please update your code accordingly.
+[4.908s] [ext: omni.isaac.menu-1.0.6] startup
+2026-10-21T07:10:07Z [4,895ms] [Warning] [omni.isaac.menu] omni.isaac.menu has been deprecated in favor of isaacsim.gui.menu. Please update your code accordingly.
+[4.910s] [ext: isaacsim.robot.policy.examples-4.1.11] startup
+[4.913s] [ext: isaacsim.sensors.physx-2.3.2] startup
+[4.919s] [ext: omni.isaac.motion_generation-8.0.7] startup
+2026-10-21T07:10:07Z [4,906ms] [Warning] [omni.isaac.motion_generation] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,906ms] [Warning] [omni.isaac.motion_generation.articulation_kinematics_solver] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,906ms] [Warning] [omni.isaac.motion_generation.articulation_motion_policy] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,906ms] [Warning] [omni.isaac.motion_generation.articulation_trajectory] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,906ms] [Warning] [omni.isaac.motion_generation.kinematics_interface] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,907ms] [Warning] [omni.isaac.motion_generation.lula] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,907ms] [Warning] [omni.isaac.motion_generation.lula.kinematics] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,907ms] [Warning] [omni.isaac.motion_generation.lula.motion_policies] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,907ms] [Warning] [omni.isaac.motion_generation.lula.path_planners] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,907ms] [Warning] [omni.isaac.motion_generation.lula.trajectory_generator] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,908ms] [Warning] [omni.isaac.motion_generation.motion_policy_controller] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,908ms] [Warning] [omni.isaac.motion_generation.motion_policy_interface] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,908ms] [Warning] [omni.isaac.motion_generation.path_planner_visualizer] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,909ms] [Warning] [omni.isaac.motion_generation.path_planning_interface] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,909ms] [Warning] [omni.isaac.motion_generation.trajectory] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,909ms] [Warning] [omni.isaac.motion_generation.world_interface] omni.isaac.motion_generation has been deprecated in favor of isaacsim.robot_motion.motion_generation. Please update your code accordingly.
+[4.924s] [ext: omni.isaac.nucleus-1.0.6] startup
+2026-10-21T07:10:07Z [4,910ms] [Warning] [omni.isaac.nucleus] omni.isaac.nucleus has been deprecated in favor of isaacsim.storage.native. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,910ms] [Warning] [omni.isaac.nucleus.nucleus] omni.isaac.nucleus.nucleus has been deprecated in favor of isaacsim.storage.native. Please update your code accordingly.
+[4.925s] [ext: omni.isaac.quadruped-3.0.7] startup
+2026-10-21T07:10:07Z [4,911ms] [Warning] [omni.isaac.quadruped] omni.isaac.quadruped has been deprecated in favor of isaacsim.robot.policy.examples. Please update your code accordingly.
+[4.926s] [ext: omni.isaac.range_sensor-4.0.6] startup
+2026-10-21T07:10:07Z [4,914ms] [Warning] [omni.isaac.range_sensor] omni.isaac.range_sensor has been deprecated in favor of isaacsim.sensors.physx. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,917ms] [Warning] [omni.isaac.range_sensor.commands] omni.isaac.range_sensor.commands has been deprecated in favor of isaacsim.sensors.physx.commands. Please update your code accordingly.
+[4.932s] [ext: omni.isaac.sensor-13.0.7] startup
+2026-10-21T07:10:07Z [4,919ms] [Warning] [omni.isaac.sensor] omni.isaac.sensor has been deprecated in favor of isaacsim.sensors.camera, isaacsim.sensors.physics, isaacsim.sensors.physx, and isaacsim.sensors.rtx. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,919ms] [Warning] [omni.isaac.sensor.camera] omni.isaac.sensor.camera has been deprecated in favor of isaacsim.sensors.camera.camera. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,919ms] [Warning] [omni.isaac.sensor.camera_view] omni.isaac.sensor.camera_view has been deprecated in favor of isaacsim.sensors.camera.camera_view. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,920ms] [Warning] [omni.isaac.sensor.commands] omni.isaac.sensor.commands has been deprecated in favor of isaacsim.sensors.physics.commands, isaacsim.sensors.physx.commands, and isaacsim.sensors.rtx.commands. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,920ms] [Warning] [omni.isaac.sensor.contact_sensor] omni.isaac.sensor.contact_sensor has been deprecated in favor of isaacsim.sensors.physics.contact_sensor. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,921ms] [Warning] [omni.isaac.sensor.imu_sensor] omni.isaac.sensor.imu_sensor has been deprecated in favor of isaacsim.sensors.physics.imu_sensor. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,921ms] [Warning] [omni.isaac.sensor.lidar_rtx] omni.isaac.sensor.lidar_rtx has been deprecated in favor of isaacsim.sensors.rtx.lidar_rtx. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,921ms] [Warning] [omni.isaac.sensor.rotating_lidar_physX] omni.isaac.sensor.imu_sensor has been deprecated in favor of isaacsim.sensors.physix.rotating_lidar_physX. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,921ms] [Warning] [omni.isaac.sensor.scripts.samples.contact_sensor] omni.isaac.sensor.scripts.samples.contact_sensor has been deprecated in favor of isaacsim.sensors.physics.scripts.samples.contact_sensor. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,921ms] [Warning] [omni.isaac.sensor.scripts.samples.imu_sensor] omni.isaac.sensor.scripts.samples.imu_sensor has been deprecated in favor of isaacsim.sensors.physics.scripts.samples.imu_sensor. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,921ms] [Warning] [omni.isaac.sensor.scripts.samples.lightbeam_sensor] omni.isaac.sensor.scripts.samples.lightbeam_sensor has been deprecated in favor of isaacsim.sensors.physx.scripts.samples.lightbeam_sensor. Please update your code accordingly.
+[4.936s] [ext: omni.isaac.surface_gripper-2.0.6] startup
+2026-10-21T07:10:07Z [4,923ms] [Warning] [omni.isaac.surface_gripper] omni.isaac.surface_gripper has been deprecated in favor of isaacsim.robot.surface_gripper. Please update your code accordingly.
+[4.938s] [ext: omni.kit.widget.toolbar-2.0.1] startup
+[4.952s] [ext: omni.kit.manipulator.transform-107.0.0] startup
+[4.957s] [ext: omni.kit.manipulator.selector-1.1.3] startup
+[4.958s] [ext: isaacsim.app.about-2.0.11] startup
+[4.964s] [ext: isaacsim.cortex.framework-1.0.12] startup
+[4.966s] [ext: omni.kit.manipulator.tool.snap-1.5.13] startup
+[4.973s] [ext: omni.isaac.universal_robots-1.0.6] startup
+2026-10-21T07:10:07Z [4,959ms] [Warning] [omni.isaac.universal_robots] omni.isaac.universal_robots has been deprecated in favor of isaacsim.robot.manipulators.examples.universal_robots. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,959ms] [Warning] [omni.isaac.universal_robots.kinematics_solver] omni.isaac.franka has been deprecated in favor of isaacsim.robot.manipulators.examples.universal_robots. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,960ms] [Warning] [omni.isaac.universal_robots.ur10] omni.isaac.franka has been deprecated in favor of isaacsim.robot.manipulators.examples.universal_robots. Please update your code accordingly.
+[4.976s] [ext: omni.isaac.utils-2.0.6] startup
+[4.978s] [ext: omni.isaac.cortex-1.0.5] startup
+2026-10-21T07:10:07Z [4,966ms] [Warning] [omni.isaac.cortex] omni.isaac.cortex has been deprecated in favor of isaacsim.cortex.framework. Please update your code accordingly.
+[4.981s] [ext: omni.kit.viewport.manipulator.transform-107.0.4] startup
+[4.984s] [ext: omni.isaac.window.about-2.0.7] startup
+2026-10-21T07:10:07Z [4,972ms] [Warning] [omni.isaac.window.about] omni.isaac.window.about has been deprecated in favor of isaacsim.app.about. Please update your code accordingly.
+2026-10-21T07:10:07Z [4,972ms] [Warning] [omni.isaac.window.about.about] omni.isaac.window.about.about has been deprecated in favor of isaacsim.app.about.about. Please update your code accordingly.
+[4.987s] [ext: omni.kit.manipulator.camera-106.0.4] startup
+[4.992s] [ext: omni.kit.property.audio-1.0.16] startup
+[4.994s] [ext: omni.fabric.commands-1.1.6] startup
+[4.997s] [ext: omni.kit.manipulator.prim.core-107.0.8] startup
+[5.004s] [ext: omni.kit.property.camera-1.0.10] startup
+[5.007s] [ext: omni.kit.property.geometry-2.0.4] startup
+[5.010s] [ext: omni.kit.property.light-1.0.12] startup
+[5.032s] [ext: omni.hydra.scene_api-0.1.2] startup
+[5.036s] [ext: omni.kit.manipulator.prim.fabric-107.0.4] startup
+[5.038s] [ext: omni.kit.manipulator.prim.usd-107.0.3] startup
+[5.041s] [ext: omni.kit.property.material-1.11.9] startup
+[5.045s] [ext: omni.kit.property.render-1.2.1] startup
+[5.047s] [ext: omni.kit.property.transform-1.5.13] startup
+[5.051s] [ext: isaacsim.gui.property-1.1.3] startup
+[5.054s] [ext: omni.kit.manipulator.prim-107.0.0] startup
+[5.055s] [ext: omni.kit.manipulator.selection-106.0.1] startup
+[5.056s] [ext: omni.isaac.lula-4.0.6] startup
+2026-10-21T07:10:08Z [5,042ms] [Warning] [omni.isaac.lula] omni.isaac.lula has been deprecated in favor of isaacsim.robot_motion.lula. Please update your code accordingly.
+[5.058s] [ext: omni.kit.property.bundle-1.4.1] startup
+[5.059s] [ext: omni.kit.property.isaac-1.0.6] startup
+2026-10-21T07:10:08Z [5,045ms] [Warning] [omni.kit.property.isaac] omni.kit.property.isaac has been deprecated in favor of isaacsim.gui.property. Please update your code accordingly.
+2026-10-21T07:10:08Z [5,045ms] [Warning] [omni.kit.property.isaac.widgets] omni.kit.property.isaac.widgets has been deprecated in favor of isaacsim.gui.property.widgets. Please update your code accordingly.
+[5.060s] [ext: isaacsim.replicator.writers-1.0.17] startup
+[5.072s] [ext: omni.kit.viewport.menubar.camera-107.0.6] startup
+[5.082s] [ext: omni.kit.viewport.menubar.lighting-107.3.1] startup
+[5.087s] [ext: omni.kit.viewport.menubar.render-107.0.10] startup
+[5.091s] [ext: omni.kit.viewport.menubar.settings-107.0.3] startup
+[5.094s] [ext: isaacsim.replicator.domain_randomization-1.0.16] startup
+[5.096s] [ext: isaacsim.replicator.examples-1.3.6] startup
+[5.098s] [ext: omni.ocio-0.1.1] startup
+[5.100s] [ext: omni.rtx.window.settings-0.6.19] startup
+[5.111s] [ext: omni.kit.window.console-1.1.4] startup
+[5.120s] [ext: omni.kit.window.status_bar-0.1.9] startup
+[5.125s] [ext: omni.kit.window.toolbar-2.0.0] startup
+[5.127s] [ext: omni.replicator.isaac-2.0.8] startup
+2026-10-21T07:10:08Z [5,113ms] [Warning] [omni.replicator.isaac] omni.replicator.isaac has been deprecated in favor of isaacsim.replicator.domain_randomization, isaacsim.replicator.examples, isaacsim.replicator.writers. Please update your code accordingly.
+[5.128s] [ext: omni.replicator.replicator_yaml-2.0.11] startup
+[5.132s] [ext: omni.rtx.settings.core-0.6.5] startup
+[5.136s] [ext: omni.usd.metrics.assembler.ui-107.3.1] startup
+[5.145s] [ext: isaacsim.robot.wheeled_robots-4.0.24] startup
+[5.150s] [ext: isaacsim.cortex.behaviors-2.0.14] startup
+[5.152s] [ext: omni.isaac.version-2.0.7] startup
+2026-10-21T07:10:08Z [5,139ms] [Warning] [omni.isaac.version] omni.isaac.version has been deprecated in favor of isaacsim.core.version. Please update your code accordingly.
+[5.154s] [ext: semantics.schema.editor-2.0.2] startup
+[5.162s] [ext: omni.kit.ui.actions-1.0.5] startup
+[5.165s] [ext: semantics.schema.property-2.0.1] startup
+[5.168s] [ext: omni.isaac.wheeled_robots-3.0.7] startup
+2026-10-21T07:10:08Z [5,155ms] [Warning] [omni.isaac.wheeled_robots] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T07:10:08Z [5,155ms] [Warning] [omni.isaac.wheeled_robots.controllers] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T07:10:08Z [5,156ms] [Warning] [omni.isaac.wheeled_robots.controllers.ackermann_controller] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T07:10:08Z [5,157ms] [Warning] [omni.isaac.wheeled_robots.controllers.differential_controller] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T07:10:08Z [5,157ms] [Warning] [omni.isaac.wheeled_robots.controllers.holonomic_controller] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T07:10:08Z [5,157ms] [Warning] [omni.isaac.wheeled_robots.controllers.quintic_path_planner] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T07:10:08Z [5,158ms] [Warning] [omni.isaac.wheeled_robots.controllers.stanley_control] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T07:10:08Z [5,158ms] [Warning] [omni.isaac.wheeled_robots.controllers.wheel_base_pose_controller] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T07:10:08Z [5,158ms] [Warning] [omni.isaac.wheeled_robots.impl] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T07:10:08Z [5,159ms] [Warning] [omni.isaac.wheeled_robots.robots] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T07:10:08Z [5,159ms] [Warning] [omni.isaac.wheeled_robots.robots.holonomic_robot_usd_setup] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+2026-10-21T07:10:08Z [5,160ms] [Warning] [omni.isaac.wheeled_robots.robots.wheeled_robot] omni.isaac.wheeled_robots has been deprecated in favor of isaacsim.robot.wheeled_robots. Please update your code accordingly.
+[5.176s] [ext: omni.isaac.cortex.sample_behaviors-2.0.5] startup
+2026-10-21T07:10:08Z [5,163ms] [Warning] [omni.isaac.cortex.sample_behaviors] omni.isaac.cortex.sample_behaviors has been deprecated in favor of isaacsim.cortex.behaviors. Please update your code accordingly.
+[5.178s] [ext: isaacsim.replicator.behavior-1.1.16] startup
+[5.182s] [ext: isaacsim.core.throttling-2.2.2] startup
+[5.190s] [ext: omni.kit.menu.common-2.0.1] startup
+[5.195s] [ext: isaacsim.exp.base-5.1.0] startup
+[5.195s] [ext: isaacsim.exp.base.python-5.1.0] startup
+[5.200s] Simulation App Starting
+2026-10-21T07:10:08Z [5,334ms] [Warning] [carb.audio.device] audio device is misconfigured or broken {deviceIndex = 0, name = 'default'} (The device is likely misconfigured, check your $HOME/.asoundrc)
+2026-10-21T07:10:08Z [5,334ms] [Warning] [carb.audio.output] failed to retrieve the capabilities for device 0 {result = eDeviceLost (2)}
+2026-10-21T07:10:08Z [5,334ms] [Warning] [carb.audio.context] failed to set the requested output during context creation.  Using a null streamer instead {result = eDeviceLost (2)}
+2026-10-21T07:10:08Z [5,363ms] [Warning] [omni.fabric.plugin] Warning: attribute viewportHandle not found for bucket id 9
+
+[5.424s] app ready
+Starting kit application with the following args:  ['/isaac-sim/exts/isaacsim.simulation_app/isaacsim/simulation_app/simulation_app.py', '/isaac-sim/apps/isaacsim.exp.base.python.kit', '--/app/tokens/exe-path=/isaac-sim/kit', '--/persistent/app/viewport/displayOptions=3094', '--/rtx/materialDb/syncLoads=True', '--/rtx/hydra/materialSyncLoads=True', '--/omni.kit.plugin/syncUsdLoads=True', '--/app/renderer/resolution/width=1280', '--/app/renderer/resolution/height=720', '--/app/window/width=1440', '--/app/window/height=900', '--/renderer/multiGpu/enabled=True', '--/app/fastShutdown=True', '--/app/installSignalHandlers=0', '--ext-folder', '/isaac-sim/exts', '--ext-folder', '/isaac-sim/apps', '--/physics/cudaDevice=0', '--/plugins/carb.tasking.plugin/threadCount=32', '--/plugins/omni.tbb.globalcontrol/maxThreadCount=32', '--portable', '--no-window', '--/app/window/hideUi=1', '--allow-root']
+Passing the following args to the base kit application:  ['--sheet_mm', '500', '--grasp', '1', '--grasp_attach', '1', '--attach_pad_mm', '24', '--attach_layer', 'both', '--arc2', '1', '--arc_k', '0.8', '--peel_t', '6', '--gap_mm', '4', '--clear_mm', '6', '--steep_deg', '45', '--second', '1', '--young', '2e3', '--grasp_site', 'state', '--grasp_retry', '2', '--site_xmax_mm', '60', '--grasp_site_k', '13', '--arc2_over_cap', '0', '--arc2_over_mm', '30', '--hand2', 'jaw', '--hand2_pad_mm', '15', '--hand2_keep', '1', '--hold_yp', '1', '--extract', '1', '--guard_yp', '2.6', '--guard_n', '2', '--extract_mode', 'slide', '--extract_out_mm', '280', '--guard_yn', '2.6', '--slide_clear_mm', '40', '--hand1_jaw', '1', '--extract_grip', 'jaw', '--edamp', '0.02', '--quality', 'fast', '--save_state', 'speed2/smokeA/S.npz', '--save_exit', '1', '--out', 'speed2/smokeA/1']
+Warp 1.8.2 initialized:
+   CUDA Toolkit 12.8, Driver 13.0
+   Devices:
+     "cpu"      : "x86_64"
+     "cuda:0"   : "NVIDIA GeForce RTX 5090" (31 GiB, sm_120, mempool enabled)
+   Kernel cache:
+     /root/.cache/warp/1.8.2
+Warp DeprecationWarning: The `warp.sim` module is deprecated and will be removed in v1.10. Please transition to using the forthcoming Newton library instead.
+[isaacsim.replicator.incident] started
+=== wrap_vol sheet 500 ===
+args: {'sheet_mm': 500.0, 'sheet_x_mm': 0.0, 'sheet_y_mm': 0.0, 'out': 'speed2/smokeA/1', 'mug': 'mug.stl', 'carton': 'carton_w131.usd', 'tex': 'bubble_normal.png', 'tex_mm': 200.0, 'thick_mm': 4.0, 'nxy': 35, 'young': 2000.0, 'ldamp': 0.0, 'edamp': 0.02, 'poisson': 0.45, 'areal': 0.1, 'fric': 0.8, 'cont': 0.002, 'rest': 0.0005, 'solver': 48, 'dt': 0.008333333333333333, 'margin': 0.012, 'wall': 0.006, 'fold_span': 3.0, 'fold_hold': 0.5, 'slow': '', 'tip_extra': '', 'tip_over_mm': 30.0, 'lid_span': 4.0, 'open_span': 3.0, 'movebox': '0,0.20,0.10', 'move_t': 6.0, 'base_collider_pad': 0.02, 'squeeze_t': 2.5, 'squeeze_mm': 3.0, 'until': 'all', 'rest_npz': '', 'cam_ref': 0.586, 'meas_dt': 0.5, 'vid_every': 2, 'vid_res': '960x540', 'fast_pts': 0, 'fps': 30, 'tuck': 1, 'grasp': 1, 'grasp_rank': 1, 'pick_mm': 25.0, 'pick_in_mm': 25.0, 'arc_k': 0.8, 'peel_t': 6.0, 'gap_mm': 4.0, 'ffric': 2.0, 'pick_mode': 'jaw', 'chord': 1, 'arc2': 1, 'clear_mm': 6.0, 'steep_deg': 45.0, 'second': 1, 'gcam_focal': 2.8, 'grasp_attach': 1, 'attach_pad_mm': 24.0, 'attach_nlo_mm': -1.0, 'attach_layer': 'both', 'attach_mask_own': 0, 'attach_mask_r_mm': 16.0, 'attach_mask_dz_mm': 2.0, 'lift_first_mm': 0.0, 'lift_first_t': 1.0, 'lift_first_dir': 'z', 'attach_stiff': 0.0, 'hold_others': 0, 'hold_pad_mm': 24.0, 'hold_mode': 'attach', 'hold_sides': 'xp,xn', 'hold_layer': 'both', 'hold_region': 'ear', 'hold_min_d_mm': 0.0, 'guard_hold': 0.0, 'lift_first_out_mm': 0.0, 'arc2_ext_mm': 0.0, 'arc2_ext_t': 1.0, 'arc2_over_mm': 30.0, 'arc2_over_cap': 0, 'arc2_target': 'open', 'arc2_margin_mm': 5.0, 'arc2_cl_t': 3.0, 'arc2_cl_max_mm': 80.0, 'arc2_cl_down_mm': 30.0, 'arc2_lay': 0, 'arc2_lay_t': 1.0, 'arc2_er_stop': 0.0, 'arc2_over_t': 1.5, 'arc_grow_max_mm': 0.0, 'release_press_mm': 0.0, 'release_settle_s': 0.0, 'hold_rel_s': 0.5, 'attach_damp': 0.0, 'attach_proxy': 0, 'proxy_k': 500.0, 'proxy_c': -1.0, 'proxy_fmax': 0.5, 'grasp_site': 'state', 'grasp_retry': 2, 'grasp_retry_min': 6, 'site_xmax_mm': 60.0, 'site_exclude_walltop': 0, 'hinge_from_state': 0, 'grasp_site_k': 13, 'fold_order': 'xp,xn,yp,yn', 'mug_off_mm': '0,0', 'mug_yaw_deg': 0.0, 'seed': 0, 'hand2': 'jaw', 'hand2_hold_s': 3.0, 'hand2_lead_s': 0.5, 'hand2_pad_mm': 15.0, 'hand2_keep': 1, 'hold_yp': 1, 'extract': 1, 'extract_lift_mm': 150.0, 'extract_out_mm': 280.0, 'extract_mode': 'slide', 'guard_yp': 2.6, 'guard_yn': 2.6, 'slide_clear_mm': 40.0, 'hand2_tuck_mm': 0.0, 'hand1_jaw': 1, 'extract_grip': 'jaw', 'jaw_collide': 0, 'finger_mm': 20.0, 'guard_n': 2, 'proxy_m': 0.005, 'plastic_on_release': 0, 'plastic_on_fold': 0, 'plastic_pre': 0.2, 'plastic_region': 'all', 'plastic_how': 'step', 'plastic_filter_mm': -1.0, 'release_watch': 0, 'grasp_tail_s': 0.0, 'quality': 'fast', 'save_state': 'speed2/smokeA/S.npz', 'at': 'grasp', 'save_exit': 1, 'load_state': ''}
+quality: fast | dt 1/120 solver 48 vid_every 2 vid_res 960x540 | preset 套用 ['dt', 'solver', 'vid_every', 'vid_res'](明確旗標優先)
+杯子躺平 133 x 107 x 93 mm;杯口 +y、杯耳 +x;watertight=True
+折線 CX=84.63 CY=71.50 mm;折邊長 x 165.4 / y 178.5 mm
+set_physics_volume_deformable_body(/World/plate) -> True
+  collider /World/plate:schema 預設 contactOffset=-inf restOffset=-inf → 設 0.002 / 0.0005
+阻尼 ldamp=0 edamp=0.02
+板 500x500x4mm:2592 點 6125 tets;dxy 14.29mm;solver 48 dt 1/120
+視覺網格 /World/sheet_vis:5180 三角形(上/下/側面),泡泡法線貼圖 bubble_normal.png
+杯子 kinematic,底 z=6.5 頂 z=99.1 mm
+錨 xp:最外圈 72 點中 SIDEPICK 歸本邊 68,綁 20 點(上下兩層)
+錨 xn:最外圈 72 點中 SIDEPICK 歸本邊 68,綁 20 點(上下兩層)
+錨 yp:最外圈 72 點中 SIDEPICK 歸本邊 72,綁 24 點(上下兩層)
+錨 yn:最外圈 72 點中 SIDEPICK 歸本邊 72,綁 24 點(上下兩層)
+  xp:折線 84.6、折邊 165.4、已疊 0 層 → 尖端中面 z=103.1(底面 101.1)、越過頂面 arm 64.7 → 尖端 along=19.9 mm(搆不到中線)
+  xn:折線 84.6、折邊 165.4、已疊 0 層 → 尖端中面 z=103.1(底面 101.1)、越過頂面 arm 64.7 → 尖端 along=19.9 mm(搆不到中線)
+  yp:折線 71.5、折邊 178.5、已疊 1 層 → 尖端中面 z=108.1(底面 106.1)、越過頂面 arm 72.9 → 尖端 along=-1.4 mm(到/越過中線)
+  yn:折線 71.5、折邊 178.5、已疊 2 層 → 尖端中面 z=113.1(底面 111.1)、越過頂面 arm 67.9 → 尖端 along=3.6 mm(搆不到中線)
+錨:26 個 kinematic 錨體(x 邊各 1 根桿;y 邊每欄 1 個,共 24 欄),全部無碰撞;VtxXformAttachment 掛 /World/attach/*
+★ 紙箱 carton_w131.usd(meta carton_w131.meta.json):5 剛體 kinematic;bbox 270x230x134;箱底內面 z=3.0、箱口最高 133.9;內腔 ±132 x ±112;鉸鏈 123.0/129.5
+★ 底板碰撞加厚 20mm(不可見)
+  蓋 fxp:USD 預設中心 z=126.4 → 關;開 = 轉 +180°
+  蓋 fxn:USD 預設中心 z=126.4 → 關;開 = 轉 +180°
+  蓋 fyp:USD 預設中心 z=131.7 → 關;開 = 轉 +180°
+  蓋 fyn:USD 預設中心 z=131.7 → 關;開 = 轉 +180°
+★ 紙箱 reset 前擺到旁邊 [-800.  450.   -3.] mm、蓋子開(180°);箱底內面對齊地面(z 偏 −3.0mm)
+★ --grasp 1:kinematic 指 rod [ 8. 30.  8.] / 上下指 [20. 20.  8.] mm,指面摩擦 2.0(rod 0.5),cont 1 / rest 0;停在 [3. 3. 1.]
+★ --hand2 jaw:第二隻手 /World/gfing/h2 [40. 30.  4.] mm(不碰撞、綁頂點 pad 15 mm);放手前 0.5s 到位,放手後持續 3.0s 再抬起
+[8.018s] Simulation App Startup Complete
+2026-10-21T07:10:13Z [10,877ms] [Warning] [isaacsim.sensors.camera.camera] 'verticalAperture' (1.5290800094604493) and 'horizontalAperture' (2.0954999923706055) are inconsistent with the pixel resolution aspect ratio (1.7777777777777777). Setting 'verticalAperture' to 1.1787187457084656 to ensure square pixels.
+2026-10-21T07:10:14Z [11,809ms] [Error] [omni.physx.plugin] PhysicsUSD: CreateJoint - cannot create a joint between static bodies, joint prim: /World/Box/crease_fxp
+2026-10-21T07:10:14Z [11,809ms] [Error] [omni.physx.plugin] PhysicsUSD: CreateJoint - cannot create a joint between static bodies, joint prim: /World/Box/crease_fxn
+2026-10-21T07:10:14Z [11,809ms] [Error] [omni.physx.plugin] PhysicsUSD: CreateJoint - cannot create a joint between static bodies, joint prim: /World/Box/crease_fyp
+2026-10-21T07:10:14Z [11,809ms] [Error] [omni.physx.plugin] PhysicsUSD: CreateJoint - cannot create a joint between static bodies, joint prim: /World/Box/crease_fyn
+錨 rigid body view:26 個(kinematic target)
+抓取指 rigid body view:4 個
+抓取段:open hold 完 45.90 → settle → yn@46.90 / yp@82.10 每片 35.2s(挑角 0~4.5、下指進 ~7.1、夾好 9.7、掀 6.0s、停 2.0s、放開);結束 117.30
+[extract] 取杯段 117.30~130.50 {'down': 1.5, 'bind': 0.8, 'lift': 3.0, 'move': 3.0, 'lower': 2.5, 'up': 1.0, 'obs': 1.0, 'open': 0.4}
+時間表:折 xp@0.5(3.0s) xn@4.0(3.0s) yp@7.5(3.0s) yn@11.0(3.0s) | 折完 14.50 | 入箱 17.50 | 關下蓋 18.50 | 關上蓋 22.50 | 放錨+杯動態 26.50 | 搬 28.90~34.90 | 開上蓋 36.90 | 開下蓋 39.90 | 結束 45.90(本次跑到 130.50)
+[save] 會在 t=46.900(grasp)前的最後一幀存 speed2/smokeA/S.npz
+渲染 30 fps,每幀 4 物理步;共 3915 幀 | quality fast:影片 15 fps 960x540(vid_every 2)
+t=  0.03 settle                   bbox 501x500x  4 | 自穿    0 | 布穿杯   0 | 反轉   0 | 體積比 0.9984 | 邊長比 [0.972,1.029] | 杯心 (  0.0,  0.0, 52.8) | 杯頂上 0 層 間距 nan 頂厚 nan
+t=  0.53 fold xp                  bbox 501x500x  5 | 自穿    0 | 布穿杯   0 | 反轉   0 | 體積比 0.9985 | 邊長比 [0.972,1.035] | 杯心 (  0.0,  0.0, 52.8)
+t=  1.03 fold xp                  bbox 501x501x 47 | 自穿    0 | 布穿杯   0 | 反轉   0 | 體積比 1.0013 | 邊長比 [0.822,1.483] | 杯心 (  0.0,  0.0, 52.8)
+t=  1.53 fold xp                  bbox 498x500x129 | 自穿    0 | 布穿杯   0 | 反轉   0 | 體積比 1.0067 | 邊長比 [0.738,2.260] | 杯心 (  0.0,  0.0, 52.8)
+t=  2.03 fold xp                  bbox 435x504x167 | 自穿    0 | 布穿杯   0 | 反轉   0 | 體積比 1.0044 | 邊長比 [0.680,2.314] | 杯心 (  0.0,  0.0, 52.8) | 杯頂上 0 層 間距 nan 頂厚 nan
+t=  2.53 fold xp                  bbox 362x500x149 | 自穿    0 | 布穿杯   0 | 反轉   0 | 體積比 0.9958 | 邊長比 [0.658,2.071] | 杯心 (  0.0,  0.0, 52.8)
+t=  3.03 fold xp                  bbox 365x501x117 | 自穿    0 | 布穿杯   0 | 反轉   0 | 體積比 0.9909 | 邊長比 [0.632,1.858] | 杯心 (  0.0,  0.0, 52.8)
+t=  3.53 fold xp                  bbox 368x501x104 | 自穿    0 | 布穿杯   0 | 反轉   0 | 體積比 0.9896 | 邊長比 [0.668,1.898] | 杯心 (  0.0,  0.0, 52.8)
+t=  4.03 fold xn                  bbox 368x501x104 | 自穿    0 | 布穿杯   0 | 反轉   0 | 體積比 0.9898 | 邊長比 [0.672,1.891] | 杯心 (  0.0,  0.0, 52.8) | 杯頂上 0 層 間距 nan 頂厚 23.3
+t=  4.53 fold xn                  bbox 368x501x104 | 自穿    0 | 布穿杯   0 | 反轉   0 | 體積比 0.9926 | 邊長比 [0.676,1.890] | 杯心 (  0.0,  0.0, 52.8)
+t=  5.03 fold xn                  bbox 363x500x129 | 自穿    0 | 布穿杯   0 | 反轉   0 | 體積比 0.9984 | 邊長比 [0.636,2.389] | 杯心 (  0.0,  0.0, 52.8)
+t=  5.53 fold xn                  bbox 292x516x167 | 自穿    0 | 布穿杯   0 | 反轉   0 | 體積比 0.9971 | 邊長比 [0.664,2.481] | 杯心 (  0.0,  0.0, 52.8)
+t=  6.03 fold xn                  bbox 234x500x149 | 自穿    0 | 布穿杯   0 | 反轉   0 | 體積比 0.9884 | 邊長比 [0.656,2.075] | 杯心 (  0.0,  0.0, 52.8) | 杯頂上 0 層 間距 nan 頂厚 25.7
+t=  6.53 fold xn                  bbox 237x500x117 | 自穿    0 | 布穿杯   0 | 反轉   2 | 體積比 0.9822 | 邊長比 [0.653,1.896] | 杯心 (  0.0,  0.0, 52.8)
+t=  7.03 fold xn                  bbox 239x500x104 | 自穿    0 | 布穿杯   0 | 反轉   2 | 體積比 0.9804 | 邊長比 [0.497,1.929] | 杯心 (  0.0,  0.0, 52.8)
+t=  7.53 fold yp                  bbox 239x500x104 | 自穿    0 | 布穿杯   0 | 反轉   2 | 體積比 0.9806 | 邊長比 [0.500,1.928] | 杯心 (  0.0,  0.0, 52.8)
+t=  8.03 fold yp                  bbox 239x495x104 | 自穿    0 | 布穿杯   0 | 反轉   2 | 體積比 0.9834 | 邊長比 [0.536,1.925] | 杯心 (  0.0,  0.0, 52.8) | 杯頂上 1 層 間距 nan 頂厚 9.4
+t=  8.53 fold yp                  bbox 239x440x139 | 自穿    0 | 布穿杯   0 | 反轉   2 | 體積比 0.9903 | 邊長比 [0.538,1.967] | 杯心 (  0.0,  0.0, 52.8)
+t=  9.03 fold yp                  bbox 242x374x180 | 自穿    0 | 布穿杯   0 | 反轉   2 | 體積比 0.9881 | 邊長比 [0.418,2.184] | 杯心 (  0.0,  0.0, 52.8)
+t=  9.53 fold yp                  bbox 244x366x159 | 自穿    1 | 布穿杯   0 | 反轉   3 | 體積比 0.9822 | 邊長比 [0.355,2.136] | 杯心 (  0.0,  0.0, 52.8)
+t= 10.03 fold yp                  bbox 245x368x124 | 自穿    2 | 布穿杯   0 | 反轉   7 | 體積比 0.9756 | 邊長比 [0.381,2.303] | 杯心 (  0.0,  0.0, 52.8) | 杯頂上 1 層 間距 19.07 頂厚 22.7
+t= 10.53 fold yp                  bbox 244x369x111 | 自穿    2 | 布穿杯   0 | 反轉   9 | 體積比 0.9733 | 邊長比 [0.382,2.279] | 杯心 (  0.0,  0.0, 52.8)
+t= 11.03 fold yn                  bbox 245x370x111 | 自穿    0 | 布穿杯   0 | 反轉   9 | 體積比 0.9733 | 邊長比 [0.379,2.302] | 杯心 (  0.0,  0.0, 52.8)
+t= 11.53 fold yn                  bbox 245x364x111 | 自穿    0 | 布穿杯   0 | 反轉   9 | 體積比 0.9764 | 邊長比 [0.386,2.319] | 杯心 (  0.0,  0.0, 52.8)
+t= 12.03 fold yn                  bbox 245x310x139 | 自穿    1 | 布穿杯   0 | 反轉  11 | 體積比 0.9826 | 邊長比 [0.393,2.305] | 杯心 (  0.0,  0.0, 52.8) | 杯頂上 1 層 間距 8.83 頂厚 13.9
+t= 12.53 fold yn                  bbox 246x243x180 | 自穿    1 | 布穿杯   0 | 反轉   5 | 體積比 0.9813 | 邊長比 [0.324,2.295] | 杯心 (  0.0,  0.0, 52.8)
+t= 13.03 fold yn                  bbox 248x235x161 | 自穿    0 | 布穿杯   0 | 反轉   9 | 體積比 0.9769 | 邊長比 [0.385,2.288] | 杯心 (  0.0,  0.0, 52.8)
+t= 13.53 fold yn                  bbox 248x238x128 | 自穿    1 | 布穿杯   0 | 反轉  10 | 體積比 0.9719 | 邊長比 [0.362,2.299] | 杯心 (  0.0,  0.0, 52.8)
+t= 14.03 fold yn                  bbox 247x241x114 | 自穿    3 | 布穿杯   0 | 反轉   8 | 體積比 0.9719 | 邊長比 [0.370,2.434] | 杯心 (  0.0,  0.0, 52.8) | 杯頂上 2 層 間距 12.45 頂厚 19.8
+t= 14.53 tuck ears (side squeeze) bbox 247x241x114 | 自穿    2 | 布穿杯   0 | 反轉   8 | 體積比 0.9714 | 邊長比 [0.376,2.423] | 杯心 (  0.0,  0.0, 52.8)
+t= 15.03 tuck ears (side squeeze) bbox 247x241x114 | 自穿    0 | 布穿杯   0 | 反轉   8 | 體積比 0.9709 | 邊長比 [0.386,2.471] | 杯心 (  0.0,  0.0, 52.8)
+t= 15.53 tuck ears (side squeeze) bbox 247x241x114 | 自穿    1 | 布穿杯   0 | 反轉   9 | 體積比 0.9707 | 邊長比 [0.387,2.529] | 杯心 (  0.0,  0.0, 52.8)
+t= 16.03 tuck ears (side squeeze) bbox 247x241x114 | 自穿    2 | 布穿杯   0 | 反轉   9 | 體積比 0.9702 | 邊長比 [0.386,2.493] | 杯心 (  0.0,  0.0, 52.8) | 杯頂上 2 層 間距 12.89 頂厚 19.3
+t= 16.53 tuck ears (side squeeze) bbox 247x241x114 | 自穿    1 | 布穿杯   0 | 反轉   9 | 體積比 0.9703 | 邊長比 [0.385,2.503] | 杯心 (  0.0,  0.0, 52.8)
+t= 17.03 tuck ears (side squeeze) bbox 250x216x114 | 自穿    2 | 布穿杯   0 | 反轉  14 | 體積比 0.9567 | 邊長比 [0.331,2.452] | 杯心 (  0.0,  0.0, 52.8)
+2026-10-21T07:10:15Z [12,217ms] [Warning] [omni.fabric.plugin] USD->Fabric: Unhandled array type string[]
+2026-10-21T07:10:15Z [12,219ms] [Warning] [usdrt.population.plugin] [UsdNoticeHandler] Unhandled attribute type VtArray<std::string> (prim attribute: omni:rtx:material:db:flattener:transmittance_color)
+2026-10-21T07:10:15Z [12,219ms] [Warning] [usdrt.population.plugin] [UsdNoticeHandler] Unhandled attribute type VtArray<std::string> (prim attribute: omni:rtx:material:db:flattener:ior_constant)
+2026-10-21T07:10:15Z [12,219ms] [Warning] [usdrt.population.plugin] [UsdNoticeHandler] Unhandled attribute type VtArray<std::string> (prim attribute: omni:rtx:material:db:flattener:reflection_roughness_constant)
+2026-10-21T07:10:15Z [12,257ms] [Warning] [rtx.postprocessing.plugin] DLSS increasing input dimensions: Render resolution of (480, 270) is below minimal input resolution of 300.
+2026-10-21T07:10:15Z [12,336ms] [Warning] [omni.syntheticdata.plugin] OgnSdPostRenderVarToHost : rendervar copy from texture directly to host buffer is counter-performant. Please use copy from texture to device buffer first.
+2026-10-21T07:10:24Z [21,535ms] [Warning] [carb] Client gpu.foundation.plugin has acquired [gpu::unstable::IMemoryBudgetManagerFactory v0.1] 100 times. Consider accessing this interface with carb::getCachedInterface() (Performance warning)
+2026-10-21T07:11:09Z [66,953ms] [Error] [omni.physx.plugin] PhysX error: PxRigidDynamic::setLinearVelocity: Body must be non-kinematic!, FILE /builds/omniverse/physics/physx/source/physx/src/NpRigidDynamic.cpp, LINE 232
+2026-10-21T07:11:09Z [66,953ms] [Error] [omni.physx.plugin] PhysX error: PxRigidDynamic::setAngularVelocity: Body must be non-kinematic!, FILE /builds/omniverse/physics/physx/source/physx/src/NpRigidDynamic.cpp, LINE 266
+2026-10-21T07:11:09Z [66,953ms] [Error] [omni.physx.plugin] PhysX error: PxRigidDynamic::setLinearVelocity: Body must be non-kinematic!, FILE /builds/omniverse/physics/physx/source/physx/src/NpRigidDynamic.cpp, LINE 232
+2026-10-21T07:11:09Z [66,953ms] [Error] [omni.physx.plugin] PhysX error: PxRigidDynamic::setAngularVelocity: Body must be non-kinematic!, FILE /builds/omniverse/physics/physx/source/physx/src/NpRigidDynamic.cpp, LINE 266
+2026-10-21T07:11:09Z [66,953ms] [Error] [omni.physx.plugin] PhysX error: PxRigidDynamic::setLinearVelocity: Body must be non-kinematic!, FILE /builds/omniverse/physics/physx/source/physx/src/NpRigidDynamic.cpp, LINE 232
+2026-10-21T07:11:09Z [66,953ms] [Error] [omni.physx.plugin] PhysX error: PxRigidDynamic::setAngularVelocity: Body must be non-kinematic!, FILE /builds/omniverse/physics/physx/source/physx/src/NpRigidDynamic.cpp, LINE 266
+2026-10-21T07:11:09Z [66,953ms] [Error] [omni.physx.plugin] PhysX error: PxRigidDynamic::setLinearVelocity: Body must be non-kinematic!, FILE /builds/omniverse/physics/physx/source/physx/src/NpRigidDynamic.cpp, LINE 232
+2026-10-21T07:11:09Z [66,953ms] [Error] [omni.physx.plugin] PhysX error: PxRigidDynamic::setAngularVelocity: Body must be non-kinematic!, FILE /builds/omniverse/physics/physx/source/physx/src/NpRigidDynamic.cpp, LINE 266
+2026-10-21T07:11:09Z [66,953ms] [Error] [omni.physx.plugin] PhysX error: PxRigidDynamic::setLinearVelocity: Body must be non-kinematic!, FILE /builds/omniverse/physics/physx/source/physx/src/NpRigidDynamic.cpp, LINE 232
+2026-10-21T07:11:09Z [66,953ms] [Error] [omni.physx.plugin] PhysX error: PxRigidDynamic::setAngularVelocity: Body must be non-kinematic!, FILE /builds/omniverse/physics/physx/source/physx/src/NpRigidDynamic.cpp, LINE 266
+  箱子 tensor set_transforms 瞬移 5 個剛體(base + 4 蓋)
+
+★ t=17.500 入箱:包裹(布)bbox 中心 (0.0,0.0) mm,杯心 (0.0,0.0,52.8);箱子剛性瞬移到 [ 0.  0. -3.] mm(箱底內面 = 地面)
+  入箱前(瞬移前)以箱子目標位置比對內腔:
+  布     2592 點;超出內腔 0 | x 超 0 / y 超 0 / 低於底 0(最深 0.00mm)/ 高於口 0 | x -125.1~124.8(±132) y -108.1~108.0(±112) z 3.5~117.7(3.0~133.9)
+  杯子   24832 點;超出內腔 0 | x 超 0 / y 超 0 / 低於底 0(最深 0.00mm)/ 高於口 0 | x -66.6~66.6(±132) y -53.5~53.5(±112) z 9.5~102.1(3.0~133.9)
+  地板碰撞關閉(1 collider);箱底(+pad)接手
+t= 17.53 into box                 bbox 250x216x114 | 自穿    2 | 布穿杯   0 | 反轉  14 | 體積比 0.9569 | 邊長比 [0.331,2.428] | 杯心 (  0.0,  0.0, 52.8) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=116.6 fxn=116.6 fyp=124.3 fyn=124.3
+t= 18.03 into box                 bbox 250x216x115 | 自穿    2 | 布穿杯   0 | 反轉  13 | 體積比 0.9573 | 邊長比 [0.332,2.525] | 杯心 (  0.0,  0.0, 52.8) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=116.6 fxn=116.6 fyp=124.3 fyn=124.3 | 杯頂上 2 層 間距 12.70 頂厚 19.3
+t= 18.53 close lower lids         bbox 250x216x114 | 自穿    4 | 布穿杯   0 | 反轉  12 | 體積比 0.9575 | 邊長比 [0.333,2.556] | 杯心 (  0.0,  0.0, 52.8) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=116.7 fxn=116.7 fyp=124.3 fyn=124.3
+t= 19.03 close lower lids         bbox 250x216x114 | 自穿    4 | 布穿杯   0 | 反轉  11 | 體積比 0.9576 | 邊長比 [0.333,2.501] | 杯心 (  0.0,  0.0, 52.8) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=125.4 fxn=125.4 fyp=124.3 fyn=124.3
+t= 19.53 close lower lids         bbox 250x216x114 | 自穿    3 | 布穿杯   0 | 反轉  12 | 體積比 0.9575 | 邊長比 [0.334,2.553] | 杯心 (  0.0,  0.0, 52.8) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=145.6 fxn=145.6 fyp=124.3 fyn=124.3
+t= 20.03 close lower lids         bbox 250x216x114 | 自穿    3 | 布穿杯   0 | 反轉  10 | 體積比 0.9579 | 邊長比 [0.334,2.571] | 杯心 (  0.0,  0.0, 52.8) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=167.5 fxn=167.5 fyp=124.3 fyn=124.3 | 杯頂上 2 層 間距 12.72 頂厚 19.2
+t= 20.53 close lower lids         bbox 250x216x114 | 自穿    3 | 布穿杯   0 | 反轉  10 | 體積比 0.9579 | 邊長比 [0.335,2.594] | 杯心 (  0.0,  0.0, 52.8) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=177.5 fxn=177.5 fyp=124.3 fyn=124.3
+t= 21.03 close lower lids         bbox 250x216x114 | 自穿    5 | 布穿杯   0 | 反轉  12 | 體積比 0.9578 | 邊長比 [0.335,2.553] | 杯心 (  0.0,  0.0, 52.8) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=168.9 fxn=168.9 fyp=124.3 fyn=124.3
+t= 21.53 close lower lids         bbox 250x216x114 | 自穿    4 | 布穿杯   0 | 反轉  11 | 體積比 0.9578 | 邊長比 [0.335,2.565] | 杯心 (  0.0,  0.0, 52.8) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=148.6 fxn=148.6 fyp=124.3 fyn=124.3
+t= 22.03 close lower lids         bbox 250x216x114 | 自穿    3 | 布穿杯   0 | 反轉  10 | 體積比 0.9579 | 邊長比 [0.335,2.582] | 杯心 (  0.0,  0.0, 52.8) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=130.1 fxn=130.1 fyp=124.3 fyn=124.3 | 杯頂上 2 層 間距 12.54 頂厚 19.2
+t= 22.53 close upper lids         bbox 250x216x114 | 自穿    2 | 布穿杯   0 | 反轉  10 | 體積比 0.9574 | 邊長比 [0.335,2.641] | 杯心 (  0.0,  0.0, 52.8) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=124.3 fyn=124.3
+t= 23.03 close upper lids         bbox 250x216x114 | 自穿    3 | 布穿杯   0 | 反轉  10 | 體積比 0.9574 | 邊長比 [0.334,2.667] | 杯心 (  0.0,  0.0, 52.8) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=132.7 fyn=132.7
+t= 23.53 close upper lids         bbox 250x216x114 | 自穿    2 | 布穿杯   0 | 反轉  10 | 體積比 0.9573 | 邊長比 [0.334,2.682] | 杯心 (  0.0,  0.0, 52.8) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=152.1 fyn=152.1
+t= 24.03 close upper lids         bbox 250x216x114 | 自穿    2 | 布穿杯   0 | 反轉  10 | 體積比 0.9570 | 邊長比 [0.334,2.720] | 杯心 (  0.0,  0.0, 52.8) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=172.7 fyn=172.7 | 杯頂上 2 層 間距 12.51 頂厚 19.1
+t= 24.53 close upper lids         bbox 250x216x114 | 自穿    6 | 布穿杯   0 | 反轉  11 | 體積比 0.9565 | 邊長比 [0.334,2.775] | 杯心 (  0.0,  0.0, 52.8) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=181.8 fyn=181.8
+t= 25.03 close upper lids         bbox 250x216x114 | 自穿    6 | 布穿杯   0 | 反轉  10 | 體積比 0.9567 | 邊長比 [0.334,2.768] | 杯心 (  0.0,  0.0, 52.8) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=172.9 fyn=172.9
+t= 25.53 close upper lids         bbox 250x216x114 | 自穿    6 | 布穿杯   0 | 反轉  10 | 體積比 0.9574 | 邊長比 [0.335,2.679] | 杯心 (  0.0,  0.0, 52.8) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=153.1 fyn=153.1
+t= 26.03 close upper lids         bbox 250x216x114 | 自穿    8 | 布穿杯   0 | 反轉  10 | 體積比 0.9569 | 邊長比 [0.334,2.708] | 杯心 (  0.0,  0.0, 52.8) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=135.2 fyn=135.2 | 杯頂上 2 層 間距 12.05 頂厚 19.2
+t= 26.53 release paddles          bbox 250x219x114 | 自穿    6 | 布穿杯   0 | 反轉  10 | 體積比 0.9593 | 邊長比 [0.339,2.721] | 杯心 (  0.0,  0.0, 52.8) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=128.7 fyn=128.7
+
+★ t=26.900 關蓋完成 → RemovePrim 全部錨點(4 scope);杯子轉 dynamic
+t= 27.03 release anchors / settle bbox 256x223x125 | 自穿    6 | 布穿杯   0 | 反轉  28 | 體積比 0.9259 | 邊長比 [0.231,2.239] | 杯心 (  4.2, -8.3, 44.6) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=128.7 fyn=128.7
+t= 27.53 release anchors / settle bbox 256x223x118 | 自穿    5 | 布穿杯   0 | 反轉  24 | 體積比 0.9177 | 邊長比 [0.353,2.243] | 杯心 ( 16.1, -5.6, 38.8) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=128.7 fyn=128.7
+t= 28.03 release anchors / settle bbox 256x223x114 | 自穿   12 | 布穿杯   0 | 反轉  23 | 體積比 0.9163 | 邊長比 [0.339,2.162] | 杯心 ( 16.1, -5.8, 38.7) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=128.7 fyn=128.7 | 杯頂上 1 層 間距 12.21 頂厚 14.0
+t= 28.53 release anchors / settle bbox 256x223x111 | 自穿    9 | 布穿杯   0 | 反轉  26 | 體積比 0.9127 | 邊長比 [0.228,2.156] | 杯心 ( 16.1, -5.7, 38.8) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=128.7 fyn=128.7
+t= 29.03 move box                 bbox 257x224x110 | 自穿    8 | 布穿杯   0 | 反轉  21 | 體積比 0.9132 | 邊長比 [0.228,2.056] | 杯心 ( 16.2, -5.8, 38.8) | 箱位移 (0,0,0) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=128.7 fyn=128.7
+t= 29.53 move box                 bbox 257x224x109 | 自穿   11 | 布穿杯   0 | 反轉  21 | 體積比 0.9132 | 邊長比 [0.347,2.034] | 杯心 ( 16.2,  0.0, 41.7) | 箱位移 (0,6,3) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=128.7 fyn=128.7
+t= 30.03 move box                 bbox 257x223x108 | 自穿    5 | 布穿杯   0 | 反轉  20 | 體積比 0.9129 | 邊長比 [0.356,2.021] | 杯心 ( 16.2, 12.6, 48.0) | 箱位移 (0,19,9) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=128.7 fyn=128.7 | 杯頂上 0 層 間距 12.14 頂厚 13.9
+t= 30.53 move box                 bbox 257x224x103 | 自穿    8 | 布穿杯   0 | 反轉  23 | 體積比 0.9102 | 邊長比 [0.366,2.001] | 杯心 ( 16.2, 30.2, 56.8) | 箱位移 (0,36,18) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=128.7 fyn=128.7
+t= 31.03 move box                 bbox 259x223x100 | 自穿    8 | 布穿杯   0 | 反轉  26 | 體積比 0.9082 | 邊長比 [0.371,1.996] | 杯心 ( 16.2, 51.7, 67.6) | 箱位移 (0,58,29) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=128.7 fyn=128.7
+t= 31.53 move box                 bbox 259x223x 98 | 自穿    4 | 布穿杯   0 | 反轉  29 | 體積比 0.9093 | 邊長比 [0.369,1.996] | 杯心 ( 16.2, 75.6, 79.5) | 箱位移 (0,82,41) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=128.7 fyn=128.7
+t= 32.03 move box                 bbox 259x223x 97 | 自穿    6 | 布穿杯   0 | 反轉  31 | 體積比 0.9090 | 邊長比 [0.369,2.009] | 杯心 ( 16.2,100.5, 91.9) | 箱位移 (0,107,53) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=128.7 fyn=128.7 | 杯頂上 0 層 間距 11.61 頂厚 16.3
+t= 32.53 move box                 bbox 260x223x 97 | 自穿    7 | 布穿杯   0 | 反轉  34 | 體積比 0.9075 | 邊長比 [0.368,2.016] | 杯心 ( 16.2,125.0,104.2) | 箱位移 (0,131,66) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=128.7 fyn=128.7
+t= 33.03 move box                 bbox 260x223x 96 | 自穿    9 | 布穿杯   0 | 反轉  28 | 體積比 0.9088 | 邊長比 [0.193,2.024] | 杯心 ( 16.2,147.8,115.6) | 箱位移 (0,154,77) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=128.7 fyn=128.7
+t= 33.53 move box                 bbox 259x223x 97 | 自穿    4 | 布穿杯   0 | 反轉  28 | 體積比 0.9096 | 邊長比 [0.362,2.032] | 杯心 ( 16.2,167.4,125.4) | 箱位移 (0,174,87) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=128.7 fyn=128.7
+t= 34.03 move box                 bbox 260x223x 96 | 自穿    5 | 布穿杯   0 | 反轉  22 | 體積比 0.9100 | 邊長比 [0.360,2.038] | 杯心 ( 16.2,182.5,133.0) | 箱位移 (0,189,94) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=128.7 fyn=128.7 | 杯頂上 0 層 間距 9.18 頂厚 12.4
+t= 34.53 move box                 bbox 260x223x 96 | 自穿    8 | 布穿杯   0 | 反轉  26 | 體積比 0.9114 | 邊長比 [0.362,2.044] | 杯心 ( 16.2,191.7,137.5) | 箱位移 (0,198,99) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=128.7 fyn=128.7
+t= 35.03 settle                   bbox 260x224x 96 | 自穿    6 | 布穿杯   0 | 反轉  25 | 體積比 0.9105 | 邊長比 [0.364,2.044] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=128.7 fyn=128.7
+t= 35.53 settle                   bbox 261x223x 96 | 自穿    6 | 布穿杯   0 | 反轉  30 | 體積比 0.9106 | 邊長比 [0.369,2.041] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=128.7 fyn=128.7
+t= 36.03 settle                   bbox 261x223x 96 | 自穿    5 | 布穿杯   0 | 反轉  25 | 體積比 0.9096 | 邊長比 [0.370,2.036] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=128.7 fyn=128.7 | 杯頂上 0 層 間距 8.90 頂厚 12.4
+t= 36.53 settle                   bbox 261x223x 96 | 自穿    7 | 布穿杯   0 | 反轉  25 | 體積比 0.9107 | 邊長比 [0.374,2.026] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=128.7 fyn=128.7
+t= 37.03 open upper lids          bbox 261x223x 96 | 自穿    8 | 布穿杯   0 | 反轉  23 | 體積比 0.9113 | 邊長比 [0.336,2.019] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=129.7 fyn=129.7
+t= 37.53 open upper lids          bbox 261x224x 97 | 自穿    7 | 布穿杯   0 | 反轉  22 | 體積比 0.9103 | 邊長比 [0.387,2.009] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=148.1 fyn=148.1
+t= 38.03 open upper lids          bbox 261x223x 97 | 自穿    8 | 布穿杯   0 | 反轉  20 | 體積比 0.9098 | 邊長比 [0.389,1.998] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=174.3 fyn=174.3 | 杯頂上 0 層 間距 9.71 頂厚 12.2
+t= 38.53 open upper lids          bbox 261x223x 97 | 自穿    6 | 布穿杯   0 | 反轉  18 | 體積比 0.9109 | 邊長比 [0.395,1.986] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=180.1 fyn=180.1
+t= 39.03 open upper lids          bbox 261x224x 97 | 自穿    6 | 布穿杯   0 | 反轉  19 | 體積比 0.9108 | 邊長比 [0.397,1.983] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=157.5 fyn=157.5
+t= 39.53 open upper lids          bbox 261x223x 97 | 自穿    7 | 布穿杯   0 | 反轉  22 | 體積比 0.9101 | 邊長比 [0.398,1.979] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=123.4 fxn=123.4 fyp=131.4 fyn=131.4
+t= 40.03 open lower lids          bbox 261x223x 97 | 自穿    6 | 布穿杯   0 | 反轉  22 | 體積比 0.9108 | 邊長比 [0.402,1.965] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=124.4 fxn=124.4 fyp=124.3 fyn=124.3 | 杯頂上 0 層 間距 12.22 頂厚 11.9
+t= 40.53 open lower lids          bbox 261x224x 97 | 自穿    4 | 布穿杯   0 | 反轉  21 | 體積比 0.9103 | 邊長比 [0.283,1.956] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=143.4 fxn=143.4 fyp=124.3 fyn=124.3
+t= 41.03 open lower lids          bbox 261x224x 97 | 自穿    3 | 布穿杯   0 | 反轉  21 | 體積比 0.9093 | 邊長比 [0.292,1.952] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=170.3 fxn=170.3 fyp=124.3 fyn=124.3
+t= 41.53 open lower lids          bbox 261x224x 97 | 自穿    4 | 布穿杯   0 | 反轉  23 | 體積比 0.9090 | 邊長比 [0.255,1.941] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=175.5 fxn=175.5 fyp=124.3 fyn=124.3
+t= 42.03 open lower lids          bbox 261x224x 97 | 自穿    4 | 布穿杯   0 | 反轉  20 | 體積比 0.9085 | 邊長比 [0.250,1.930] | 杯心 ( 16.3,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=151.4 fxn=151.4 fyp=124.3 fyn=124.3 | 杯頂上 0 層 間距 12.88 頂厚 12.2
+t= 42.53 open lower lids          bbox 261x225x 97 | 自穿    3 | 布穿杯   0 | 反轉  29 | 體積比 0.9084 | 邊長比 [0.245,1.900] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=124.1 fxn=124.1 fyp=124.3 fyn=124.3
+t= 43.03 hold                     bbox 261x223x 97 | 自穿    4 | 布穿杯   0 | 反轉  28 | 體積比 0.9084 | 邊長比 [0.251,1.889] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=116.6 fxn=116.6 fyp=124.3 fyn=124.3
+t= 43.53 hold                     bbox 261x223x 97 | 自穿    4 | 布穿杯   0 | 反轉  27 | 體積比 0.9087 | 邊長比 [0.290,1.879] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=116.6 fxn=116.6 fyp=124.3 fyn=124.3
+t= 44.03 hold                     bbox 261x223x 97 | 自穿    3 | 布穿杯   0 | 反轉  30 | 體積比 0.9086 | 邊長比 [0.403,1.871] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=116.6 fxn=116.6 fyp=124.3 fyn=124.3 | 杯頂上 0 層 間距 13.07 頂厚 11.7
+t= 44.53 hold                     bbox 261x223x 97 | 自穿    3 | 布穿杯   0 | 反轉  30 | 體積比 0.9089 | 邊長比 [0.403,1.865] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=116.6 fxn=116.6 fyp=124.3 fyn=124.3
+t= 45.03 hold                     bbox 261x223x 98 | 自穿    3 | 布穿杯   0 | 反轉  29 | 體積比 0.9090 | 邊長比 [0.404,1.860] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=116.6 fxn=116.6 fyp=124.3 fyn=124.3
+t= 45.53 hold                     bbox 261x224x 98 | 自穿    3 | 布穿杯   0 | 反轉  28 | 體積比 0.9084 | 邊長比 [0.405,1.857] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=116.6 fxn=116.6 fyp=124.3 fyn=124.3
+t= 46.03 grasp settle             bbox 261x223x 98 | 自穿    2 | 布穿杯   0 | 反轉  29 | 體積比 0.9084 | 邊長比 [0.405,1.977] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=116.6 fxn=116.6 fyp=124.3 fyn=124.3 | 杯頂上 0 層 間距 12.97 頂厚 10.6
+t= 46.53 grasp settle             bbox 261x224x 98 | 自穿    2 | 布穿杯   0 | 反轉  30 | 體積比 0.9087 | 邊長比 [0.407,2.099] | 杯心 ( 16.2,193.8,138.6) | 箱位移 (0,200,100) 蓋z(相對箱底) fxp=116.6 fxn=116.6 fyp=124.3 fyn=124.3
+★ t=46.867 [save] 存檔 → speed2/smokeA/S.npz(布 2592 點、|v| 最大 0.165 m/s、杯 [ 16.2 193.8 138.6] mm、wall 192 s)
+
+影片 → speed2/smokeA/1/wrap.mp4(1406 幀);wall 192.2s / sim 46.87s = 4.10
+
+===== 判讀 wrap_vol sheet 500(跑到 all)=====
+  fold_xn                t=  7.47 bbox 布 239x500x104 / 含杯 239x500x104 | 體積÷杯 9.43 | 自穿 0 | 布穿杯 0 | 反轉 2 | 體積比 0.9806 | 杯頂上 1.0 層(分佈 {0: 128, 1: 208})間距 nan 頂厚 9.4 第1層離杯頂 5.4 | 杯頂俯視覆蓋 70%
+  fold_end               t= 17.50 bbox 布 250x216x114 / 含杯 250x216x114 | 體積÷杯 4.67 | 自穿 3 | 布穿杯 0 | 反轉 14 | 體積比 0.9574 | 杯頂上 2.0 層(分佈 {0: 8, 1: 133, 2: 190, 3: 5})間距 12.65 頂厚 19.4 第1層離杯頂 11.2 | 杯頂俯視覆蓋 99%
+  closed_pre_release     t= 26.90 bbox 布 250x223x114 / 含杯 250x223x114 | 體積÷杯 4.82 | 自穿 7 | 布穿杯 0 | 反轉 10 | 體積比 0.9616 | 杯頂上 2.0 層(分佈 {0: 8, 1: 133, 2: 186, 3: 9})間距 12.06 頂厚 19.1 第1層離杯頂 11.2 | 杯頂俯視覆蓋 99%
+  before_move            t= 28.87 bbox 布 257x223x111 / 含杯 257x223x111 | 體積÷杯 4.82 | 自穿 9 | 布穿杯 0 | 反轉 19 | 體積比 0.9150 | 杯頂上 0.0 層(分佈 {0: 192, 1: 114, 2: 37, 3: 17})間距 12.04 頂厚 13.7 第1層離杯頂 6.1 | 杯頂俯視覆蓋 67%
+  after_move             t= 36.87 bbox 布 261x224x 97 / 含杯 261x224x100 | 體積÷杯 4.27 | 自穿 7 | 布穿杯 0 | 反轉 25 | 體積比 0.9110 | 杯頂上 0.0 層(分佈 {0: 219, 1: 93, 2: 25, 3: 23})間距 9.42 頂厚 12.3 第1層離杯頂 4.4 | 杯頂俯視覆蓋 56%
+  end                    t= 45.87 bbox 布 261x223x 98 / 含杯 261x223x100 | 體積÷杯 4.30 | 自穿 4 | 布穿杯 0 | 反轉 28 | 體積比 0.9084 | 杯頂上 0.0 層(分佈 {0: 209, 1: 104, 2: 22, 3: 25})間距 12.91 頂厚 10.8 第1層離杯頂 3.7 | 杯頂俯視覆蓋 53%
+  final                  t= 46.87 bbox 布 261x224x 98 / 含杯 261x224x100 | 體積÷杯 4.31 | 自穿 2 | 布穿杯 0 | 反轉 27 | 體積比 0.9087 | 杯頂上 0.0 層(分佈 {0: 208, 1: 106, 2: 21, 3: 25})間距 13.13 頂厚 10.6 第1層離杯頂 3.7 | 杯頂俯視覆蓋 54%
+  全程最大:自穿 12(t=28.03 release anchors / settle)| 布穿杯 0 | 反轉 34 | 邊長比 [0.193, 2.775]
+  每階段結束時自穿:
+    settle                     結束 t=0.03 自穿 0
+    fold xp                    結束 t=3.53 自穿 0
+    fold xn                    結束 t=7.03 自穿 0
+    fold yp                    結束 t=10.53 自穿 2
+    fold yn                    結束 t=14.03 自穿 3
+    tuck ears (side squeeze)   結束 t=17.03 自穿 2
+    into box                   結束 t=18.03 自穿 2
+    close lower lids           結束 t=22.03 自穿 3
+    close upper lids           結束 t=26.03 自穿 8
+    release paddles            結束 t=26.53 自穿 6
+    release anchors / settle   結束 t=28.53 自穿 9
+    move box                   結束 t=34.53 自穿 8
+    settle                     結束 t=36.53 自穿 7
+    open upper lids            結束 t=39.53 自穿 7
+    open lower lids            結束 t=42.53 自穿 3
+    hold                       結束 t=45.53 自穿 3
+    grasp settle               結束 t=46.53 自穿 2
+  折 xp 尖端(綁的、|x|<=CX 的 20 點)along 19.6~20.1 z 100.5~104.7 mm(目標 along 19.9 z 103.1±2)
+  折 xn 尖端(綁的、|x|<=CX 的 20 點)along 19.8~20.0 z 100.4~104.7 mm(目標 along 19.9 z 103.1±2)
+  折 yp 尖端(綁的、|x|<=CX 的 24 點)along -1.4~-1.3 z 105.6~109.7 mm(目標 along -1.4 z 108.1±2)
+  折 yn 尖端(綁的、|x|<=CX 的 24 點)along 3.6~3.7 z 110.6~114.7 mm(目標 along 3.6 z 113.1±2)
+
+===== 真的入箱了嗎(逐頂點比對內腔)=====
+ 關蓋後(放錨前):
+  布     2592 點;超出內腔 0 | x 超 0 / y 超 0 / 低於底 0(最深 0.00mm)/ 高於口 0 | x -125.3~124.6(±132) y -111.5~111.5(±112) z 3.5~117.7(3.0~133.9)
+  杯子   24832 點;超出內腔 0 | x 超 0 / y 超 0 / 低於底 0(最深 0.00mm)/ 高於口 0 | x -66.6~66.6(±132) y -53.5~53.5(±112) z 9.5~102.1(3.0~133.9)
+ 搬前:
+  布     2592 點;超出內腔 4 | x 超 0 / y 超 0 / 低於底 4(最深 2.31mm)/ 高於口 0 | x -125.1~131.7(±132) y -111.7~111.5(±112) z 0.7~111.7(3.0~133.9)
+  杯子   24832 點;超出內腔 0 | x 超 0 / y 超 0 / 低於底 0(最深 0.00mm)/ 高於口 0 | x -47.5~81.4(±132) y -63.0~53.3(±112) z 5.3~100.8(3.0~133.9)
+ 搬後(原點 = 箱子最終位置):
+  布     2592 點;超出內腔 6 | x 超 0 / y 超 0 / 低於底 6(最深 2.16mm)/ 高於口 0 | x -129.9~131.5(±132) y -111.6~111.9(±112) z 0.8~97.4(3.0~133.9)
+  杯子   24832 點;超出內腔 0 | x 超 0 / y 超 0 / 低於底 0(最深 0.00mm)/ 高於口 0 | x -47.4~81.4(±132) y -63.4~53.2(±112) z 5.3~101.1(3.0~133.9)
+  搬箱:箱位移 (0.0,200.0,100.0) mm;布質心相對箱 搬前→搬後 差 5.7 mm;杯心相對箱 差 0.3 mm
+  杯心相對箱中心(搬後):(+16.2, -6.2, +38.6) mm(z 相對箱底內面)
+ 開蓋後(結束):
+  布     2592 點;超出內腔 5 | x 超 0 / y 超 0 / 低於底 5(最深 2.05mm)/ 高於口 0 | x -129.1~131.5(±132) y -111.6~111.9(±112) z 0.9~98.5(3.0~133.9)
+  杯子   24832 點;超出內腔 0 | x 超 0 / y 超 0 / 低於底 0(最深 0.00mm)/ 高於口 0 | x -47.4~81.5(±132) y -63.4~53.3(±112) z 5.3~101.1(3.0~133.9)
+  蓋中心 z(相對箱底內面):fxp=116.6 fxn=116.6 fyp=124.3 fyn=124.3;關著時預設 fxp=123.4 fxn=123.4 fyp=128.7 fyn=128.7
+  驗收:pre_in PASS(布 0 杯 0) | closed PASS(布 0 杯 0) | bm WARN(布 4 杯 0) | am WARN(布 6 杯 0) | end WARN(布 5 杯 0)(pre_in / end 蓋子開著,只計 x/y/底)
+  杯子姿態:相對初始轉了 24.4°(dynamic 之後)
+
+===== SUMMARY =====
+  E 2e+03 T 4.0mm 面密度 0.10 cont 2.00 rest 0.50 tuck 1
+  四折後(收耳前 t=14.03)bbox 247x241x114;側板內縮目標 258x218 ⇒ 側板會碰到布(四折後 bbox 是否超出)
+  收耳後/入箱前 bbox 250x216x114
+  關蓋後 bbox 250x223x114 體積÷杯 4.82
+  頂力代理:下蓋底面 120.0mm;布頂 z(max/99%)放錨前 114.7/110.6 → 放錨後 2s 108.7/96.5;離蓋底 <2mm 的頂點 0 → 0
+  開蓋後 3s:布頂 z max 95.5 / 99% 78.6 mm(箱口 130.9);杯頂俯視覆蓋 53%
+  全程最大 自穿 12 布穿杯 0 反轉 34 邊長比 [0.193,2.775] 體積比 [0.9075,1.0067]
+  wall 192.2s
+
+===== 抓取段判讀(--grasp 1;rank 1、挑角 25/25mm、半徑係數 0.80、掀 6.0s、間距 4.0mm、指面摩擦 2.0)=====
+  抓取段明細 → speed2/smokeA/1/grasp.json
+npz → speed2/smokeA/1/wrap.npz
+2026-10-21T07:13:30Z [207,556ms] [Warning] [omni.usd] Unexpected reference count of 2 for UsdStage 'anon:0x1ea444f0:World0.usd' while being closed in UsdContext (this may indicate it is still resident in memory).
+[207.653s] Simulation App Shutting Down
+EXIT 0

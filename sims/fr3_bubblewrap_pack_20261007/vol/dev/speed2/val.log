@@ -1,0 +1,40 @@
+yn rank 1.54s (60 rows, ok 6) | site_cands+gap 0.08s (13) | 合計 wall 1.62s CPU 1.61s
+yp rank 1.65s (60 rows, ok 12) | site_cands+gap 0.06s (13) | 合計 wall 1.71s CPU 1.71s
+yn: rows 60 order True | cands 13 order True
+yp: rows 60 order True | cands 13 order True
+COMPARE: 0 欄位不同
+yn rank 1.16s (60 rows, ok 14) | site_cands+gap 0.04s (13) | 合計 wall 1.20s CPU 1.17s
+yp rank 1.97s (60 rows, ok 8) | site_cands+gap 0.04s (13) | 合計 wall 2.02s CPU 2.01s
+yn: rows 60 order True | cands 13 order True
+yp: rows 60 order True | cands 13 order True
+COMPARE: 0 欄位不同
+yn rank 2.00s (60 rows, ok 0) | site_cands+gap 0.06s (13) | 合計 wall 2.06s CPU 2.06s
+yp rank 1.68s (60 rows, ok 3) | site_cands+gap 0.06s (13) | 合計 wall 1.75s CPU 1.74s
+yn: rows 60 order True | cands 13 order True
+yp: rows 60 order True | cands 13 order True
+COMPARE: 0 欄位不同
+yn rank 2.46s (60 rows, ok 1) | site_cands+gap 0.06s (13) | 合計 wall 2.52s CPU 2.51s
+yp rank 1.75s (60 rows, ok 10) | site_cands+gap 0.06s (13) | 合計 wall 1.81s CPU 1.81s
+yn: rows 60 order True | cands 13 order True
+yp: rows 60 order True | cands 13 order True
+COMPARE: 0 欄位不同
+yn rank 1.39s (60 rows, ok 8) | site_cands+gap 0.11s (13) | 合計 wall 1.50s CPU 1.50s
+yp rank 2.06s (60 rows, ok 8) | site_cands+gap 0.09s (13) | 合計 wall 2.16s CPU 2.15s
+yn: rows 60 order True | cands 13 order True
+yp: rows 60 order True | cands 13 order True
+COMPARE: 0 欄位不同
+yn rank 1.87s (60 rows, ok 9) | site_cands+gap 0.10s (13) | 合計 wall 1.97s CPU 1.97s
+yp rank 1.71s (60 rows, ok 9) | site_cands+gap 0.05s (13) | 合計 wall 1.75s CPU 1.75s
+yn: rows 60 order True | cands 13 order True
+yp: rows 60 order True | cands 13 order True
+COMPARE: 2 欄位不同
+yn rank 1.46s (60 rows, ok 14) | site_cands+gap 0.09s (13) | 合計 wall 1.55s CPU 1.55s
+yp rank 2.36s (60 rows, ok 10) | site_cands+gap 0.06s (13) | 合計 wall 2.42s CPU 2.41s
+yn: rows 60 order True | cands 13 order True
+yp: rows 60 order True | cands 13 order True
+COMPARE: 0 欄位不同
+yn rank 2.05s (60 rows, ok 5) | site_cands+gap 0.12s (13) | 合計 wall 2.17s CPU 2.16s
+yp rank 2.21s (60 rows, ok 8) | site_cands+gap 0.06s (13) | 合計 wall 2.27s CPU 2.26s
+yn: rows 60 order True | cands 13 order True
+yp: rows 60 order True | cands 13 order True
+COMPARE: 3 欄位不同

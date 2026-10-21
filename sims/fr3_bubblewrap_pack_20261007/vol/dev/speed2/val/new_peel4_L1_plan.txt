@@ -1,0 +1,5 @@
+yn rank 1.39s (60 rows, ok 8) | site_cands+gap 0.11s (13) | 合計 wall 1.50s CPU 1.50s
+yp rank 2.06s (60 rows, ok 8) | site_cands+gap 0.09s (13) | 合計 wall 2.16s CPU 2.15s
+yn: rows 60 order True | cands 13 order True
+yp: rows 60 order True | cands 13 order True
+COMPARE: 0 欄位不同

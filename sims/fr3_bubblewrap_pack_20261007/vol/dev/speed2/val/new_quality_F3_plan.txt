@@ -1,0 +1,7 @@
+yn rank 1.87s (60 rows, ok 9) | site_cands+gap 0.10s (13) | 合計 wall 1.97s CPU 1.97s
+yp rank 1.71s (60 rows, ok 9) | site_cands+gap 0.05s (13) | 合計 wall 1.75s CPU 1.75s
+DIFF yn v 34 34 b (0, 0, 42, 422) (0, 0, 42, 423)
+yn: rows 60 order True | cands 13 order True
+DIFF yp v 1187 1187 b (0, 0, 149, 580) (0, 0, 150, 580)
+yp: rows 60 order True | cands 13 order True
+COMPARE: 2 欄位不同
