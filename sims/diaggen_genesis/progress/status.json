@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T01:24:29+08:00",
+  "updated_at": "2026-10-22T02:29:36+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-22T01:24:29+08:00",
+      "updated_at": "2026-10-22T02:29:36+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
@@ -195,7 +195,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T07:14:19.925656+00:00",
-      "updated_at": "2026-10-22T01:24:29+08:00",
+      "updated_at": "2026-10-22T02:29:36+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -327,7 +327,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-22T01:24:29+08:00",
+      "updated_at": "2026-10-22T02:29:36+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -433,7 +433,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T01:24:29+08:00",
+      "updated_at": "2026-10-22T02:29:36+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -610,7 +610,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-22T01:24:29+08:00",
+      "updated_at": "2026-10-22T02:29:36+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -716,7 +716,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:38:07.768841+00:00",
-      "updated_at": "2026-10-22T01:24:29+08:00",
+      "updated_at": "2026-10-22T02:29:36+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -848,7 +848,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:46:28.056801+00:00",
-      "updated_at": "2026-10-22T01:24:29+08:00",
+      "updated_at": "2026-10-22T02:29:36+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
@@ -1010,7 +1010,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:26:08.183115+00:00",
-      "updated_at": "2026-10-22T01:24:29+08:00",
+      "updated_at": "2026-10-22T02:29:36+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1074,11 +1074,11 @@
         {
           "name": "genesis_live_diagnostic_loop",
           "label": "Genesis 物理診斷",
-          "status": "running",
-          "ledger_status": "running",
+          "status": "pending_retry",
+          "ledger_status": "pending_retry",
           "ok": false,
           "started_at": "2026-10-21T16:01:21.123008+00:00",
-          "finished_at": null
+          "finished_at": "2026-10-21T18:29:21.371978+00:00"
         },
         {
           "name": "hag4r_post_mesh_texture",
@@ -1172,7 +1172,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:39:46.288097+00:00",
-      "updated_at": "2026-10-22T01:24:29+08:00",
+      "updated_at": "2026-10-22T02:29:36+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1666,5 +1666,5 @@
       "sha256": "db4ba55885ed522bc4e367674ec755352c5d4146d558baf33c306ea93dad3f7f"
     }
   ],
-  "signature": "77c3c429e4b725618380738b86ac61d2702f8546512f01fda1dc87d638562a89"
+  "signature": "84beb235ba8b0eff5477598d9c3937ce7da27137d0ab9705a2cafdc88e91ba94"
 }
