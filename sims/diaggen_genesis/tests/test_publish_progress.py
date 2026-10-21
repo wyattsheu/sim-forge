@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import base64
+from copy import deepcopy
 import importlib.util
 import json
 from pathlib import Path
@@ -75,6 +76,32 @@ class SnapshotTests(unittest.TestCase):
     def snapshot(self):
         self.flush()
         return publisher.build_snapshot(self.workspace)
+
+    def install_batch(self):
+        ids = ("usb_hub", "baseball_cap", "curling_iron", "sloth", "sauce_keeper",
+               "sneaker", "kitchen_tongs", "dragon", "capybara")
+        self.batch = {
+            "schema_version": "diaggen-batch-v1",
+            "policy": {"minimum_free_mib": 24576, "allow_compute_sharing": True,
+                       "check_interval_seconds": 15, "max_parallel_jobs": 2,
+                       "owner_lease_token": "PRIVATE_SECRET"},
+            "jobs": [{"id": name, "run_id": "test_run" if index == 0 else f"test_run_{name}",
+                      "input": f"/PRIVATE_SECRET/{name}.png",
+                      "status": "running" if index == 0 else "queued",
+                      "gpu_uuid": "PRIVATE_SECRET", "runner_pid": 123456789,
+                      "attempts": 1 if index == 0 else 0,
+                      "detail": "PRIVATE_SECRET"} for index, name in enumerate(ids)],
+        }
+        write_json(self.queue / "batch.json", self.batch)
+        return self.batch
+
+    def write_job_state(self, index, **changes):
+        job = self.batch["jobs"][index]
+        state = deepcopy(self.state)
+        state.update(run_id=job["run_id"], **changes)
+        path = self.workspace / "tools/diaggen/outputs/agentic_asset_refinement" / job["run_id"] / "state.json"
+        write_json(path, state)
+        return state, path
 
     def test_whitelist_removes_secrets_paths_and_raw_diagnostics(self):
         snapshot, _ = self.snapshot()
@@ -254,6 +281,116 @@ class GitTests(SnapshotTests):
         self.assertFalse(result["changed"])
         self.assertTrue(result["pushed"])
         self.assertNotEqual(before, run_git(self.worktree, "rev-parse", "HEAD"))
+
+    def test_batch_nonfocus_progress_pushes_and_heartbeat_deduplicates(self):
+        self.install_batch()
+        publisher.sync_once(self.workspace, self.worktree)
+        initial = run_git(self.worktree, "rev-parse", "HEAD")
+        self.status["updated_at"] = "2026-10-21T13:00:00+08:00"
+        self.batch["jobs"][8]["runner_pid"] = 987654321
+        self.flush()
+        write_json(self.queue / "batch.json", self.batch)
+        result = publisher.sync_once(self.workspace, self.worktree)
+        self.assertFalse(result["changed"])
+        self.assertEqual(initial, run_git(self.worktree, "rev-parse", "HEAD"))
+        self.write_job_state(8, active_revision="r009")
+        publisher.sync_once(self.workspace, self.worktree)
+        latest = run_git(self.worktree, "rev-parse", "HEAD")
+        self.assertNotEqual(initial, latest)
+        self.assertEqual(latest, run_git(self.remote, "rev-parse", f"refs/heads/{publisher.BRANCH}"))
+
+
+class BatchTests(unittest.TestCase):
+    flush = SnapshotTests.flush
+    install_batch = SnapshotTests.install_batch
+    write_job_state = SnapshotTests.write_job_state
+
+    def setUp(self):
+        SnapshotTests.setUp(self)
+        self.install_batch()
+
+    def test_all_nine_jobs_counts_policy_and_no_private_fields(self):
+        snapshot, _ = publisher.build_snapshot(self.workspace)
+        self.assertEqual(len(snapshot["jobs"]), 9)
+        self.assertEqual(snapshot["counts"]["total"], 9)
+        self.assertEqual(snapshot["counts"]["running"], 1)
+        self.assertEqual(snapshot["counts"]["queued"], 8)
+        self.assertEqual(snapshot["policy"], {"minimum_free_mib": 24576, "allow_compute_sharing": True,
+                                             "check_interval_seconds": 15, "max_parallel_jobs": 2})
+        self.assertTrue(all(len(job["stages"]) == 9 for job in snapshot["jobs"]))
+        text = json.dumps(snapshot) + publisher.render_readme(snapshot)
+        for forbidden in ("PRIVATE_SECRET", "gpu_uuid", "runner_pid", "owner_lease", str(self.workspace), "123456789"):
+            self.assertNotIn(forbidden, text)
+        self.assertIn("capybara", text)
+        self.assertIn("24576 MiB", text)
+
+    def test_nonfocus_revision_and_stage_change_update_signature(self):
+        first, _ = publisher.build_snapshot(self.workspace)
+        state, path = self.write_job_state(8, active_revision="r002")
+        second, _ = publisher.build_snapshot(self.workspace)
+        self.assertNotEqual(first["signature"], second["signature"])
+        self.assertEqual(second["jobs"][0]["active_revision"], first["jobs"][0]["active_revision"])
+        state["stages"]["image_cleanup"]["started_at"] = "2026-10-21T13:00:00+08:00"
+        write_json(path, state)
+        third, _ = publisher.build_snapshot(self.workspace)
+        self.assertNotEqual(second["signature"], third["signature"])
+        self.assertEqual(third["jobs"][8]["stages"][0]["status"], "running")
+
+    def test_job_status_transitions_are_not_hidden_by_focus(self):
+        first, _ = publisher.build_snapshot(self.workspace)
+        self.batch["jobs"][8]["status"] = "failed"
+        write_json(self.queue / "batch.json", self.batch)
+        second, _ = publisher.build_snapshot(self.workspace)
+        self.assertNotEqual(first["signature"], second["signature"])
+        self.assertEqual(second["counts"]["failed"], 1)
+        self.assertEqual(second["jobs"][8]["phase"], "failed")
+
+    def test_job_heartbeat_private_fields_and_confirming_gpu_do_not_change_signature(self):
+        first, _ = publisher.build_snapshot(self.workspace)
+        self.batch["updated_at"] = "2026-10-21T14:00:00+08:00"
+        self.batch["jobs"][8].update(runner_pid=123, gpu_uuid="NEW_PRIVATE_GPU")
+        write_json(self.queue / "batch.json", self.batch)
+        write_json(self.queue / "jobs/capybara/status.json", {
+            "run_id": "test_run_capybara", "phase": "confirming_gpu",
+            "updated_at": "2026-10-21T14:00:00+08:00", "owner_lease_token": "PRIVATE_SECRET",
+        })
+        second, _ = publisher.build_snapshot(self.workspace)
+        self.assertEqual(first["signature"], second["signature"])
+
+    def test_all_jobs_share_one_media_budget_and_safe_prefixes(self):
+        for index in range(3):
+            state, path = self.write_job_state(index)
+            image = path.parent / "preview.png"
+            image.write_bytes(PNG)
+            state["paths"] = {"cleaned_image_path": str(image)}
+            write_json(path, state)
+        with patch.object(publisher, "MAX_MEDIA_BYTES", len(PNG) * 2):
+            snapshot, media = publisher.build_snapshot(self.workspace)
+        self.assertEqual(len(media), 2)
+        self.assertEqual(sum(len(data) for _, data in media), len(PNG) * 2)
+        self.assertEqual([name for name, _ in media], ["media/usb_hub_cleaned_image.png", "media/baseball_cap_cleaned_image.png"])
+        self.assertEqual(len(snapshot["media"]), 2)
+        self.assertTrue(all(publisher.allowed_output(str(publisher.PROGRESS / name)) for name, _ in media))
+
+    def test_per_job_status_is_observed_but_sensitive_detail_is_not_published(self):
+        write_json(self.queue / "jobs/usb_hub/status.json", {
+            "run_id": "test_run", "phase": "blocked", "detail": "PRIVATE_SECRET",
+            "generation_and_diagnostics_model": "gpt-6-luna", "reasoning_effort": "max",
+        })
+        snapshot, _ = publisher.build_snapshot(self.workspace)
+        self.assertEqual(snapshot["jobs"][0]["phase"], "blocked")
+        self.assertNotIn("PRIVATE_SECRET", json.dumps(snapshot))
+
+    def test_batch_identifier_collisions_and_schema_mismatch_fail_closed(self):
+        self.batch["jobs"][8]["id"] = "usb_hub"
+        write_json(self.queue / "batch.json", self.batch)
+        with self.assertRaises(ValueError):
+            publisher.build_snapshot(self.workspace)
+        self.install_batch()
+        self.batch["schema_version"] = "unknown"
+        write_json(self.queue / "batch.json", self.batch)
+        with self.assertRaises(ValueError):
+            publisher.build_snapshot(self.workspace)
 
 
 if __name__ == "__main__":

@@ -1,18 +1,16 @@
 """Deterministic queue bookkeeping; the Codex CLI owns the DiagGen pipeline."""
-import csv
 import hashlib
-import io
 import json
 import os
 from pathlib import Path
 import shutil
-import subprocess
 import sys
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
-QUEUE = Path(__file__).resolve().parent
-BASE = QUEUE.parent
+ROOT_QUEUE = Path(__file__).resolve().parent
+QUEUE = Path(os.environ.get("DIAGGEN_JOB_QUEUE_DIR", str(ROOT_QUEUE))).resolve()
+BASE = ROOT_QUEUE.parent
 WORKSPACE = BASE.parents[1]
 DIAGGEN = WORKSPACE / "tools/diaggen"
 RUN_ID = os.environ.get("DIAGGEN_QUEUE_RUN_ID", "genesis_first_20261021")
@@ -41,58 +39,6 @@ def status(phase, detail=""):
         "watcher_pid": os.environ.get("DIAGGEN_WATCHER_PID"),
     })
     print(f"[{now()}] {phase}: {detail}", flush=True)
-
-
-def input_path():
-    explicit = QUEUE / "input_path.txt"
-    if explicit.exists():
-        path = Path(explicit.read_text().strip()).expanduser()
-    else:
-        paths = [p for p in (BASE / "inputs").iterdir()
-                 if p.is_file() and p.suffix.lower() in (".png", ".jpg", ".jpeg")]
-        if len(paths) != 1:
-            raise ValueError("Place exactly one PNG/JPG in inputs/, or set queue/input_path.txt")
-        path = paths[0]
-    from PIL import Image
-    with Image.open(path) as image:
-        image.verify()
-    print(path.resolve())
-
-
-def select_gpu(gpu_csv, process_csv, minimum_mib):
-    busy = {row[0].strip() for row in csv.reader(io.StringIO(process_csv)) if row}
-    candidates, snapshot = [], []
-    for row in csv.reader(io.StringIO(gpu_csv)):
-        if not row or len(row) != 3:
-            continue
-        index, uuid, free = (item.strip() for item in row)
-        free = int(free)
-        record = {"index": int(index), "uuid": uuid, "free_mib": free,
-                  "has_compute_process": uuid in busy}
-        snapshot.append(record)
-        if free >= minimum_mib and uuid not in busy:
-            candidates.append(record)
-    candidates.sort(key=lambda record: record["free_mib"], reverse=True)
-    return (candidates[0] if candidates else None), snapshot
-
-
-def probe():
-    def query(fields, kind):
-        return subprocess.run(
-            ["nvidia-smi", f"--query-{kind}={fields}", "--format=csv,noheader,nounits"],
-            check=True, text=True, capture_output=True, timeout=20,
-        ).stdout
-    # Fail closed if either query fails; never infer an idle GPU from an error.
-    candidate, snapshot = select_gpu(
-        query("index,uuid,memory.free", "gpu"),
-        query("gpu_uuid,pid", "compute-apps"),
-        int(os.environ.get("DIAGGEN_MIN_FREE_MIB", "65536")),
-    )
-    write_json(QUEUE / "gpu_snapshot.json", {"checked_at": now(), "gpus": snapshot})
-    if not candidate:
-        return 3
-    print(candidate["uuid"])
-    return 0
 
 
 def archive():
@@ -140,10 +86,6 @@ def main():
     command = sys.argv[1]
     if command == "status":
         status(*sys.argv[2:])
-    elif command == "input":
-        input_path()
-    elif command == "probe":
-        return probe()
     elif command == "archive":
         return archive()
     else:

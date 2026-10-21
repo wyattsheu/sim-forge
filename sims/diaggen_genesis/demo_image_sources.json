@@ -158,6 +158,17 @@
       "upscaled": false,
       "sha256": "9b500086b66da89d1363fc44be07b608096bd07caeeef34f07fbf6a04ef62a60",
       "description": "Cropped input-photo panel from the official gallery video; not a 3D render or full-resolution source photograph."
+    },
+    {
+      "id": "capybara_plush_toy",
+      "label_zh": "水豚玩偶",
+      "path": "inputs/demo_gallery/Capybara plush toy.jpg",
+      "source_type": "user_supplied",
+      "width": 750,
+      "height": 750,
+      "upscaled": false,
+      "sha256": "9c132575e36fefa9e72641b30f2b22e06ba19b7f15bfd829a51343d92f39a821",
+      "description": "Additional image placed in the input folder by the user; not an official gallery crop."
     }
   ],
   "additional_reference": {

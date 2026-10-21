@@ -4,12 +4,14 @@ queue/*
 !queue/wait_and_run.sh
 !queue/publish_progress.py
 !queue/publish_progress.sh
+!queue/batch_control.py
+!queue/run_one.sh
 
 # Large reference downloads and the complete local execution archive.
 references/
 runs/
 
-# Only the documented official demo crops are part of this experiment.
+# Only the documented demo crops and the supplied capybara input are published.
 inputs/*
 !inputs/demo_gallery/
 inputs/demo_gallery/*
@@ -23,3 +25,4 @@ inputs/demo_gallery/*
 !inputs/demo_gallery/sneaker.png
 !inputs/demo_gallery/kitchen_tongs.png
 !inputs/demo_gallery/dragon.png
+!inputs/demo_gallery/Capybara plush toy.jpg

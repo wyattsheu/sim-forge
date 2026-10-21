@@ -43,6 +43,7 @@ STAGE_STATUSES = frozenset({
     "pending", "pending_retry", "retryable", "running", "success", "failed", "halted",
 })
 RUN_STATUSES = frozenset({"seeded", "running", "success", "failed"})
+JOB_STATUSES = frozenset({"queued", "running", "success", "failed", "cancelled"})
 PREVIEW_KEYS = (
     "cleaned_image_path", "processed_white_bg_png_path", "processed_rgba_path",
     "ordered_mask_vis_path", "segmentation_overlay_path", "albedo_path",
@@ -125,7 +126,8 @@ def media_candidates(state):
                     yield f"episode_{index + 1:03d}_{key.removesuffix('_path')}", episode[key], {".mp4"}
 
 
-def collect_media(state, run_root, outputs_root):
+def collect_media(state, run_root, outputs_root, *, name_prefix="", budget=None):
+    budget = MAX_MEDIA_BYTES if budget is None else min(budget, MAX_MEDIA_BYTES)
     roots = [run_root.resolve()]
     final_export = object_value(state.get("paths")).get("final_export_dir")
     if isinstance(final_export, str) and Path(final_export).is_absolute():
@@ -144,11 +146,11 @@ def collect_media(state, run_root, outputs_root):
             if not candidate.is_file() or candidate.suffix.lower() not in suffixes:
                 continue
             size = candidate.stat().st_size
-            if not 0 < size <= MAX_FILE_BYTES or total + size > MAX_MEDIA_BYTES:
+            if not 0 < size <= MAX_FILE_BYTES or total + size > budget:
                 continue
             with candidate.open("rb") as stream:
                 data = stream.read(MAX_FILE_BYTES + 1)
-            if not data or len(data) > MAX_FILE_BYTES or total + len(data) > MAX_MEDIA_BYTES:
+            if not data or len(data) > MAX_FILE_BYTES or total + len(data) > budget:
                 continue
             suffix = candidate.suffix.lower()
             valid = (suffix == ".png" and data.startswith(b"\x89PNG\r\n\x1a\n")) or (
@@ -156,7 +158,7 @@ def collect_media(state, run_root, outputs_root):
                 suffix == ".mp4" and len(data) >= 12 and data[4:8] == b"ftyp")
             if not valid:
                 continue
-            name = f"media/{label}{suffix}"
+            name = f"media/{name_prefix}{label}{suffix}"
             files.append((name, data))
             total += len(data)
         except (OSError, RuntimeError, ValueError):
@@ -164,9 +166,7 @@ def collect_media(state, run_root, outputs_root):
     return files
 
 
-def build_snapshot(workspace):
-    queue = workspace / "sims/diaggen_genesis/queue"
-    queued = read_object(queue / "status.json")
+def build_run_snapshot(workspace, queued, *, media_prefix="", media_budget=None):
     run_id = identifier(queued.get("run_id"))
     if not run_id or run_id in {".", ".."}:
         raise ValueError("invalid queue run identifier")
@@ -212,14 +212,128 @@ def build_snapshot(workspace):
             "ok": stage.get("ok") is True, "started_at": started,
             "finished_at": timestamp(stage.get("finished_at")),
         })
-    media = collect_media(state, run_root, outputs)
+    media = collect_media(state, run_root, outputs, name_prefix=media_prefix, budget=media_budget)
     snapshot["media"] = [{"path": name, "bytes": len(data), "sha256": hashlib.sha256(data).hexdigest()}
                          for name, data in media]
     snapshot["signature"] = semantic_signature(snapshot)
     return snapshot, media
 
 
+def bounded_integer(value, lower, upper):
+    return value if isinstance(value, int) and not isinstance(value, bool) and lower <= value <= upper else None
+
+
+def build_batch_snapshot(workspace, queued, batch):
+    if batch.get("schema_version") != "diaggen-batch-v1":
+        raise ValueError("unsupported batch schema")
+    jobs = batch.get("jobs")
+    if not isinstance(jobs, list) or not 1 <= len(jobs) <= 100:
+        raise ValueError("batch must contain between one and 100 jobs")
+    source_policy = object_value(batch.get("policy"))
+    policy = {
+        "minimum_free_mib": bounded_integer(source_policy.get("minimum_free_mib"), 1, 1024 * 1024),
+        "allow_compute_sharing": source_policy.get("allow_compute_sharing")
+        if isinstance(source_policy.get("allow_compute_sharing"), bool) else None,
+        "check_interval_seconds": bounded_integer(source_policy.get("check_interval_seconds"), 1, 86400),
+        "max_parallel_jobs": bounded_integer(source_policy.get("max_parallel_jobs"), 1, 64),
+    }
+    phase = queued.get("phase")
+    phase = "waiting_gpu" if phase == "confirming_gpu" else enum(phase, PHASE_LABELS)
+    snapshot = {
+        "schema_version": "diaggen-public-batch-progress-v1",
+        "pipeline": "DiagGen", "simulator": "Genesis", "phase": phase,
+        "generation_and_diagnostics_model": enum(queued.get("generation_and_diagnostics_model"), MODEL_NAMES),
+        "reasoning_effort": enum(queued.get("reasoning_effort"), {"max"}),
+        "updated_at": now(), "policy": policy,
+        "counts": {status: 0 for status in ("queued", "running", "success", "failed", "cancelled", "unknown")},
+        "jobs": [], "media": [],
+    }
+    queue = workspace / "sims/diaggen_genesis/queue"
+    media, seen_ids, seen_run_ids, seen_prefixes = [], set(), set(), set()
+    remaining = MAX_MEDIA_BYTES
+    for job in jobs:
+        job = object_value(job)
+        job_id, run_id = identifier(job.get("id")), identifier(job.get("run_id"))
+        if not job_id or job_id in {".", ".."} or not run_id or run_id in {".", ".."}:
+            raise ValueError("invalid batch job identifier")
+        prefix = re.sub(r"[^a-z0-9_]", "_", job_id.lower()) + "_"
+        if job_id in seen_ids or run_id in seen_run_ids or prefix in seen_prefixes:
+            raise ValueError("batch jobs require unique identifiers and media prefixes")
+        seen_ids.add(job_id)
+        seen_run_ids.add(run_id)
+        seen_prefixes.add(prefix)
+        status = enum(job.get("status"), JOB_STATUSES)
+        snapshot["counts"][status] += 1
+        status_path = queue / "jobs" / job_id / "status.json"
+        if status_path.exists() and not inside(status_path.resolve(), queue.resolve()):
+            raise ValueError("job status escapes queue")
+        observed = read_object(status_path) if status_path.exists() else {}
+        if observed.get("run_id") not in {None, run_id}:
+            raise ValueError("batch and job status run identifiers differ")
+        job_phase = observed.get("phase")
+        if status in {"success", "failed", "cancelled"}:
+            job_phase = status
+        elif job_phase not in PHASE_LABELS and job_phase != "confirming_gpu":
+            job_phase = "waiting_gpu" if status == "queued" else enum(status, PHASE_LABELS)
+        job_queue = {
+            "run_id": run_id, "phase": job_phase,
+            "generation_and_diagnostics_model": observed.get("generation_and_diagnostics_model", queued.get("generation_and_diagnostics_model")),
+            "reasoning_effort": observed.get("reasoning_effort", queued.get("reasoning_effort")),
+        }
+        progress, files = build_run_snapshot(workspace, job_queue, media_prefix=prefix, media_budget=remaining)
+        remaining -= sum(len(data) for _, data in files)
+        media.extend(files)
+        progress.pop("signature", None)
+        progress.update(id=job_id, status=status,
+                        attempts=bounded_integer(job.get("attempts"), 0, 1000000))
+        snapshot["jobs"].append(progress)
+        snapshot["media"].extend(progress["media"])
+    snapshot["counts"]["total"] = len(snapshot["jobs"])
+    snapshot["signature"] = semantic_signature(snapshot)
+    return snapshot, media
+
+
+def build_snapshot(workspace):
+    queue = workspace / "sims/diaggen_genesis/queue"
+    queued = read_object(queue / "status.json")
+    batch_path = queue / "batch.json"
+    if batch_path.exists():
+        if not inside(batch_path.resolve(), queue.resolve()):
+            raise ValueError("batch ledger escapes queue")
+        return build_batch_snapshot(workspace, queued, read_object(batch_path))
+    return build_run_snapshot(workspace, queued)
+
+
+def render_batch_readme(snapshot):
+    policy, counts = snapshot["policy"], snapshot["counts"]
+    lines = ["# DiagGen / Genesis 批次執行進度", "",
+             f"狀態：**{PHASE_LABELS[snapshot['phase']]}**  ",
+             f"模型：`{snapshot['generation_and_diagnostics_model']}`，reasoning `{snapshot['reasoning_effort']}`  ",
+             f"更新：{snapshot['updated_at']}（Asia/Taipei）", "",
+             f"共 {counts['total']} 件：等待 {counts['queued']}、執行中 {counts['running']}、完成 {counts['success']}、失敗 {counts['failed']}、取消 {counts['cancelled']}。", "",
+             f"GPU 可用記憶體門檻：{policy['minimum_free_mib']} MiB；最多同時 {policy['max_parallel_jobs']} 件；排程每 {policy['check_interval_seconds']} 秒檢查。  ",
+             f"允許與既有運算共用 GPU：{'是' if policy['allow_compute_sharing'] is True else '否' if policy['allow_compute_sharing'] is False else '未知'}。", "",
+             "只在排程狀態、階段、revision 或預覽成果改變時更新。等待期間不重複提交。", "",
+             "| 物件 | 排程狀態 | Runtime | Revision | 已完成階段 |", "|---|---|---|---|---|"]
+    for job in snapshot["jobs"]:
+        completed = sum(stage["ok"] for stage in job["stages"])
+        lines.append(f"| {job['id']} | {job['status']} | {job['pipeline_status']} | {job['active_revision'] or '尚未初始化'} | {completed}/{len(STAGES)} |")
+    for job in snapshot["jobs"]:
+        lines += ["", f"## {job['id']}", "", f"Run：`{job['run_id']}`；{PHASE_LABELS[job['phase']]}。", "",
+                  "| 階段 | 狀態 |", "|---|---|"]
+        for stage in job["stages"]:
+            lines.append(f"| {stage['label']} | {stage['status']} |")
+        lines += ["", f"Genesis 診斷 episode 數：{job['diagnostics']['episode_count']}。", ""]
+        for item in job["media"]:
+            path = item["path"]
+            lines += [f"[{Path(path).stem}]({path})" if path.endswith(".mp4") else f"![{Path(path).stem}]({path})", ""]
+    lines += ["完整執行紀錄、GPU 識別資訊與失敗細節保留在伺服器。", ""]
+    return "\n".join(lines)
+
+
 def render_readme(snapshot):
+    if "jobs" in snapshot:
+        return render_batch_readme(snapshot)
     lines = ["# DiagGen / Genesis 執行進度", "",
              f"狀態：**{PHASE_LABELS[snapshot['phase']]}**", "",
              f"Run：`{snapshot['run_id']}`  ",
