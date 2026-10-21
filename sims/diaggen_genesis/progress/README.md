@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T16:51:19+08:00（Asia/Taipei）
+更新：2026-10-21T16:54:37+08:00（Asia/Taipei）
 
 共 9 件：等待 2、執行中 1、完成 0、失敗 6、取消 0。
 
@@ -194,7 +194,7 @@ Run：`genesis_sauce_keeper_20261021`；執行中。
 | 階段 | 狀態 |
 |---|---|
 | 圖片清理 | success |
-| SAM3 分割 | pending |
+| SAM3 分割 | running |
 | OmniPart 幾何生成 | pending |
 | 材料推估 | pending |
 | 材料參數配置 | pending |
@@ -206,6 +206,10 @@ Run：`genesis_sauce_keeper_20261021`；執行中。
 Genesis 診斷 episode 數：0。
 
 ![sauce_keeper_cleaned_image](media/sauce_keeper_cleaned_image.png)
+
+![sauce_keeper_processed_white_bg_png](media/sauce_keeper_processed_white_bg_png.png)
+
+![sauce_keeper_processed_rgba](media/sauce_keeper_processed_rgba.png)
 
 
 ## sloth

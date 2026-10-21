@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T16:51:19+08:00",
+  "updated_at": "2026-10-21T16:54:37+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-21T16:51:19+08:00",
+      "updated_at": "2026-10-21T16:54:37+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -145,7 +145,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T07:14:19.925656+00:00",
-      "updated_at": "2026-10-21T16:51:19+08:00",
+      "updated_at": "2026-10-21T16:54:37+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -277,7 +277,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-21T16:51:19+08:00",
+      "updated_at": "2026-10-21T16:54:37+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -383,7 +383,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-21T16:51:19+08:00",
+      "updated_at": "2026-10-21T16:54:37+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -560,7 +560,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-21T16:51:19+08:00",
+      "updated_at": "2026-10-21T16:54:37+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -666,7 +666,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:38:07.768841+00:00",
-      "updated_at": "2026-10-21T16:51:19+08:00",
+      "updated_at": "2026-10-21T16:54:37+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -798,7 +798,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:46:28.056801+00:00",
-      "updated_at": "2026-10-21T16:51:19+08:00",
+      "updated_at": "2026-10-21T16:54:37+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -817,10 +817,10 @@
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "pending",
+          "status": "running",
           "ledger_status": "pending",
           "ok": false,
-          "started_at": null,
+          "started_at": "2026-10-21T08:54:33.380743+00:00",
           "finished_at": null
         },
         {
@@ -892,6 +892,16 @@
           "path": "media/sauce_keeper_cleaned_image.png",
           "bytes": 1143799,
           "sha256": "10ae73d5cd9ee8685801e36006d683a6eff6ead160e164083509fa908bf8130c"
+        },
+        {
+          "path": "media/sauce_keeper_processed_white_bg_png.png",
+          "bytes": 61191,
+          "sha256": "bbfe0f8a9217b6ad3a0439e35ea8da04837b8684a589ba7159717cbf5a794a96"
+        },
+        {
+          "path": "media/sauce_keeper_processed_rgba.png",
+          "bytes": 76302,
+          "sha256": "c1a7b8ca43fac1a5a5b0cb544a5533090e0962336283afc7a0f88cfe621cb636"
         }
       ],
       "id": "sauce_keeper",
@@ -910,7 +920,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:51:19+08:00",
+      "updated_at": "2026-10-21T16:54:37+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1016,7 +1026,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:51:19+08:00",
+      "updated_at": "2026-10-21T16:54:37+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1242,7 +1252,17 @@
       "path": "media/sauce_keeper_cleaned_image.png",
       "bytes": 1143799,
       "sha256": "10ae73d5cd9ee8685801e36006d683a6eff6ead160e164083509fa908bf8130c"
+    },
+    {
+      "path": "media/sauce_keeper_processed_white_bg_png.png",
+      "bytes": 61191,
+      "sha256": "bbfe0f8a9217b6ad3a0439e35ea8da04837b8684a589ba7159717cbf5a794a96"
+    },
+    {
+      "path": "media/sauce_keeper_processed_rgba.png",
+      "bytes": 76302,
+      "sha256": "c1a7b8ca43fac1a5a5b0cb544a5533090e0962336283afc7a0f88cfe621cb636"
     }
   ],
-  "signature": "1260fd5d54f6c97ed6f23d71ccf9b874060c52b1bb9879a6a0dd8eb1009e8ee0"
+  "signature": "0de50784e2bb72012bf3c71ecf5421c50edfe361a4ec9289ecdcdf143952a34a"
 }
