@@ -5,7 +5,7 @@
   "phase": "waiting_gpu",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T14:12:18+08:00",
+  "updated_at": "2026-10-21T14:13:04+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:12:18+08:00",
+      "updated_at": "2026-10-21T14:13:04+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -125,7 +125,8 @@
       "media": [],
       "id": "usb_hub",
       "status": "queued",
-      "attempts": 2
+      "attempts": 2,
+      "minimum_free_mib": 24576
     },
     {
       "schema_version": "diaggen-public-progress-v1",
@@ -138,7 +139,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:12:18+08:00",
+      "updated_at": "2026-10-21T14:13:04+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -230,7 +231,8 @@
       "media": [],
       "id": "capybara_plush_toy",
       "status": "queued",
-      "attempts": 2
+      "attempts": 2,
+      "minimum_free_mib": 49152
     },
     {
       "schema_version": "diaggen-public-progress-v1",
@@ -243,7 +245,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:12:18+08:00",
+      "updated_at": "2026-10-21T14:13:04+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -335,7 +337,8 @@
       "media": [],
       "id": "baseball_cap",
       "status": "queued",
-      "attempts": 1
+      "attempts": 1,
+      "minimum_free_mib": 24576
     },
     {
       "schema_version": "diaggen-public-progress-v1",
@@ -348,7 +351,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:12:18+08:00",
+      "updated_at": "2026-10-21T14:13:04+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -440,7 +443,8 @@
       "media": [],
       "id": "curling_iron",
       "status": "queued",
-      "attempts": 1
+      "attempts": 1,
+      "minimum_free_mib": 24576
     },
     {
       "schema_version": "diaggen-public-progress-v1",
@@ -453,7 +457,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:12:18+08:00",
+      "updated_at": "2026-10-21T14:13:04+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -545,7 +549,8 @@
       "media": [],
       "id": "dragon",
       "status": "queued",
-      "attempts": 0
+      "attempts": 0,
+      "minimum_free_mib": 24576
     },
     {
       "schema_version": "diaggen-public-progress-v1",
@@ -558,7 +563,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:12:18+08:00",
+      "updated_at": "2026-10-21T14:13:04+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -650,7 +655,8 @@
       "media": [],
       "id": "kitchen_tongs",
       "status": "queued",
-      "attempts": 0
+      "attempts": 0,
+      "minimum_free_mib": 24576
     },
     {
       "schema_version": "diaggen-public-progress-v1",
@@ -663,7 +669,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:12:18+08:00",
+      "updated_at": "2026-10-21T14:13:04+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -755,7 +761,8 @@
       "media": [],
       "id": "sauce_keeper",
       "status": "queued",
-      "attempts": 0
+      "attempts": 0,
+      "minimum_free_mib": 24576
     },
     {
       "schema_version": "diaggen-public-progress-v1",
@@ -768,7 +775,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:12:18+08:00",
+      "updated_at": "2026-10-21T14:13:04+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -860,7 +867,8 @@
       "media": [],
       "id": "sloth",
       "status": "queued",
-      "attempts": 0
+      "attempts": 0,
+      "minimum_free_mib": 24576
     },
     {
       "schema_version": "diaggen-public-progress-v1",
@@ -873,7 +881,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:12:18+08:00",
+      "updated_at": "2026-10-21T14:13:04+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -965,9 +973,10 @@
       "media": [],
       "id": "sneaker",
       "status": "queued",
-      "attempts": 0
+      "attempts": 0,
+      "minimum_free_mib": 24576
     }
   ],
   "media": [],
-  "signature": "54b03c2b6644f6bf2caa8bd44717009870079d615177f230d3d6b1b4550ef0cd"
+  "signature": "9365e25c969109955d9248b28a5893bb6a6b2407c97af3a94b6e537cf5b7cf02"
 }

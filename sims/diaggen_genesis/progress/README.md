@@ -2,7 +2,7 @@
 
 狀態：**等待空閒 GPU**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T14:12:18+08:00（Asia/Taipei）
+更新：2026-10-21T14:13:04+08:00（Asia/Taipei）
 
 共 9 件：等待 9、執行中 0、完成 0、失敗 0、取消 0。
 
@@ -11,17 +11,17 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢
 
 只在排程狀態、階段、revision 或預覽成果改變時更新。等待期間不重複提交。
 
-| 物件 | 排程狀態 | Runtime | Revision | 已完成階段 |
-|---|---|---|---|---|
-| usb_hub | queued | not_initialized | 尚未初始化 | 0/9 |
-| capybara_plush_toy | queued | not_initialized | 尚未初始化 | 0/9 |
-| baseball_cap | queued | not_initialized | 尚未初始化 | 0/9 |
-| curling_iron | queued | not_initialized | 尚未初始化 | 0/9 |
-| dragon | queued | not_initialized | 尚未初始化 | 0/9 |
-| kitchen_tongs | queued | not_initialized | 尚未初始化 | 0/9 |
-| sauce_keeper | queued | not_initialized | 尚未初始化 | 0/9 |
-| sloth | queued | not_initialized | 尚未初始化 | 0/9 |
-| sneaker | queued | not_initialized | 尚未初始化 | 0/9 |
+| 物件 | 排程狀態 | Runtime | Revision | 顯存門檻 | 已完成階段 |
+|---|---|---|---|---|---|
+| usb_hub | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
+| capybara_plush_toy | queued | not_initialized | 尚未初始化 | 49152 MiB | 0/9 |
+| baseball_cap | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
+| curling_iron | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
+| dragon | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
+| kitchen_tongs | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
+| sauce_keeper | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
+| sloth | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
+| sneaker | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
 
 ## usb_hub
 
