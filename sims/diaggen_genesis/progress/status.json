@@ -2,10 +2,10 @@
   "schema_version": "diaggen-public-batch-progress-v1",
   "pipeline": "DiagGen",
   "simulator": "Genesis",
-  "phase": "waiting_gpu",
+  "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T14:13:04+08:00",
+  "updated_at": "2026-10-21T14:37:03+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -13,8 +13,8 @@
     "max_parallel_jobs": 2
   },
   "counts": {
-    "queued": 9,
-    "running": 0,
+    "queued": 8,
+    "running": 1,
     "success": 0,
     "failed": 0,
     "cancelled": 0,
@@ -27,15 +27,15 @@
       "pipeline": "DiagGen",
       "simulator": "Genesis",
       "run_id": "genesis_first_20261021_exr_retry1_display_retry2",
-      "phase": "waiting_gpu",
-      "pipeline_status": "not_initialized",
+      "phase": "running",
+      "pipeline_status": "seeded",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
-      "active_revision": null,
-      "created_at": null,
-      "updated_at": "2026-10-21T14:13:04+08:00",
+      "active_revision": "revision_0000",
+      "created_at": "2026-10-21T06:36:55.182884+00:00",
+      "updated_at": "2026-10-21T14:37:03+08:00",
       "diagnostics": {
-        "enabled": null,
+        "enabled": true,
         "episode_count": 0,
         "terminal_status": "not_available"
       },
@@ -124,8 +124,8 @@
       ],
       "media": [],
       "id": "usb_hub",
-      "status": "queued",
-      "attempts": 2,
+      "status": "running",
+      "attempts": 3,
       "minimum_free_mib": 24576
     },
     {
@@ -139,7 +139,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:13:04+08:00",
+      "updated_at": "2026-10-21T14:37:03+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -245,7 +245,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:13:04+08:00",
+      "updated_at": "2026-10-21T14:37:03+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -351,7 +351,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:13:04+08:00",
+      "updated_at": "2026-10-21T14:37:03+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -457,7 +457,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:13:04+08:00",
+      "updated_at": "2026-10-21T14:37:03+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -563,7 +563,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:13:04+08:00",
+      "updated_at": "2026-10-21T14:37:03+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -669,7 +669,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:13:04+08:00",
+      "updated_at": "2026-10-21T14:37:03+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -775,7 +775,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:13:04+08:00",
+      "updated_at": "2026-10-21T14:37:03+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -881,7 +881,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:13:04+08:00",
+      "updated_at": "2026-10-21T14:37:03+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -978,5 +978,5 @@
     }
   ],
   "media": [],
-  "signature": "9365e25c969109955d9248b28a5893bb6a6b2407c97af3a94b6e537cf5b7cf02"
+  "signature": "29a0dfdf0d95cdec2010edb5a9e09c95799fbd1b6e764cbb552a069b50f90103"
 }
