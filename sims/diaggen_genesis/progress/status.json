@@ -2,10 +2,10 @@
   "schema_version": "diaggen-public-batch-progress-v1",
   "pipeline": "DiagGen",
   "simulator": "Genesis",
-  "phase": "running",
+  "phase": "failed",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T02:35:46+08:00",
+  "updated_at": "2026-10-22T02:39:19+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -14,9 +14,9 @@
   },
   "counts": {
     "queued": 0,
-    "running": 1,
+    "running": 0,
     "success": 1,
-    "failed": 7,
+    "failed": 8,
     "cancelled": 0,
     "unknown": 0,
     "total": 9
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-22T02:35:46+08:00",
+      "updated_at": "2026-10-22T02:39:19+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
@@ -195,7 +195,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T07:14:19.925656+00:00",
-      "updated_at": "2026-10-22T02:35:46+08:00",
+      "updated_at": "2026-10-22T02:39:19+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -327,7 +327,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-22T02:35:46+08:00",
+      "updated_at": "2026-10-22T02:39:19+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -433,7 +433,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T02:35:46+08:00",
+      "updated_at": "2026-10-22T02:39:19+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -610,7 +610,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-22T02:35:46+08:00",
+      "updated_at": "2026-10-22T02:39:19+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -716,7 +716,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:38:07.768841+00:00",
-      "updated_at": "2026-10-22T02:35:46+08:00",
+      "updated_at": "2026-10-22T02:39:19+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -848,7 +848,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:46:28.056801+00:00",
-      "updated_at": "2026-10-22T02:35:46+08:00",
+      "updated_at": "2026-10-22T02:39:19+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
@@ -1010,7 +1010,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:26:08.183115+00:00",
-      "updated_at": "2026-10-22T02:35:46+08:00",
+      "updated_at": "2026-10-22T02:39:19+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 3,
@@ -1166,13 +1166,13 @@
       "pipeline": "DiagGen",
       "simulator": "Genesis",
       "run_id": "genesis_sneaker_20261021",
-      "phase": "running",
+      "phase": "failed",
       "pipeline_status": "seeded",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:39:46.288097+00:00",
-      "updated_at": "2026-10-22T02:35:46+08:00",
+      "updated_at": "2026-10-22T02:39:19+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1319,7 +1319,7 @@
         }
       ],
       "id": "sneaker",
-      "status": "running",
+      "status": "failed",
       "attempts": 2,
       "minimum_free_mib": 24576
     }
@@ -1666,5 +1666,5 @@
       "sha256": "db4ba55885ed522bc4e367674ec755352c5d4146d558baf33c306ea93dad3f7f"
     }
   ],
-  "signature": "26ce54de741623dcdc95bc82e228d4754b00e6a2844cfb9ebaa4555cb5f90334"
+  "signature": "42f0fcd9ad0b99841c7f25541ddb914d6ce4e4066ea4ea9914be33db1ea96e12"
 }
