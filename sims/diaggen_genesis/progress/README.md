@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T16:38:22+08:00（Asia/Taipei）
+更新：2026-10-21T16:43:10+08:00（Asia/Taipei）
 
 共 9 件：等待 3、執行中 1、完成 0、失敗 5、取消 0。
 
@@ -18,7 +18,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢
 | baseball_cap | failed | seeded | revision_0000 | 24576 MiB | 0/9 |
 | curling_iron | failed | running | revision_0000 | 24576 MiB | 9/9 |
 | dragon | failed | seeded | revision_0000 | 24576 MiB | 0/9 |
-| kitchen_tongs | running | seeded | revision_0000 | 24576 MiB | 0/9 |
+| kitchen_tongs | running | seeded | revision_0000 | 24576 MiB | 1/9 |
 | sauce_keeper | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
 | sloth | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
 | sneaker | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
@@ -164,7 +164,7 @@ Run：`genesis_kitchen_tongs_20261021`；執行中。
 
 | 階段 | 狀態 |
 |---|---|
-| 圖片清理 | pending |
+| 圖片清理 | success |
 | SAM3 分割 | pending |
 | OmniPart 幾何生成 | pending |
 | 材料推估 | pending |
@@ -175,6 +175,8 @@ Run：`genesis_kitchen_tongs_20261021`；執行中。
 | 最終匯出 | pending |
 
 Genesis 診斷 episode 數：0。
+
+![kitchen_tongs_cleaned_image](media/kitchen_tongs_cleaned_image.png)
 
 
 ## sauce_keeper

@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T16:38:22+08:00",
+  "updated_at": "2026-10-21T16:43:10+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-21T16:38:22+08:00",
+      "updated_at": "2026-10-21T16:43:10+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -145,7 +145,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T07:14:19.925656+00:00",
-      "updated_at": "2026-10-21T16:38:22+08:00",
+      "updated_at": "2026-10-21T16:43:10+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -277,7 +277,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-21T16:38:22+08:00",
+      "updated_at": "2026-10-21T16:43:10+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -383,7 +383,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-21T16:38:22+08:00",
+      "updated_at": "2026-10-21T16:43:10+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -560,7 +560,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-21T16:38:22+08:00",
+      "updated_at": "2026-10-21T16:43:10+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -666,7 +666,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:38:07.768841+00:00",
-      "updated_at": "2026-10-21T16:38:22+08:00",
+      "updated_at": "2026-10-21T16:43:10+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -676,11 +676,11 @@
         {
           "name": "image_cleanup",
           "label": "圖片清理",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
+          "started_at": "2026-10-21T08:42:57.305315+00:00",
+          "finished_at": "2026-10-21T08:42:57.318614+00:00"
         },
         {
           "name": "sam3_omnipart_2d_segmentation",
@@ -755,7 +755,13 @@
           "finished_at": null
         }
       ],
-      "media": [],
+      "media": [
+        {
+          "path": "media/kitchen_tongs_cleaned_image.png",
+          "bytes": 1056973,
+          "sha256": "47fee394794adda8173f40d91d7bed86c80315475d87859bf1d92d0e66dcca97"
+        }
+      ],
       "id": "kitchen_tongs",
       "status": "running",
       "attempts": 1,
@@ -772,7 +778,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:38:22+08:00",
+      "updated_at": "2026-10-21T16:43:10+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -878,7 +884,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:38:22+08:00",
+      "updated_at": "2026-10-21T16:43:10+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -984,7 +990,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:38:22+08:00",
+      "updated_at": "2026-10-21T16:43:10+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1180,7 +1186,12 @@
       "path": "media/curling_iron_episode_002_triptych_video.mp4",
       "bytes": 308931,
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
+    },
+    {
+      "path": "media/kitchen_tongs_cleaned_image.png",
+      "bytes": 1056973,
+      "sha256": "47fee394794adda8173f40d91d7bed86c80315475d87859bf1d92d0e66dcca97"
     }
   ],
-  "signature": "c7709a5de042c65b9ad807fca27cc4357abc2fafb592798bedef4c4f0f796107"
+  "signature": "3dfbbb955d80b31f45c2bc19f406367c12c34adeb1de6e84db033b362fbf22c8"
 }
