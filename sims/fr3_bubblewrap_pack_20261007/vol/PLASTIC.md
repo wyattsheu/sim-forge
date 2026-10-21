@@ -30,3 +30,20 @@
 - 「相對箱位移」~20 mm 是整包(杯 + 布)在箱裡一起滑:杯相對箱 21~22 mm、杯轉 25°,兩組一樣,不是布鬆開。判準「各片 <10 mm」用剛體對齊後的形狀變化:A1/A2 中位 6~9 mm 過,對照 xp 25、xn 16 不過。
 - 覆蓋率判準(下降 <10 點):A1 -1、A2 0 過;對照 11 不過。
 - 自穿:烘焙那一步 20 → 191,位置在布四角(flat |x|≈221、|y|≈207 mm = 收耳區),bbox 高 121 → 116(那一刻往下塌 5 mm)。`--plastic_filter_mm 0.1`(自碰撞濾距)沒改善 → 不是 rest 濾距。調查中:`plastic/probe_selfcoll.py`。
+
+## 3. 副作用:重建後自碰撞失效(`plastic/probe_selfcoll.py`)
+200×100×4 板(自碰撞 on、filter 1 mm,同 wrap_vol)對折,上層蓋在下層上方(表面間距 --gap_mm),放手 1 s 後 kinematic 壓板往下壓 3 mm。`grep -h RESULT plastic/logs/probe_sc*.log`
+| 做法 | 自穿(結束)| 上下層 z 差 中位 / 最小 mm |
+|---|---|---|
+| 不烘焙(對照)| **0** | 5.74 / 0.88 |
+| 烘焙(rest ← 當下 + SetActive 同幀重建)| 750 | 1.23 / -3.04 |
+| 烘焙 + filter 0 mm | 749 | 1.17 / -3.04 |
+| 烘焙,rest 層間距 30 mm(壓 30 mm)| 849 | 1.10 / -5.69 |
+| 烘焙改「刪掉重建」| 750 | 1.22 / -3.05 |
+| 烘焙改「release_physics_objects + force_load_physics_from_usd」整場重載 | 754 | 1.21 / -3.35 |
+| 烘焙後 runtime 把 selfCollision 關→開 / 重寫 True + filter | 764 / 749 | 1.26 / -3.04 |
+| **只 SetActive 重建、rest 不改(平)**| 225 | 6.19 / -4.80 |
+| 開場就建成對折形狀(points = rest = U 形,不在 runtime 改)| 992 | 0.74 / -6.40 |
+- 結論:PhysX 107.3 volume deformable 的**自碰撞在 rest ≠ 平板、或 body 在模擬中途重建後就不作用**(各種重建方式、濾距、重開旗標都一樣)。所以「改 rest 模擬塑性」= 回彈消掉,但這塊布之後層與層之間互相穿過(杯子、箱子、夾爪等**其他物體的碰撞照常**,穿杯 0)。
+- wrap 裡:(A) 在關蓋放錨前烘焙 → 之後全程沒有自碰撞,自穿 20 → 130~190(四角收耳區被蓋子壓進下層)。
+- 另:B1(`--plastic_on_fold 1 --plastic_on_release 1 --edamp 0.02 --jaw_collide 1`,frame 重建)在烘焙後下一步 segfault(libcarb.tasking);同旗標 `--until box` 短跑 C1 重現,C2(edamp 0)、C3(jaw_collide 0)、C4(`--plastic_how step`)都正常 → 之後用 `--plastic_how step`。
