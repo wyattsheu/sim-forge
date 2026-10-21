@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T12:05:48+08:00（Asia/Taipei）
+更新：2026-10-21T12:08:35+08:00（Asia/Taipei）
 
 共 9 件：等待 7、執行中 2、完成 0、失敗 0、取消 0。
 
@@ -14,7 +14,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢
 | 物件 | 排程狀態 | Runtime | Revision | 已完成階段 |
 |---|---|---|---|---|
 | usb_hub | running | seeded | revision_0000 | 0/9 |
-| capybara_plush_toy | running | seeded | revision_0000 | 0/9 |
+| capybara_plush_toy | running | seeded | revision_0000 | 1/9 |
 | baseball_cap | queued | not_initialized | 尚未初始化 | 0/9 |
 | curling_iron | queued | not_initialized | 尚未初始化 | 0/9 |
 | dragon | queued | not_initialized | 尚未初始化 | 0/9 |
@@ -48,7 +48,7 @@ Run：`genesis_capybara_plush_toy_20261021`；執行中。
 
 | 階段 | 狀態 |
 |---|---|
-| 圖片清理 | pending |
+| 圖片清理 | success |
 | SAM3 分割 | pending |
 | OmniPart 幾何生成 | pending |
 | 材料推估 | pending |
@@ -59,6 +59,8 @@ Run：`genesis_capybara_plush_toy_20261021`；執行中。
 | 最終匯出 | pending |
 
 Genesis 診斷 episode 數：0。
+
+![capybara_plush_toy_cleaned_image](media/capybara_plush_toy_cleaned_image.png)
 
 
 ## baseball_cap
