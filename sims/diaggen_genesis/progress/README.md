@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T15:01:21+08:00（Asia/Taipei）
+更新：2026-10-21T15:01:38+08:00（Asia/Taipei）
 
 共 9 件：等待 6、執行中 1、完成 0、失敗 2、取消 0。
 
@@ -16,7 +16,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢
 | usb_hub | failed | seeded | revision_0000 | 24576 MiB | 1/9 |
 | capybara_plush_toy | queued | not_initialized | 尚未初始化 | 49152 MiB | 0/9 |
 | baseball_cap | failed | seeded | revision_0000 | 24576 MiB | 0/9 |
-| curling_iron | running | seeded | revision_0000 | 24576 MiB | 1/9 |
+| curling_iron | running | seeded | revision_0000 | 24576 MiB | 2/9 |
 | dragon | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
 | kitchen_tongs | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
 | sauce_keeper | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
@@ -89,7 +89,7 @@ Run：`genesis_curling_iron_20261021_exr_retry1`；執行中。
 | 階段 | 狀態 |
 |---|---|
 | 圖片清理 | success |
-| SAM3 分割 | running |
+| SAM3 分割 | success |
 | OmniPart 幾何生成 | pending |
 | 材料推估 | pending |
 | 材料參數配置 | pending |
@@ -105,6 +105,10 @@ Genesis 診斷 episode 數：0。
 ![curling_iron_processed_white_bg_png](media/curling_iron_processed_white_bg_png.png)
 
 ![curling_iron_processed_rgba](media/curling_iron_processed_rgba.png)
+
+![curling_iron_ordered_mask_vis](media/curling_iron_ordered_mask_vis.png)
+
+![curling_iron_segmentation_overlay](media/curling_iron_segmentation_overlay.png)
 
 
 ## dragon

@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T15:01:21+08:00",
+  "updated_at": "2026-10-21T15:01:38+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-21T15:01:21+08:00",
+      "updated_at": "2026-10-21T15:01:38+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -145,7 +145,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:01:21+08:00",
+      "updated_at": "2026-10-21T15:01:38+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -251,7 +251,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-21T15:01:21+08:00",
+      "updated_at": "2026-10-21T15:01:38+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -357,7 +357,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-21T15:01:21+08:00",
+      "updated_at": "2026-10-21T15:01:38+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -376,11 +376,11 @@
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "running",
-          "ledger_status": "pending",
-          "ok": false,
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
           "started_at": "2026-10-21T07:01:13.478885+00:00",
-          "finished_at": null
+          "finished_at": "2026-10-21T07:01:27.861335+00:00"
         },
         {
           "name": "omnipart_generate_parts",
@@ -461,6 +461,16 @@
           "path": "media/curling_iron_processed_rgba.png",
           "bytes": 82709,
           "sha256": "2d751c28583788d671fb48828dd2e6e9eea6ebd46e19af9e311cfcc23314c5bd"
+        },
+        {
+          "path": "media/curling_iron_ordered_mask_vis.png",
+          "bytes": 1938,
+          "sha256": "fbde97e55c224a8372687d2583eab304030796125667749b0415851ce35f149a"
+        },
+        {
+          "path": "media/curling_iron_segmentation_overlay.png",
+          "bytes": 53859,
+          "sha256": "902248d1abd6f5918be7be558ea48ba16794e388e34004294d06209273b8729f"
         }
       ],
       "id": "curling_iron",
@@ -479,7 +489,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:01:21+08:00",
+      "updated_at": "2026-10-21T15:01:38+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -585,7 +595,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:01:21+08:00",
+      "updated_at": "2026-10-21T15:01:38+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -691,7 +701,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:01:21+08:00",
+      "updated_at": "2026-10-21T15:01:38+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -797,7 +807,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:01:21+08:00",
+      "updated_at": "2026-10-21T15:01:38+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -903,7 +913,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:01:21+08:00",
+      "updated_at": "2026-10-21T15:01:38+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1019,7 +1029,17 @@
       "path": "media/curling_iron_processed_rgba.png",
       "bytes": 82709,
       "sha256": "2d751c28583788d671fb48828dd2e6e9eea6ebd46e19af9e311cfcc23314c5bd"
+    },
+    {
+      "path": "media/curling_iron_ordered_mask_vis.png",
+      "bytes": 1938,
+      "sha256": "fbde97e55c224a8372687d2583eab304030796125667749b0415851ce35f149a"
+    },
+    {
+      "path": "media/curling_iron_segmentation_overlay.png",
+      "bytes": 53859,
+      "sha256": "902248d1abd6f5918be7be558ea48ba16794e388e34004294d06209273b8729f"
     }
   ],
-  "signature": "be746010fef0f52530778c3b2522ef9148712cf2ebf0eedf76d31eef672e2c31"
+  "signature": "4dd9c1f452778789681fad2f53c91843f5c665f7e2abce5c358fc4cc555b39c0"
 }
