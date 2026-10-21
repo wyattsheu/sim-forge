@@ -9,6 +9,8 @@ for d in sys.argv[1:]:
     a = J["args"]; tag = os.path.basename(d.rstrip("/"))
     ex = []
     if a.get("fd_mm", 20) != 20: ex.append("D%.0f" % a["fd_mm"])
+    if a.get("overhang_mm", 30) != 30: ex.append("懸空%.0f" % a["overhang_mm"])
+    if a.get("kR", 0.9) != 0.9: ex.append("kR%.1f" % a["kR"])
     if a.get("fric", 0.8) != 0.8: ex.append("布μ%.1f" % a["fric"])
     if abs(a.get("dt", 1 / 120) - 1 / 120) > 1e-6: ex.append("dt1/%.0f s%d" % (1 / a["dt"], a["solver"]))
     for r in J["rows"]:

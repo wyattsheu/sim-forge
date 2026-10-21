@@ -162,6 +162,7 @@ ap.add_argument("--plastic_pre", type=float, default=0.2, help="[plastic] 放手
 ap.add_argument("--plastic_region", choices=["all", "side"], default="all", help="[plastic] release 時改哪些頂點:all = 全片;side = 本片 + 鉸線內 30mm(其他頂點 rest 不變)")
 ap.add_argument("--plastic_how", choices=["frame", "step"], default="step", help="[plastic] SetActive(False)→(True) 在同一幀(frame)或中間多走一步(step);frame + edamp 0.02 + jaw_collide 1 曾 segfault(PLASTIC.md)")
 ap.add_argument("--plastic_filter_mm", type=float, default=-1.0, help="[plastic] 重建時把 selfCollisionFilterDistance(以 rest 形狀量)改成這個 mm;折好的 rest 層間 <1mm 會被濾掉自碰撞;<0 = 不改")
+ap.add_argument("--plastic_spread_mm", type=float, default=0.0, help="[spread] >0 = 烘焙(全片)時 rest 用 plastic/spread_rest.solve 把疊層撐開到表面間距 >= d mm(邊長 = 當下);自碰撞以 rest 距離濾除,d >= 5 才保得住(PLASTIC.md A2);0 = 舊行為(rest = 當下)")
 ap.add_argument("--release_watch", type=int, default=0, help="[plastic] 1 = 放手後 0.5/2/10 s 印 越線/壁外/自穿/穿杯/杯位移(--plastic_on_release 1 時自動開)")
 ap.add_argument("--grasp_tail_s", type=float, default=0.0, help="[plastic] 抓取段結束後多觀察幾秒(取杯段之前);0 = 舊行為")
 ap.add_argument("--quality", choices=["off", "fast", "final"], default="off",
@@ -1881,6 +1882,11 @@ def plastic_bake(why, t, sel=None):
     cur = PLATE.pts(); old = np.array(ra.Get(), float).reshape(-1, 3); new = old.copy()
     if sel is None: new[:] = cur
     else: new[sel] = cur[sel]
+    if a.plastic_spread_mm > 0 and sel is None:                               # [spread] rest 疊層撐開(PLASTIC.md A2)
+        sys.path.insert(0, os.path.join(HERE, "plastic")); import spread_rest as _SR
+        _t0 = time.time(); new, _si = _SR.solve(cur, FLAT, TETS, T, a.plastic_spread_mm / 1e3, P=P)
+        P("★ t=%.2f [spread] rest 撐開 %.0f mm:疊層對 %d、中面最小 %.2f mm(目標 %.1f)、邊長應變 max %.3f、四面體體積 min %.2e、解 %.1f s"
+          % (t, a.plastic_spread_mm, _si["npair"], _si["sep_min_mm"], _si["D_mm"], _si.get("strain", 0), _si["vmin"], time.time() - _t0))
     e0, e1 = _stvk(cur, old), _stvk(cur, new)
     ra.Set(Vt.Vec3fArray.FromNumpy(new.astype(np.float32)))
     if a.plastic_filter_mm >= 0: PLATE.prim.GetAttribute("physxDeformableBody:selfCollisionFilterDistance").Set(a.plastic_filter_mm / 1e3)
