@@ -1,0 +1,11 @@
+{
+  "schema_version": "diaggen-verified-native-patch-v1",
+  "native_commit": "3d2d3779613b9253109f63e1ff345b11c9097b70",
+  "target": "hag4r/agentic/runtime_tools/diagnostics.py",
+  "before_sha256": "83d9dd20762ac7585aca79e89382fcb7fe72fea250d82113030fd96eaf92fe2f",
+  "before_md5": "9861ef90d331e8222e5d996e82bc6296",
+  "after_sha256": "880efa3e0dcdfb4457c3c0f80ff62682c405e8506f539e434c5adcf6e7ab8a61",
+  "patch_sha256": "1f5c4fe967f7aa25a1e1cbf07711800e930385cd1082bb45dc673c349f7006e0",
+  "contract": "Only revalidation of the unique already-durable closed settlement may use an expired/superseded historical owner. Live-close writes retain current-owner requirements and full immutable lineage checks.",
+  "application_state": "requires_quiescent_runtime"
+}

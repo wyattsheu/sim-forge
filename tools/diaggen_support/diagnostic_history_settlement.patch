@@ -1,0 +1,83 @@
+--- a/hag4r/agentic/runtime_tools/diagnostics.py
++++ b/hag4r/agentic/runtime_tools/diagnostics.py
+@@ -7987,8 +7987,13 @@
+     return {"status": "success", "audit": record, "state_path": str(state_path(bound_run_root))}
+ def _derive_region_close_settlement(
+     state: dict[str, Any], *, attachment_id: str, live_session_handle: str, episode_id: str, close_outcome: str,
++    historical_settlement: Mapping[str, Any] | None = None,
+ ) -> dict[str, Any]:
+-    """Strictly derive close eligibility from owned, current runtime lineage."""
++    """Derive close eligibility; historical reads may verify an expired owner.
++
++    Only coverage projection supplies an existing durable settlement.  The
++    live-close writer keeps the default and still requires a current owner.
++    """
+     diagnostics = _diagnostics(state)
+     if close_outcome not in {"clean_closed", "runtime_failed"}:
+         raise GenesisVlmSchemaError("close settlement outcome must be clean_closed or runtime_failed")
+@@ -8013,7 +8018,43 @@
+     if close_outcome == "clean_closed" and isinstance(failure, Mapping):
+         close_outcome = "runtime_failed"
+     expected_lifecycle_states = {"closed_failed", "closed"} if close_outcome == "runtime_failed" else {"closed"}
+-    if attachment.get("status") not in {"attached", "completed"} or session.get("agent_invocation_id") != attachment.get("agent_invocation_id") or session.get("lifecycle_state") not in expected_lifecycle_states:
++    owner_status_valid = attachment.get("status") in {"attached", "completed"}
++    if historical_settlement is not None:
++        # This is verification of an already persisted close, never permission
++        # to create a close under an expired/superseded owner.  Require the
++        # actual unique ledger row and its immutable ownership/time snapshot;
++        # the rest of this verifier independently re-derives all probe evidence.
++        settlement_id = historical_settlement.get("settlement_id")
++        persisted = [
++            item for item in diagnostics["region_settlements"]
++            if isinstance(item, Mapping) and item.get("settlement_id") == settlement_id
++        ]
++        lineage = historical_settlement.get("evidence_lineage")
++        ownership = lineage.get("ownership") if isinstance(lineage, Mapping) else None
++        expected_identity = {
++            "region_id": region_id, "attachment_id": attachment_id,
++            "live_session_handle": live_session_handle, "episode_id": episode_id,
++            "active_revision_id": revision, "close_outcome": close_outcome,
++        }
++        expected_ownership = {
++            "attachment_id": attachment_id,
++            "agent_invocation_id": attachment.get("agent_invocation_id"),
++            "live_session_handle": live_session_handle, "episode_id": episode_id,
++            "lifecycle_state": session.get("lifecycle_state"),
++            "closed_at": session.get("closed_at"), "bound_at": session.get("bound_at"),
++        }
++        if (
++            not settlement_id
++            or len(persisted) != 1
++            or persisted[0] is not historical_settlement
++            or any(historical_settlement.get(key) != value for key, value in expected_identity.items())
++            or not session.get("closed_at")
++            or not isinstance(ownership, Mapping)
++            or dict(ownership) != expected_ownership
++        ):
++            raise GenesisVlmSchemaError("historical close settlement has invalid durable ownership lineage")
++        owner_status_valid = owner_status_valid or attachment.get("status") in {"expired", "superseded"}
++    if not owner_status_valid or session.get("agent_invocation_id") != attachment.get("agent_invocation_id") or session.get("lifecycle_state") not in expected_lifecycle_states:
+         raise GenesisVlmSchemaError("close settlement live session crosses attachment ownership")
+     episodes = [item for item in diagnostics["episodes"] if isinstance(item, Mapping) and item.get("episode_id") == episode_id]
+     if len(episodes) != 1:
+@@ -8306,6 +8347,12 @@
+             raise GenesisVlmSchemaError(
+                 f"coverage summary region ledger entry {position} is not the immutable planned region"
+             )
++    planned_region_ids = {entry.get("region_id") for entry in ledger}
++    if any(
++        not isinstance(item, Mapping) or item.get("region_id") not in planned_region_ids
++        for item in diagnostics["region_settlements"]
++    ):
++        raise GenesisVlmSchemaError("coverage summary rejects settlement outside the planned region ledger")
+     regions = []
+     for entry in ledger:
+         if not isinstance(entry, Mapping):
+@@ -8364,6 +8411,7 @@
+                 live_session_handle=str(settlement["live_session_handle"]),
+                 episode_id=str(settlement["episode_id"]),
+                 close_outcome=str(settlement["close_outcome"]),
++                historical_settlement=settlement,
+             )
+             if settlement.get("status") != derived["status"] or settlement.get("evidence_lineage") != derived["evidence_lineage"]:
+                 raise GenesisVlmSchemaError("coverage summary rejects settlement status or evidence-lineage drift")

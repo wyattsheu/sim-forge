@@ -9,6 +9,30 @@
 - 8 張官方 demo 圖片擷取自影片的輸入照片區，解析度受影片限制，未放大；另外 1 張水豚玩偶照片由使用者提供。總覽圖片只包含 8 張官方擷取圖。
 - 模型權重、第三方環境與完整工作檔保留在伺服器。此目錄的程式負責等待、整理和進度發布；實際 pipeline 由原專案的 Codex skill 執行。
 
+## 2026-10-21 晚間：首件完整匯出與流程修復
+
+**電捲棒已完成 9 個階段並歸檔**：`runs/genesis_curling_iron_20261021_exr_retry1/`。獨立驗證確認 16 個 canonical 匯出檔、1,178 個頂點、4,171 個四面體、兩種材料標籤與單一面連通區；原生物理契約、外觀 GLB、外觀與物理綁定、來源及匯出 SHA256 均通過。兩支診斷 MP4 分別為 31／43 幀、10 fps（3.1／4.3 秒）。這代表生成與診斷流程通過，實物物性仍須測量對照。
+
+此 run 先前已完成原生匯出，但父流程漏掉最後完成狀態，導致外部 queue 誤判失敗。新增 `tools/diaggen_support/validate_completed_export.py`，預設唯讀；只有 `--settle` 通過完整驗證後才用原生 bookkeeping 記錄結案。`queue/reconcile_export.py` 先保存舊失敗紀錄，重新歸檔並核對所有雜湊，才修正外部 queue；未重跑任何生成階段，也未改寫 stage terminal。
+
+其他工作已查明的問題如下，不能把等待當成仍在推論：
+
+| 物件 | 實際卡點 |
+| --- | --- |
+| 球鞋 | 前段網格已完成；診斷錯誤拒絕已關閉的歷史 session 紀錄，反覆重開 child 仍會重現。已透過原生 MCP shutdown 完成清理，保留可重試狀態。 |
+| USB Hub、樹懶 | 前段產物可保留；child 未正確呼叫原生工具，或抄錯顯存 guard 路徑。 |
+| 龍 | 清理候選圖已存在，但未完成原生註冊。 |
+| 棒球帽 | 已成功清理後又生成第二次候選，原生規則拒絕繼續。 |
+| 水豚 | 提高顯存後遇到 spconv/cumm int32 assertion；此輪不是 OOM，仍需驗證對應 backend 修復。 |
+| 廚房夾 | SAM3 原始預測為空；原生 fallback 與技能接受條件不一致。 |
+| 醬料盒 | 已進 Genesis；三次固定點設定均不合格，留下真實 business halt，尚無最終貼圖或匯出。 |
+
+新增單次原生工具入口 `tools/diaggen_support/stage_tool.py --list`，列出 30 個非診斷工具及真實參數；每次只呼叫指定函式，不自動排程、提交或重試。OmniPart 入口內建同 UUID 的顯存檢查，避免 child 手抄路徑。診斷仍由 MCP 與其 child 擁有。
+
+歷史 session 修補僅允許重新驗證已存在、唯一、已關閉且身份／時間快照完全一致的 settlement；不授權舊 owner 建立新的 close。補丁與前後 SHA256 保留在 `tools/diaggen_support/diagnostic_history_settlement.*`。14 項回歸測試包含原版必定失敗的對照，以及錯誤 owner、重開 session、偽造紀錄等拒絕案例。
+
+先前 71 項預檢涵蓋環境與小型 fixture，沒有涵蓋這些完整流程接線、歷史紀錄與最終結案錯誤；不能將預檢通過解讀為九件均可完成。即時數量與續跑狀態以 [progress/](progress/) 為準。
+
 ## 背景執行
 
 `queue/wait_and_run.sh` 在伺服器的 `tmux` session `diaggen-genesis-wait` 執行。每 **15 秒**檢查顯存，只要某張 GPU 至少有 **24576 MiB（24 GiB）** 可用就可啟動；允許和既有運算工作共用，不要求 GPU 利用率低或完全閒置。每張 GPU 同時最多一個本批次工作，整批最多兩個工作並行。水豚曾在 OmniPart mesh decoder 發生 OOM，下一次單獨改用 **49152 MiB（48 GiB）** 試跑；其餘仍為 24 GiB。進入 OmniPart 前，該階段子代理還必須在原綁定 GPU 上重新等待相同門檻。顯存檢查不會保留容量，無法保證其他程序稍後不增加用量。
@@ -69,7 +93,7 @@ USB Hub 重跑已通過 SAM3 並產生中間 combined mesh；原生程式因缺�
 
 ## 模型選擇
 
-先保留 GPT-6 Luna Max 完成基準試跑，再依錯誤類型比較更強模型；目前沒有本批結果，不能保證九件都達標。若零件語義、材料推斷或診斷修正反覆失敗，可選代表案例改用更強模型做同條件比較。[OpenAI Docs](https://developers.openai.com/api/docs/guides/model-selection)建議按實測選擇達標的模型。更多 reasoning 預算和模型本身能力是不同因素。
+先保留 GPT-6 Luna Max 完成基準試跑，再依錯誤類型比較更強模型；目前電捲棒已完成，尚不能保證九件都達標。若零件語義、材料推斷或診斷修正反覆失敗，可選代表案例改用更強模型做同條件比較。[OpenAI Docs](https://developers.openai.com/api/docs/guides/model-selection)建議按實測選擇達標的模型。更多 reasoning 預算和模型本身能力是不同因素。
 
 更換 LLM 不會自動更換 SAM3、OmniPart 或貼圖工具；清楚原圖、實際尺寸、材料資料與真實互動對照仍然重要。
 
