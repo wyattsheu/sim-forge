@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T15:42:57+08:00",
+  "updated_at": "2026-10-21T15:45:29+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-21T15:42:57+08:00",
+      "updated_at": "2026-10-21T15:45:29+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -145,7 +145,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T07:14:19.925656+00:00",
-      "updated_at": "2026-10-21T15:42:57+08:00",
+      "updated_at": "2026-10-21T15:45:29+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -277,7 +277,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-21T15:42:57+08:00",
+      "updated_at": "2026-10-21T15:45:29+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -383,7 +383,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-21T15:42:57+08:00",
+      "updated_at": "2026-10-21T15:45:29+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -420,11 +420,11 @@
         {
           "name": "hag4r_gpt_staged_material_inference",
           "label": "材料推估",
-          "status": "running",
-          "ledger_status": "pending",
-          "ok": false,
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
           "started_at": "2026-10-21T07:42:42.684410+00:00",
-          "finished_at": null
+          "finished_at": "2026-10-21T07:45:26.508960+00:00"
         },
         {
           "name": "hag4r_assign_params_to_prims",
@@ -545,7 +545,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:42:57+08:00",
+      "updated_at": "2026-10-21T15:45:29+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -651,7 +651,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:42:57+08:00",
+      "updated_at": "2026-10-21T15:45:29+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -757,7 +757,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:42:57+08:00",
+      "updated_at": "2026-10-21T15:45:29+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -863,7 +863,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:42:57+08:00",
+      "updated_at": "2026-10-21T15:45:29+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -969,7 +969,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:42:57+08:00",
+      "updated_at": "2026-10-21T15:45:29+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1152,5 +1152,5 @@
       "sha256": "78849dca3ddc0b4065bbfac0f79878a95b785070ef96ed50cccdd756df20e5a2"
     }
   ],
-  "signature": "7388b1ecaab4b446ae11f3cb1d837029415e2d8123b054853722f8a6ef5645e2"
+  "signature": "9cb9de3d7afe409001237357e76c8be11d46726ae06c1b30277f00da2603c3f6"
 }
