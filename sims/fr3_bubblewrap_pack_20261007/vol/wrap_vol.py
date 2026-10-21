@@ -1961,7 +1961,7 @@ for fr in range(NFR):
             _pl = GS["plans"][-1]; g_line(_pl, g_metrics(_pl, tcur, Pp), r)
             if a.jaw_collide:                                                 # [jaw3] 指-布最小距離(布頂點對指盒 SDF,負 = 穿入)
                 _FS = {"up": GFS, "lo": GFS, "h2a": H2F if a.hand2 == "jaw" else None, "h2b": H2F if a.hand2 == "jaw" else None,
-                       "h3a": H3F if a.extract_grip == "jaw" else None, "h3b": H3F if a.extract_grip == "jaw" else None}
+                       "h3a": H3F if (a.extract and a.extract_grip == "jaw") else None, "h3b": H3F if (a.extract and a.extract_grip == "jaw") else None}   # [matsweep] --extract 0 時 H3F 未定義
                 _cl = {"up": "grip" in _pl["ev"] and (tcur < _pl.get("TR", 1e9) or (a.hold_yp and _pl["sd"] == "yp")),
                        "h2": any(_p.get("h2", {}).get("att_on") for _p in GS["plans"]), "h3": "bind" in X and "free" not in X}
                 _out = []
