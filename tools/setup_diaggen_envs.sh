@@ -31,7 +31,9 @@ build_hag4r_segmentation() {
   "$p/bin/python" -m pip install torch==2.10.0 torchvision --index-url "$TORCH_IDX"
   "$p/bin/python" -m pip install -e "$ROOT/third_party/sam3"
   # sam3 still imports pkg_resources, removed in setuptools 81
-  "$p/bin/python" -m pip install "setuptools<81" Pillow PyYAML opencv-python scipy einops pycocotools psutil
+  # OpenCV 5.0 wheels omit OpenEXR; segmentation requires a float32 EXR writer.
+  "$p/bin/python" -m pip install "setuptools<81" Pillow PyYAML opencv-python==4.13.0.92 scipy einops pycocotools psutil
+  "$p/bin/python" "$ROOT/../check_diaggen_exr.py"
 }
 
 build_omnipart() {

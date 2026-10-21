@@ -135,6 +135,147 @@ class BatchControlTests(unittest.TestCase):
         self.assertIsNone(self.queue.claim("GPU-A"))
         self.assertTrue(all(job["status"] == "queued" for job in self.state()["jobs"]))
 
+    def test_hold_blocks_candidates_and_claim_without_probing_or_changing_jobs(self):
+        self.assertEqual(self.queue.claim("GPU-A"), "object_0")
+        self.queue.bind("object_0", 123)
+        before = self.state()
+        (self.base / "queue/HOLD").write_text("Investigating a shared dependency.\n")
+
+        def unexpected_query():
+            self.fail("A held queue must not probe GPUs or launch more jobs")
+
+        self.queue.gpu_query = unexpected_query
+        self.assertEqual(self.queue.candidates(), [])
+        self.assertIsNone(self.queue.claim("GPU-B"))
+        self.assertEqual(self.state(), before)
+        self.assertFalse(self.queue.done())
+
+    def test_release_hold_restores_selection_and_active_jobs_can_finish(self):
+        self.assertEqual(self.queue.claim("GPU-A"), "object_0")
+        hold = self.base / "queue/HOLD"
+        hold.touch()
+        self.queue.finish("object_0", "success")
+        self.assertEqual(self.queue.info("object_0", "status"), "success")
+        self.assertEqual(self.queue.candidates(), [])
+        self.assertIsNone(self.queue.claim("GPU-A"))
+        self.assertTrue(all(job["status"] == "queued" for job in self.state()["jobs"][1:]))
+        hold.unlink()
+        self.assertEqual(self.queue.candidates(), ["GPU-A", "GPU-B"])
+        self.assertEqual(self.queue.claim("GPU-A"), "object_1")
+
+    def prepare_failed_retry(self):
+        self.assertEqual(self.queue.claim("GPU-A"), "object_0")
+        self.queue.finish("object_0", "failed", "execution_failed")
+        logs = self.base / "queue/jobs/object_0"
+        logs.mkdir(parents=True)
+        (logs / "STARTED").write_text("original launch\n")
+        (logs / "launcher.log").write_text("original failure\n")
+        (self.base / "queue/HOLD").touch()
+        return logs
+
+    def test_retry_archives_failed_logs_preserves_history_and_attempts(self):
+        logs = self.prepare_failed_retry()
+        prior = self.state()["jobs"][0]
+        native = self.base.parents[1] / "tools/diaggen/outputs/agentic_asset_refinement/genesis_object_0"
+        archive = self.base / "runs/genesis_object_0"
+        for directory in (native, archive):
+            directory.mkdir(parents=True)
+            (directory / "evidence").write_text("preserve\n")
+        result = self.queue.retry("object_0", "genesis_object_0_retry1", "sam3_exr_repaired")
+        job = self.state()["jobs"][0]
+        self.assertEqual(job["status"], "queued")
+        self.assertEqual(job["run_id"], "genesis_object_0_retry1")
+        self.assertEqual(job["attempts"], prior["attempts"])
+        for field in ("gpu_uuid", "runner_pid", "started_at", "finished_at"):
+            self.assertIsNone(job[field])
+        self.assertNotIn("reason", job)
+        previous = job["attempts_history"][0]
+        for key, value in prior.items():
+            self.assertEqual(previous[key], value)
+        self.assertEqual(previous["retry_reason"], "sam3_exr_repaired")
+        history = self.base / "queue/job_history/object_0/genesis_object_0"
+        self.assertFalse(logs.exists())
+        self.assertEqual((history / "launcher.log").read_text(), "original failure\n")
+        self.assertEqual(result["queue_logs_from"], "jobs/object_0")
+        self.assertEqual(result["queue_logs_to"], "job_history/object_0/genesis_object_0")
+        self.assertTrue((self.base / "queue/HOLD").exists())
+        for directory in (native, archive):
+            self.assertEqual((directory / "evidence").read_text(), "preserve\n")
+        (self.base / "queue/HOLD").unlink()
+        self.assertEqual(self.queue.claim("GPU-A"), "object_0")
+        self.assertEqual(self.state()["jobs"][0]["attempts"], 2)
+
+    def test_retry_requires_hold_and_failed_status(self):
+        (self.base / "queue/HOLD").touch()
+        with self.assertRaises(ValueError):
+            self.queue.retry("object_0", "fresh_run", "dependency_repaired")
+        (self.base / "queue/HOLD").unlink()
+        self.queue.claim("GPU-A")
+        (self.base / "queue/HOLD").touch()
+        with self.assertRaises(ValueError):
+            self.queue.retry("object_0", "fresh_run", "dependency_repaired")
+        self.queue.finish("object_0", "success")
+        with self.assertRaises(ValueError):
+            self.queue.retry("object_0", "fresh_run", "dependency_repaired")
+        (self.base / "queue/HOLD").unlink()
+        with self.assertRaises(ValueError):
+            self.queue.retry("object_0", "fresh_run", "dependency_repaired")
+
+    def test_retry_refuses_unsafe_duplicate_ids_reasons_and_existing_history(self):
+        logs = self.prepare_failed_retry()
+        before = self.state()
+        for run_id, reason in (("../escape", "fixed"), ("genesis_object_0", "fixed"),
+                               ("genesis_object_1", "fixed"), ("fresh_run", "not safe")):
+            with self.subTest(run_id=run_id, reason=reason), self.assertRaises(ValueError):
+                self.queue.retry("object_0", run_id, reason)
+            self.assertEqual(self.state(), before)
+            self.assertTrue(logs.exists())
+        history = self.base / "queue/job_history/object_0/genesis_object_0"
+        history.mkdir(parents=True)
+        (history / "preserved").touch()
+        with self.assertRaises(ValueError):
+            self.queue.retry("object_0", "fresh_run", "dependency_repaired")
+        self.assertTrue((history / "preserved").exists())
+        self.assertTrue(logs.exists())
+        self.assertEqual(self.state(), before)
+
+    def test_retry_refuses_live_runner_without_killing_it(self):
+        self.prepare_failed_retry()
+        state = self.state()
+        state["jobs"][0]["runner_pid"] = 123
+        batch.atomic_json(self.base / "queue/batch.json", state)
+        with patch.object(batch.os, "kill", return_value=None) as check:
+            with self.assertRaises(ValueError):
+                self.queue.retry("object_0", "fresh_run", "dependency_repaired")
+            check.assert_called_once_with(123, 0)
+        self.assertEqual(self.state(), state)
+        with patch.object(batch.os, "kill", side_effect=PermissionError):
+            with self.assertRaises(ValueError):
+                self.queue.retry("object_0", "fresh_run", "dependency_repaired")
+        with patch.object(batch.os, "kill", side_effect=ProcessLookupError):
+            self.queue.retry("object_0", "fresh_run", "dependency_repaired")
+
+    def test_retry_does_not_reuse_a_prior_attempt_run_id(self):
+        self.prepare_failed_retry()
+        self.queue.retry("object_0", "retry_run", "dependency_repaired")
+        (self.base / "queue/HOLD").unlink()
+        self.queue.claim("GPU-A")
+        self.queue.finish("object_0", "failed", "execution_failed")
+        (self.base / "queue/jobs/object_0").mkdir()
+        (self.base / "queue/HOLD").touch()
+        with self.assertRaises(ValueError):
+            self.queue.retry("object_0", "genesis_object_0", "dependency_repaired")
+
+    def test_retry_rolls_logs_back_if_batch_commit_fails(self):
+        logs = self.prepare_failed_retry()
+        before = self.state()
+        with patch.object(batch, "atomic_json", side_effect=OSError("simulated write failure")):
+            with self.assertRaises(OSError):
+                self.queue.retry("object_0", "fresh_run", "dependency_repaired")
+        self.assertTrue(logs.exists())
+        self.assertEqual((logs / "launcher.log").read_text(), "original failure\n")
+        self.assertEqual(self.state(), before)
+
     def test_two_parallel_jobs_one_per_card_then_next_job(self):
         self.assertEqual(self.queue.claim("GPU-A"), "object_0")
         self.assertIsNone(self.queue.claim("GPU-A"))

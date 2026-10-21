@@ -60,6 +60,13 @@ state running "Shared GPU $CUDA_VISIBLE_DEVICES; Genesis diagnostics enabled"
 export HAG4R_SAM3_CHECKPOINT_PATH="$HOME/.cache/huggingface/hub/models--facebook--sam3/snapshots/3c879f39826c281e95690f02c7821c4de09afae7/sam3.pt"
 # Keep Genesis cache writes separate when both GPUs have an active batch job.
 export GS_CACHE_FILE_PATH="$RUN_ROOT/.cache/genesis"
+if ! "$DIAGGEN_ROOT/.conda/hag4r_segmentation/bin/python" "$WORKSPACE/tools/check_diaggen_exr.py" \
+    > "$DIAGGEN_JOB_QUEUE_DIR/exr_preflight.json" 2> "$DIAGGEN_JOB_QUEUE_DIR/exr_preflight.stderr.log"; then
+    printf '%s\n' "SAM3 EXR preflight failed; repair the local environment before clearing HOLD." > "$ROOT_QUEUE/HOLD"
+    state failed "SAM3 EXR preflight failed; new jobs held"
+    finish_job failed exr_preflight_failed
+    exit 0
+fi
 cd "$DIAGGEN_ROOT"
 mkdir -p outputs/inputs
 FROZEN_INPUT="$DIAGGEN_ROOT/outputs/inputs/${DIAGGEN_QUEUE_RUN_ID}.${SOURCE_IMAGE##*.}"

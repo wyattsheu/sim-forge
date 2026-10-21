@@ -242,6 +242,9 @@ class Queue:
 
     def candidates(self):
         with self._locked():
+            # HOLD only pauses new launches; existing runners keep their state.
+            if (self.directory / "HOLD").exists():
+                return []
             batch = self._load()
             active = [job for job in batch["jobs"] if job["status"] == "running"]
             if len(active) >= batch["policy"]["max_parallel_jobs"] or not any(job["status"] == "queued" for job in batch["jobs"]):
@@ -254,6 +257,9 @@ class Queue:
     def claim(self, gpu_uuid):
         validate_gpu_uuid(gpu_uuid)
         with self._locked():
+            # Recheck here as HOLD may appear after candidate selection.
+            if (self.directory / "HOLD").exists():
+                return None
             batch = self._load()
             active = [job for job in batch["jobs"] if job["status"] == "running"]
             if len(active) >= batch["policy"]["max_parallel_jobs"] or any(job["gpu_uuid"] == gpu_uuid for job in active):
@@ -318,6 +324,78 @@ class Queue:
                 job["reason"] = reason
             self._save(batch)
 
+    def retry(self, job_id, new_run_id, reason):
+        """Archive failed launcher logs and explicitly queue a fresh native run."""
+        validate_identifier(new_run_id)
+        if not isinstance(reason, str) or not REASON.fullmatch(reason):
+            raise ValueError("Retry reason must be a short lowercase enum")
+        with self._locked():
+            if not (self.directory / "HOLD").exists():
+                raise ValueError("Retry requires queue/HOLD until repair is reviewed")
+            batch = self._load()
+            job = self._job(batch, job_id)
+            if job["status"] != "failed":
+                raise ValueError("Only a failed job can be retried")
+            previous_run_id = job["run_id"]
+            used_run_ids = {entry["run_id"] for entry in batch["jobs"]}
+            for entry in batch["jobs"]:
+                history = entry.get("attempts_history", [])
+                if not isinstance(history, list) or not all(isinstance(item, dict) for item in history):
+                    raise ValueError("Invalid attempts history")
+                used_run_ids.update(item.get("run_id") for item in history)
+            if new_run_id in used_run_ids:
+                raise ValueError("Retry requires a new unique run identifier")
+            runner_pid = job.get("runner_pid")
+            if runner_pid is not None:
+                if type(runner_pid) is not int or runner_pid <= 0:
+                    raise ValueError("Invalid prior runner PID")
+                try:
+                    os.kill(runner_pid, 0)
+                except ProcessLookupError:
+                    pass
+                except PermissionError:
+                    raise ValueError("Prior runner may still be alive") from None
+                else:
+                    raise ValueError("Prior runner is still alive")
+            source = self.directory / "jobs" / job_id
+            destination = self.directory / "job_history" / job_id / previous_run_id
+            for path in (source, destination):
+                try:
+                    path.resolve().relative_to(self.directory.resolve())
+                except ValueError:
+                    raise ValueError("Job log path escapes queue") from None
+            if source.is_symlink() or not source.is_dir():
+                raise ValueError("Completed job log directory is missing or unsafe")
+            if destination.exists() or destination.is_symlink():
+                raise ValueError("Prior job history directory already exists")
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            mapping = {
+                "job_id": job_id, "previous_run_id": previous_run_id,
+                "run_id": new_run_id, "retry_reason": reason,
+                "queue_logs_from": str(source.relative_to(self.directory)),
+                "queue_logs_to": str(destination.relative_to(self.directory)),
+            }
+            previous = dict(job)
+            history = list(previous.pop("attempts_history", []))
+            previous.update(retry_reason=reason, requeued_at=now(),
+                            queue_history_directory=mapping["queue_logs_to"])
+            history.append(previous)
+            job.update(run_id=new_run_id, status="queued", gpu_uuid=None, runner_pid=None,
+                       started_at=None, finished_at=None, attempts_history=history)
+            job.pop("reason", None)
+            # All queue operations honor batch.lock, so this rename cannot collide
+            # with another retry. Native output and its completed archive stay put.
+            source.rename(destination)
+            try:
+                batch["updated_at"] = now()
+                atomic_json(self.path, batch)
+            except BaseException:
+                destination.rename(source)
+                raise
+            # The batch file is the commit point; this derived view can be rebuilt.
+            atomic_json(self.directory / "status.json", self._summary(batch))
+            return mapping
+
     def summary(self):
         with self._locked():
             summary = self._summary(self._load())
@@ -363,6 +441,8 @@ def main(argv=None):
         print(str(value).lower() if isinstance(value, bool) else value)
     elif command == "finish" and len(rest) in (2, 3):
         queue.finish(*rest)
+    elif command == "retry" and len(rest) == 3:
+        print(json.dumps(queue.retry(*rest), ensure_ascii=False))
     elif command == "summary" and not rest:
         print(json.dumps(queue.summary(), ensure_ascii=False))
     elif command == "done" and not rest:

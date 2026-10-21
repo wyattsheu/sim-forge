@@ -50,6 +50,20 @@ Cancel queued jobs (checked within 15 seconds):
 Already running jobs finish normally. No failed run is automatically retried or
 overwritten. tmux survives closing the chat/SSH, but not a server reboot.
 
+To hold new launches while retaining queued jobs, create queue/HOLD. Existing
+jobs continue. After a verified dependency repair, explicit retries can be
+requested while HOLD exists:
+  <hag4r-python> queue/batch_control.py retry <job_id> <new_run_id> <reason_enum>
+Only failed jobs with an exited launcher can retry. Old queue logs move into
+queue/job_history/<job_id>/<old_run_id>/ and native runs/archives stay intact.
+Remove HOLD only after verifying the repair. Each launcher checks actual
+float32 EXR write/read before initializing an expensive native pipeline.
+
+2026-10-21: fixed project-local SAM3 OpenCV from 5.0.0.93 (no OpenEXR) to
+4.13.0.92, matching DiagGen requirements. The native save_mask_exr function
+round-tripped the actual USB Hub 518x518 mask exactly. Four failed attempts
+were explicitly requeued with _exr_retry1 run IDs; no success was fabricated.
+
 GitHub progress: branch diaggen-genesis-progress, directory
   sims/diaggen_genesis/progress/
 Publisher session: diaggen-github-progress
