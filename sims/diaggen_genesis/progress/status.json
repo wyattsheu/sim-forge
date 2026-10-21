@@ -2,10 +2,10 @@
   "schema_version": "diaggen-public-batch-progress-v1",
   "pipeline": "DiagGen",
   "simulator": "Genesis",
-  "phase": "waiting_gpu",
+  "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T12:22:45+08:00",
+  "updated_at": "2026-10-21T13:05:36+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -13,8 +13,8 @@
     "max_parallel_jobs": 2
   },
   "counts": {
-    "queued": 6,
-    "running": 0,
+    "queued": 5,
+    "running": 1,
     "success": 0,
     "failed": 3,
     "cancelled": 0,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T04:05:19.455387+00:00",
-      "updated_at": "2026-10-21T12:22:45+08:00",
+      "updated_at": "2026-10-21T13:05:36+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -154,7 +154,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T04:05:19.462238+00:00",
-      "updated_at": "2026-10-21T12:22:45+08:00",
+      "updated_at": "2026-10-21T13:05:36+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -275,7 +275,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T04:12:53.485565+00:00",
-      "updated_at": "2026-10-21T12:22:45+08:00",
+      "updated_at": "2026-10-21T13:05:36+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -390,15 +390,15 @@
       "pipeline": "DiagGen",
       "simulator": "Genesis",
       "run_id": "genesis_curling_iron_20261021",
-      "phase": "waiting_gpu",
-      "pipeline_status": "not_initialized",
+      "phase": "running",
+      "pipeline_status": "seeded",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
-      "active_revision": null,
-      "created_at": null,
-      "updated_at": "2026-10-21T12:22:45+08:00",
+      "active_revision": "revision_0000",
+      "created_at": "2026-10-21T05:05:25.899087+00:00",
+      "updated_at": "2026-10-21T13:05:36+08:00",
       "diagnostics": {
-        "enabled": null,
+        "enabled": true,
         "episode_count": 0,
         "terminal_status": "not_available"
       },
@@ -487,8 +487,8 @@
       ],
       "media": [],
       "id": "curling_iron",
-      "status": "queued",
-      "attempts": 0
+      "status": "running",
+      "attempts": 1
     },
     {
       "schema_version": "diaggen-public-progress-v1",
@@ -501,7 +501,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:22:45+08:00",
+      "updated_at": "2026-10-21T13:05:36+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -606,7 +606,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:22:45+08:00",
+      "updated_at": "2026-10-21T13:05:36+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -711,7 +711,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:22:45+08:00",
+      "updated_at": "2026-10-21T13:05:36+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -816,7 +816,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:22:45+08:00",
+      "updated_at": "2026-10-21T13:05:36+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -921,7 +921,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T12:22:45+08:00",
+      "updated_at": "2026-10-21T13:05:36+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1063,5 +1063,5 @@
       "sha256": "a804a9cb030a1704a976c42ef6d76c28dab205ba226bed1330daadbcb7b48b82"
     }
   ],
-  "signature": "5f97e8368d34c28a63c4ed2d07159521f96050878af6a4f1f709238b18866cd9"
+  "signature": "5e85cc7371ea61facfda931655899d92da328c820dd432eba2cb1de266342d85"
 }
