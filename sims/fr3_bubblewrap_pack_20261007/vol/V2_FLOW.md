@@ -43,7 +43,7 @@
 - 量測:`[v2]` 每個時間點印出膠帶點相對杯的位移、全布相對杯的位移、包裹形狀變化(和參考時刻的布做 Kabsch 最佳剛體對齊後的殘差)、窗內最大邊長比、杯頂覆蓋、穿杯。結尾印 `[v2] SUMMARY`,另寫 `v2.json`。
 
 其他檔:
-- `../publish_sim_forge.sh`:EXC 加 `--exclude 'v2/*/'`,備份 `.before_v2`。
+- `../publish_sim_forge.sh`:EXC 加 `--exclude 'v2/*/'`,不推每次模擬的輸出。另外在 EXC 最前面加 `--include 'v2/'`,因為舊規則 `'v[1-4]*/'` 會把整個 v2/ 擋掉,腳本也推不上去。備份 `.before_v2`。
 - `vol/v2/` 新檔:
   - `run.sh`:包一層 run3.sh,`@demo` 加上桌面掀法、寬指純摩擦和 v2 旗標。
   - `table.py`:出兩張表。
