@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T16:06:12+08:00",
+  "updated_at": "2026-10-21T16:07:44+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-21T16:06:12+08:00",
+      "updated_at": "2026-10-21T16:07:44+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -145,7 +145,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T07:14:19.925656+00:00",
-      "updated_at": "2026-10-21T16:06:12+08:00",
+      "updated_at": "2026-10-21T16:07:44+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -277,7 +277,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-21T16:06:12+08:00",
+      "updated_at": "2026-10-21T16:07:44+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -378,12 +378,12 @@
       "simulator": "Genesis",
       "run_id": "genesis_curling_iron_20261021_exr_retry1",
       "phase": "running",
-      "pipeline_status": "seeded",
+      "pipeline_status": "running",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-21T16:06:12+08:00",
+      "updated_at": "2026-10-21T16:07:44+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -555,7 +555,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:06:12+08:00",
+      "updated_at": "2026-10-21T16:07:44+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -661,7 +661,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:06:12+08:00",
+      "updated_at": "2026-10-21T16:07:44+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -767,7 +767,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:06:12+08:00",
+      "updated_at": "2026-10-21T16:07:44+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -873,7 +873,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:06:12+08:00",
+      "updated_at": "2026-10-21T16:07:44+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -979,7 +979,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T16:06:12+08:00",
+      "updated_at": "2026-10-21T16:07:44+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1172,5 +1172,5 @@
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "fe270d7356a8610aef73150821cc00cb110efe5973a3353cde8db761cfa35426"
+  "signature": "5a2a9dabcb3437fad37d7ca5e1086f88dfbec4095a3003fb104cc05638e9ced6"
 }
