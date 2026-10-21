@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T17:32:43+08:00",
+  "updated_at": "2026-10-21T17:33:16+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -14,9 +14,9 @@
   },
   "counts": {
     "queued": 1,
-    "running": 2,
+    "running": 1,
     "success": 0,
-    "failed": 6,
+    "failed": 7,
     "cancelled": 0,
     "unknown": 0,
     "total": 9
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-21T17:32:43+08:00",
+      "updated_at": "2026-10-21T17:33:16+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -145,7 +145,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T07:14:19.925656+00:00",
-      "updated_at": "2026-10-21T17:32:43+08:00",
+      "updated_at": "2026-10-21T17:33:16+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -277,7 +277,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-21T17:32:43+08:00",
+      "updated_at": "2026-10-21T17:33:16+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -383,7 +383,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-21T17:32:43+08:00",
+      "updated_at": "2026-10-21T17:33:16+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -560,7 +560,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-21T17:32:43+08:00",
+      "updated_at": "2026-10-21T17:33:16+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -666,7 +666,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:38:07.768841+00:00",
-      "updated_at": "2026-10-21T17:32:43+08:00",
+      "updated_at": "2026-10-21T17:33:16+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -792,13 +792,13 @@
       "pipeline": "DiagGen",
       "simulator": "Genesis",
       "run_id": "genesis_sauce_keeper_20261021",
-      "phase": "running",
+      "phase": "failed",
       "pipeline_status": "failed",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:46:28.056801+00:00",
-      "updated_at": "2026-10-21T17:32:43+08:00",
+      "updated_at": "2026-10-21T17:33:16+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
@@ -945,7 +945,7 @@
         }
       ],
       "id": "sauce_keeper",
-      "status": "running",
+      "status": "failed",
       "attempts": 1,
       "minimum_free_mib": 24576
     },
@@ -960,7 +960,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:26:08.183115+00:00",
-      "updated_at": "2026-10-21T17:32:43+08:00",
+      "updated_at": "2026-10-21T17:33:16+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1092,7 +1092,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T17:32:43+08:00",
+      "updated_at": "2026-10-21T17:33:16+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1395,5 +1395,5 @@
       "sha256": "e8f6c59999adb9b35af2b43b42cbf913b01fb872489aa93277757b1d30fdd186"
     }
   ],
-  "signature": "ce520e6288a956f5f04e0fb34f2aa55afbadfff77922ad57f75d7b8777d9b4da"
+  "signature": "31fac3f4bcb24c78f3887c67fd59b20c72a9a4d60c26cbc8724431005d51a83e"
 }
