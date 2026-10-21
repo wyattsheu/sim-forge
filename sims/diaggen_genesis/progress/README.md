@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T17:50:23+08:00（Asia/Taipei）
+更新：2026-10-21T18:05:47+08:00（Asia/Taipei）
 
 共 9 件：等待 0、執行中 1、完成 0、失敗 8、取消 0。
 
@@ -21,7 +21,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢
 | kitchen_tongs | failed | seeded | revision_0000 | 24576 MiB | 2/9 |
 | sauce_keeper | failed | failed | revision_0000 | 24576 MiB | 6/9 |
 | sloth | failed | seeded | revision_0000 | 24576 MiB | 2/9 |
-| sneaker | running | seeded | revision_0000 | 24576 MiB | 2/9 |
+| sneaker | running | seeded | revision_0000 | 24576 MiB | 3/9 |
 
 ## usb_hub
 
@@ -265,7 +265,7 @@ Run：`genesis_sneaker_20261021`；執行中。
 |---|---|
 | 圖片清理 | success |
 | SAM3 分割 | success |
-| OmniPart 幾何生成 | running |
+| OmniPart 幾何生成 | success |
 | 材料推估 | pending |
 | 材料參數配置 | pending |
 | 體積網格處理 | pending |
@@ -284,5 +284,17 @@ Genesis 診斷 episode 數：0。
 ![sneaker_ordered_mask_vis](media/sneaker_ordered_mask_vis.png)
 
 ![sneaker_segmentation_overlay](media/sneaker_segmentation_overlay.png)
+
+![sneaker_omnipart_top](media/sneaker_omnipart_top.png)
+
+![sneaker_omnipart_bottom](media/sneaker_omnipart_bottom.png)
+
+![sneaker_omnipart_front](media/sneaker_omnipart_front.png)
+
+![sneaker_omnipart_back](media/sneaker_omnipart_back.png)
+
+![sneaker_omnipart_left](media/sneaker_omnipart_left.png)
+
+![sneaker_omnipart_right](media/sneaker_omnipart_right.png)
 
 完整執行紀錄、GPU 識別資訊與失敗細節保留在伺服器。
