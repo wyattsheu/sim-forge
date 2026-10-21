@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T15:58:09+08:00",
+  "updated_at": "2026-10-21T16:06:12+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-21T15:58:09+08:00",
+      "updated_at": "2026-10-21T16:06:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -145,7 +145,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T07:14:19.925656+00:00",
-      "updated_at": "2026-10-21T15:58:09+08:00",
+      "updated_at": "2026-10-21T16:06:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -277,7 +277,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-21T15:58:09+08:00",
+      "updated_at": "2026-10-21T16:06:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -383,11 +383,11 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-21T15:58:09+08:00",
+      "updated_at": "2026-10-21T16:06:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
-        "terminal_status": "not_available"
+        "terminal_status": "success"
       },
       "stages": [
         {
@@ -447,11 +447,11 @@
         {
           "name": "genesis_live_diagnostic_loop",
           "label": "Genesis 物理診斷",
-          "status": "running",
-          "ledger_status": "running",
-          "ok": false,
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
           "started_at": "2026-10-21T07:48:40.042857+00:00",
-          "finished_at": null
+          "finished_at": "2026-10-21T08:06:02.175615+00:00"
         },
         {
           "name": "hag4r_post_mesh_texture",
@@ -527,6 +527,16 @@
           "path": "media/curling_iron_omnipart_right.png",
           "bytes": 6807,
           "sha256": "78849dca3ddc0b4065bbfac0f79878a95b785070ef96ed50cccdd756df20e5a2"
+        },
+        {
+          "path": "media/curling_iron_episode_001_triptych_video.mp4",
+          "bytes": 143713,
+          "sha256": "24a245ac4178a613e46b951debf0dc7eea429bb16abd1b3df0bc93d851202bb9"
+        },
+        {
+          "path": "media/curling_iron_episode_002_triptych_video.mp4",
+          "bytes": 308931,
+          "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
         }
       ],
       "id": "curling_iron",
@@ -545,7 +555,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:58:09+08:00",
+      "updated_at": "2026-10-21T16:06:12+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -651,7 +661,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:58:09+08:00",
+      "updated_at": "2026-10-21T16:06:12+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -757,7 +767,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:58:09+08:00",
+      "updated_at": "2026-10-21T16:06:12+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -863,7 +873,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:58:09+08:00",
+      "updated_at": "2026-10-21T16:06:12+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -969,7 +979,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:58:09+08:00",
+      "updated_at": "2026-10-21T16:06:12+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1150,7 +1160,17 @@
       "path": "media/curling_iron_omnipart_right.png",
       "bytes": 6807,
       "sha256": "78849dca3ddc0b4065bbfac0f79878a95b785070ef96ed50cccdd756df20e5a2"
+    },
+    {
+      "path": "media/curling_iron_episode_001_triptych_video.mp4",
+      "bytes": 143713,
+      "sha256": "24a245ac4178a613e46b951debf0dc7eea429bb16abd1b3df0bc93d851202bb9"
+    },
+    {
+      "path": "media/curling_iron_episode_002_triptych_video.mp4",
+      "bytes": 308931,
+      "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "ed8a315b58e340b929d7f3649c7d8d24bd9a421d341d5f9764559ff46e61958c"
+  "signature": "fe270d7356a8610aef73150821cc00cb110efe5973a3353cde8db761cfa35426"
 }
