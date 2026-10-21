@@ -2,10 +2,10 @@
   "schema_version": "diaggen-public-batch-progress-v1",
   "pipeline": "DiagGen",
   "simulator": "Genesis",
-  "phase": "running",
+  "phase": "waiting_gpu",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T14:54:28+08:00",
+  "updated_at": "2026-10-21T14:55:14+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -14,9 +14,9 @@
   },
   "counts": {
     "queued": 7,
-    "running": 1,
+    "running": 0,
     "success": 0,
-    "failed": 1,
+    "failed": 2,
     "cancelled": 0,
     "unknown": 0,
     "total": 9
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-21T14:54:28+08:00",
+      "updated_at": "2026-10-21T14:55:14+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -145,7 +145,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:54:28+08:00",
+      "updated_at": "2026-10-21T14:55:14+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -245,13 +245,13 @@
       "pipeline": "DiagGen",
       "simulator": "Genesis",
       "run_id": "genesis_baseball_cap_20261021_exr_retry1",
-      "phase": "running",
+      "phase": "failed",
       "pipeline_status": "seeded",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-21T14:54:28+08:00",
+      "updated_at": "2026-10-21T14:55:14+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -342,7 +342,7 @@
       ],
       "media": [],
       "id": "baseball_cap",
-      "status": "running",
+      "status": "failed",
       "attempts": 2,
       "minimum_free_mib": 24576
     },
@@ -357,7 +357,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:54:28+08:00",
+      "updated_at": "2026-10-21T14:55:14+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -463,7 +463,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:54:28+08:00",
+      "updated_at": "2026-10-21T14:55:14+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -569,7 +569,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:54:28+08:00",
+      "updated_at": "2026-10-21T14:55:14+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -675,7 +675,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:54:28+08:00",
+      "updated_at": "2026-10-21T14:55:14+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -781,7 +781,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:54:28+08:00",
+      "updated_at": "2026-10-21T14:55:14+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -887,7 +887,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T14:54:28+08:00",
+      "updated_at": "2026-10-21T14:55:14+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -990,5 +990,5 @@
       "sha256": "e4264e42306c814048634899bc6fa1413bb1779905549bcfca29e1c6abadcb96"
     }
   ],
-  "signature": "b3da945d4a4f44a18264b5f93785045082c4dd604cee12e03e937924439d56d8"
+  "signature": "88ec16dc478834f6d27349236ce047083532989971c14dbff0ff04cca49da63b"
 }
