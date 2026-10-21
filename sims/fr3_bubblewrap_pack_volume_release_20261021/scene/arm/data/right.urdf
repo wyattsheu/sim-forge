@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<robot name="follower_right">
+  <link name="base_link"/>
+  <link name="j0_frame"/>
+  <link name="link_1"/>
+  <joint name="joint_0" type="revolute"><parent link="base_link"/><child link="j0_frame"/><origin xyz="0.000000000 0.000000000 0.057250001" rpy="0.000000000 -0.000000000 0.000000000"/><axis xyz="0 0 1"/><limit lower="-3.054326" upper="3.054326" effort="100" velocity="3"/></joint>
+  <joint name="joint_0_fix" type="fixed"><parent link="j0_frame"/><child link="link_1"/><origin xyz="0.000000000 0.000000000 0.000000000" rpy="0.000000000 -0.000000000 0.000000000"/></joint>
+  <link name="j1_frame"/>
+  <link name="link_2"/>
+  <joint name="joint_1" type="revolute"><parent link="link_1"/><child link="j1_frame"/><origin xyz="0.020000000 0.000000000 0.046250001" rpy="0.000000000 -0.000000000 0.000000000"/><axis xyz="0 1 0"/><limit lower="0.000000" upper="3.141593" effort="100" velocity="3"/></joint>
+  <joint name="joint_1_fix" type="fixed"><parent link="j1_frame"/><child link="link_2"/><origin xyz="0.000000000 0.000000000 0.000000000" rpy="0.000000000 -0.000000000 0.000000000"/></joint>
+  <link name="j2_frame"/>
+  <link name="link_3"/>
+  <joint name="joint_2" type="revolute"><parent link="link_2"/><child link="j2_frame"/><origin xyz="-0.263999999 0.000000000 0.000000000" rpy="3.141592654 -0.000000000 0.000000000"/><axis xyz="0 1 0"/><limit lower="0.000000" upper="2.356194" effort="100" velocity="3"/></joint>
+  <joint name="joint_2_fix" type="fixed"><parent link="j2_frame"/><child link="link_3"/><origin xyz="0.000000000 -0.000000000 -0.000000000" rpy="-3.141592654 0.000000000 -0.000000000"/></joint>
+  <link name="j3_frame"/>
+  <link name="link_4"/>
+  <joint name="joint_3" type="revolute"><parent link="link_3"/><child link="j3_frame"/><origin xyz="0.245000005 0.000000000 0.059999999" rpy="3.141592654 -0.000000000 0.000000000"/><axis xyz="0 1 0"/><limit lower="-1.570796" upper="1.570796" effort="100" velocity="3"/></joint>
+  <joint name="joint_3_fix" type="fixed"><parent link="j3_frame"/><child link="link_4"/><origin xyz="0.000000000 -0.000000000 -0.000000000" rpy="-3.141592654 0.000000000 -0.000000000"/></joint>
+  <link name="j4_frame"/>
+  <link name="link_5"/>
+  <joint name="joint_4" type="revolute"><parent link="link_4"/><child link="j4_frame"/><origin xyz="0.067749999 0.000000000 0.045499999" rpy="3.141592654 -0.000000000 3.141592654"/><axis xyz="0 0 1"/><limit lower="-1.570796" upper="1.570796" effort="100" velocity="3"/></joint>
+  <joint name="joint_4_fix" type="fixed"><parent link="j4_frame"/><child link="link_5"/><origin xyz="-0.000000000 0.000000000 -0.000000000" rpy="-3.141592654 0.000000000 3.141592654"/></joint>
+  <link name="j5_frame"/>
+  <link name="link_6"/>
+  <joint name="joint_5" type="revolute"><parent link="link_5"/><child link="j5_frame"/><origin xyz="0.028950000 0.000000000 -0.045499999" rpy="0.000000000 -0.000000000 0.000000000"/><axis xyz="1 0 0"/><limit lower="-3.141593" upper="3.141593" effort="100" velocity="3"/></joint>
+  <joint name="joint_5_fix" type="fixed"><parent link="j5_frame"/><child link="link_6"/><origin xyz="0.000000000 0.000000000 0.000000000" rpy="0.000000000 -0.000000000 0.000000000"/></joint>
+  <link name="tcp"/>
+  <link name="ee_tip"/>
+  <joint name="tcp_fix" type="fixed"><parent link="link_6"/><child link="tcp"/><origin xyz="0.146062007 0.000000000 0.000000000" rpy="0.000000000 -0.000000000 -0.000000000"/></joint>
+  <joint name="tip_fix" type="fixed"><parent link="link_6"/><child link="ee_tip"/><origin xyz="0.156062007 0.000000000 0.000000000" rpy="0.000000000 -0.000000000 -0.000000000"/></joint>
+</robot>

@@ -1,0 +1,1439 @@
+{
+ "scene": "/isaac-sim/test_scripts/mission0921/stationary_ai_carton_scene_flat.usd",
+ "arms": {
+  "left": {
+   "base": "/World/stationary_ai/follower_left_base_link",
+   "base_pos_mm": [
+    -19.982000812888145,
+    457.50001072883606,
+    39.0859991312027
+   ],
+   "base_R": [
+    [
+     -3.42285417787025e-08,
+     0.9999999999999994,
+     0.0
+    ],
+    [
+     -0.9999999999999994,
+     -3.42285417787025e-08,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "ee": "/World/stationary_ai/follower_left_ee_gripper_link",
+   "ee_pos_mm": [
+    -19.98201360524367,
+    203.73797416687023,
+    202.58598029613495
+   ],
+   "ee_R": [
+    [
+     -3.4228541112568684e-08,
+     0.9999999999999994,
+     0.0
+    ],
+    [
+     -0.9999999999999994,
+     -3.4228541112568684e-08,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "finger_left_bbox": [
+    [
+     -20.0,
+     203.7,
+     172.6
+    ],
+    [
+     16.4,
+     273.3,
+     232.5
+    ]
+   ],
+   "finger_right_bbox": [
+    [
+     -56.4,
+     203.7,
+     172.6
+    ],
+    [
+     -20.0,
+     273.3,
+     232.5
+    ]
+   ],
+   "ee_schemas": [
+    "PhysicsRigidBodyAPI",
+    "PhysxRigidBodyAPI",
+    "PhysicsMassAPI"
+   ]
+  },
+  "right": {
+   "base": "/World/stationary_ai/follower_right_base_link",
+   "base_pos_mm": [
+    -19.982000812888145,
+    -457.50001072883606,
+    39.0859991312027
+   ],
+   "base_R": [
+    [
+     -3.42285417787025e-08,
+     -0.9999999999999994,
+     0.0
+    ],
+    [
+     0.9999999999999994,
+     -3.42285417787025e-08,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "ee": "/World/stationary_ai/follower_right_ee_gripper_link",
+   "ee_pos_mm": [
+    -19.98201360524367,
+    -203.73797416687023,
+    202.58598029613495
+   ],
+   "ee_R": [
+    [
+     -3.422854133461329e-08,
+     -0.9999999999999994,
+     0.0
+    ],
+    [
+     0.9999999999999994,
+     -3.422854133461329e-08,
+     0.0
+    ],
+    [
+     0.0,
+     0.0,
+     1.0
+    ]
+   ],
+   "finger_left_bbox": [
+    [
+     -56.4,
+     -273.3,
+     172.6
+    ],
+    [
+     -20.0,
+     -203.7,
+     232.5
+    ]
+   ],
+   "finger_right_bbox": [
+    [
+     -20.0,
+     -273.3,
+     172.6
+    ],
+    [
+     16.4,
+     -203.7,
+     232.5
+    ]
+   ],
+   "ee_schemas": [
+    "PhysicsRigidBodyAPI",
+    "PhysxRigidBodyAPI",
+    "PhysicsMassAPI"
+   ]
+  }
+ },
+ "joints": [
+  {
+   "path": "/World/stationary_ai/joints/frame_joint",
+   "name": "frame_joint",
+   "type": "PhysicsFixedJoint",
+   "body0": "/World/stationary_ai/tabletop_link",
+   "body1": "/World/stationary_ai/frame_link",
+   "lp0": [
+    0.0,
+    0.0,
+    0.019999999552965164
+   ],
+   "lr0": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "path": "/World/stationary_ai/joints/cam_high_link_joint",
+   "name": "cam_high_link_joint",
+   "type": "PhysicsFixedJoint",
+   "body0": "/World/stationary_ai/frame_link",
+   "body1": "/World/stationary_ai/cam_high_link",
+   "lp0": [
+    -0.32467514276504517,
+    0.008999999612569809,
+    1.0277745723724365
+   ],
+   "lr0": [
+    0.8433914184570312,
+    0.0,
+    0.537299633026123,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "path": "/World/stationary_ai/joints/cam_high_mount_joint",
+   "name": "cam_high_mount_joint",
+   "type": "PhysicsFixedJoint",
+   "body0": "/World/stationary_ai/frame_link",
+   "body1": "/World/stationary_ai/cam_high_mount_link",
+   "lp0": [
+    -0.40198200941085815,
+    -0.03999999910593033,
+    1.0598520040512085
+   ],
+   "lr0": [
+    -3.0908619663705394e-08,
+    -0.7071067690849304,
+    -0.7071067690849304,
+    -3.0908619663705394e-08
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "path": "/World/stationary_ai/joints/cam_low_link_joint",
+   "name": "cam_low_link_joint",
+   "type": "PhysicsFixedJoint",
+   "body0": "/World/stationary_ai/frame_link",
+   "body1": "/World/stationary_ai/cam_low_link",
+   "lp0": [
+    -0.3805367350578308,
+    0.008999999612569809,
+    0.032075244933366776
+   ],
+   "lr0": [
+    0.9988483786582947,
+    0.0,
+    -0.047978129237890244,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "path": "/World/stationary_ai/joints/cam_low_mount_joint",
+   "name": "cam_low_mount_joint",
+   "type": "PhysicsFixedJoint",
+   "body0": "/World/stationary_ai/frame_link",
+   "body1": "/World/stationary_ai/cam_low_mount_link",
+   "lp0": [
+    -0.41499999165534973,
+    -0.024884000420570374,
+    0.044061001390218735
+   ],
+   "lr0": [
+    -3.0908619663705394e-08,
+    -0.7071067690849304,
+    -0.7071067690849304,
+    -3.0908619663705394e-08
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_left_mount_joint",
+   "name": "follower_left_mount_joint",
+   "type": "PhysicsFixedJoint",
+   "body0": "/World/stationary_ai/frame_link",
+   "body1": "/World/stationary_ai/follower_left_base_link",
+   "lp0": [
+    -0.019982000812888145,
+    0.45750001072883606,
+    0.019085999578237534
+   ],
+   "lr0": [
+    0.7071067690849304,
+    0.0,
+    0.0,
+    -0.7071067690849304
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_left_joint_0",
+   "name": "follower_left_joint_0",
+   "type": "PhysicsRevoluteJoint",
+   "body0": "/World/stationary_ai/follower_left_base_link",
+   "body1": "/World/stationary_ai/follower_left_link_1",
+   "lp0": [
+    0.0,
+    0.0,
+    0.0572500005364418
+   ],
+   "lr0": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "axis": "Z",
+   "lo": -175.0,
+   "hi": 175.0,
+   "drive": {
+    "kind": "angular",
+    "k": 663.97998046875,
+    "c": 5.53000020980835,
+    "fmax": 27.0
+   }
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_left_joint_1",
+   "name": "follower_left_joint_1",
+   "type": "PhysicsRevoluteJoint",
+   "body0": "/World/stationary_ai/follower_left_link_1",
+   "body1": "/World/stationary_ai/follower_left_link_2",
+   "lp0": [
+    0.019999999552965164,
+    0.0,
+    0.04625000059604645
+   ],
+   "lr0": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "axis": "Y",
+   "lo": 0.0,
+   "hi": 180.0,
+   "drive": {
+    "kind": "angular",
+    "k": 734.5599975585938,
+    "c": 6.119999885559082,
+    "fmax": 27.0
+   }
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_left_joint_2",
+   "name": "follower_left_joint_2",
+   "type": "PhysicsRevoluteJoint",
+   "body0": "/World/stationary_ai/follower_left_link_2",
+   "body1": "/World/stationary_ai/follower_left_link_3",
+   "lp0": [
+    -0.2639999985694885,
+    0.0,
+    0.0
+   ],
+   "lr0": [
+    0.0,
+    1.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    0.0,
+    1.0,
+    0.0,
+    0.0
+   ],
+   "axis": "Y",
+   "lo": 0.0,
+   "hi": 135.0,
+   "drive": {
+    "kind": "angular",
+    "k": 737.5999755859375,
+    "c": 6.139999866485596,
+    "fmax": 27.0
+   }
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_left_joint_3",
+   "name": "follower_left_joint_3",
+   "type": "PhysicsRevoluteJoint",
+   "body0": "/World/stationary_ai/follower_left_link_3",
+   "body1": "/World/stationary_ai/follower_left_link_4",
+   "lp0": [
+    0.24500000476837158,
+    0.0,
+    0.05999999865889549
+   ],
+   "lr0": [
+    0.0,
+    1.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    0.0,
+    1.0,
+    0.0,
+    0.0
+   ],
+   "axis": "Y",
+   "lo": -90.0,
+   "hi": 90.0,
+   "drive": {
+    "kind": "angular",
+    "k": 62.29999923706055,
+    "c": 0.777999997138977,
+    "fmax": 7.0
+   }
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_left_joint_4",
+   "name": "follower_left_joint_4",
+   "type": "PhysicsRevoluteJoint",
+   "body0": "/World/stationary_ai/follower_left_link_4",
+   "body1": "/World/stationary_ai/follower_left_link_5",
+   "lp0": [
+    0.0677499994635582,
+    0.0,
+    0.045499999076128006
+   ],
+   "lr0": [
+    0.0,
+    0.0,
+    1.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    0.0,
+    0.0,
+    1.0,
+    0.0
+   ],
+   "axis": "Z",
+   "lo": -90.0,
+   "hi": 90.0,
+   "drive": {
+    "kind": "angular",
+    "k": 33.81999969482422,
+    "c": 0.8460000157356262,
+    "fmax": 7.0
+   }
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_left_joint_5",
+   "name": "follower_left_joint_5",
+   "type": "PhysicsRevoluteJoint",
+   "body0": "/World/stationary_ai/follower_left_link_5",
+   "body1": "/World/stationary_ai/follower_left_link_6",
+   "lp0": [
+    0.028950000181794167,
+    0.0,
+    -0.045499999076128006
+   ],
+   "lr0": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "axis": "X",
+   "lo": -180.0,
+   "hi": 180.0,
+   "drive": {
+    "kind": "angular",
+    "k": 33.33000183105469,
+    "c": 0.8299999833106995,
+    "fmax": 7.0
+   }
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_left_camera_mount_joint",
+   "name": "follower_left_camera_mount_joint",
+   "type": "PhysicsFixedJoint",
+   "body0": "/World/stationary_ai/follower_left_link_6",
+   "body1": "/World/stationary_ai/follower_left_camera_mount_d405",
+   "lp0": [
+    0.012000000104308128,
+    0.0,
+    0.0
+   ],
+   "lr0": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_left_camera_link_joint",
+   "name": "follower_left_camera_link_joint",
+   "type": "PhysicsFixedJoint",
+   "body0": "/World/stationary_ai/follower_left_camera_mount_d405",
+   "body1": "/World/stationary_ai/follower_left_camera_link",
+   "lp0": [
+    0.04665016382932663,
+    0.008999998681247234,
+    0.054272137582302094
+   ],
+   "lr0": [
+    0.9848077297210693,
+    0.0,
+    0.1736481785774231,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_left_left_carriage_joint",
+   "name": "follower_left_left_carriage_joint",
+   "type": "PhysicsPrismaticJoint",
+   "body0": "/World/stationary_ai/follower_left_link_6",
+   "body1": "/World/stationary_ai/follower_left_carriage_left",
+   "lp0": [
+    0.08649999648332596,
+    0.023000000044703484,
+    0.0
+   ],
+   "lr0": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "axis": "Y",
+   "lo": 0.0,
+   "hi": 0.04399999976158142,
+   "drive": {
+    "kind": "linear",
+    "k": 217687.0,
+    "c": 10884.0,
+    "fmax": 400.0
+   }
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_left_left_gripper_joint",
+   "name": "follower_left_left_gripper_joint",
+   "type": "PhysicsFixedJoint",
+   "body0": "/World/stationary_ai/follower_left_carriage_left",
+   "body1": "/World/stationary_ai/follower_left_gripper_left",
+   "lp0": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr0": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_left_right_carriage_joint",
+   "name": "follower_left_right_carriage_joint",
+   "type": "PhysicsPrismaticJoint",
+   "body0": "/World/stationary_ai/follower_left_link_6",
+   "body1": "/World/stationary_ai/follower_left_carriage_right",
+   "lp0": [
+    0.08649999648332596,
+    -0.023000000044703484,
+    0.0
+   ],
+   "lr0": [
+    0.0,
+    1.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    0.0,
+    1.0,
+    0.0,
+    0.0
+   ],
+   "axis": "Y",
+   "lo": -0.008799999952316284,
+   "hi": 0.052799999713897705,
+   "mimic": [
+    "PhysxMimicJointAPI:rotY"
+   ]
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_left_right_gripper_joint",
+   "name": "follower_left_right_gripper_joint",
+   "type": "PhysicsFixedJoint",
+   "body0": "/World/stationary_ai/follower_left_carriage_right",
+   "body1": "/World/stationary_ai/follower_left_gripper_right",
+   "lp0": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr0": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_right_mount_joint",
+   "name": "follower_right_mount_joint",
+   "type": "PhysicsFixedJoint",
+   "body0": "/World/stationary_ai/frame_link",
+   "body1": "/World/stationary_ai/follower_right_base_link",
+   "lp0": [
+    -0.019982000812888145,
+    -0.45750001072883606,
+    0.019085999578237534
+   ],
+   "lr0": [
+    0.7071067690849304,
+    0.0,
+    0.0,
+    0.7071067690849304
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_right_joint_0",
+   "name": "follower_right_joint_0",
+   "type": "PhysicsRevoluteJoint",
+   "body0": "/World/stationary_ai/follower_right_base_link",
+   "body1": "/World/stationary_ai/follower_right_link_1",
+   "lp0": [
+    0.0,
+    0.0,
+    0.0572500005364418
+   ],
+   "lr0": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "axis": "Z",
+   "lo": -175.0,
+   "hi": 175.0,
+   "drive": {
+    "kind": "angular",
+    "k": 663.97998046875,
+    "c": 5.53000020980835,
+    "fmax": 27.0
+   }
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_right_joint_1",
+   "name": "follower_right_joint_1",
+   "type": "PhysicsRevoluteJoint",
+   "body0": "/World/stationary_ai/follower_right_link_1",
+   "body1": "/World/stationary_ai/follower_right_link_2",
+   "lp0": [
+    0.019999999552965164,
+    0.0,
+    0.04625000059604645
+   ],
+   "lr0": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "axis": "Y",
+   "lo": 0.0,
+   "hi": 180.0,
+   "drive": {
+    "kind": "angular",
+    "k": 734.5599975585938,
+    "c": 6.120999813079834,
+    "fmax": 27.0
+   }
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_right_joint_2",
+   "name": "follower_right_joint_2",
+   "type": "PhysicsRevoluteJoint",
+   "body0": "/World/stationary_ai/follower_right_link_2",
+   "body1": "/World/stationary_ai/follower_right_link_3",
+   "lp0": [
+    -0.2639999985694885,
+    0.0,
+    0.0
+   ],
+   "lr0": [
+    0.0,
+    1.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    0.0,
+    1.0,
+    0.0,
+    0.0
+   ],
+   "axis": "Y",
+   "lo": 0.0,
+   "hi": 135.0,
+   "drive": {
+    "kind": "angular",
+    "k": 737.5999755859375,
+    "c": 6.146999835968018,
+    "fmax": 27.0
+   }
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_right_joint_3",
+   "name": "follower_right_joint_3",
+   "type": "PhysicsRevoluteJoint",
+   "body0": "/World/stationary_ai/follower_right_link_3",
+   "body1": "/World/stationary_ai/follower_right_link_4",
+   "lp0": [
+    0.24500000476837158,
+    0.0,
+    0.05999999865889549
+   ],
+   "lr0": [
+    0.0,
+    1.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    0.0,
+    1.0,
+    0.0,
+    0.0
+   ],
+   "axis": "Y",
+   "lo": -90.0,
+   "hi": 90.0,
+   "drive": {
+    "kind": "angular",
+    "k": 62.29999923706055,
+    "c": 0.7789999842643738,
+    "fmax": 7.0
+   }
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_right_joint_4",
+   "name": "follower_right_joint_4",
+   "type": "PhysicsRevoluteJoint",
+   "body0": "/World/stationary_ai/follower_right_link_4",
+   "body1": "/World/stationary_ai/follower_right_link_5",
+   "lp0": [
+    0.0677499994635582,
+    0.0,
+    0.045499999076128006
+   ],
+   "lr0": [
+    0.0,
+    0.0,
+    1.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    0.0,
+    0.0,
+    1.0,
+    0.0
+   ],
+   "axis": "Z",
+   "lo": -90.0,
+   "hi": 90.0,
+   "drive": {
+    "kind": "angular",
+    "k": 33.81999969482422,
+    "c": 0.847000002861023,
+    "fmax": 7.0
+   }
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_right_joint_5",
+   "name": "follower_right_joint_5",
+   "type": "PhysicsRevoluteJoint",
+   "body0": "/World/stationary_ai/follower_right_link_5",
+   "body1": "/World/stationary_ai/follower_right_link_6",
+   "lp0": [
+    0.028950000181794167,
+    0.0,
+    -0.045499999076128006
+   ],
+   "lr0": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "axis": "X",
+   "lo": -180.0,
+   "hi": 180.0,
+   "drive": {
+    "kind": "angular",
+    "k": 33.33000183105469,
+    "c": 0.8330000042915344,
+    "fmax": 7.0
+   }
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_right_camera_mount_joint",
+   "name": "follower_right_camera_mount_joint",
+   "type": "PhysicsFixedJoint",
+   "body0": "/World/stationary_ai/follower_right_link_6",
+   "body1": "/World/stationary_ai/follower_right_camera_mount_d405",
+   "lp0": [
+    0.012000000104308128,
+    0.0,
+    0.0
+   ],
+   "lr0": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_right_camera_link_joint",
+   "name": "follower_right_camera_link_joint",
+   "type": "PhysicsFixedJoint",
+   "body0": "/World/stationary_ai/follower_right_camera_mount_d405",
+   "body1": "/World/stationary_ai/follower_right_camera_link",
+   "lp0": [
+    0.04665016382932663,
+    0.008999998681247234,
+    0.054272137582302094
+   ],
+   "lr0": [
+    0.9848077297210693,
+    0.0,
+    0.1736481785774231,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_right_left_carriage_joint",
+   "name": "follower_right_left_carriage_joint",
+   "type": "PhysicsPrismaticJoint",
+   "body0": "/World/stationary_ai/follower_right_link_6",
+   "body1": "/World/stationary_ai/follower_right_carriage_left",
+   "lp0": [
+    0.08649999648332596,
+    0.023000000044703484,
+    0.0
+   ],
+   "lr0": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "axis": "Y",
+   "lo": 0.0,
+   "hi": 0.04399999976158142,
+   "drive": {
+    "kind": "linear",
+    "k": 217687.0,
+    "c": 10884.0,
+    "fmax": 400.0
+   }
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_right_left_gripper_joint",
+   "name": "follower_right_left_gripper_joint",
+   "type": "PhysicsFixedJoint",
+   "body0": "/World/stationary_ai/follower_right_carriage_left",
+   "body1": "/World/stationary_ai/follower_right_gripper_left",
+   "lp0": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr0": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_right_right_carriage_joint",
+   "name": "follower_right_right_carriage_joint",
+   "type": "PhysicsPrismaticJoint",
+   "body0": "/World/stationary_ai/follower_right_link_6",
+   "body1": "/World/stationary_ai/follower_right_carriage_right",
+   "lp0": [
+    0.08649999648332596,
+    -0.023000000044703484,
+    0.0
+   ],
+   "lr0": [
+    0.0,
+    1.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    0.0,
+    1.0,
+    0.0,
+    0.0
+   ],
+   "axis": "Y",
+   "lo": -0.008799999952316284,
+   "hi": 0.052799999713897705,
+   "mimic": [
+    "PhysxMimicJointAPI:rotY"
+   ]
+  },
+  {
+   "path": "/World/stationary_ai/joints/follower_right_right_gripper_joint",
+   "name": "follower_right_right_gripper_joint",
+   "type": "PhysicsFixedJoint",
+   "body0": "/World/stationary_ai/follower_right_carriage_right",
+   "body1": "/World/stationary_ai/follower_right_gripper_right",
+   "lp0": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr0": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "path": "/World/stationary_ai/root_joint",
+   "name": "root_joint",
+   "type": "PhysicsFixedJoint",
+   "body0": null,
+   "body1": "/World/stationary_ai/tabletop_link",
+   "lp0": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr0": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "path": "/World/Carton/crease_fxp",
+   "name": "crease_fxp",
+   "type": "PhysicsRevoluteJoint",
+   "body0": "/World/Carton/base",
+   "body1": "/World/Carton/fxp",
+   "lp0": [
+    0.09849999845027924,
+    0.0,
+    0.0820000022649765
+   ],
+   "lr0": [
+    0.7071067690849304,
+    0.0,
+    0.0,
+    -0.7071067690849304
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "axis": "X",
+   "lo": -Infinity,
+   "hi": Infinity
+  },
+  {
+   "path": "/World/Carton/crease_fxn",
+   "name": "crease_fxn",
+   "type": "PhysicsRevoluteJoint",
+   "body0": "/World/Carton/base",
+   "body1": "/World/Carton/fxn",
+   "lp0": [
+    -0.09849999845027924,
+    0.0,
+    0.0820000022649765
+   ],
+   "lr0": [
+    0.7071067690849304,
+    0.0,
+    0.0,
+    0.7071067690849304
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "axis": "X",
+   "lo": -Infinity,
+   "hi": Infinity
+  },
+  {
+   "path": "/World/Carton/crease_fyp",
+   "name": "crease_fyp",
+   "type": "PhysicsRevoluteJoint",
+   "body0": "/World/Carton/base",
+   "body1": "/World/Carton/fyp",
+   "lp0": [
+    0.0,
+    0.0885000005364418,
+    0.0885000005364418
+   ],
+   "lr0": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "axis": "X",
+   "lo": -Infinity,
+   "hi": Infinity
+  },
+  {
+   "path": "/World/Carton/crease_fyn",
+   "name": "crease_fyn",
+   "type": "PhysicsRevoluteJoint",
+   "body0": "/World/Carton/base",
+   "body1": "/World/Carton/fyn",
+   "lp0": [
+    0.0,
+    -0.0885000005364418,
+    0.0885000005364418
+   ],
+   "lr0": [
+    6.123234262925839e-17,
+    0.0,
+    0.0,
+    1.0
+   ],
+   "lp1": [
+    0.0,
+    0.0,
+    0.0
+   ],
+   "lr1": [
+    1.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "axis": "X",
+   "lo": -Infinity,
+   "hi": Infinity
+  }
+ ],
+ "table_bbox": [
+  [
+   -380.0,
+   -609.6,
+   0.0
+  ],
+  [
+   369.0,
+   609.6,
+   20.0
+  ]
+ ],
+ "carton_scene": {
+  "pos_mm": [
+   -20.0,
+   0.0,
+   20.0
+  ],
+  "R": [
+   [
+    1.0,
+    0.0,
+    0.0
+   ],
+   [
+    0.0,
+    1.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    1.0
+   ]
+  ],
+  "bbox": [
+   [
+    -121.5,
+    -91.5,
+    20.0
+   ],
+   [
+    81.5,
+    91.5,
+    129.5
+   ]
+  ]
+ },
+ "carton_final": {
+  "pos_mm": [
+   -20.000000000000004,
+   0.0,
+   19.99999821186066
+  ],
+  "R": [
+   [
+    2.220446049250313e-16,
+    -1.0,
+    0.0
+   ],
+   [
+    1.0,
+    2.220446049250313e-16,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    1.0
+   ]
+  ],
+  "bbox": [
+   [
+    -135.00000001303854,
+    -135.00000001303854,
+    19.999998198822144
+   ],
+   [
+    95.00000001303854,
+    135.00000001303854,
+    153.90758652305024
+   ]
+  ]
+ }
+}

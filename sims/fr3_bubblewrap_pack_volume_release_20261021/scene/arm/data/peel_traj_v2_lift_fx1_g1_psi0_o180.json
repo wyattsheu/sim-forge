@@ -1,0 +1,187 @@
+{
+ "segments": [
+  {
+   "name": "a0 home\u2192READY",
+   "t0": 0.0,
+   "t1": 1.5,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     85.39879457009296,
+     "fyp",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     85.39911962384609,
+     "fyn",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     407.617997467001,
+     "left_gripper_left",
+     "right_gripper_left"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "a1 \u5230\u9810\u5099\u9ede(\u58d3\u7684\u624b / \u6380\u7684\u624b)",
+   "t0": 1.5,
+   "t1": 4.0,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     202.39407421590263,
+     "fyp",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     60.5849953197088,
+     "fyn",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     241.07003777264111,
+     "left_camera_mount_d405",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "a2 \u58d3\u7684\u624b\u4e0b\u964d\u58d3\u4f4f fyn",
+   "t0": 4.0,
+   "t1": 5.2,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     202.39407421590263,
+     "fyp",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     0.5928981353162297,
+     "fyn",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     241.07003777264111,
+     "left_camera_mount_d405",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "a2b \u5f8c\u84cb kinematic \u958b\u5230 25\u00b0(\u975e\u624b\u52d5)",
+   "t0": 5.2,
+   "t1": 6.0,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     166.018792036552,
+     "fyp",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     0.5928981353162297,
+     "fyn",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     252.24367975900762,
+     "left_camera_mount_d405",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "a3 \u6307\u5c16\u4f38\u5230\u5916\u7de3\u4e0b\u65b9",
+   "t0": 6.0,
+   "t1": 7.5,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     166.018792036552,
+     "fyp",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     0.5928981353162297,
+     "fyn",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     252.24367975900762,
+     "left_camera_mount_d405",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "a6 \u5169\u624b\u56de READY",
+   "t0": 7.5,
+   "t1": 9.5,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     166.018792036552,
+     "fyp",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     0.5928981353162297,
+     "fyn",
+     "follower_right_gripper_left"
+    ],
+    "arm_arm": [
+     252.24367975900762,
+     "left_camera_mount_d405",
+     "right_link_4"
+    ]
+   },
+   "collide": []
+  },
+  {
+   "name": "a7 \u5f8c\u84cb kinematic \u7e8c\u8f49\u5230 180\u00b0(\u5169\u6bb5\u5f0f\u7b2c\u4e8c\u6bb5)",
+   "t0": 9.5,
+   "t1": 10.5,
+   "worst": {
+    "table_left": 76.3359996676445,
+    "box_left": [
+     145.68989774209902,
+     "fyp",
+     "follower_left_gripper_left"
+    ],
+    "table_right": 76.3359996676445,
+    "box_right": [
+     145.68934240192704,
+     "fyp",
+     "follower_right_gripper_right"
+    ],
+    "arm_arm": [
+     443.5312130243988,
+     "left_camera_mount_d405",
+     "right_camera_mount_d405"
+    ]
+   },
+   "collide": []
+  }
+ ],
+ "fail": [
+  "(a) lift:\u5916\u7de3\u89d2\u843d\u4e0b\u65b9\u627e\u4e0d\u5230\u53ef\u7121\u78b0\u649e\u9032\u5834\u7684\u6307\u5c16\u59ff\u614b(\u53ef IK \u4e14\u7121\u78b0\u649e\u7684\u59ff\u614b 3 \u500b;\u6709 IK \u89e3\u4f46\u78b0\u649e\u4e2d\u6700\u597d\u7684:(-0.3001456748904577, 'fyp', 'left_gripper_left', 0, 0.0, 50, 0.036500000000000005, 0.008))"
+ ],
+ "gap": {
+  "G0": 0.05159899592398903,
+  "GK": 1999.9999999999993,
+  "mimic": 1.0
+ }
+}
