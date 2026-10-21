@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T16:07:44+08:00（Asia/Taipei）
+更新：2026-10-21T16:09:31+08:00（Asia/Taipei）
 
 共 9 件：等待 5、執行中 2、完成 0、失敗 2、取消 0。
 
@@ -105,7 +105,7 @@ Run：`genesis_curling_iron_20261021_exr_retry1`；執行中。
 | 材料參數配置 | success |
 | 體積網格處理 | success |
 | Genesis 物理診斷 | success |
-| 貼圖生成 | pending |
+| 貼圖生成 | running |
 | 最終匯出 | pending |
 
 Genesis 診斷 episode 數：2。
