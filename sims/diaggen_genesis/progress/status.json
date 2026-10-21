@@ -2,10 +2,10 @@
   "schema_version": "diaggen-public-batch-progress-v1",
   "pipeline": "DiagGen",
   "simulator": "Genesis",
-  "phase": "running",
+  "phase": "waiting_gpu",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T13:31:40+08:00",
+  "updated_at": "2026-10-21T13:32:57+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -14,9 +14,9 @@
   },
   "counts": {
     "queued": 8,
-    "running": 1,
+    "running": 0,
     "success": 0,
-    "failed": 0,
+    "failed": 1,
     "cancelled": 0,
     "unknown": 0,
     "total": 9
@@ -27,13 +27,13 @@
       "pipeline": "DiagGen",
       "simulator": "Genesis",
       "run_id": "genesis_first_20261021_exr_retry1",
-      "phase": "running",
+      "phase": "failed",
       "pipeline_status": "seeded",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T05:16:48.582796+00:00",
-      "updated_at": "2026-10-21T13:31:40+08:00",
+      "updated_at": "2026-10-21T13:32:57+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -150,7 +150,7 @@
         }
       ],
       "id": "usb_hub",
-      "status": "running",
+      "status": "failed",
       "attempts": 2
     },
     {
@@ -164,7 +164,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:31:40+08:00",
+      "updated_at": "2026-10-21T13:32:57+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -269,7 +269,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:31:40+08:00",
+      "updated_at": "2026-10-21T13:32:57+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -374,7 +374,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:31:40+08:00",
+      "updated_at": "2026-10-21T13:32:57+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -479,7 +479,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:31:40+08:00",
+      "updated_at": "2026-10-21T13:32:57+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -584,7 +584,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:31:40+08:00",
+      "updated_at": "2026-10-21T13:32:57+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -689,7 +689,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:31:40+08:00",
+      "updated_at": "2026-10-21T13:32:57+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -794,7 +794,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:31:40+08:00",
+      "updated_at": "2026-10-21T13:32:57+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -899,7 +899,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:31:40+08:00",
+      "updated_at": "2026-10-21T13:32:57+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1021,5 +1021,5 @@
       "sha256": "41ecad22a4827dbee3449abd5fe9f74b68fe32c645c574024c6929d2fa7cb849"
     }
   ],
-  "signature": "1c738a4bc20e5253dba09aff76830c6c7a6adc6f90a3b758732d0fdfa9387b91"
+  "signature": "bb30cb88ba2e15be58eb56dd0391225138bbc431c548c1377c0b2a07996e4c35"
 }
