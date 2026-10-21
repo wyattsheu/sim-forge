@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T13:22:34+08:00",
+  "updated_at": "2026-10-21T13:22:51+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T05:16:48.582796+00:00",
-      "updated_at": "2026-10-21T13:22:34+08:00",
+      "updated_at": "2026-10-21T13:22:51+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -52,11 +52,11 @@
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "running",
-          "ledger_status": "pending",
-          "ok": false,
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
           "started_at": "2026-10-21T05:22:33.818591+00:00",
-          "finished_at": null
+          "finished_at": "2026-10-21T05:22:48.600639+00:00"
         },
         {
           "name": "omnipart_generate_parts",
@@ -127,6 +127,26 @@
           "path": "media/usb_hub_cleaned_image.png",
           "bytes": 1349217,
           "sha256": "c22b1efd8a9a394b6428b1bb25f527e2dd1857188e6ad35b4157fda015ec1f8a"
+        },
+        {
+          "path": "media/usb_hub_processed_white_bg_png.png",
+          "bytes": 87545,
+          "sha256": "b9c2428f54dab85755acd26a928097220adc4c24dc9a41c93bad1a0b5bf3ac84"
+        },
+        {
+          "path": "media/usb_hub_processed_rgba.png",
+          "bytes": 106696,
+          "sha256": "5a0b6c7193aaef36d600ff5c7c849b443b8274e154d3438250df365e2d95a772"
+        },
+        {
+          "path": "media/usb_hub_ordered_mask_vis.png",
+          "bytes": 2083,
+          "sha256": "8ca0fc61a29f3aa559f4bc493ccee570636cc98779513f4664859cca163d7926"
+        },
+        {
+          "path": "media/usb_hub_segmentation_overlay.png",
+          "bytes": 76254,
+          "sha256": "41ecad22a4827dbee3449abd5fe9f74b68fe32c645c574024c6929d2fa7cb849"
         }
       ],
       "id": "usb_hub",
@@ -144,7 +164,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:22:34+08:00",
+      "updated_at": "2026-10-21T13:22:51+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -249,7 +269,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:22:34+08:00",
+      "updated_at": "2026-10-21T13:22:51+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -354,7 +374,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:22:34+08:00",
+      "updated_at": "2026-10-21T13:22:51+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -459,7 +479,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:22:34+08:00",
+      "updated_at": "2026-10-21T13:22:51+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -564,7 +584,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:22:34+08:00",
+      "updated_at": "2026-10-21T13:22:51+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -669,7 +689,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:22:34+08:00",
+      "updated_at": "2026-10-21T13:22:51+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -774,7 +794,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:22:34+08:00",
+      "updated_at": "2026-10-21T13:22:51+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -879,7 +899,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T13:22:34+08:00",
+      "updated_at": "2026-10-21T13:22:51+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -979,7 +999,27 @@
       "path": "media/usb_hub_cleaned_image.png",
       "bytes": 1349217,
       "sha256": "c22b1efd8a9a394b6428b1bb25f527e2dd1857188e6ad35b4157fda015ec1f8a"
+    },
+    {
+      "path": "media/usb_hub_processed_white_bg_png.png",
+      "bytes": 87545,
+      "sha256": "b9c2428f54dab85755acd26a928097220adc4c24dc9a41c93bad1a0b5bf3ac84"
+    },
+    {
+      "path": "media/usb_hub_processed_rgba.png",
+      "bytes": 106696,
+      "sha256": "5a0b6c7193aaef36d600ff5c7c849b443b8274e154d3438250df365e2d95a772"
+    },
+    {
+      "path": "media/usb_hub_ordered_mask_vis.png",
+      "bytes": 2083,
+      "sha256": "8ca0fc61a29f3aa559f4bc493ccee570636cc98779513f4664859cca163d7926"
+    },
+    {
+      "path": "media/usb_hub_segmentation_overlay.png",
+      "bytes": 76254,
+      "sha256": "41ecad22a4827dbee3449abd5fe9f74b68fe32c645c574024c6929d2fa7cb849"
     }
   ],
-  "signature": "6db5c4637b4eef8aa368ff23d9f897f2d71e5cf37412304a663f48408262de0a"
+  "signature": "46a3189d72f2dbf04c2783934a6298481a573219887b9b57c9e8b17993e3e8bb"
 }
