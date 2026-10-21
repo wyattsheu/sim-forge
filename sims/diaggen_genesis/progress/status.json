@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T15:36:07+08:00",
+  "updated_at": "2026-10-21T15:41:10+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-21T15:36:07+08:00",
+      "updated_at": "2026-10-21T15:41:10+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -145,7 +145,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T07:14:19.925656+00:00",
-      "updated_at": "2026-10-21T15:36:07+08:00",
+      "updated_at": "2026-10-21T15:41:10+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -277,7 +277,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-21T15:36:07+08:00",
+      "updated_at": "2026-10-21T15:41:10+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -383,7 +383,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-21T15:36:07+08:00",
+      "updated_at": "2026-10-21T15:41:10+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -411,11 +411,11 @@
         {
           "name": "omnipart_generate_parts",
           "label": "OmniPart 幾何生成",
-          "status": "running",
-          "ledger_status": "pending",
-          "ok": false,
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
           "started_at": "2026-10-21T07:36:05.570751+00:00",
-          "finished_at": null
+          "finished_at": "2026-10-21T07:41:07.808324+00:00"
         },
         {
           "name": "hag4r_gpt_staged_material_inference",
@@ -497,6 +497,36 @@
           "path": "media/curling_iron_segmentation_overlay.png",
           "bytes": 53859,
           "sha256": "902248d1abd6f5918be7be558ea48ba16794e388e34004294d06209273b8729f"
+        },
+        {
+          "path": "media/curling_iron_omnipart_top.png",
+          "bytes": 11523,
+          "sha256": "6f2051fee5996f5293699d836b8341ff1dd9796b64fcacb64582eb104da77590"
+        },
+        {
+          "path": "media/curling_iron_omnipart_bottom.png",
+          "bytes": 11886,
+          "sha256": "db4033256a5c878828c9d76c7425f8982eb665c94bd679872faf11cbb1d6ae30"
+        },
+        {
+          "path": "media/curling_iron_omnipart_front.png",
+          "bytes": 6444,
+          "sha256": "abb58dbd47f024a7e1baa5cfdf3c2b628004671af3bb2fd01822d5eb43fca707"
+        },
+        {
+          "path": "media/curling_iron_omnipart_back.png",
+          "bytes": 6684,
+          "sha256": "30db33cba9ba698228ed219761598883cb1793cb657f146b05102890fc446548"
+        },
+        {
+          "path": "media/curling_iron_omnipart_left.png",
+          "bytes": 6633,
+          "sha256": "fcd33303ffdb57ae4ebeef64a6065d27dc09a060d3a2c1832bfbaea72b8210ea"
+        },
+        {
+          "path": "media/curling_iron_omnipart_right.png",
+          "bytes": 6807,
+          "sha256": "78849dca3ddc0b4065bbfac0f79878a95b785070ef96ed50cccdd756df20e5a2"
         }
       ],
       "id": "curling_iron",
@@ -515,7 +545,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:36:07+08:00",
+      "updated_at": "2026-10-21T15:41:10+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -621,7 +651,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:36:07+08:00",
+      "updated_at": "2026-10-21T15:41:10+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -727,7 +757,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:36:07+08:00",
+      "updated_at": "2026-10-21T15:41:10+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -833,7 +863,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:36:07+08:00",
+      "updated_at": "2026-10-21T15:41:10+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -939,7 +969,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-21T15:36:07+08:00",
+      "updated_at": "2026-10-21T15:41:10+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1090,7 +1120,37 @@
       "path": "media/curling_iron_segmentation_overlay.png",
       "bytes": 53859,
       "sha256": "902248d1abd6f5918be7be558ea48ba16794e388e34004294d06209273b8729f"
+    },
+    {
+      "path": "media/curling_iron_omnipart_top.png",
+      "bytes": 11523,
+      "sha256": "6f2051fee5996f5293699d836b8341ff1dd9796b64fcacb64582eb104da77590"
+    },
+    {
+      "path": "media/curling_iron_omnipart_bottom.png",
+      "bytes": 11886,
+      "sha256": "db4033256a5c878828c9d76c7425f8982eb665c94bd679872faf11cbb1d6ae30"
+    },
+    {
+      "path": "media/curling_iron_omnipart_front.png",
+      "bytes": 6444,
+      "sha256": "abb58dbd47f024a7e1baa5cfdf3c2b628004671af3bb2fd01822d5eb43fca707"
+    },
+    {
+      "path": "media/curling_iron_omnipart_back.png",
+      "bytes": 6684,
+      "sha256": "30db33cba9ba698228ed219761598883cb1793cb657f146b05102890fc446548"
+    },
+    {
+      "path": "media/curling_iron_omnipart_left.png",
+      "bytes": 6633,
+      "sha256": "fcd33303ffdb57ae4ebeef64a6065d27dc09a060d3a2c1832bfbaea72b8210ea"
+    },
+    {
+      "path": "media/curling_iron_omnipart_right.png",
+      "bytes": 6807,
+      "sha256": "78849dca3ddc0b4065bbfac0f79878a95b785070ef96ed50cccdd756df20e5a2"
     }
   ],
-  "signature": "261703b0f131f6c996de368a9c7bbe5340c2b69936ed3e6bd9c5e724a80282e7"
+  "signature": "1efd678c4dcca3587db0b09c87196a2fe19b65460f04187270cc5a0c1d26682c"
 }
