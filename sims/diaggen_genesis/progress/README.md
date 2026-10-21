@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T22:05:30+08:00（Asia/Taipei）
+更新：2026-10-21T22:05:48+08:00（Asia/Taipei）
 
 共 9 件：等待 2、執行中 1、完成 1、失敗 5、取消 0。
 
@@ -13,7 +13,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢
 
 | 物件 | 排程狀態 | Runtime | Revision | 顯存門檻 | 已完成階段 |
 |---|---|---|---|---|---|
-| usb_hub | running | seeded | revision_0000 | 24576 MiB | 1/9 |
+| usb_hub | running | seeded | revision_0000 | 24576 MiB | 2/9 |
 | capybara_plush_toy | failed | seeded | revision_0000 | 49152 MiB | 2/9 |
 | baseball_cap | failed | seeded | revision_0000 | 24576 MiB | 0/9 |
 | curling_iron | success | success | revision_0000 | 24576 MiB | 9/9 |
@@ -30,7 +30,7 @@ Run：`genesis_first_20261021_exr_retry1_display_retry2`；執行中。
 | 階段 | 狀態 |
 |---|---|
 | 圖片清理 | success |
-| SAM3 分割 | running |
+| SAM3 分割 | success |
 | OmniPart 幾何生成 | pending |
 | 材料推估 | pending |
 | 材料參數配置 | pending |
@@ -46,6 +46,10 @@ Genesis 診斷 episode 數：0。
 ![usb_hub_processed_white_bg_png](media/usb_hub_processed_white_bg_png.png)
 
 ![usb_hub_processed_rgba](media/usb_hub_processed_rgba.png)
+
+![usb_hub_ordered_mask_vis](media/usb_hub_ordered_mask_vis.png)
+
+![usb_hub_segmentation_overlay](media/usb_hub_segmentation_overlay.png)
 
 
 ## capybara_plush_toy

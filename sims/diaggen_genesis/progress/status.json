@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-21T22:05:30+08:00",
+  "updated_at": "2026-10-21T22:05:48+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-21T22:05:30+08:00",
+      "updated_at": "2026-10-21T22:05:48+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -52,11 +52,11 @@
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "running",
-          "ledger_status": "pending",
-          "ok": false,
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
           "started_at": "2026-10-21T14:05:23.486877+00:00",
-          "finished_at": null
+          "finished_at": "2026-10-21T14:05:38.284884+00:00"
         },
         {
           "name": "omnipart_generate_parts",
@@ -137,6 +137,16 @@
           "path": "media/usb_hub_processed_rgba.png",
           "bytes": 104308,
           "sha256": "0b9782d613e9211aefce46895346b3e2e9da5fc6034b98cb9f753951306c5c30"
+        },
+        {
+          "path": "media/usb_hub_ordered_mask_vis.png",
+          "bytes": 2083,
+          "sha256": "425352108cc5930aecbe4d5280badf3b851ec8af769205b813b14cced2f8aa67"
+        },
+        {
+          "path": "media/usb_hub_segmentation_overlay.png",
+          "bytes": 74478,
+          "sha256": "111470c84f452e131f91c1543b1d43dc2818cd8c8edac9766fc085d4a9e5576b"
         }
       ],
       "id": "usb_hub",
@@ -155,7 +165,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T07:14:19.925656+00:00",
-      "updated_at": "2026-10-21T22:05:30+08:00",
+      "updated_at": "2026-10-21T22:05:48+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -287,7 +297,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-21T22:05:30+08:00",
+      "updated_at": "2026-10-21T22:05:48+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -393,7 +403,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-21T22:05:30+08:00",
+      "updated_at": "2026-10-21T22:05:48+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -570,7 +580,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-21T22:05:30+08:00",
+      "updated_at": "2026-10-21T22:05:48+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -676,7 +686,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:38:07.768841+00:00",
-      "updated_at": "2026-10-21T22:05:30+08:00",
+      "updated_at": "2026-10-21T22:05:48+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -808,7 +818,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:46:28.056801+00:00",
-      "updated_at": "2026-10-21T22:05:30+08:00",
+      "updated_at": "2026-10-21T22:05:48+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
@@ -970,7 +980,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:26:08.183115+00:00",
-      "updated_at": "2026-10-21T22:05:30+08:00",
+      "updated_at": "2026-10-21T22:05:48+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1102,7 +1112,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:39:46.288097+00:00",
-      "updated_at": "2026-10-21T22:05:30+08:00",
+      "updated_at": "2026-10-21T22:05:48+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1269,6 +1279,16 @@
       "path": "media/usb_hub_processed_rgba.png",
       "bytes": 104308,
       "sha256": "0b9782d613e9211aefce46895346b3e2e9da5fc6034b98cb9f753951306c5c30"
+    },
+    {
+      "path": "media/usb_hub_ordered_mask_vis.png",
+      "bytes": 2083,
+      "sha256": "425352108cc5930aecbe4d5280badf3b851ec8af769205b813b14cced2f8aa67"
+    },
+    {
+      "path": "media/usb_hub_segmentation_overlay.png",
+      "bytes": 74478,
+      "sha256": "111470c84f452e131f91c1543b1d43dc2818cd8c8edac9766fc085d4a9e5576b"
     },
     {
       "path": "media/capybara_plush_toy_cleaned_image.png",
@@ -1526,5 +1546,5 @@
       "sha256": "db4ba55885ed522bc4e367674ec755352c5d4146d558baf33c306ea93dad3f7f"
     }
   ],
-  "signature": "6e19672d37178a91ca949fb20418edbb3aac4c5b82e3e712737428bdf919e729"
+  "signature": "de91f3d6fcac25a054a66bfd4cb783654f4db364c255b3a989b7fc0dc8701512"
 }
