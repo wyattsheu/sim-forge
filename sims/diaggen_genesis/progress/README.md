@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-21T23:39:34+08:00（Asia/Taipei）
+更新：2026-10-21T23:42:38+08:00（Asia/Taipei）
 
 共 9 件：等待 1、執行中 1、完成 1、失敗 6、取消 0。
 
@@ -256,7 +256,7 @@ Run：`genesis_sloth_20261021`；執行中。
 |---|---|
 | 圖片清理 | success |
 | SAM3 分割 | success |
-| OmniPart 幾何生成 | pending |
+| OmniPart 幾何生成 | running |
 | 材料推估 | pending |
 | 材料參數配置 | pending |
 | 體積網格處理 | pending |
