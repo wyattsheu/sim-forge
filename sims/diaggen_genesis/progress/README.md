@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T17:47:37+08:00（Asia/Taipei）
+更新：2026-10-22T17:50:02+08:00（Asia/Taipei）
 
 共 9 件：等待 2、執行中 4、完成 2、失敗 1、取消 0。
 
@@ -18,7 +18,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | baseball_cap | running | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
 | kitchen_tongs | running | running | revision_0001 | 24576 MiB | 2/9 | 未偵測到上述異常（非成功保證） |
 | sneaker | running | running | revision_0001 | 24576 MiB | 1/9 | 未偵測到上述異常（非成功保證） |
-| usb_hub | running | running | revision_0000 | 24576 MiB | 8/9 | 未偵測到上述異常（非成功保證） |
+| usb_hub | running | running | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
 | sloth | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
 | sauce_keeper | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
 | dragon | queued | seeded | revision_0000 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
@@ -41,7 +41,7 @@ Run：`genesis_baseball_cap_20261022_fresh3`；執行中。
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
-Genesis 診斷 episode 數：1。
+Genesis 診斷 episode 數：2。
 
 ![baseball_cap_cleaned_image](media/baseball_cap_cleaned_image.png)
 
@@ -102,7 +102,7 @@ Run：`genesis_sneaker_20261022_clean_diagnostics1`；執行中。
 | 階段 | 狀態 |
 |---|---|
 | 圖片清理 | pending |
-| SAM3 分割 | pending |
+| SAM3 分割 | failed |
 | OmniPart 幾何生成 | pending |
 | 材料推估 | pending |
 | 材料參數配置 | pending |
@@ -114,6 +114,14 @@ Run：`genesis_sneaker_20261022_clean_diagnostics1`；執行中。
 Genesis 診斷 episode 數：0。
 
 ![sneaker_cleaned_image](media/sneaker_cleaned_image.png)
+
+![sneaker_processed_white_bg_png](media/sneaker_processed_white_bg_png.png)
+
+![sneaker_processed_rgba](media/sneaker_processed_rgba.png)
+
+![sneaker_ordered_mask_vis](media/sneaker_ordered_mask_vis.png)
+
+![sneaker_segmentation_overlay](media/sneaker_segmentation_overlay.png)
 
 
 ## usb_hub
@@ -130,7 +138,7 @@ Run：`genesis_usb_hub_20261022_clean_diagnostics3`；執行中。
 | 體積網格處理 | success |
 | Genesis 物理診斷 | success |
 | 貼圖生成 | success |
-| 最終匯出 | pending |
+| 最終匯出 | success |
 
 Genesis 診斷 episode 數：2。
 

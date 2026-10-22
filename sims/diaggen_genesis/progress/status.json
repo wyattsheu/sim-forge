@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T17:47:37+08:00",
+  "updated_at": "2026-10-22T17:50:02+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,10 +33,10 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-22T17:47:37+08:00",
+      "updated_at": "2026-10-22T17:50:02+08:00",
       "diagnostics": {
         "enabled": true,
-        "episode_count": 1,
+        "episode_count": 2,
         "terminal_status": "not_available"
       },
       "stages": [
@@ -125,10 +125,10 @@
       "health": {
         "warnings": [],
         "diagnostic_counters": {
-          "episodes": 1,
+          "episodes": 2,
           "tool_results": 10,
           "diagnostic_probe_attempts": 1,
-          "region_settlements": 0
+          "region_settlements": 1
         },
         "meaning": "observation_only_not_retry_authorization"
       },
@@ -205,7 +205,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T06:03:34.261605+00:00",
-      "updated_at": "2026-10-22T17:47:37+08:00",
+      "updated_at": "2026-10-22T17:50:02+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -347,7 +347,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T09:14:45.699903+00:00",
-      "updated_at": "2026-10-22T17:47:37+08:00",
+      "updated_at": "2026-10-22T17:50:02+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -366,11 +366,11 @@
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "pending",
-          "ledger_status": "pending",
+          "status": "failed",
+          "ledger_status": "failed",
           "ok": false,
-          "started_at": null,
-          "finished_at": null
+          "started_at": "2026-10-22T09:48:10.956963+00:00",
+          "finished_at": "2026-10-22T09:49:26.371242+00:00"
         },
         {
           "name": "omnipart_generate_parts",
@@ -451,6 +451,26 @@
           "path": "media/sneaker_cleaned_image.png",
           "bytes": 2165814,
           "sha256": "f6b03c7d6bd4e326741a69dd40a82f15cf398ecd4df3197ba4dc920ef504df93"
+        },
+        {
+          "path": "media/sneaker_processed_white_bg_png.png",
+          "bytes": 224061,
+          "sha256": "a0348613dd60c4e98db9b41f3267a16807c97249ad2ae64defd882589f1ef259"
+        },
+        {
+          "path": "media/sneaker_processed_rgba.png",
+          "bytes": 254767,
+          "sha256": "75721d2bd86d237487b43f6b3ffab71f692580ac7587741f750403be3b0f0bd6"
+        },
+        {
+          "path": "media/sneaker_ordered_mask_vis.png",
+          "bytes": 2462,
+          "sha256": "75062189a79f1641bf9ee8a9fa8845d7860724d63ab28d8a3bc30d77afacd4d9"
+        },
+        {
+          "path": "media/sneaker_segmentation_overlay.png",
+          "bytes": 195969,
+          "sha256": "93be86f55588825f0099264f84c8b8d17cd988a9bcdd0af423520ccf876fd4b8"
         }
       ],
       "id": "sneaker",
@@ -469,7 +489,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-22T17:47:37+08:00",
+      "updated_at": "2026-10-22T17:50:02+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -551,11 +571,11 @@
         {
           "name": "hag4r_final_export_bundle",
           "label": "最終匯出",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
+          "started_at": "2026-10-22T09:48:27.946238+00:00",
+          "finished_at": "2026-10-22T09:48:28.511660+00:00"
         }
       ],
       "health": {
@@ -656,7 +676,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-22T17:47:37+08:00",
+      "updated_at": "2026-10-22T17:50:02+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -843,7 +863,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-22T17:47:37+08:00",
+      "updated_at": "2026-10-22T17:50:02+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -959,7 +979,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-22T17:47:37+08:00",
+      "updated_at": "2026-10-22T17:50:02+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1075,7 +1095,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T17:47:37+08:00",
+      "updated_at": "2026-10-22T17:50:02+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1217,7 +1237,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T17:47:37+08:00",
+      "updated_at": "2026-10-22T17:50:02+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1481,6 +1501,26 @@
       "sha256": "f6b03c7d6bd4e326741a69dd40a82f15cf398ecd4df3197ba4dc920ef504df93"
     },
     {
+      "path": "media/sneaker_processed_white_bg_png.png",
+      "bytes": 224061,
+      "sha256": "a0348613dd60c4e98db9b41f3267a16807c97249ad2ae64defd882589f1ef259"
+    },
+    {
+      "path": "media/sneaker_processed_rgba.png",
+      "bytes": 254767,
+      "sha256": "75721d2bd86d237487b43f6b3ffab71f692580ac7587741f750403be3b0f0bd6"
+    },
+    {
+      "path": "media/sneaker_ordered_mask_vis.png",
+      "bytes": 2462,
+      "sha256": "75062189a79f1641bf9ee8a9fa8845d7860724d63ab28d8a3bc30d77afacd4d9"
+    },
+    {
+      "path": "media/sneaker_segmentation_overlay.png",
+      "bytes": 195969,
+      "sha256": "93be86f55588825f0099264f84c8b8d17cd988a9bcdd0af423520ccf876fd4b8"
+    },
+    {
       "path": "media/usb_hub_cleaned_image.png",
       "bytes": 1324164,
       "sha256": "e4264e42306c814048634899bc6fa1413bb1779905549bcfca29e1c6abadcb96"
@@ -1716,5 +1756,5 @@
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "3ae3e1bafb3d0d57922c07e45493293d601419a0643c593ffd5a01718ee9eef5"
+  "signature": "bb64963fab2dea9b355bb52abe717d35ee39159f0e0e302c6746cbcd6e5ab68f"
 }
