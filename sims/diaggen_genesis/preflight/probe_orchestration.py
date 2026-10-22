@@ -65,6 +65,8 @@ def inventory():
         "check_diaggen_exr.py", "check_diaggen_display.py", "wait_diaggen_gpu_memory.py",
     ))
     sources.difference_update(tests)
+    sources.update(BASE / 'queue' / name for name in ('repair_prompt.md', 'repair_result.schema.json'))
+    sources.update((BASE / 'queue/systemd').glob('*.in'))
 
     def records(paths):
         return {str(path.relative_to(WORKSPACE)): {"sha256": file_hash(path), "size_bytes": path.stat().st_size}

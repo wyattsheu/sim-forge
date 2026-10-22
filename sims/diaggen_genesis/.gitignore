@@ -10,6 +10,10 @@ queue/*
 !queue/monitor.py
 !queue/run_monitor.sh
 !queue/install_monitor.sh
+!queue/repair_control.py
+!queue/run_repair.sh
+!queue/repair_prompt.md
+!queue/repair_result.schema.json
 !queue/systemd/
 
 # Large reference downloads and the complete local execution archive.

@@ -32,9 +32,10 @@ REQUIRED_SOURCES = [
     *[BASE / "preflight" / f"probe_{name}.py" for name in ("host", "mesh", "genesis", "omnipart")],
     BASE / "preflight/summarize.py", BASE / "queue/batch_control.py",
     *[BASE / "queue" / name for name in
-      ("monitor.py", "run_monitor.sh", "install_monitor.sh")],
-    *[BASE / "queue/systemd" / ("diaggen-genesis-monitor." + name + ".in")
-      for name in ("service", "timer")],
+      ("monitor.py", "run_monitor.sh", "install_monitor.sh", "repair_control.py",
+       "run_repair.sh", "repair_prompt.md", "repair_result.schema.json")],
+    *[BASE / "queue/systemd" / ("diaggen-genesis-" + role + "." + name + ".in")
+      for role in ("monitor", "repair") for name in ("service", "timer")],
     *[Path("tools") / name for name in
       ("check_diaggen_exr.py", "check_diaggen_display.py", "wait_diaggen_gpu_memory.py")],
     NATIVE / "scripts/generate_simulation_mp4.sh",

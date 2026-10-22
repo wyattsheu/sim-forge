@@ -331,6 +331,29 @@ def monitor_snapshot(queue, jobs):
             'jobs': records}
 
 
+def repair_snapshot(queue):
+    path = queue / 'repair_status.json'
+    if not path.exists():
+        return None
+    if path.is_symlink() or not inside(path.resolve(), queue.resolve()):
+        raise ValueError('repair status escapes queue')
+    value = read_object(path)
+    if value.get('schema_version') != 'diaggen-repair-status-v1':
+        return None
+    return {'enabled': value.get('enabled') is True, 'updated_at': timestamp(value.get('updated_at')),
+            'id': identifier(value.get('id')), 'read_only_audit': value.get('read_only_audit') is True,
+            'status': enum(value.get('status'), {'running', 'finished', 'needs_attention'}),
+            'incident': enum(value.get('incident'), {'monitor_missing', 'monitor_stale', 'monitor_invalid',
+                'queue_ledger_invalid', 'resume_ineligible', 'export_validation_failed', 'retry_limit',
+                'process_inspection_unavailable', 'unbound_worker_review', 'inspection_failed',
+                'preflight_failed', 'stage_failed', 'quiet', 'cleanup_wait_excessive',
+                'new_native_halt', 'read_only_audit'}),
+            'classification': enum(value.get('classification'), {'scheduler', 'pipeline_runtime',
+                'dependency', 'external_service', 'native_business_halt', 'unknown', 'no_issue'}),
+            'outcome': enum(value.get('outcome'), {'repaired_and_requeued', 'recovered',
+                'waiting_native_cleanup', 'needs_attention', 'healthy', 'blocked_review'})}
+
+
 def build_batch_snapshot(workspace, queued, batch):
     if batch.get("schema_version") != "diaggen-batch-v1":
         raise ValueError("unsupported batch schema")
@@ -405,6 +428,9 @@ def build_batch_snapshot(workspace, queued, batch):
     automation = monitor_snapshot(queue, snapshot['jobs'])
     if automation is not None:
         snapshot['automation'] = automation
+    repair = repair_snapshot(queue)
+    if repair is not None:
+        snapshot['repair'] = repair
     snapshot["signature"] = semantic_signature(snapshot)
     return snapshot, media
 
@@ -452,6 +478,10 @@ def render_batch_readme(snapshot):
         lines += ['', f"伺服器自動監看：{'啟用' if auto['enabled'] else '暫停'}；每 60 秒檢查，原 run 最多自動續跑 2 次。", '',
                   '| 物件 | 自動監看結果 |', '|---|---|']
         lines += [f"| {item['id']} | {item['outcome']} |" for item in auto['jobs']]
+    if snapshot.get('repair') is not None:
+        investigation = snapshot['repair']
+        lines += ['', f"故障診斷工作：{investigation['status']}；分類 {investigation['classification']}；結果 {investigation['outcome']}。", '',
+                  '每五分鐘檢查新故障，符合條件時才啟動 Codex 查因、修正及驗證；同一故障最多兩次，正常時不額外呼叫模型。']
     for job in snapshot["jobs"]:
         lines += ["", f"## {job['id']}", "", f"Run：`{job['run_id']}`；{PHASE_LABELS[job['phase']]}。", "",
                   "| 階段 | 狀態 |", "|---|---|"]

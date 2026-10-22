@@ -1,10 +1,10 @@
 {
   "schema_version": "diaggen-full-runtime-preflight-v1",
-  "checked_at": "2026-10-22T11:58:19.366914+00:00",
+  "checked_at": "2026-10-22T12:18:18.685114+00:00",
   "overall_status": "pass",
   "simulator": "Genesis",
   "counts": {
-    "pass": 95,
+    "pass": 97,
     "fail": 0,
     "skip": 0
   },
@@ -15,13 +15,14 @@
       "reason": "Not required by the installed precompiled runtime or validated Ninja JIT"
     }
   ],
-  "scope": "Correct external watchdog false-positive for the exact official runtime resource profiler; restore guarded native dragon operational retry. No native code, stage, business budget, model or environment change.",
+  "scope": "Incident-triggered server-side Codex investigation and bounded repair supervision. Existing official pipeline, native sources, inputs, models and environments unchanged.",
   "limitations": [
     "Five production assets have strict Genesis accept; sneaker is an exported_unaccepted native snapshot result with revise, not a physics acceptance.",
     "Capybara spconv int32 limitation and kitchen-tongs native revision budget remain unresolved.",
     "No full-model peak VRAM measurement; admission does not reserve GPU memory.",
     "Hardware checks are reused only where native sources, inputs, environments and binaries match the prior certificate.",
-    "Watchdog does not repair business halts, failed native stages, exhausted revision budgets or the capybara spconv limitation; unknown active processes prevent automatic resume."
+    "Watchdog does not repair business halts, failed native stages, exhausted revision budgets or the capybara spconv limitation; unknown active processes prevent automatic resume.",
+    "The investigator is admitted only for new failures and cannot guarantee a faithful fix; real business halts and automatic-review rejections are preserved. Real Codex incident execution is a separate deployment observation."
   ],
   "checks": [
     {
@@ -403,21 +404,37 @@
     {
       "name": "server_monitor/dragon_native_readonly_resume_admission",
       "status": "pass"
+    },
+    {
+      "name": "server_supervision/four_systemd_units_valid",
+      "status": "pass"
+    },
+    {
+      "name": "server_supervision/actual_dragon_incident_detection",
+      "status": "pass"
     }
   ],
   "evidence_reuse": {
-    "unchanged_checks_reused": 90,
+    "unchanged_checks_reused": 92,
     "actual_cpu_tests": {
       "error": 0,
       "expected_fail": 0,
       "fail": 0,
-      "pass": 353,
-      "run": 353,
+      "pass": 374,
+      "run": 374,
       "skip": 0,
       "unexpected_success": 0
     },
     "changed_sources": [
-      "sims/diaggen_genesis/queue/monitor.py"
+      "sims/diaggen_genesis/preflight/probe_orchestration.py",
+      "sims/diaggen_genesis/preflight/readiness.py",
+      "sims/diaggen_genesis/queue/install_monitor.sh",
+      "sims/diaggen_genesis/queue/repair_control.py",
+      "sims/diaggen_genesis/queue/repair_prompt.md",
+      "sims/diaggen_genesis/queue/repair_result.schema.json",
+      "sims/diaggen_genesis/queue/run_repair.sh",
+      "sims/diaggen_genesis/queue/systemd/diaggen-genesis-repair.service.in",
+      "sims/diaggen_genesis/queue/systemd/diaggen-genesis-repair.timer.in"
     ],
     "native_sources_changed": false,
     "completed_production_assets": [

@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["incident_id", "classification", "outcome", "summary", "changed_files", "checks", "requeued_jobs"],
+  "properties": {
+    "incident_id": {"type": "string"},
+    "classification": {"type": "string", "enum": ["scheduler", "pipeline_runtime", "dependency", "external_service", "native_business_halt", "unknown", "no_issue"]},
+    "outcome": {"type": "string", "enum": ["repaired_and_requeued", "recovered", "waiting_native_cleanup", "needs_attention", "healthy", "blocked_review"]},
+    "summary": {"type": "string"},
+    "changed_files": {"type": "array", "items": {"type": "string"}},
+    "checks": {"type": "array", "items": {"type": "string"}},
+    "requeued_jobs": {"type": "array", "items": {"type": "string"}}
+  }
+}

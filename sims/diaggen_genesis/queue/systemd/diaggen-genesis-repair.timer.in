@@ -1,0 +1,13 @@
+# Managed by sim-forge DiagGen
+[Unit]
+Description=Check for new DiagGen incidents every five minutes
+
+[Timer]
+OnCalendar=*-*-* *:0/5:00
+AccuracySec=5s
+RandomizedDelaySec=5s
+Persistent=true
+Unit=diaggen-genesis-repair.service
+
+[Install]
+WantedBy=timers.target

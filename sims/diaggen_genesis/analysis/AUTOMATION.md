@@ -20,19 +20,20 @@
 在 repository 根目錄執行：
 
 ```bash
-# 安裝／重新部署此帳號專用的兩個 units，不需要 sudo。
+# 安裝／重新部署監看與故障診斷的四個 units，不需要 sudo。
 bash sims/diaggen_genesis/queue/install_monitor.sh
 
 systemctl --user list-timers --all diaggen-genesis-monitor.timer
+systemctl --user list-timers --all diaggen-genesis-repair.timer
 systemctl --user status diaggen-genesis-monitor.service
 cat sims/diaggen_genesis/queue/monitor_status.json
 tail -n 5 sims/diaggen_genesis/queue/monitor.log
 
 # 暫停新排程 tick；現有生成工作仍可繼續。
-systemctl --user disable --now diaggen-genesis-monitor.timer
+systemctl --user disable --now diaggen-genesis-monitor.timer diaggen-genesis-repair.timer
 
 # 重新啟用。
-systemctl --user enable --now diaggen-genesis-monitor.timer
+systemctl --user enable --now diaggen-genesis-monitor.timer diaggen-genesis-repair.timer
 ```
 
 本機 `queue/monitor_status.json` 與 `queue/automation_state.json` 分別記錄最新觀察及恢復次數；原生狀態、完整工作與歷史依既有目錄保存。GitHub [progress](../progress/) 只發布允許的監看結果枚舉與既有產物預覽，不上傳完整執行紀錄或診斷憑證；心跳時間變化不會單獨製造 commit。
@@ -51,3 +52,17 @@ Dragon 在 19:10 的 bind 呼叫回傳錯誤後停止；原生 MCP 隨後記錄 
 現在只排除 argv、run-root、原生 hag4r Python、cwd 以及 resource_monitor.lock 中 PID 全部相符的 profiler。沒有停止 profiler、清除診斷鎖或更改原生程式；未知程序與真正的子工作仍會阻止恢復。353 項 CPU／回歸測試全通過，含其他 module、額外參數、不同 PID／exe／cwd 的拒絕對照；95 項啟動憑證通過。
 
 19:58:21 排程實際呼叫既有 Queue.resume，Dragon 已以原 run、原 GPU 和前六個成功階段重新啟動 Codex。這是正式續跑證據，尚不是完成或物理 accept；詳細見 [恢復驗證](dragon_scheduled_recovery_20261022.json)。
+
+## 故障觸發的 Codex 診斷與修復
+
+使用者進一步要求：排程執行時若突然停止，要判斷是流程還是排程出錯，修正後重新自動執行。因此增加 `diaggen-genesis-repair.timer`，每 **5 分鐘**檢查新事件；正常工作不呼叫模型。只有發現未解的 runtime／stage failure、新的 native halt、等待清理過久、監看資料失效或程序失聯等情況，才由 shell 啟動 **GPT-6 Luna Max 的 Codex exec** 查因。這個程序是外部故障調查，沒有替換官方 pipeline agent。
+
+新的 native halt 需要先調查：它可能是正當的物理／語意停止，也可能是 child 遇到檔案或 runtime 錯誤後呼叫 halt。調查不會自動清除 halt；若確認是真正業務限制，保留結果，不再用相同事件反覆啟動模型。部署前已知的料理夾與水豚失敗存為 baseline；新的 run 或新的失敗狀態仍會進入調查。
+
+調查會讀取既有紀錄與官方程式，重現問題、做最小相容修正、執行對應檢查及完整 CPU suite，再以實際 source／環境指紋更新並驗證啟動憑證。只能使用既有 guarded queue resume／reconcile 或符合官方規則的新 run；不能改寫診斷結果、降低品質、繞過審核或重置修正預算。自動審核如拒絕必要操作，會留下 `blocked_review` 與原因，不改權限繞過。
+
+每個事件最多調查 **2 次**，間隔至少 **15 分鐘**；單次最長 **45 分鐘**。PID、檔案鎖與磁碟記帳防止重複調查。修復時建立它自己的 HOLD，結束後只有啟動憑證驗證通過，才能移除同一個 gate；途中退出會保留證據及 gate，下一輪依同一事件次數接手。人工 HOLD 不會被競爭或移除。
+
+本機調查紀錄在 `queue/repair_jobs/<id>/`，包含 request、Codex JSONL、結果與完成記帳；`queue/repair_status.json` 的允許枚舉會進 GitHub 即時進度。原始紀錄、憑證、session 識別資訊不公開。修正由調查工作以專用 worktree、精確檔案清單推送，沒有共同作者註記。`queue/REPAIR_STOP` 可暫停新的模型調查；原有一分鐘監看與執行工作仍可繼續。
+
+Dragon 在 20:07 暴露的新事件是 `material audit registration snapshot path already exists: cleaned_source_image`：重試的登錄資料已清空，但先前快照檔仍存在，child 寫入 native halt。它會列為新 halt 調查，不直接當作物理不通過，也不直接刪檔重試。先前 19:58 的成功續跑仍是啟動證據，不能稱為完整成功。

@@ -1,0 +1,11 @@
+# Managed by sim-forge DiagGen
+[Unit]
+Description=Investigate and repair new DiagGen execution incidents
+
+[Service]
+Type=oneshot
+WorkingDirectory=@WORKSPACE@
+ExecStart=/usr/bin/bash "@QUEUE@/run_repair.sh"
+TimeoutStartSec=50min
+KillMode=control-group
+UMask=0077
