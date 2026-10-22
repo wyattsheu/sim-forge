@@ -2,9 +2,9 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T12:39:48+08:00（Asia/Taipei）
+更新：2026-10-22T12:40:04+08:00（Asia/Taipei）
 
-共 9 件：等待 6、執行中 1、完成 1、失敗 1、取消 0。
+共 9 件：等待 5、執行中 2、完成 1、失敗 1、取消 0。
 
 GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢查。  
 允許與既有運算共用 GPU：是。
@@ -13,7 +13,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢
 
 | 物件 | 排程狀態 | Runtime | Revision | 顯存門檻 | 已完成階段 |
 |---|---|---|---|---|---|
-| sneaker | queued | seeded | revision_0000 | 24576 MiB | 6/9 |
+| sneaker | running | seeded | revision_0000 | 24576 MiB | 6/9 |
 | usb_hub | running | seeded | revision_0000 | 24576 MiB | 6/9 |
 | capybara_plush_toy | failed | seeded | revision_0000 | 49152 MiB | 2/9 |
 | sloth | queued | seeded | revision_0000 | 24576 MiB | 6/9 |
@@ -25,7 +25,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢
 
 ## sneaker
 
-Run：`genesis_sneaker_20261021`；等待空閒 GPU。
+Run：`genesis_sneaker_20261021`；執行中。
 
 | 階段 | 狀態 |
 |---|---|
