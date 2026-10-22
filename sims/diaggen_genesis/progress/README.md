@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-23T00:27:19+08:00（Asia/Taipei）
+更新：2026-10-23T00:27:37+08:00（Asia/Taipei）
 
 共 9 件：等待 1、執行中 3、完成匯出 5、失敗 0、取消 0。
 
@@ -20,7 +20,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | 物件 | 排程狀態 | Runtime | Revision | 顯存門檻 | 已完成階段 | 診斷結果 | 健康提示 |
 |---|---|---|---|---|---|---|---|
 | baseball_cap | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
-| kitchen_tongs | running | seeded | revision_0000 | 24576 MiB | 6/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
+| kitchen_tongs | running | seeded | revision_0000 | 24576 MiB | 7/9 | accept，待完成匯出 | 未偵測到上述異常（非成功保證） |
 | sneaker | running | seeded | revision_0000 | 24576 MiB | 6/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
 | usb_hub | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
 | sloth | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
@@ -106,11 +106,11 @@ Run：`genesis_kitchen_tongs_20261022_native6`；執行中。
 | 材料推估 | success |
 | 材料參數配置 | success |
 | 體積網格處理 | success |
-| Genesis 物理診斷 | running |
+| Genesis 物理診斷 | success |
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
-Genesis 診斷 episode 數：2；結果：尚未判定。
+Genesis 診斷 episode 數：2；結果：accept，待完成匯出。
 
 ![kitchen_tongs_cleaned_image](media/kitchen_tongs_cleaned_image.png)
 
@@ -133,6 +133,10 @@ Genesis 診斷 episode 數：2；結果：尚未判定。
 ![kitchen_tongs_omnipart_left](media/kitchen_tongs_omnipart_left.png)
 
 ![kitchen_tongs_omnipart_right](media/kitchen_tongs_omnipart_right.png)
+
+[kitchen_tongs_episode_001_triptych_video](media/kitchen_tongs_episode_001_triptych_video.mp4)
+
+[kitchen_tongs_episode_002_triptych_video](media/kitchen_tongs_episode_002_triptych_video.mp4)
 
 
 ## sneaker
