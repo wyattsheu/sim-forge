@@ -97,6 +97,11 @@ class RepairControl:
             return [{'kind': 'monitor_stale', 'signature': digest('monitor_stale')}]
         index = {(j.get('id'), j.get('run_id')): j for j in observed.get('jobs', [])}
         result = []
+        inbox = observed.get('inbox', {})
+        if inbox.get('outcome') == 'scan_failed' or inbox.get('runtime_errors', 0):
+            result.append({'kind': 'image_intake_failed',
+                           'signature': digest({'kind': 'image_intake_failed',
+                                                'error_type': inbox.get('error_type')})})
         try:
             batch = self.batch()
         except (ValueError, KeyError, FileNotFoundError):

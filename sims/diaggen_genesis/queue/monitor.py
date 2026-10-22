@@ -18,6 +18,7 @@ import time
 import uuid
 
 from batch_control import Queue, atomic_json, now
+from image_intake import Intake
 
 
 MAX_RESUMES = 2
@@ -278,6 +279,11 @@ class Monitor:
             batch = self.queue._load()
         stopped = (self.directory / 'STOP').exists()
         report['queue_stopped'] = stopped
+        if not stopped:
+            try:
+                report['inbox'] = Intake(self.base, clock=self.clock).scan_inbox()
+            except Exception as error:
+                report['inbox'] = {'outcome': 'scan_failed', 'error_type': type(error).__name__}
         for job in batch['jobs']:
             try:
                 outcome = 'queue_stopped' if stopped else self.observe_job(job)

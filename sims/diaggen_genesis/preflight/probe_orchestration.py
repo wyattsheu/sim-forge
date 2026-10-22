@@ -65,6 +65,7 @@ def inventory():
         "check_diaggen_exr.py", "check_diaggen_display.py", "wait_diaggen_gpu_memory.py",
     ))
     sources.difference_update(tests)
+    sources.add(WORKSPACE / 'diaggen')
     sources.update(BASE / 'queue' / name for name in ('repair_prompt.md', 'repair_result.schema.json'))
     sources.update((BASE / 'queue/systemd').glob('*.in'))
 

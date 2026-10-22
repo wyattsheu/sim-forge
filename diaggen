@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Submit ordinary images to the installed, detached Genesis workflow.
+set -euo pipefail
+WORKSPACE="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+export PYTHONNOUSERSITE=1 PYTHONDONTWRITEBYTECODE=1
+exec "$WORKSPACE/tools/diaggen/.conda/hag4r/bin/python" \
+    "$WORKSPACE/sims/diaggen_genesis/queue/client.py" "$@"

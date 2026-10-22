@@ -27,6 +27,7 @@ ENVIRONMENTS = {
     "genesis": NATIVE / "third_party/genesis-world/.conda/genesis_world-main",
 }
 REQUIRED_SOURCES = [
+    Path('diaggen'), BASE / 'queue/client.py', BASE / 'queue/image_intake.py',
     BASE / "batch_plan.json", BASE / "queue/run_one.sh",
     BASE / "preflight/readiness.py",
     *[BASE / "preflight" / f"probe_{name}.py" for name in ("host", "mesh", "genesis", "omnipart")],

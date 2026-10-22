@@ -165,7 +165,7 @@ elif [[ "$EXECUTION_MODE" == diagnostics_snapshot ]]; then
 else
     mkdir -p outputs/inputs
     FROZEN_INPUT="$DIAGGEN_ROOT/outputs/inputs/${DIAGGEN_QUEUE_RUN_ID}.${SOURCE_IMAGE##*.}"
-    cp -- "$SOURCE_IMAGE" "$FROZEN_INPUT"
+    "$PYTHON" "$ROOT_QUEUE/image_intake.py" freeze "$JOB_ID" "$FROZEN_INPUT"
     printf '%s\n' "$FROZEN_INPUT" > "$DIAGGEN_JOB_QUEUE_DIR/selected_input.txt"
     "$PYTHON" -m hag4r.agentic.run_diaggen_pipeline \
         --source_image "$FROZEN_INPUT" --run_id "$DIAGGEN_QUEUE_RUN_ID" \

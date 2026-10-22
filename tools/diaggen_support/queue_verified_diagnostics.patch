@@ -1,9 +1,19 @@
 --- a/sims/diaggen_genesis/queue/run_one.sh
 +++ b/sims/diaggen_genesis/queue/run_one.sh
-@@ -175,6 +175,38 @@
+@@ -165,7 +165,7 @@
+ else
+     mkdir -p outputs/inputs
+     FROZEN_INPUT="$DIAGGEN_ROOT/outputs/inputs/${DIAGGEN_QUEUE_RUN_ID}.${SOURCE_IMAGE##*.}"
+-    cp -- "$SOURCE_IMAGE" "$FROZEN_INPUT"
++    "$PYTHON" "$ROOT_QUEUE/image_intake.py" freeze "$JOB_ID" "$FROZEN_INPUT"
+     printf '%s\n' "$FROZEN_INPUT" > "$DIAGGEN_JOB_QUEUE_DIR/selected_input.txt"
+     "$PYTHON" -m hag4r.agentic.run_diaggen_pipeline \
+         --source_image "$FROZEN_INPUT" --run_id "$DIAGGEN_QUEUE_RUN_ID" \
+@@ -174,6 +174,38 @@
+         --config configs/config_genesis_diagnostics_enabled.yaml \
          > "$DIAGGEN_JOB_QUEUE_DIR/initializer.json"
  fi
- 
++
 +# Only describe metadata and recovery rules belonging to this execution mode.
 +case "$EXECUTION_MODE" in
 +    fresh)
@@ -35,10 +45,9 @@
 +diagnostic child, and consume native recommendation transitions and lawful repair reroutes."
 +        ;;
 +esac
-+
+ 
  cat > "$DIAGGEN_JOB_QUEUE_DIR/prompt.txt" <<EOF
  Complete this one user-authorized DiagGen asset-generation run in native Genesis.
- Read and use .agents/skills/run-diaggen-pipeline/SKILL.md; the initialized run is $RUN_ROOT.
 @@ -205,22 +237,48 @@
  output quality. The guard is an observation, not a memory reservation or OOM guarantee.
  For fresh image cleanup, stop after a passing Attempt 1; do not generate Attempt 2 after it

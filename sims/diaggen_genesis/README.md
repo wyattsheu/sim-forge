@@ -4,6 +4,8 @@
 
 使用 DiagGen 內附的 **Genesis 1.2.0**，開啟 Genesis 診斷，排程 9 張圖片的完整生成流程。
 
+**新增圖片入口：** 在 repository 根目錄執行 `./diaggen /path/to/image.png` 或 `./diaggen submit /path/to/folder`，即可加入背景佇列；也可以直接把圖片放進 `sims/diaggen_genesis/inbox/`，約 1–2 分鐘自動收件。`./diaggen status` 查看狀態。服務在 SSH 登出後繼續，完整結果在 `runs/<run_id>/`。操作與限制見 [自動化說明](analysis/AUTOMATION.md)。
+
 **2026-10-22 18:55：5／9 件通過 Genesis strict accept 並完成匯出：電捲棒、樹懶、USB Hub、棒球帽、醬料盒。** 另有球鞋完成原生 snapshot 的 `exported_unaccepted` 匯出，診斷仍為 revise，不能算物理通過。龍仍執行中；料理夾在原生修正次數上限停止，水豚受 spconv int32 限制阻擋。即時狀態見 [progress/](progress/)，驗收見 [醬料盒](analysis/sauce_keeper_completed_validation.json)、[球鞋（未通過）](analysis/sneaker_completed_validation.json)、[棒球帽](analysis/baseball_cap_completed_validation.json)、[USB](analysis/usb_hub_completed_validation.json) 與 [樹懶](analysis/sloth_completed_validation.json)。
 
 **20:48 更新：** Dragon 的新 run 已由排程正式啟動，修正重試快照衝突；完整環境與 GPU 檢查、383 項回歸及嚴格啟動憑證通過。這次採新 raw-image run，舊 halt／產物保留；尚未完成。見 [自動修復及覆核](analysis/repair_supervision_review_20261022.json)。

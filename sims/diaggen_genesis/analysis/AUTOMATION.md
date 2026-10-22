@@ -1,5 +1,39 @@
 # 伺服器排程與自動監看
 
+## 圖片入口：不必開啟 Codex 對話
+
+在 `/mnt/HDD4/wyattsheu/ITRI/sim-forge` 執行一次：
+
+```bash
+./diaggen start
+```
+
+之後直接把 **PNG、JPG、JPEG** 圖片放到
+`/mnt/HDD4/wyattsheu/ITRI/sim-forge/sims/diaggen_genesis/inbox/`。
+可以透過 SCP、SFTP 或 VS Code Remote SSH 上傳。收件器每分鐘掃描一次；相同檔案連續兩次掃描穩定、且至少相隔 15 秒後才提交，通常約 1–2 分鐘。建議先上傳為 `.part`，完成後才改成圖片副檔名。收件器只掃描這個資料夾第一層，原圖保留；損毀圖片會留在狀態中，其他有效圖片仍可繼續。
+
+也可以一行立即提交圖片或資料夾；提交會自動啟用背景服務，指令結束後即可登出：
+
+```bash
+./diaggen '/path/to/物件照片.png'
+./diaggen submit '/path/to/圖片資料夾'
+./diaggen submit '/path/to/圖片資料夾' --recursive
+./diaggen status
+
+# 只驗證，不提交、不啟動工作：
+./diaggen submit '/path/to/圖片資料夾' --dry-run
+```
+
+圖片會先解碼、檢查格式及 SHA-256，再以原始 bytes 保存到私有的 `inputs/submissions/`；不調整解析度或重新壓縮。正式啟動前再次解碼及檢查雜湊，建立不覆寫的 native input。相同內容只使用既有任務，即使改檔名、反覆提交或已有失敗，都不會默默另開 run／重設原生修正預算。每次手動提交先驗完全部圖片，才加入佇列；上傳變動或任何無效輸入會拒絕該次提交。
+
+收件後沿用：等待可用 GPU → 官方 cleanup／segmentation／OmniPart／材質／網格 → Genesis 診斷與官方修正 → 貼圖與匯出 → 獨立驗收及結果歸檔。執行中仍由一分鐘監看、五分鐘故障調查與既有 GitHub 發布接手。每個 run 的完整本機結果在 `sims/diaggen_genesis/runs/<run_id>/`。`status` 將 `exported_accepted`（已驗證 strict accept）、`exported_unaccepted`（原生 revise 匯出）及缺少有效驗收紀錄的 `exported_unverified` 分開顯示。
+
+原九張 demo 計畫保留為環境預檢 fixture；新圖片採逐件輸入驗證，因此正常增加圖片不需要重跑整套 GPU 環境預檢。收件程式與入口本身仍在啟動憑證及 CPU source inventory 內；更改程式會令憑證失效。單張上限 64 MiB、只接受靜態圖片；目前 queue 與既有進度發布器共同限制為 100 筆任務（含歷史），達到限制會明確拒絕，不會漏排或刪除歷史。
+
+`start` 保留人工 `HOLD`、`STOP`、`AUTOMATION_STOP`、`REPAIR_STOP`，不會把暫停當成故障清除。此伺服器已部署服務並啟用 linger；未部署的其他機器仍需先完成環境、權重、有效的 runtime 憑證及 user systemd 配置。
+
+不必手動打開 Codex，但背景仍需要已登入的 Codex CLI、模型／imagegen 權限與網路，並沿用 GPT-6 Luna Max。登出 SSH 後繼續執行；若授權到期或碰到無法修復的原生限制，系統保留原因並停止該任務，不能保證任意圖片都通過物理診斷。
+
 使用者要求剩餘工作由伺服器排程接續，不需持續開著 Codex 對話或 SSH。排程使用目前帳號的 **systemd user timer**，每分鐘觸發一次 `queue/run_monitor.sh`。此機器已啟用 `Linger=yes`；登出後 user manager 繼續運作，重新開機後 timer 也會啟動。實際生成仍使用既有 shell queue 與官方 DiagGen Codex skill，模型維持 GPT-6 Luna Max、Genesis 1.2.0。
 
 ## 自動執行範圍

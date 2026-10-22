@@ -5,6 +5,8 @@ queue/*
 !queue/publish_progress.py
 !queue/publish_progress.sh
 !queue/batch_control.py
+!queue/client.py
+!queue/image_intake.py
 !queue/run_one.sh
 !queue/reconcile_export.py
 !queue/monitor.py
@@ -19,6 +21,8 @@ queue/*
 # Large reference downloads and the complete local execution archive.
 references/
 runs/
+inbox/*
+!inbox/README.txt
 
 # Only the documented demo crops and the supplied capybara input are published.
 inputs/*

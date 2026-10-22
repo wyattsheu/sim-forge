@@ -81,6 +81,21 @@ class RepairTests(unittest.TestCase):
         self.assertFalse((self.q / 'HOLD').exists())
         self.assertFalse((self.q / 'repair_jobs').exists())
 
+    def test_inbox_runtime_failure_triggers_existing_bounded_investigator(self):
+        self.observed['jobs'][0]['outcome'] = 'running'
+        for inbox in ({'outcome': 'scan_failed', 'error_type': 'TypeError'}, {'runtime_errors': 1}):
+            with self.subTest(inbox=inbox):
+                self.observed['inbox'] = inbox
+                self.refresh()
+                self.assertEqual(self.control.incidents({})[0]['kind'], 'image_intake_failed')
+
+    def test_invalid_inbox_image_does_not_launch_repair_model(self):
+        self.observed['jobs'][0]['outcome'] = 'running'
+        self.observed['inbox'] = {'errors': 1, 'runtime_errors': 0,
+                                  'files': [{'outcome': 'invalid_image'}]}
+        self.refresh()
+        self.assertIsNone(self.prepare())
+
     def test_new_failure_records_evidence_and_reserves_own_gate(self):
         job_id = self.prepare()
         request = repair.object_file(self.q / 'repair_jobs' / job_id / 'request.json')

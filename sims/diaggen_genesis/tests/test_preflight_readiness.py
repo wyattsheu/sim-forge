@@ -65,6 +65,20 @@ class ReadinessTests(unittest.TestCase):
         certificate = json.loads(self.certificate.read_text())
         self.assertEqual(len(certificate["fingerprint"]["inputs"]), 9)
 
+    def test_new_user_input_does_not_invalidate_runtime_qualification_fixture(self):
+        self.certify()
+        path = self.workspace / readiness.BASE / 'inputs/submissions/new_user_image.png'
+        path.parent.mkdir(parents=True)
+        path.write_bytes(b'new input validated separately at admission and launch')
+        self.assertEqual(self.verify()['status'], 'pass')
+
+    def test_changed_image_intake_invalidates_launch_certificate(self):
+        self.certify()
+        path = self.workspace / readiness.BASE / 'queue/image_intake.py'
+        path.write_text('changed intake guard')
+        with self.assertRaisesRegex(ValueError, 'Runtime changed'):
+            self.verify()
+
     def test_empty_failed_skipped_and_partial_reports_are_rejected(self):
         for report in ({"overall_status": "pass", "checks": []},
                        {"overall_status": "fail", "checks": [{"status": "pass"}]},
