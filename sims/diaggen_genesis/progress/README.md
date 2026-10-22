@@ -2,9 +2,13 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T18:49:09+08:00（Asia/Taipei）
+更新：2026-10-22T18:54:59+08:00（Asia/Taipei）
 
-共 9 件：等待 0、執行中 1、完成 6、失敗 2、取消 0。
+共 9 件：等待 0、執行中 1、完成匯出 6、失敗 2、取消 0。
+
+已完成匯出中：Genesis accept 5 件；仍需修正 1 件。
+
+匯出完成與 Genesis accept 分開列示；帶 revise 的匯出仍需修正，不能當作物理診斷通過。
 
 GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢查。  
 允許與既有運算共用 GPU：是。
@@ -13,17 +17,17 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 
 診斷健康提示是唯讀觀察，不會解除鎖、重排或改寫成功／失敗。久未更新也可能是較長的模型推理，需配合紀錄判讀。
 
-| 物件 | 排程狀態 | Runtime | Revision | 顯存門檻 | 已完成階段 | 健康提示 |
-|---|---|---|---|---|---|---|
-| baseball_cap | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
-| kitchen_tongs | failed | failed | revision_0001 | 24576 MiB | 7/9 | 未偵測到上述異常（非成功保證） |
-| sneaker | success | success | revision_0001 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
-| usb_hub | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
-| sloth | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
-| sauce_keeper | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
-| dragon | running | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
-| capybara_plush_toy | failed | seeded | revision_0000 | 49152 MiB | 2/9 | 未偵測到上述異常（非成功保證） |
-| curling_iron | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
+| 物件 | 排程狀態 | Runtime | Revision | 顯存門檻 | 已完成階段 | 診斷結果 | 健康提示 |
+|---|---|---|---|---|---|---|---|
+| baseball_cap | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
+| kitchen_tongs | failed | failed | revision_0001 | 24576 MiB | 7/9 | revise，待處理 | 未偵測到上述異常（非成功保證） |
+| sneaker | success | success | revision_0001 | 24576 MiB | 9/9 | 已匯出，仍需修正（revise） | 未偵測到上述異常（非成功保證） |
+| usb_hub | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
+| sloth | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
+| sauce_keeper | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
+| dragon | running | seeded | revision_0000 | 24576 MiB | 6/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
+| capybara_plush_toy | failed | seeded | revision_0000 | 49152 MiB | 2/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
+| curling_iron | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
 
 ## baseball_cap
 
@@ -41,7 +45,7 @@ Run：`genesis_baseball_cap_20261022_fresh3`；完成。
 | 貼圖生成 | success |
 | 最終匯出 | success |
 
-Genesis 診斷 episode 數：2。
+Genesis 診斷 episode 數：2；結果：accept。
 
 ![baseball_cap_cleaned_image](media/baseball_cap_cleaned_image.png)
 
@@ -78,7 +82,7 @@ Run：`genesis_kitchen_tongs_20261022_segmentation_retry1`；執行失敗。
 
 | 階段 | 狀態 |
 |---|---|
-| 圖片清理 | pending |
+| 圖片清理 | reused |
 | SAM3 分割 | success |
 | OmniPart 幾何生成 | success |
 | 材料推估 | success |
@@ -88,7 +92,7 @@ Run：`genesis_kitchen_tongs_20261022_segmentation_retry1`；執行失敗。
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
-Genesis 診斷 episode 數：0。
+Genesis 診斷 episode 數：0；結果：revise，待處理。
 
 ![kitchen_tongs_cleaned_image](media/kitchen_tongs_cleaned_image.png)
 
@@ -119,7 +123,7 @@ Run：`genesis_sneaker_20261022_clean_diagnostics1`；完成。
 
 | 階段 | 狀態 |
 |---|---|
-| 圖片清理 | pending |
+| 圖片清理 | reused |
 | SAM3 分割 | success |
 | OmniPart 幾何生成 | success |
 | 材料推估 | success |
@@ -129,7 +133,7 @@ Run：`genesis_sneaker_20261022_clean_diagnostics1`；完成。
 | 貼圖生成 | success |
 | 最終匯出 | success |
 
-Genesis 診斷 episode 數：0。
+Genesis 診斷 episode 數：0；結果：已匯出，仍需修正（revise）。
 
 ![sneaker_cleaned_image](media/sneaker_cleaned_image.png)
 
@@ -172,7 +176,7 @@ Run：`genesis_usb_hub_20261022_clean_diagnostics3`；完成。
 | 貼圖生成 | success |
 | 最終匯出 | success |
 
-Genesis 診斷 episode 數：2。
+Genesis 診斷 episode 數：2；結果：accept。
 
 ![usb_hub_cleaned_image](media/usb_hub_cleaned_image.png)
 
@@ -219,7 +223,7 @@ Run：`genesis_sloth_20261022_clean_diagnostics3`；完成。
 | 貼圖生成 | success |
 | 最終匯出 | success |
 
-Genesis 診斷 episode 數：2。
+Genesis 診斷 episode 數：2；結果：accept。
 
 ![sloth_cleaned_image](media/sloth_cleaned_image.png)
 
@@ -266,7 +270,7 @@ Run：`genesis_sauce_keeper_20261022_clean_diagnostics2`；完成。
 | 貼圖生成 | success |
 | 最終匯出 | success |
 
-Genesis 診斷 episode 數：2。
+Genesis 診斷 episode 數：2；結果：accept。
 
 ![sauce_keeper_cleaned_image](media/sauce_keeper_cleaned_image.png)
 
@@ -313,7 +317,7 @@ Run：`genesis_dragon_20261021`；執行中。
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
-Genesis 診斷 episode 數：0。
+Genesis 診斷 episode 數：0；結果：尚未判定。
 
 ![dragon_cleaned_image](media/dragon_cleaned_image.png)
 
@@ -354,7 +358,7 @@ Run：`genesis_capybara_plush_toy_20261022_native_retry3`；執行失敗。
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
-Genesis 診斷 episode 數：0。
+Genesis 診斷 episode 數：0；結果：尚未判定。
 
 ![capybara_plush_toy_cleaned_image](media/capybara_plush_toy_cleaned_image.png)
 
@@ -383,7 +387,7 @@ Run：`genesis_curling_iron_20261021_exr_retry1`；完成。
 | 貼圖生成 | success |
 | 最終匯出 | success |
 
-Genesis 診斷 episode 數：2。
+Genesis 診斷 episode 數：2；結果：accept。
 
 ![curling_iron_cleaned_image](media/curling_iron_cleaned_image.png)
 
