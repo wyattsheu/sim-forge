@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T14:51:19+08:00（Asia/Taipei）
+更新：2026-10-22T15:04:47+08:00（Asia/Taipei）
 
 共 9 件：等待 1、執行中 3、完成 1、失敗 4、取消 0。
 
@@ -11,17 +11,19 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 
 只在排程狀態、階段、revision 或預覽成果改變時更新。等待期間不重複提交。
 
-| 物件 | 排程狀態 | Runtime | Revision | 顯存門檻 | 已完成階段 |
-|---|---|---|---|---|---|
-| baseball_cap | failed | seeded | revision_0000 | 24576 MiB | 0/9 |
-| kitchen_tongs | failed | seeded | revision_0000 | 24576 MiB | 0/9 |
-| sneaker | running | seeded | revision_0000 | 24576 MiB | 6/9 |
-| usb_hub | running | seeded | revision_0000 | 24576 MiB | 6/9 |
-| sloth | failed | failed | revision_0000 | 24576 MiB | 6/9 |
-| sauce_keeper | running | seeded | revision_0000 | 24576 MiB | 6/9 |
-| dragon | queued | seeded | revision_0000 | 24576 MiB | 0/9 |
-| capybara_plush_toy | failed | seeded | revision_0000 | 49152 MiB | 2/9 |
-| curling_iron | success | success | revision_0000 | 24576 MiB | 9/9 |
+診斷健康提示是唯讀觀察，不會解除鎖、重排或改寫成功／失敗。久未更新也可能是較長的模型推理，需配合紀錄判讀。
+
+| 物件 | 排程狀態 | Runtime | Revision | 顯存門檻 | 已完成階段 | 健康提示 |
+|---|---|---|---|---|---|---|
+| baseball_cap | failed | seeded | revision_0000 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
+| kitchen_tongs | failed | seeded | revision_0000 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
+| sneaker | running | seeded | revision_0000 | 24576 MiB | 6/9 | 重試材質快照與磁碟既有檔案衝突 |
+| usb_hub | running | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
+| sloth | failed | failed | revision_0000 | 24576 MiB | 6/9 | 重試材質快照與磁碟既有檔案衝突 |
+| sauce_keeper | running | seeded | revision_0000 | 24576 MiB | 6/9 | 診斷紀錄逾 15 分鐘未更新，需檢查 |
+| dragon | queued | seeded | revision_0000 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
+| capybara_plush_toy | failed | seeded | revision_0000 | 49152 MiB | 2/9 | 未偵測到上述異常（非成功保證） |
+| curling_iron | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
 
 ## baseball_cap
 
@@ -73,7 +75,7 @@ Run：`genesis_sneaker_20261021`；執行中。
 | 材料推估 | success |
 | 材料參數配置 | success |
 | 體積網格處理 | success |
-| Genesis 物理診斷 | running |
+| Genesis 物理診斷 | failed |
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
@@ -118,7 +120,7 @@ Run：`genesis_usb_hub_20261022_anchor_retry`；執行中。
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
-Genesis 診斷 episode 數：1。
+Genesis 診斷 episode 數：2。
 
 ![usb_hub_cleaned_image](media/usb_hub_cleaned_image.png)
 
