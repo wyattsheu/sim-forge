@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T21:34:38+08:00",
+  "updated_at": "2026-10-22T21:35:56+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-22T21:34:38+08:00",
+      "updated_at": "2026-10-22T21:35:56+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -222,7 +222,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T06:03:34.261605+00:00",
-      "updated_at": "2026-10-22T21:34:38+08:00",
+      "updated_at": "2026-10-22T21:35:56+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -396,7 +396,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T09:14:45.699903+00:00",
-      "updated_at": "2026-10-22T21:34:38+08:00",
+      "updated_at": "2026-10-22T21:35:56+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -575,7 +575,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-22T21:34:38+08:00",
+      "updated_at": "2026-10-22T21:35:56+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -764,7 +764,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-22T21:34:38+08:00",
+      "updated_at": "2026-10-22T21:35:56+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -953,7 +953,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-22T21:34:38+08:00",
+      "updated_at": "2026-10-22T21:35:56+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1137,25 +1137,25 @@
       "simulator": "Genesis",
       "run_id": "genesis_dragon_20261022_retryfix_af4645266949",
       "phase": "running",
-      "pipeline_status": "seeded",
+      "pipeline_status": "running",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
-      "active_revision": "revision_0000",
+      "active_revision": "revision_0001",
       "created_at": "2026-10-22T12:48:11.503190+00:00",
-      "updated_at": "2026-10-22T21:34:38+08:00",
+      "updated_at": "2026-10-22T21:35:56+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
-        "terminal_status": "success",
-        "recommendation": "revise",
+        "terminal_status": "not_available",
+        "recommendation": "not_available",
         "export_outcome": "not_exported"
       },
       "stages": [
         {
           "name": "image_cleanup",
           "label": "圖片清理",
-          "status": "success",
-          "ledger_status": "success",
+          "status": "reused",
+          "ledger_status": "reused",
           "ok": true,
           "started_at": "2026-10-22T12:54:35.828391+00:00",
           "finished_at": "2026-10-22T12:54:35.843046+00:00"
@@ -1163,8 +1163,8 @@
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "success",
-          "ledger_status": "success",
+          "status": "reused",
+          "ledger_status": "reused",
           "ok": true,
           "started_at": "2026-10-22T12:57:24.659330+00:00",
           "finished_at": "2026-10-22T12:58:42.445807+00:00"
@@ -1172,8 +1172,8 @@
         {
           "name": "omnipart_generate_parts",
           "label": "OmniPart 幾何生成",
-          "status": "success",
-          "ledger_status": "success",
+          "status": "reused",
+          "ledger_status": "reused",
           "ok": true,
           "started_at": "2026-10-22T13:01:17.756791+00:00",
           "finished_at": "2026-10-22T13:04:03.550952+00:00"
@@ -1181,8 +1181,8 @@
         {
           "name": "hag4r_gpt_staged_material_inference",
           "label": "材料推估",
-          "status": "success",
-          "ledger_status": "success",
+          "status": "reused",
+          "ledger_status": "reused",
           "ok": true,
           "started_at": "2026-10-22T13:06:24.304231+00:00",
           "finished_at": "2026-10-22T13:10:12.258056+00:00"
@@ -1190,29 +1190,29 @@
         {
           "name": "hag4r_assign_params_to_prims",
           "label": "材料參數配置",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T13:13:50.954888+00:00",
-          "finished_at": "2026-10-22T13:13:51.953232+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_combined_to_monolithic",
           "label": "體積網格處理",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T13:17:25.939480+00:00",
-          "finished_at": "2026-10-22T13:18:28.910028+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "genesis_live_diagnostic_loop",
           "label": "Genesis 物理診斷",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T13:21:27.436593+00:00",
-          "finished_at": "2026-10-22T13:34:31.058328+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_post_mesh_texture",
@@ -1316,7 +1316,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T21:34:38+08:00",
+      "updated_at": "2026-10-22T21:35:56+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1460,7 +1460,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T21:34:38+08:00",
+      "updated_at": "2026-10-22T21:35:56+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -2190,7 +2190,7 @@
     "enabled": true,
     "interval_seconds": 60,
     "max_resumes_per_run": 2,
-    "updated_at": "2026-10-22T21:34:03+08:00",
+    "updated_at": "2026-10-22T21:35:03+08:00",
     "jobs": [
       {
         "id": "baseball_cap",
@@ -2249,5 +2249,5 @@
     "classification": "pipeline_runtime",
     "outcome": "repaired_and_requeued"
   },
-  "signature": "3abd2beff64c797d781ea457b38bde52cbb65050e670bb67ad2954c33de48465"
+  "signature": "1a14ad262d8ee83d672591462f5c2933b0ac33beaf974a2419f33488a70f68d8"
 }
