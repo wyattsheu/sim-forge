@@ -2,10 +2,10 @@
   "schema_version": "diaggen-public-batch-progress-v1",
   "pipeline": "DiagGen",
   "simulator": "Genesis",
-  "phase": "running",
+  "phase": "failed",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T16:55:39+08:00",
+  "updated_at": "2026-10-22T17:00:12+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -14,9 +14,9 @@
   },
   "counts": {
     "queued": 0,
-    "running": 1,
+    "running": 0,
     "success": 2,
-    "failed": 6,
+    "failed": 7,
     "cancelled": 0,
     "unknown": 0,
     "total": 9
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T05:52:10.698856+00:00",
-      "updated_at": "2026-10-22T16:55:39+08:00",
+      "updated_at": "2026-10-22T17:00:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -149,7 +149,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T06:03:34.261605+00:00",
-      "updated_at": "2026-10-22T16:55:39+08:00",
+      "updated_at": "2026-10-22T17:00:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -265,7 +265,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:39:46.288097+00:00",
-      "updated_at": "2026-10-22T16:55:39+08:00",
+      "updated_at": "2026-10-22T17:00:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -433,17 +433,17 @@
       "pipeline": "DiagGen",
       "simulator": "Genesis",
       "run_id": "genesis_usb_hub_20261022_clean_diagnostics2",
-      "phase": "running",
+      "phase": "failed",
       "pipeline_status": "seeded",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:39:25.082354+00:00",
-      "updated_at": "2026-10-22T16:55:39+08:00",
+      "updated_at": "2026-10-22T17:00:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
-        "terminal_status": "not_available"
+        "terminal_status": "retryable"
       },
       "stages": [
         {
@@ -503,11 +503,11 @@
         {
           "name": "genesis_live_diagnostic_loop",
           "label": "Genesis 物理診斷",
-          "status": "running",
-          "ledger_status": "running",
+          "status": "pending_retry",
+          "ledger_status": "pending_retry",
           "ok": false,
           "started_at": "2026-10-22T08:42:07.028633+00:00",
-          "finished_at": null
+          "finished_at": "2026-10-22T09:00:11.871386+00:00"
         },
         {
           "name": "hag4r_post_mesh_texture",
@@ -596,7 +596,7 @@
         }
       ],
       "id": "usb_hub",
-      "status": "running",
+      "status": "failed",
       "attempts": 7,
       "minimum_free_mib": 24576
     },
@@ -611,7 +611,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-22T16:55:39+08:00",
+      "updated_at": "2026-10-22T17:00:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -798,7 +798,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:24:07.068324+00:00",
-      "updated_at": "2026-10-22T16:55:39+08:00",
+      "updated_at": "2026-10-22T17:00:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
@@ -970,7 +970,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-22T16:55:39+08:00",
+      "updated_at": "2026-10-22T17:00:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1086,7 +1086,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T16:55:39+08:00",
+      "updated_at": "2026-10-22T17:00:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1228,7 +1228,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T16:55:39+08:00",
+      "updated_at": "2026-10-22T17:00:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1737,5 +1737,5 @@
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "daa80d307437253068788946a557dd160c4a7ba778a6e1b53dc233c8ea14839d"
+  "signature": "636748d6db0977a6565edc2fe68985205e0ae3746db64cf092b8a9589f77b5fc"
 }
