@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T16:21:58+08:00",
+  "updated_at": "2026-10-22T16:22:30+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T05:52:10.698856+00:00",
-      "updated_at": "2026-10-22T16:21:58+08:00",
+      "updated_at": "2026-10-22T16:22:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -149,7 +149,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T06:03:34.261605+00:00",
-      "updated_at": "2026-10-22T16:21:58+08:00",
+      "updated_at": "2026-10-22T16:22:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -265,7 +265,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:39:46.288097+00:00",
-      "updated_at": "2026-10-22T16:21:58+08:00",
+      "updated_at": "2026-10-22T16:22:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -434,12 +434,12 @@
       "simulator": "Genesis",
       "run_id": "genesis_usb_hub_20261022_anchor_retry",
       "phase": "running",
-      "pipeline_status": "seeded",
+      "pipeline_status": "failed",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:30:09.878929+00:00",
-      "updated_at": "2026-10-22T16:21:58+08:00",
+      "updated_at": "2026-10-22T16:22:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 3,
@@ -611,7 +611,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-22T16:21:58+08:00",
+      "updated_at": "2026-10-22T16:22:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -783,7 +783,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T06:10:30.888187+00:00",
-      "updated_at": "2026-10-22T16:21:58+08:00",
+      "updated_at": "2026-10-22T16:22:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
@@ -955,7 +955,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-22T16:21:58+08:00",
+      "updated_at": "2026-10-22T16:22:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1071,7 +1071,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T16:21:58+08:00",
+      "updated_at": "2026-10-22T16:22:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1213,7 +1213,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T16:21:58+08:00",
+      "updated_at": "2026-10-22T16:22:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1707,5 +1707,5 @@
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "247edce3659e9906d63d30626d64d0999ba1153e9f06ee570794ff5ae53f364c"
+  "signature": "6db555390f811697e0555a914a762edf60607b8744ab555834a6c776e1decac8"
 }
