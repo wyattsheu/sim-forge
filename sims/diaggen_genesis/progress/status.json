@@ -2,10 +2,10 @@
   "schema_version": "diaggen-public-batch-progress-v1",
   "pipeline": "DiagGen",
   "simulator": "Genesis",
-  "phase": "failed",
+  "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T02:39:19+08:00",
+  "updated_at": "2026-10-22T12:27:12+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -13,10 +13,10 @@
     "max_parallel_jobs": 2
   },
   "counts": {
-    "queued": 0,
-    "running": 0,
+    "queued": 1,
+    "running": 1,
     "success": 1,
-    "failed": 8,
+    "failed": 6,
     "cancelled": 0,
     "unknown": 0,
     "total": 9
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:36:55.182884+00:00",
-      "updated_at": "2026-10-22T02:39:19+08:00",
+      "updated_at": "2026-10-22T12:27:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
@@ -188,14 +188,14 @@
       "schema_version": "diaggen-public-progress-v1",
       "pipeline": "DiagGen",
       "simulator": "Genesis",
-      "run_id": "genesis_capybara_plush_toy_20261021_exr_retry1_memory_retry2",
-      "phase": "failed",
+      "run_id": "genesis_capybara_plush_toy_20261022_native_retry3",
+      "phase": "running",
       "pipeline_status": "seeded",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
-      "created_at": "2026-10-21T07:14:19.925656+00:00",
-      "updated_at": "2026-10-22T02:39:19+08:00",
+      "created_at": "2026-10-22T04:27:02.196628+00:00",
+      "updated_at": "2026-10-22T12:27:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -205,29 +205,29 @@
         {
           "name": "image_cleanup",
           "label": "圖片清理",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-21T07:21:18.258044+00:00",
-          "finished_at": "2026-10-21T07:21:18.278222+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-21T07:24:22.575125+00:00",
-          "finished_at": "2026-10-21T07:24:37.758389+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "omnipart_generate_parts",
           "label": "OmniPart 幾何生成",
-          "status": "failed",
-          "ledger_status": "failed",
+          "status": "pending",
+          "ledger_status": "pending",
           "ok": false,
-          "started_at": "2026-10-21T08:27:56.628887+00:00",
-          "finished_at": "2026-10-21T08:32:26.513049+00:00"
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_gpt_staged_material_inference",
@@ -284,36 +284,10 @@
           "finished_at": null
         }
       ],
-      "media": [
-        {
-          "path": "media/capybara_plush_toy_cleaned_image.png",
-          "bytes": 2311951,
-          "sha256": "94bffd6c88b772cd5c34fd16919e6edcd2ea6aa78011c2662ffa43dbe4089331"
-        },
-        {
-          "path": "media/capybara_plush_toy_processed_white_bg_png.png",
-          "bytes": 313684,
-          "sha256": "2dece757f870b891fd78c84044bfa56e2479c776311b56f31a44071e740f41ea"
-        },
-        {
-          "path": "media/capybara_plush_toy_processed_rgba.png",
-          "bytes": 364544,
-          "sha256": "a9d1f8e885f3cb0f630435e4b9b0fe4657eae9d2e6cb68007092efa966f27177"
-        },
-        {
-          "path": "media/capybara_plush_toy_ordered_mask_vis.png",
-          "bytes": 2448,
-          "sha256": "23b960d234fc36f80d5f4acad9c13c5cd6fc5f8960bb30be5630d88f345446ea"
-        },
-        {
-          "path": "media/capybara_plush_toy_segmentation_overlay.png",
-          "bytes": 271585,
-          "sha256": "5de1e5a586630ee3ddfe1318797e5584d03330c67e96528b939911dd90f05f06"
-        }
-      ],
+      "media": [],
       "id": "capybara_plush_toy",
-      "status": "failed",
-      "attempts": 3,
+      "status": "running",
+      "attempts": 4,
       "minimum_free_mib": 49152
     },
     {
@@ -327,7 +301,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:43:14.319641+00:00",
-      "updated_at": "2026-10-22T02:39:19+08:00",
+      "updated_at": "2026-10-22T12:27:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -433,7 +407,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T02:39:19+08:00",
+      "updated_at": "2026-10-22T12:27:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -610,7 +584,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-22T02:39:19+08:00",
+      "updated_at": "2026-10-22T12:27:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -716,7 +690,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:38:07.768841+00:00",
-      "updated_at": "2026-10-22T02:39:19+08:00",
+      "updated_at": "2026-10-22T12:27:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -848,7 +822,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:46:28.056801+00:00",
-      "updated_at": "2026-10-22T02:39:19+08:00",
+      "updated_at": "2026-10-22T12:27:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
@@ -1010,7 +984,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:26:08.183115+00:00",
-      "updated_at": "2026-10-22T02:39:19+08:00",
+      "updated_at": "2026-10-22T12:27:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 3,
@@ -1166,13 +1140,13 @@
       "pipeline": "DiagGen",
       "simulator": "Genesis",
       "run_id": "genesis_sneaker_20261021",
-      "phase": "failed",
+      "phase": "waiting_gpu",
       "pipeline_status": "seeded",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:39:46.288097+00:00",
-      "updated_at": "2026-10-22T02:39:19+08:00",
+      "updated_at": "2026-10-22T12:27:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1319,7 +1293,7 @@
         }
       ],
       "id": "sneaker",
-      "status": "failed",
+      "status": "queued",
       "attempts": 2,
       "minimum_free_mib": 24576
     }
@@ -1379,31 +1353,6 @@
       "path": "media/usb_hub_omnipart_right.png",
       "bytes": 8681,
       "sha256": "6d3f5577ad1bcdaf27abec1a24e8eb4fd07a54d6010649e382247addcb3a5c59"
-    },
-    {
-      "path": "media/capybara_plush_toy_cleaned_image.png",
-      "bytes": 2311951,
-      "sha256": "94bffd6c88b772cd5c34fd16919e6edcd2ea6aa78011c2662ffa43dbe4089331"
-    },
-    {
-      "path": "media/capybara_plush_toy_processed_white_bg_png.png",
-      "bytes": 313684,
-      "sha256": "2dece757f870b891fd78c84044bfa56e2479c776311b56f31a44071e740f41ea"
-    },
-    {
-      "path": "media/capybara_plush_toy_processed_rgba.png",
-      "bytes": 364544,
-      "sha256": "a9d1f8e885f3cb0f630435e4b9b0fe4657eae9d2e6cb68007092efa966f27177"
-    },
-    {
-      "path": "media/capybara_plush_toy_ordered_mask_vis.png",
-      "bytes": 2448,
-      "sha256": "23b960d234fc36f80d5f4acad9c13c5cd6fc5f8960bb30be5630d88f345446ea"
-    },
-    {
-      "path": "media/capybara_plush_toy_segmentation_overlay.png",
-      "bytes": 271585,
-      "sha256": "5de1e5a586630ee3ddfe1318797e5584d03330c67e96528b939911dd90f05f06"
     },
     {
       "path": "media/curling_iron_cleaned_image.png",
@@ -1666,5 +1615,5 @@
       "sha256": "db4ba55885ed522bc4e367674ec755352c5d4146d558baf33c306ea93dad3f7f"
     }
   ],
-  "signature": "42f0fcd9ad0b99841c7f25541ddb914d6ce4e4066ea4ea9914be33db1ea96e12"
+  "signature": "23f16fc6608382d2bb1505041cb0fa743286d37949cfc3990a0c73c9eeff4b3c"
 }
