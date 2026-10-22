@@ -108,6 +108,28 @@ class ReconcileExportTests(unittest.TestCase):
         self.archive_runner.assert_not_called()
         self.assertEqual(self.current_job(), self.job)
 
+    def test_native_final_revise_export_recovers_without_promoting_acceptance(self):
+        self.native_state.update(accepted_revision=None, exported_revision="revision_0001")
+        self.write_json(self.run / "state.json", self.native_state)
+        self.write_json(self.archive / "trace/revisions/revision_0001/state.json", {"prior_failure": True})
+        self.report.update(accepted_revision=None, exported_revision="revision_0001", strict_genesis_accept=False,
+                           completion_kind="native_final_revise_export", state_sha256=self.hash_file(self.run / "state.json"))
+        before = (self.run / "state.json").read_bytes()
+        self.write_json(self.queue / "jobs/example/completion_validation.json", {"valid": False, "error": "strict accept required"})
+        result = self.recover()
+        self.assertTrue(result["recovered"])
+        self.assertEqual((self.run / "state.json").read_bytes(), before)
+        preserved = self.queue / result["evidence_directory"] / "validation_report.json"
+        report = MODULE.read_object(preserved)
+        self.assertIsNone(report["accepted_revision"])
+        self.assertFalse(report["strict_genesis_accept"])
+        self.assertEqual(report["completion_kind"], "native_final_revise_export")
+        previous = self.queue / result["evidence_directory"] / "completion_validation_before.json"
+        self.assertFalse(MODULE.read_object(previous)["valid"])
+        current = MODULE.read_object(self.queue / "jobs/example/completion_validation.json")
+        self.assertTrue(current["valid"])
+        self.assertFalse(current["strict_genesis_accept"])
+
     def test_changed_run_id_during_validation_is_refused(self):
         def change_job(*args, **kwargs):
             value = MODULE.read_object(self.queue / "batch.json")

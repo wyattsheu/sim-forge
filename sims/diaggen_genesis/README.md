@@ -4,7 +4,7 @@
 
 使用 DiagGen 內附的 **Genesis 1.2.0**，開啟 Genesis 診斷，排程 9 張圖片的完整生成流程。
 
-**2026-10-22 18:05 已完整完成 4／9 件：電捲棒、樹懶、USB Hub、棒球帽。** 棒球帽這次從原圖一路完成九階段、Genesis strict accept、貼圖與 16 個匯出產物，完整嘗試耗時 50 分 49 秒；另有兩段診斷影片與獨立驗收。其他工作依 [最新進度](progress/) 為準。見 [棒球帽驗收](analysis/baseball_cap_completed_validation.json)、[USB 驗收](analysis/usb_hub_completed_validation.json)、[樹懶驗收](analysis/sloth_completed_validation.json) 與 [恢復及修補紀錄](analysis/RECOVERY_PROGRESS_20261022.md)。
+**2026-10-22 18:55：5／9 件通過 Genesis strict accept 並完成匯出：電捲棒、樹懶、USB Hub、棒球帽、醬料盒。** 另有球鞋完成原生 snapshot 的 `exported_unaccepted` 匯出，診斷仍為 revise，不能算物理通過。龍仍執行中；料理夾在原生修正次數上限停止，水豚受 spconv int32 限制阻擋。即時狀態見 [progress/](progress/)，驗收見 [醬料盒](analysis/sauce_keeper_completed_validation.json)、[球鞋（未通過）](analysis/sneaker_completed_validation.json)、[棒球帽](analysis/baseball_cap_completed_validation.json)、[USB](analysis/usb_hub_completed_validation.json) 與 [樹懶](analysis/sloth_completed_validation.json)。
 
 - 生成與診斷：**GPT-6 Luna，Max reasoning**；各階段子代理沿用相同設定。
 - 論文對應設定為 GPT-5.6 Luna、Max；本次依要求改用同系列新版，並保留差異紀錄。

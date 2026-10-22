@@ -111,6 +111,34 @@ class SnapshotTests(unittest.TestCase):
         self.assertEqual(snapshot["simulator"], "Genesis")
         self.assertEqual(len(snapshot["stages"]), 9)
 
+    def test_unaccepted_export_is_visible_without_claiming_genesis_accept(self):
+        self.install_batch()
+        self.batch["jobs"][0]["status"] = "success"
+        write_json(self.queue / "batch.json", self.batch)
+        self.state.update(status="success", accepted_revision=None, exported_revision="r001",
+                          revisions={"r001": {"status": "exported_unaccepted"}})
+        self.state["diagnostics"]["terminal"]["recommendation"] = {"recommendation": "revise", "diagnostic_cues": ["PRIVATE_SECRET"]}
+        snapshot, _ = self.snapshot()
+        self.assertEqual(snapshot["jobs"][0]["diagnostics"]["export_outcome"], "exported_unaccepted")
+        text = publisher.render_readme(snapshot)
+        self.assertIn("已匯出，仍需修正", text)
+        self.assertIn("Genesis accept 0 件；仍需修正 1 件", text)
+        self.assertNotIn("PRIVATE_SECRET", text + json.dumps(snapshot))
+
+    def test_accepted_export_requires_matching_native_acceptance(self):
+        self.state.update(accepted_revision="r001", exported_revision="r001", revisions={"r001": {"status": "accepted"}})
+        self.state["diagnostics"]["terminal"]["recommendation"] = {"recommendation": "accept"}
+        snapshot, _ = self.snapshot()
+        self.assertEqual(publisher.diagnostic_label(snapshot), "accept")
+        self.state["diagnostics"]["terminal"]["recommendation"]["recommendation"] = "revise"
+        snapshot, _ = self.snapshot()
+        self.assertNotEqual(snapshot["diagnostics"]["export_outcome"], "accepted")
+
+    def test_native_reused_stage_is_not_published_as_pending(self):
+        self.state["stages"]["image_cleanup"].update(status="reused", ok=True)
+        snapshot, _ = self.snapshot()
+        self.assertEqual(snapshot["stages"][0]["status"], "reused")
+
     def test_started_pending_stage_displays_running(self):
         self.state["stages"]["image_cleanup"]["started_at"] = "2026-10-21T11:03:00+08:00"
         snapshot, _ = self.snapshot()

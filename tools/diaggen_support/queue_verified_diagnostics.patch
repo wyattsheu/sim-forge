@@ -39,7 +39,7 @@
  cat > "$DIAGGEN_JOB_QUEUE_DIR/prompt.txt" <<EOF
  Complete this one user-authorized DiagGen asset-generation run in native Genesis.
  Read and use .agents/skills/run-diaggen-pipeline/SKILL.md; the initialized run is $RUN_ROOT.
-@@ -205,18 +237,41 @@
+@@ -205,22 +237,48 @@
  output quality. The guard is an observation, not a memory reservation or OOM guarantee.
  For fresh image cleanup, stop after a passing Attempt 1; do not generate Attempt 2 after it
  passes. For a resume with successful cleanup, skip all imagegen and cleanup registration.
@@ -91,6 +91,14 @@
  After successful diagnostic transition, texture, and final export, the parent must run:
  $MESH_PYTHON $COMPLETION_VALIDATOR --run-root $RUN_ROOT --settle
  This deterministic completion check must pass before reporting the full run successful.
+-It verifies existing accepted artifacts and records completion; it does not regenerate them.
++It verifies existing native exports and records completion; it does not regenerate them.
++The native final-revise snapshot export policy may produce completion_kind=native_final_revise_export.
++Preserve that revise recommendation and accepted_revision=None; explicitly report the
++asset as exported with diagnostic concerns, never as a Genesis accept or validated material response.
+ The wrapper owns DISPLAY=$DISPLAY and its
+ private X server; preserve DISPLAY in stage children and do not start a shared :99 X server.
+ The GPU is shared with existing work. Do not stop or alter other processes, claim another GPU,
 --- a/sims/diaggen_genesis/queue/batch_control.py
 +++ b/sims/diaggen_genesis/queue/batch_control.py
 @@ -151,6 +151,32 @@

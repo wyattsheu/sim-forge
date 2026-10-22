@@ -2,6 +2,7 @@
 import copy
 import importlib.util
 import json
+import os
 from pathlib import Path
 import sys
 import tempfile
@@ -10,10 +11,12 @@ import unittest
 from unittest import mock
 
 
-SCRIPT = Path(__file__).resolve().parents[3] / "tools/diaggen_support/validate_completed_export.py"
+WORKSPACE = Path(__file__).resolve().parents[3]
+SCRIPT = Path(os.environ.get("DIAGGEN_COMPLETION_VALIDATOR_UNDER_TEST", WORKSPACE / "tools/diaggen_support/validate_completed_export.py"))
 SPEC = importlib.util.spec_from_file_location("validate_completed_export", SCRIPT)
 MODULE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(MODULE)
+MODULE.NATIVE_CODE_ROOT = WORKSPACE / "tools/diaggen"
 
 
 class CompletedExportTests(unittest.TestCase):
@@ -129,6 +132,102 @@ class CompletedExportTests(unittest.TestCase):
                           diagnostics_reroute_and_export=True, diagnostics_stage_only=False)
         self.save()
         self.assertTrue(self.validate()["valid"])
+
+    def make_native_final_revise_export(self):
+        sys.path.insert(0, str(WORKSPACE / "tools/diaggen"))
+        from hag4r.agentic import runtime_state
+        old_revision = self.revision
+        self.revision = self.run / "revisions/revision_0001"
+        old_revision.rename(self.revision)
+        self.state = json.loads(json.dumps(self.state).replace(str(old_revision), str(self.revision)))
+        self.manifest = json.loads(json.dumps(self.manifest).replace(str(old_revision), str(self.revision)))
+        self.state.update(run_mode="post_mesh_processing_diagnostics", diagnostics_reroute_and_export=True,
+                          diagnostics_stage_only=False, active_revision="revision_0001", accepted_revision=None,
+                          exported_revision="revision_0001", status="success")
+        self.state["revisions"] = {"revision_0000": {"status": "superseded"},
+                                   "revision_0001": {"status": "exported_unaccepted", "revision_root": str(self.revision)}}
+        recommendation = {"schema_version": "hag4r-genesis-vlm-recommendation-v3", "recommendation": "revise",
+                          "route": "segmentation", "diagnostic_cues": ["The strap remains merged with the upper."]}
+        diagnostic = self.state["diagnostics"]["terminal"]
+        diagnostic.update(tool_name="submit_diagnostic_recommendation", recommendation=recommendation,
+                          route="segmentation", ready=False)
+        diagnostic["business_outcome"]["recommendation"] = copy.deepcopy(recommendation)
+        diagnostic["operational_outcome"]["artifact_status"]["media"]["status"] = "not_required"
+        self.state["diagnostics"].update(max_runs=2, episodes=[])
+        decision = {"status": "success", "diagnostic_verdict": "revise", "child_recommendation": "revise",
+                    "transition_action": "post_mesh_texture", "diagnostic_export_policy": runtime_state.DIAGNOSTIC_EXPORT_POLICY,
+                    "recommendation_route": "segmentation", "resulting_run_status": "running", "source_revision": "revision_0001",
+                    "diagnostic_cues": recommendation["diagnostic_cues"], "diagnostic_repair_brief": {}, "diagnostic_revision_count": 1,
+                    "selected_reentry_stage_skill_paths": [runtime_state.STAGE_SKILL_PATHS["post_mesh_texture"], runtime_state.STAGE_SKILL_PATHS["final_export"]]}
+        self.state["route_state"] = {"orchestrator_diagnostic_decision": decision, "diagnostic_revision_count": 1,
+                                     "force_rerun_stage_skill_paths": [], "first_rerouted_stage_skill_path": "", "diagnostic_repair_brief": {}}
+        self.manifest.update(accepted_revision=None, export_revision="revision_0001")
+        self.save()
+
+    def test_actual_native_final_revise_export_preserves_unaccepted_outcome(self):
+        self.make_native_final_revise_export()
+        before = self.state_path.read_bytes()
+        report = self.validate()
+        self.assertTrue(report["valid"])
+        self.assertFalse(report["strict_genesis_accept"])
+        self.assertEqual(report["completion_kind"], "native_final_revise_export")
+        self.assertIsNone(report["accepted_revision"])
+        self.assertEqual(report["exported_revision"], "revision_0001")
+        self.assertEqual(report["diagnostic_recommendation"], "revise")
+        self.assertEqual(before, self.state_path.read_bytes())
+
+    def test_already_exported_revise_settlement_does_not_promote_accept(self):
+        self.make_native_final_revise_export()
+        before = self.state_path.read_bytes()
+        report = MODULE.settle_completed_export(self.run, diaggen_root=self.root)
+        self.assertTrue(report["already_successful"])
+        self.assertFalse(report["settled"])
+        self.assertFalse(report["strict_genesis_accept"])
+        self.assertEqual(before, self.state_path.read_bytes())
+
+    def test_final_revise_policy_flag_alone_cannot_bypass_native_budget_or_cues(self):
+        self.make_native_final_revise_export()
+        original = copy.deepcopy(self.state)
+        for mode in ("budget_not_exhausted", "missing_cues", "wrong_parent_route", "missing_terminal_tool"):
+            self.state = copy.deepcopy(original)
+            if mode == "budget_not_exhausted":
+                self.state["diagnostics"]["max_runs"] = 3
+            elif mode == "missing_cues":
+                self.state["diagnostics"]["terminal"]["recommendation"]["diagnostic_cues"] = []
+            elif mode == "wrong_parent_route":
+                self.state["route_state"]["orchestrator_diagnostic_decision"]["recommendation_route"] = "material_inference"
+            else:
+                del self.state["diagnostics"]["terminal"]["tool_name"]
+            self.save()
+            with self.subTest(mode=mode), self.assertRaises(ValueError):
+                self.validate()
+
+    def test_final_revise_never_allows_full_image_or_stage_only_mode(self):
+        self.make_native_final_revise_export()
+        for mode, stage_only in (("full_image", False), ("post_mesh_processing_diagnostics", True)):
+            self.state.update(run_mode=mode, diagnostics_stage_only=stage_only)
+            self.save()
+            with self.subTest(mode=mode), self.assertRaises(ValueError):
+                self.validate()
+
+    def test_final_revise_requires_explicit_unaccepted_manifest_and_revision_status(self):
+        self.make_native_final_revise_export()
+        del self.manifest["accepted_revision"]
+        self.save()
+        with self.assertRaisesRegex(ValueError, "Manifest revision"):
+            self.validate()
+        self.manifest["accepted_revision"] = None
+        self.state["revisions"]["revision_0001"]["status"] = "accepted"
+        self.save()
+        with self.assertRaisesRegex(ValueError, "exported-unaccepted"):
+            self.validate()
+
+    def test_final_revise_does_not_excuse_missing_episode_media(self):
+        self.make_native_final_revise_export()
+        self.state["diagnostics"]["episodes"] = [{"episode_id": "episode_0001"}]
+        self.save()
+        with self.assertRaisesRegex(ValueError, "media completion"):
+            self.validate()
 
     def test_stage_only_or_implicit_snapshot_mode_is_not_eligible(self):
         for reroute, stage_only in ((False, False), (True, True), (True, None), (None, False)):

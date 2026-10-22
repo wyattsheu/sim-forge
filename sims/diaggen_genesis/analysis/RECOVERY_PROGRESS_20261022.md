@@ -125,3 +125,12 @@ completion validator 與獨立唯讀驗收都通過：6405 個頂點、22287 個
 新 parent 在每次建立修復版本後、委派 replacement stage 前，明確執行上述原生函式保護入口。料理夾已重新排隊：先由 segmentation／OmniPart owning agents 重驗現有輸出、保留「U 回彎仍與兩臂合併」的限制並補正式 submit 或真正需要的 halt，再處理後續材料與網格；不重做成功生成，也不假稱三區目標已達成。
 
 最後完整收集 **320 項 CPU 測試通過，0 fail／error／skip**，其中 11 項實際 native terminal recovery 測試、6 項 copied-prefix／snapshot admission 控制。啟動憑證 **90 項通過**，納入 USB／棒球帽的實際成功驗收與料理夾的恢復、admission 證據。已比對 native code、輸入、環境與 binary inventory 均未變；HOLD 已解除。舊活躍 worker 保留原 prompt，新的 worker 才會先準備 repair terminal。
+
+
+## 18:55：原生 final-revise 匯出政策與醬料盒驗收
+
+醬料盒完成 strict accept、貼圖與 16 個匯出檔，獨立驗證通過；58,382 個四面體超過建議預算，沿用原生 warning，沒有自行加上硬性上限。
+
+原外部驗收器無條件要求 accept，錯拒官方允許的 diagnostics snapshot 最後一輪 revise 匯出。現在直接使用原生 `_is_final_revise_export_policy` 驗證完整政策；球鞋 accepted_revision 保持 null、exported revision 為 revision_0001、metadata 保持 exported_unaccepted。只恢復外部匯出完成記帳，不寫入物理 accept。原 stage submit 錯誤與失敗驗收紀錄保留；當前 revision 沒有新的 live episode，舊影片保留在 trace。
+
+333 項 CPU／回歸測試全通過，0 fail/error/skip。92 項啟動檢查包含未變更 runtime 的既有硬體證據、最新測試與兩件實際匯出驗證；原生程式、環境、模型與診斷門檻未修改。料理夾已正確續跑到原生 revision budget exhausted，不能把此 halt 直接改為成功或清除預算。

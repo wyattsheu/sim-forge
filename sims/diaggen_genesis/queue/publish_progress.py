@@ -40,7 +40,7 @@ PHASE_LABELS = {
     "unknown": "狀態未知",
 }
 STAGE_STATUSES = frozenset({
-    "pending", "pending_retry", "retryable", "running", "success", "failed", "halted",
+    "pending", "pending_retry", "retryable", "running", "success", "reused", "failed", "halted",
 })
 RUN_STATUSES = frozenset({"seeded", "running", "success", "failed"})
 JOB_STATUSES = frozenset({"queued", "running", "success", "failed", "cancelled"})
@@ -252,6 +252,17 @@ def build_run_snapshot(workspace, queued, *, media_prefix="", media_budget=None)
     phase = enum(phase, PHASE_LABELS)
     diagnostics = object_value(state.get("diagnostics"))
     terminal = object_value(diagnostics.get("terminal"))
+    recommendation = object_value(terminal.get("recommendation"))
+    active = identifier(state.get("active_revision"))
+    metadata = object_value(object_value(state.get("revisions")).get(active))
+    export_outcome = "not_exported"
+    if active and state.get("exported_revision") == active:
+        if (state.get("accepted_revision") == active and metadata.get("status") == "accepted"
+                and recommendation.get("recommendation") == "accept"):
+            export_outcome = "accepted"
+        elif (state.get("accepted_revision") is None and metadata.get("status") == "exported_unaccepted"
+              and recommendation.get("recommendation") == "revise"):
+            export_outcome = "exported_unaccepted"
     snapshot = {
         "schema_version": "diaggen-public-progress-v1",
         "pipeline": "DiagGen", "simulator": "Genesis", "run_id": run_id,
@@ -264,6 +275,8 @@ def build_run_snapshot(workspace, queued, *, media_prefix="", media_budget=None)
             "enabled": diagnostics.get("enabled") if isinstance(diagnostics.get("enabled"), bool) else None,
             "episode_count": len(diagnostics["episodes"]) if isinstance(diagnostics.get("episodes"), list) else 0,
             "terminal_status": enum(terminal.get("status"), {"success", "failed", "retryable", "halted", "pending"}, "not_available"),
+            "recommendation": enum(recommendation.get("recommendation"), {"accept", "revise", "halt"}, "not_available"),
+            "export_outcome": export_outcome,
         },
         "stages": [],
         "health": runtime_health(state, run_root, phase),
@@ -376,27 +389,39 @@ def build_snapshot(workspace):
     return build_run_snapshot(workspace, queued)
 
 
+def diagnostic_label(snapshot):
+    diagnostic = object_value(snapshot.get("diagnostics"))
+    if diagnostic.get("export_outcome") == "exported_unaccepted":
+        return "已匯出，仍需修正（revise）"
+    if diagnostic.get("export_outcome") == "accepted":
+        return "accept"
+    recommendation = diagnostic.get("recommendation")
+    return {"accept": "accept，待完成匯出", "revise": "revise，待處理", "halt": "halt"}.get(recommendation, "尚未判定")
+
+
 def render_batch_readme(snapshot):
     policy, counts = snapshot["policy"], snapshot["counts"]
     lines = ["# DiagGen / Genesis 批次執行進度", "",
              f"狀態：**{PHASE_LABELS[snapshot['phase']]}**  ",
              f"模型：`{snapshot['generation_and_diagnostics_model']}`，reasoning `{snapshot['reasoning_effort']}`  ",
              f"更新：{snapshot['updated_at']}（Asia/Taipei）", "",
-             f"共 {counts['total']} 件：等待 {counts['queued']}、執行中 {counts['running']}、完成 {counts['success']}、失敗 {counts['failed']}、取消 {counts['cancelled']}。", "",
+             f"共 {counts['total']} 件：等待 {counts['queued']}、執行中 {counts['running']}、完成匯出 {counts['success']}、失敗 {counts['failed']}、取消 {counts['cancelled']}。", "",
+             f"已完成匯出中：Genesis accept {sum(job['status'] == 'success' and job['diagnostics'].get('export_outcome') == 'accepted' for job in snapshot['jobs'])} 件；仍需修正 {sum(job['status'] == 'success' and job['diagnostics'].get('export_outcome') == 'exported_unaccepted' for job in snapshot['jobs'])} 件。", "",
+             "匯出完成與 Genesis accept 分開列示；帶 revise 的匯出仍需修正，不能當作物理診斷通過。", "",
              f"GPU 可用記憶體門檻：{policy['minimum_free_mib']} MiB；最多同時 {policy['max_parallel_jobs']} 件；排程每 {policy['check_interval_seconds']} 秒檢查。  ",
              f"允許與既有運算共用 GPU：{'是' if policy['allow_compute_sharing'] is True else '否' if policy['allow_compute_sharing'] is False else '未知'}。", "",
              "只在排程狀態、階段、revision 或預覽成果改變時更新。等待期間不重複提交。", "",
              "診斷健康提示是唯讀觀察，不會解除鎖、重排或改寫成功／失敗。久未更新也可能是較長的模型推理，需配合紀錄判讀。", "",
-             "| 物件 | 排程狀態 | Runtime | Revision | 顯存門檻 | 已完成階段 | 健康提示 |", "|---|---|---|---|---|---|---|"]
+             "| 物件 | 排程狀態 | Runtime | Revision | 顯存門檻 | 已完成階段 | 診斷結果 | 健康提示 |", "|---|---|---|---|---|---|---|---|"]
     for job in snapshot["jobs"]:
         completed = sum(stage["ok"] for stage in job["stages"])
-        lines.append(f"| {job['id']} | {job['status']} | {job['pipeline_status']} | {job['active_revision'] or '尚未初始化'} | {job['minimum_free_mib']} MiB | {completed}/{len(STAGES)} | {health_label(job)} |")
+        lines.append(f"| {job['id']} | {job['status']} | {job['pipeline_status']} | {job['active_revision'] or '尚未初始化'} | {job['minimum_free_mib']} MiB | {completed}/{len(STAGES)} | {diagnostic_label(job)} | {health_label(job)} |")
     for job in snapshot["jobs"]:
         lines += ["", f"## {job['id']}", "", f"Run：`{job['run_id']}`；{PHASE_LABELS[job['phase']]}。", "",
                   "| 階段 | 狀態 |", "|---|---|"]
         for stage in job["stages"]:
             lines.append(f"| {stage['label']} | {stage['status']} |")
-        lines += ["", f"Genesis 診斷 episode 數：{job['diagnostics']['episode_count']}。", ""]
+        lines += ["", f"Genesis 診斷 episode 數：{job['diagnostics']['episode_count']}；結果：{diagnostic_label(job)}。", ""]
         for item in job["media"]:
             path = item["path"]
             lines += [f"[{Path(path).stem}]({path})" if path.endswith(".mp4") else f"![{Path(path).stem}]({path})", ""]
@@ -419,7 +444,7 @@ def render_readme(snapshot):
              "| 階段 | 狀態 |", "|---|---|"]
     for stage in snapshot["stages"]:
         lines.append(f"| {stage['label']} | {stage['status']} |")
-    lines += ["", f"健康提示：{health_label(snapshot)}。", "", f"Genesis 診斷 episode 數：{snapshot['diagnostics']['episode_count']}。",
+    lines += ["", f"健康提示：{health_label(snapshot)}。", "", f"Genesis 診斷 episode 數：{snapshot['diagnostics']['episode_count']}；結果：{diagnostic_label(snapshot)}。",
               "", "失敗細節與完整執行紀錄保留在伺服器。", ""]
     for media in snapshot["media"]:
         path = media["path"]

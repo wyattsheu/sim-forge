@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify an existing strict-accepted DiagGen export; optionally settle its ledger.
+"""Verify an existing native DiagGen export; preserve its acceptance outcome.
 
 This is a deterministic parent bookkeeping tool. It never runs generation,
 simulations, diagnostic lifecycle calls, or a Python pipeline orchestrator.
@@ -17,6 +17,7 @@ from typing import Any
 
 
 SCHEMA = "diaggen-completed-export-validation-v1"
+NATIVE_CODE_ROOT = Path(__file__).resolve().parents[1] / "diaggen"
 STAGES = (
     "image_cleanup", "sam3_omnipart_2d_segmentation", "omnipart_generate_parts",
     "hag4r_gpt_staged_material_inference", "hag4r_assign_params_to_prims",
@@ -77,6 +78,19 @@ def check_record(record: Any, expected: Path, *, within: Path) -> str:
     return digest
 
 
+def native_final_revise_export(state: dict[str, Any]) -> bool:
+    """Use the existing native complete policy, never infer acceptance from a flag."""
+    if (state.get("run_mode") != "post_mesh_processing_diagnostics"
+            or state.get("diagnostics_reroute_and_export") is not True
+            or state.get("diagnostics_stage_only") is not False):
+        return False
+    sys.path.insert(0, str(NATIVE_CODE_ROOT))
+    from hag4r.agentic import runtime_state
+    require(Path(runtime_state.__file__).resolve() == NATIVE_CODE_ROOT.resolve() / "hag4r/agentic/runtime_state.py",
+            "Export policy must use this checkout's existing native implementation")
+    return runtime_state._is_final_revise_export_policy(state)
+
+
 def _native_checks(root: Path, export: Path) -> dict[str, Any]:
     """Read-only native physical, exact appearance/binding, and tet checks."""
     sys.path.insert(0, str(root))
@@ -133,7 +147,7 @@ def _native_checks(root: Path, export: Path) -> dict[str, Any]:
 
 
 def validate_completed_export(run_root: Path, *, diaggen_root: Path | None = None) -> dict[str, Any]:
-    root = (diaggen_root or Path(__file__).resolve().parents[1] / "diaggen").resolve()
+    root = (diaggen_root or NATIVE_CODE_ROOT).resolve()
     run = Path(run_root).expanduser().resolve()
     require(run.parent == root / "outputs/agentic_asset_refinement", "Run must use the native run-root layout")
     state_path = regular_path(str(run / "state.json"), within=root)
@@ -161,10 +175,14 @@ def validate_completed_export(run_root: Path, *, diaggen_root: Path | None = Non
             "Final export has no successful native submission")
     revision = state.get("active_revision")
     require(isinstance(revision, str) and bool(revision), "Active revision is missing")
-    require(state.get("accepted_revision") == revision and state.get("exported_revision") == revision,
+    final_revise_export = native_final_revise_export(state)
+    require(state.get("exported_revision") == revision and
+            (state.get("accepted_revision") == revision or
+             (final_revise_export and state.get("accepted_revision") is None)),
             "Active, accepted, and exported revisions differ")
     metadata = state.get("revisions", {}).get(revision, {})
-    require(metadata.get("status") == "accepted", "Active revision is not accepted")
+    require(metadata.get("status") == ("exported_unaccepted" if final_revise_export else "accepted"),
+            "Active revision is not accepted or a native exported-unaccepted revision")
     revision_root = run / "revisions" / revision
     require(metadata.get("revision_root") == str(revision_root), "Revision root mismatch")
 
@@ -174,8 +192,8 @@ def validate_completed_export(run_root: Path, *, diaggen_root: Path | None = Non
     require(diagnostic.get("status") == "success" and diagnostic.get("validated") is True,
             "Genesis terminal is not validated success")
     recommendation = diagnostic.get("recommendation", {})
-    require(recommendation.get("recommendation") == "accept" and recommendation.get("ready") is True
-            and recommendation.get("route") == "accept" and bool(str(recommendation.get("reason", "")).strip()),
+    require(final_revise_export or (recommendation.get("recommendation") == "accept" and recommendation.get("ready") is True
+            and recommendation.get("route") == "accept" and bool(str(recommendation.get("reason", "")).strip())),
             "Genesis recommendation is not strict accept")
     business = diagnostic.get("business_outcome", {})
     require(business.get("status") == "recommendation_valid" and business.get("recommendation") == recommendation,
@@ -185,15 +203,20 @@ def validate_completed_export(run_root: Path, *, diaggen_root: Path | None = Non
             and operational.get("retryable") is False and not operational.get("error")
             and not operational.get("failure_kind"), "Genesis operational completion is incomplete")
     for component in ("media", "reports"):
-        require(operational.get("artifact_status", {}).get(component, {}).get("status") == "complete",
+        artifact_status = operational.get("artifact_status", {}).get(component, {}).get("status")
+        media_not_required = (component == "media" and final_revise_export
+                              and diagnostics.get("episodes", []) == [] and artifact_status == "not_required")
+        require(artifact_status == "complete" or media_not_required,
                 f"Genesis {component} completion is incomplete")
     decision = state.get("route_state", {}).get("orchestrator_diagnostic_decision", {})
-    require(decision.get("status") == "success" and decision.get("diagnostic_verdict") == "accept"
+    require(final_revise_export or (decision.get("status") == "success" and decision.get("diagnostic_verdict") == "accept"
             and decision.get("child_recommendation") == "accept" and decision.get("source_revision") == revision
             and decision.get("transition_action") == "post_mesh_texture"
             and bool(str(decision.get("diagnostic_verdict_reason", "")).strip())
-            and not decision.get("failure_kind") and not decision.get("halt_reason"),
+            and not decision.get("failure_kind") and not decision.get("halt_reason")),
             "Parent diagnostic accept decision mismatch")
+    require(decision.get("status") == "success" and decision.get("source_revision") == revision,
+            "Parent decision must identify the exported active revision")
 
     paths = state.get("paths", {})
     tag = state.get("output_tag")
@@ -206,7 +229,8 @@ def validate_completed_export(run_root: Path, *, diaggen_root: Path | None = Non
     regular_path(str(manifest_path), within=root)
     manifest = read_object(manifest_path)
     manifest_digest = sha256(manifest_path)
-    require(manifest.get("run_id") == tag and manifest.get("accepted_revision") == revision
+    require(manifest.get("run_id") == tag and "accepted_revision" in manifest
+            and manifest.get("accepted_revision") == state.get("accepted_revision")
             and manifest.get("export_revision") == revision, "Manifest revision or run id mismatch")
     inventory = {path.relative_to(export).as_posix() for path in export.rglob("*") if path.is_file()}
     require(not any(path.is_symlink() for path in export.rglob("*")), "Export contains symlinks")
@@ -260,10 +284,14 @@ def validate_completed_export(run_root: Path, *, diaggen_root: Path | None = Non
     require(sha256(manifest_path) == manifest_digest, "Export manifest changed during validation")
     return {
         "schema_version": SCHEMA, "valid": True, "run_id": tag, "run_root": str(run),
-        "diaggen_root": str(root), "export_dir": str(export), "accepted_revision": revision,
+        "diaggen_root": str(root), "export_dir": str(export), "accepted_revision": state.get("accepted_revision"),
+        "exported_revision": revision,
         "state_sha256": state_digest, "manifest_sha256": manifest_digest,
         "artifact_count": len(inventory), "artifact_sha256": artifact_hashes,
-        "all_native_stages_successful": True, "strict_genesis_accept": True,
+        "all_native_stages_successful": True, "strict_genesis_accept": not final_revise_export,
+        "completion_kind": "native_final_revise_export" if final_revise_export else "strict_accepted_export",
+        "diagnostic_recommendation": recommendation.get("recommendation"),
+        "diagnostic_export_policy": decision.get("diagnostic_export_policy") if final_revise_export else None,
         "native_validation": native,
     }
 

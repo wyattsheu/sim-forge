@@ -275,7 +275,10 @@ Stop on a recovery validation error. This bookkeeping step does not rerun any st
 After successful diagnostic transition, texture, and final export, the parent must run:
 $MESH_PYTHON $COMPLETION_VALIDATOR --run-root $RUN_ROOT --settle
 This deterministic completion check must pass before reporting the full run successful.
-It verifies existing accepted artifacts and records completion; it does not regenerate them.
+It verifies existing native exports and records completion; it does not regenerate them.
+The native final-revise snapshot export policy may produce completion_kind=native_final_revise_export.
+Preserve that revise recommendation and accepted_revision=None; explicitly report the
+asset as exported with diagnostic concerns, never as a Genesis accept or validated material response.
 The wrapper owns DISPLAY=$DISPLAY and its
 private X server; preserve DISPLAY in stage children and do not start a shared :99 X server.
 The GPU is shared with existing work. Do not stop or alter other processes, claim another GPU,

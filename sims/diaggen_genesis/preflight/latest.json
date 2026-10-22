@@ -1,10 +1,10 @@
 {
   "schema_version": "diaggen-full-runtime-preflight-v1",
-  "checked_at": "2026-10-22T18:12:18+08:00",
+  "checked_at": "2026-10-22T10:53:48.241707+00:00",
   "overall_status": "pass",
   "simulator": "Genesis",
   "counts": {
-    "pass": 90,
+    "pass": 92,
     "fail": 0,
     "skip": 0
   },
@@ -15,424 +15,12 @@
       "reason": "Not required by the installed precompiled runtime or validated Ninja JIT"
     }
   ],
-  "evidence_reuse": {
-    "unchanged_checks_reused": 83,
-    "orchestration_checks_rerun": 3,
-    "actual_cpu_tests": {
-      "error": 0,
-      "expected_fail": 0,
-      "fail": 0,
-      "pass": 320,
-      "run": 320,
-      "skip": 0,
-      "unexpected_success": 0
-    },
-    "new_production_success": "genesis_usb_hub_20261022_clean_diagnostics3",
-    "native_sources_changed": false,
-    "reviewed_runtime_source_changes": [
-      "sims/diaggen_genesis/queue/batch_control.py",
-      "sims/diaggen_genesis/queue/run_one.sh",
-      "tools/diaggen_support/prepare_repair_stage_runtime.py",
-      "tools/diaggen_support/queue_verified_diagnostics.json",
-      "tools/diaggen_support/queue_verified_diagnostics.patch"
-    ],
-    "actual_cpu_tests_reused_unchanged_code": false,
-    "completed_production_assets": [
-      "curling_iron",
-      "sloth",
-      "usb_hub",
-      "baseball_cap"
-    ]
-  },
-  "scope": "Guarded invocation of existing native revision-terminal recovery; recognize native reused prefix and exporting snapshot repairs with provenance; independent successful USB and full raw-image baseball-cap exports. Native source and environment unchanged.",
+  "scope": "Faithful native final-revise snapshot export validation; five accepted assets and one explicitly unaccepted export. No native source, environment, model or acceptance change.",
   "limitations": [
-    "Only curling iron is a completed production asset.",
-    "No full-model peak VRAM measurement; large-tensor capybara fix awaits production validation.",
-    "LLM/imagegen access uses existing successful execution evidence; no new cloud call in preflight.",
-    "Memory gates do not reserve GPU capacity.",
-    "Shared admission counts per-job minimum gates as conservative headroom; this does not reserve CUDA memory or establish full-model peak demand. Existing jobs are not migrated or restarted.",
-    "Other remaining inputs can still fail; the full capybara tensor limitation remains unresolved.",
-    "Existing active workers retain their original prompts. Newly launched workers prepare new repairs before replacement stages; recovered generated artifacts require their owning-stage submissions. Remaining inputs may still fail; capybara int32 limitation remains unresolved."
-  ],
-  "components": [
-    {
-      "name": "host",
-      "checks": [
-        {
-          "name": "host/nine_input_decode_hash_dimensions",
-          "status": "pass"
-        },
-        {
-          "name": "host/native_output_space_write_read",
-          "status": "pass"
-        },
-        {
-          "name": "host/python_hag4r",
-          "status": "pass"
-        },
-        {
-          "name": "host/python_hag4r_mesh",
-          "status": "pass"
-        },
-        {
-          "name": "host/python_hag4r_segmentation",
-          "status": "pass"
-        },
-        {
-          "name": "host/python_omnipart",
-          "status": "pass"
-        },
-        {
-          "name": "host/python_genesis",
-          "status": "pass"
-        },
-        {
-          "name": "host/hag4r_all_stage_runtime_imports",
-          "status": "pass"
-        },
-        {
-          "name": "host/sam3_cpu_runtime_imports",
-          "status": "pass"
-        },
-        {
-          "name": "host/sam3_checkpoint_cpu_mmap",
-          "status": "pass"
-        },
-        {
-          "name": "host/sam3_exr_actual_roundtrip",
-          "status": "pass"
-        },
-        {
-          "name": "host/command_conda",
-          "status": "pass"
-        },
-        {
-          "name": "host/command_codex",
-          "status": "pass"
-        },
-        {
-          "name": "host/command_git",
-          "status": "pass"
-        },
-        {
-          "name": "host/command_tmux",
-          "status": "pass"
-        },
-        {
-          "name": "host/command_ffmpeg",
-          "status": "pass"
-        },
-        {
-          "name": "host/command_ffprobe",
-          "status": "pass"
-        },
-        {
-          "name": "host/command_nvcc",
-          "status": "pass"
-        },
-        {
-          "name": "host/command_cpp",
-          "status": "pass"
-        },
-        {
-          "name": "host/private_xvfb_executable",
-          "status": "pass"
-        },
-        {
-          "name": "host/historical_codex_model_imagegen_subagent_evidence",
-          "status": "pass"
-        }
-      ],
-      "evidence": "Reused; corresponding native runtime, inputs, environments and binaries match prior certificate."
-    },
-    {
-      "name": "mesh",
-      "checks": [
-        {
-          "name": "mesh/mesh_runtime_dependencies",
-          "status": "pass"
-        },
-        {
-          "name": "mesh/color_locked_material_fixture_and_negative_control",
-          "status": "pass"
-        },
-        {
-          "name": "mesh/native_glb_load_and_metric_scaling",
-          "status": "pass"
-        },
-        {
-          "name": "mesh/native_solid_and_hollow_voxelization",
-          "status": "pass"
-        },
-        {
-          "name": "mesh/native_marching_cubes_and_meshlab_simplification",
-          "status": "pass"
-        },
-        {
-          "name": "mesh/native_manifold_boolean_union",
-          "status": "pass"
-        },
-        {
-          "name": "mesh/native_pytetwild_and_hard_tet_validation",
-          "status": "pass"
-        },
-        {
-          "name": "mesh/native_tet_owner_material_assignment_and_npz",
-          "status": "pass"
-        },
-        {
-          "name": "mesh/native_medit_serialization_and_scale_volume",
-          "status": "pass"
-        },
-        {
-          "name": "mesh/native_invalid_tets_and_material_negative_controls",
-          "status": "pass"
-        },
-        {
-          "name": "mesh/native_canonical_physical_export_contract",
-          "status": "pass"
-        },
-        {
-          "name": "mesh/native_four_material_pngs",
-          "status": "pass"
-        }
-      ],
-      "evidence": "Reused; corresponding native runtime, inputs, environments and binaries match prior certificate."
-    },
-    {
-      "name": "omnipart",
-      "checks": [
-        {
-          "name": "omnipart/dependency_imports",
-          "status": "pass"
-        },
-        {
-          "name": "omnipart/native_stage_imports",
-          "status": "pass"
-        },
-        {
-          "name": "omnipart/offline_weight_inventory",
-          "status": "pass"
-        },
-        {
-          "name": "omnipart/external_toolchain",
-          "status": "pass"
-        },
-        {
-          "name": "omnipart/ffmpeg_encode_decode",
-          "status": "pass"
-        },
-        {
-          "name": "omnipart/xatlas_exact_binding_and_glb",
-          "status": "pass"
-        },
-        {
-          "name": "omnipart/existing_usb_glb_and_appearance",
-          "status": "pass"
-        },
-        {
-          "name": "omnipart/cuda_identity_arithmetic",
-          "status": "pass"
-        },
-        {
-          "name": "omnipart/native_flash_attention_kernel",
-          "status": "pass"
-        },
-        {
-          "name": "omnipart/spconv_actual_convolution",
-          "status": "pass"
-        },
-        {
-          "name": "omnipart/torch_scatter_cuda",
-          "status": "pass"
-        },
-        {
-          "name": "omnipart/native_texture_uv_raster_and_sample",
-          "status": "pass"
-        },
-        {
-          "name": "omnipart/native_gaussian_rasterizer",
-          "status": "pass"
-        }
-      ],
-      "evidence": "Reused; corresponding native runtime, inputs, environments and binaries match prior certificate."
-    },
-    {
-      "name": "genesis",
-      "checks": [
-        {
-          "name": "genesis/import_genesis",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/import_genesis_live_server",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/import_genesis_live_visual_telemetry",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/import_genesis_ext_pyrender",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/import_genesis_utils_heterogeneous_materials",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/import_igl",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/import_numpy",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/import_scipy",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/import_torch",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/import_pyglet",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/import_OpenGL",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/import_imageio",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/import_imageio_ffmpeg",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/native_diagnostic_mp4_script",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/binary_ffmpeg",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/binary_ffprobe",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/gpu_memory_gate",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/private_xvfb",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/live_ready_handshake",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/negative_rpc_rejected",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/heterogeneous_fem_readback",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/cuda_fem_step_finite_motion",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/native_part_shaded_triptych",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/mp4_encode_decode",
-          "status": "pass"
-        },
-        {
-          "name": "genesis/live_server_clean_close",
-          "status": "pass"
-        }
-      ],
-      "evidence": "Reused; corresponding native runtime, inputs, environments and binaries match prior certificate."
-    },
-    {
-      "name": "orchestration",
-      "checks": [
-        {
-          "name": "orchestration/namespace_unittest_suite",
-          "status": "pass"
-        },
-        {
-          "name": "orchestration/preflight_negative_controls",
-          "status": "pass"
-        },
-        {
-          "name": "orchestration/source_and_test_inventory_unchanged",
-          "status": "pass"
-        }
-      ],
-      "evidence": "Rerun after external queue admission change; 267 actual CPU tests."
-    },
-    {
-      "name": "completed_export",
-      "checks": [
-        {
-          "name": "completed_export/strict_accepted_export",
-          "status": "pass"
-        }
-      ],
-      "evidence": "Reused; corresponding native runtime, inputs, environments and binaries match prior certificate."
-    },
-    {
-      "name": "recovery_contracts",
-      "checks": [
-        {
-          "name": "recovery_contracts/sneaker_native_recovery_contract",
-          "status": "pass"
-        },
-        {
-          "name": "recovery_contracts/sloth_native_recovery_contract",
-          "status": "pass"
-        },
-        {
-          "name": "recovery_contracts/usb_hub_native_recovery_contract",
-          "status": "pass"
-        },
-        {
-          "name": "recovery_contracts/sauce_keeper_native_recovery_contract",
-          "status": "pass"
-        }
-      ],
-      "evidence": "Reused; corresponding native runtime, inputs, environments and binaries match prior certificate."
-    },
-    {
-      "name": "spconv_native",
-      "checks": [
-        {
-          "name": "spconv_native/tiny_native_implicit_numerical_parity",
-          "status": "pass"
-        }
-      ],
-      "evidence": "Reused; corresponding native runtime, inputs, environments and binaries match prior certificate."
-    },
-    {
-      "name": "gpu_sharing",
-      "checks": [
-        {
-          "name": "gpu_sharing/actual_snapshot_admits_next_fresh_job",
-          "status": "pass"
-        }
-      ],
-      "evidence": "Production queue snapshot checked in temporary clone."
-    }
+    "Five production assets have strict Genesis accept; sneaker is an exported_unaccepted native snapshot result with revise, not a physics acceptance.",
+    "Capybara spconv int32 limitation and kitchen-tongs native revision budget remain unresolved.",
+    "No full-model peak VRAM measurement; admission does not reserve GPU memory.",
+    "Hardware checks are reused only where native sources, inputs, environments and binaries match the prior certificate."
   ],
   "checks": [
     {
@@ -760,6 +348,14 @@
       "status": "pass"
     },
     {
+      "name": "completed_export/sloth_actual_strict_accepted_export",
+      "status": "pass"
+    },
+    {
+      "name": "gpu_sharing/three_worker_memory_boundary_and_actual_snapshot_preview",
+      "status": "pass"
+    },
+    {
       "name": "namespace_unittest_suite",
       "status": "pass"
     },
@@ -772,8 +368,57 @@
       "status": "pass"
     },
     {
-      "name": "completed_export/sloth_actual_strict_accepted_export",
+      "name": "repair_stage_runtime/existing_native_recovery_with_immutable_base",
+      "status": "pass"
+    },
+    {
+      "name": "completed_export/usb_actual_strict_accepted_export",
+      "status": "pass"
+    },
+    {
+      "name": "completed_export/baseball_cap_actual_strict_accepted_export",
+      "status": "pass"
+    },
+    {
+      "name": "repair_resume/native_reused_prefix_and_opt_in_snapshot_contract",
+      "status": "pass"
+    },
+    {
+      "name": "sauce_keeper_actual_export",
+      "status": "pass"
+    },
+    {
+      "name": "sneaker_native_final_revise_export",
       "status": "pass"
     }
-  ]
+  ],
+  "evidence_reuse": {
+    "unchanged_checks_reused": 87,
+    "actual_cpu_tests": {
+      "error": 0,
+      "expected_fail": 0,
+      "fail": 0,
+      "pass": 333,
+      "run": 333,
+      "skip": 0,
+      "unexpected_success": 0
+    },
+    "changed_sources": [
+      "sims/diaggen_genesis/queue/run_one.sh",
+      "tools/diaggen_support/queue_verified_diagnostics.json",
+      "tools/diaggen_support/queue_verified_diagnostics.patch",
+      "tools/diaggen_support/validate_completed_export.py"
+    ],
+    "native_sources_changed": false,
+    "completed_production_assets": [
+      "curling_iron",
+      "sloth",
+      "usb_hub",
+      "baseball_cap",
+      "sauce_keeper"
+    ],
+    "unaccepted_exports": [
+      "sneaker"
+    ]
+  }
 }

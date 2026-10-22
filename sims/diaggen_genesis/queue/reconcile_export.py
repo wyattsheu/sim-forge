@@ -70,6 +70,8 @@ def archive_existing(queue, job):
 
 def snapshot_failure(queue, job, report):
     """Copy only existing evidence; absence is explicitly recorded in inventory."""
+    exported_revision = report.get("exported_revision") or report.get("accepted_revision")
+    validate_identifier(exported_revision)
     recovery = queue.directory / "recovery_history" / job["id"] / job["run_id"] / uuid.uuid4().hex
     require(not recovery.exists(), "Recovery history directory already exists")
     recovery.mkdir(parents=True)
@@ -77,9 +79,10 @@ def snapshot_failure(queue, job, report):
     locations = {
         "root_status_before.json": queue.directory / "status.json",
         "job_status_before.json": queue.directory / "jobs" / job["id"] / "status.json",
+        "completion_validation_before.json": queue.directory / "jobs" / job["id"] / "completion_validation.json",
         "archive_manifest_before.json": archive / "manifest.json",
         "archive_trace_state_before.json": archive / "trace/state.json",
-        "archive_revision_state_before.json": archive / "trace/revisions" / report["accepted_revision"] / "state.json",
+        "archive_revision_state_before.json": archive / "trace/revisions" / exported_revision / "state.json",
     }
     inventory = {}
     for name, source in locations.items():
@@ -97,13 +100,14 @@ def snapshot_failure(queue, job, report):
     return recovery
 
 
-def update_job_view(queue, job, recovery):
+def update_job_view(queue, job, recovery, report):
     path = queue.directory / "jobs" / job["id"] / "status.json"
     view = read_object(path) if path.is_file() else {}
     view.update(phase="success", updated_at=now(), run_id=job["run_id"],
                 detail="Existing native export independently verified and archived; prior failure evidence preserved",
                 completion_recovery=recovery)
     atomic_json(path, view)
+    atomic_json(path.parent / "completion_validation.json", report)
 
 
 def reconcile_export(job_id, *, base=None, validator=None, archive_runner=None, pid_probe=None):
@@ -144,7 +148,7 @@ def reconcile_export(job_id, *, base=None, validator=None, archive_runner=None, 
                     and recovery.get("validation_sha256") == report_digest,
                     "Successful recovery validation no longer matches")
             # Repair derived views if a prior invocation stopped after its batch commit.
-            update_job_view(queue, current, recovery)
+            update_job_view(queue, current, recovery, report)
             atomic_json(queue.directory / "status.json", queue._summary(batch))
             return {"schema_version": SCHEMA, "job_id": job_id, "run_id": current["run_id"],
                     "recovered": False, "already_recovered": True, "evidence_directory": recovery["evidence_directory"]}
@@ -192,7 +196,7 @@ def reconcile_export(job_id, *, base=None, validator=None, archive_runner=None, 
         current.update(status="success", reason="verified_export_recovered", completion_recovery=recovery)
         # Attempts, attempts_history, runner PID, GPU record, and original times stay unchanged.
         queue._save(batch)
-        update_job_view(queue, current, recovery)
+        update_job_view(queue, current, recovery, report)
         return {"schema_version": SCHEMA, "job_id": job_id, "run_id": current["run_id"],
                 "recovered": True, "already_recovered": False, "evidence_directory": recovery["evidence_directory"]}
 

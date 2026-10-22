@@ -1,0 +1,78 @@
+{
+  "schema_version": "diaggen-completed-export-validation-v1",
+  "run_id": "genesis_sneaker_20261022_clean_diagnostics1",
+  "accepted_revision": null,
+  "exported_revision": "revision_0001",
+  "strict_genesis_accept": false,
+  "completion_kind": "native_final_revise_export",
+  "diagnostic_recommendation": "revise",
+  "diagnostic_export_policy": "export_after_revision_budget_revise",
+  "valid": true,
+  "artifact_count": 16,
+  "artifact_sha256": {
+    "appearance/albedo.png": "df2cb3e7b809f34014dd7c81504e4ae07f34878d18a9add34f13f3db5d1c1c4d",
+    "appearance/post_mesh_texture_request.json": "344641670b2ef1a7130572c832cc9387d4fd5456e29a7fe7054a3d3a32d55855",
+    "appearance/qa/confidence.png": "02505f95155220930d2ef8e1be620ab290572cc63d506e5dab8e1557b80dc65d",
+    "appearance/qa/fill_provenance.png": "ee3645b51e98e49ac8a33f5680527724d5371d5cbe977c9a88e78ea8d87d881f",
+    "appearance/qa/observed_coverage.png": "28f83b08efa57c31712e16d883336fd32049a562aa8d19094c50f4e0bde0c399",
+    "appearance/qa/report.json": "e8d62e507dc22449b1aaa5a7eb71456c66aa70c9ad99d77016fa735d26fc19ed",
+    "appearance/qa/rest_pose_render.png": "55f68102bb76f2acc363231c710b9fdc5c2e86beaf245221bdd3148eb6f4d376",
+    "appearance/visual_manifest.json": "75b7bbe40eb71df033f1201ff9a33d542d185c12da51105440e86d88733922c1",
+    "appearance/visual_mesh.glb": "38db05f7004c040f2c64b9978757f2c9edac5a65d6e4eab77046b164b08c7ec8",
+    "appearance/visual_to_physics.npz": "56ae6e61f82aa35581d56f36b289525892bbe10664d1f301ecb2491eaf69374b",
+    "final_mesh.mesh": "bb8d6f5477ac5c425fe6c1387f5cf4fae5b777cc487fe4efd1967db4c59fe393",
+    "heterogeneous_params.npz": "fbb69cbaf9ffff9e489a616c2e66cc9044b065aec6f90d72ec795f0b1ed9e500",
+    "inferred_params.json": "d28a04e21eacca40dc6df384296a69ba6ab86b8b7251e8ba9b33f757c0a698a1",
+    "metric_mesh_scaling.json": "54b6b88db5897e69787badc12e66fe3c4ffd8ac66174aa0dc9d92167d77501cb",
+    "volume_topology.json": "37ba4ffd490010d7726f5027a5430c0054d1a455d731e54a7d3480d2fcb48328"
+  },
+  "manifest_sha256": "3ac926cf816a4c4ad17ec1c077486dbb8f6912a46f92a52d3dd4d26006090d41",
+  "native_validation": {
+    "appearance_schema": "hag4r-post-mesh-texture-visual-v1",
+    "face_connected_components": 1,
+    "material_labels": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "native_appearance_valid": true,
+    "native_tet_valid": true,
+    "physical_contract": {
+      "metric_mesh_scaling": {
+        "scale_factor": 0.2800564212026397,
+        "schema_version": "hag4r-metric-max-dimension-scaling-v1",
+        "target_max_dimension_m": 0.28
+      },
+      "params": {
+        "keys": [
+          "part_E_nu",
+          "part_colors",
+          "part_density",
+          "part_indices",
+          "part_volume_fill_mode_codes",
+          "tet_E_nu",
+          "tet_density",
+          "tet_part_labels"
+        ],
+        "tet_count": 39551
+      },
+      "volume_topology": {
+        "schema_version": "hag4r-volume-topology-v3",
+        "tet_budget_status": "within_budget",
+        "tet_count": 39551,
+        "volume_topology": "mixed",
+        "warnings": []
+      }
+    },
+    "point_count": 10649,
+    "tet_count": 39551
+  },
+  "all_native_stages_successful": true,
+  "state_sha256": "118c58a38928b231421c3079e2e901ebcec77d1c27e7e8e6053402c0e88c4778",
+  "limitations": [
+    "Native diagnostics-snapshot final-revise export. The active revision has no new live episodes; earlier revision videos remain in trace.",
+    "Current revision segmentation, OmniPart and material owning-stage submit errors remain in trace. Final export does not establish physical acceptance."
+  ]
+}

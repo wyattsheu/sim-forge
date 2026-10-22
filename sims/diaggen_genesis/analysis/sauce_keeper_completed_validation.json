@@ -1,0 +1,103 @@
+{
+  "run_id": "genesis_sauce_keeper_20261022_clean_diagnostics2",
+  "accepted_revision": "revision_0000",
+  "exported_revision": "revision_0000",
+  "all_native_stages_successful": true,
+  "strict_genesis_accept": true,
+  "completion_kind": "strict_accepted_export",
+  "diagnostic_recommendation": "accept",
+  "valid": true,
+  "artifact_count": 16,
+  "artifact_sha256": {
+    "appearance/albedo.png": "bdaedfc2672cae54ff791756192f3e871edcdcb02b38e8d80c9b26f2e1827bc1",
+    "appearance/post_mesh_texture_request.json": "c2265106c923c76fa079a7708cf65ddec7f05eafc90312f71cc103fdb3a05683",
+    "appearance/qa/confidence.png": "3479f33eb18e638baa151d94fc7d75857a43f7f5f269b404f97f9fc8a9e1cf4f",
+    "appearance/qa/fill_provenance.png": "61493344ef1ed13962efee2a72d081324104133e123abaac10d3063e04ac4417",
+    "appearance/qa/observed_coverage.png": "d1b91802ac1c78b4213ebbe5b5494e1df86580b0bcbf79797fd27e53bac5d491",
+    "appearance/qa/report.json": "dfd2c9a3f1385131b390c629c9e7a37ab42d80f2ab63bd255697a5dab6f7217e",
+    "appearance/qa/rest_pose_render.png": "164289e679c97a405de6ce15cdf2d0a36e874ad4a19ada1a3fc9a7914cb730be",
+    "appearance/visual_manifest.json": "02439061de3f865965b3142af90dc7714760be03f74d44c42356e2f8089efa00",
+    "appearance/visual_mesh.glb": "fa78a628a18f52b497599ab21e902d1b7ee2abddf132611de05ac8cf83de03c7",
+    "appearance/visual_to_physics.npz": "bc97540941f20aa29853eb71f88a58f126c067ed21a105b6eabae528f70ab20a",
+    "final_mesh.mesh": "f35779523d0673492ddcf9b162cd46c913131acdb0a589400b80117cb68167d8",
+    "heterogeneous_params.npz": "9f975976c0fe2316c46c0489d2101491be923d45cc16df7ba5448ed3ff6355d0",
+    "inferred_params.json": "6d3f5ff206b703e2c212a6afd40202e8bd93ee8fde49bbb5e7a972892733be95",
+    "metric_mesh_scaling.json": "4dd13d850aad5c39056d616a8a28941634703674a82fba532bd358ca0f309667",
+    "volume_topology.json": "3391074a07d4183a335d2c665f5d5a2779c271c62eb05626bb12f3feb6eff198"
+  },
+  "manifest_sha256": "01ca0b6866148d2ba8e594318f6efe60efff62fcc2399df398a1bacf234c429f",
+  "native_validation": {
+    "appearance_schema": "hag4r-post-mesh-texture-visual-v1",
+    "face_connected_components": 1,
+    "material_labels": [
+      0,
+      1,
+      2
+    ],
+    "native_appearance_valid": true,
+    "native_tet_valid": true,
+    "physical_contract": {
+      "metric_mesh_scaling": {
+        "scale_factor": 0.2199310602280057,
+        "schema_version": "hag4r-metric-max-dimension-scaling-v1",
+        "target_max_dimension_m": 0.22
+      },
+      "params": {
+        "keys": [
+          "part_E_nu",
+          "part_colors",
+          "part_density",
+          "part_indices",
+          "part_volume_fill_mode_codes",
+          "tet_E_nu",
+          "tet_density",
+          "tet_part_labels"
+        ],
+        "tet_count": 58382
+      },
+      "volume_topology": {
+        "schema_version": "hag4r-volume-topology-v3",
+        "tet_budget_status": "over_budget",
+        "tet_count": 58382,
+        "volume_topology": "mixed",
+        "warnings": [
+          "tet count 58382 exceeds advisory budget 40000; continuing"
+        ]
+      }
+    },
+    "point_count": 12288,
+    "tet_count": 58382
+  },
+  "state_sha256": "212774f7367754b6e340b976013b00eb3bddf3e3d855975b1092b97169c3b04a",
+  "schema_version": "diaggen-completed-export-validation-v1",
+  "started_at": "2026-10-22T17:50:31+08:00",
+  "finished_at": "2026-10-22T18:31:05+08:00",
+  "successful_attempt_seconds": 2434,
+  "timing_scope": "Successful diagnostics-snapshot suffix, six upstream stages reused; not full raw-image generation. Earlier failures and interactive debugging excluded.",
+  "videos": [
+    {
+      "name": "episode_0001_part_segmentation_triptych_10fps.mp4",
+      "sha256": "36b62d6271bac89297e7e3f9c3e4b0cbeedd4e88137f52de2f2aa6c142b20789",
+      "stream": {
+        "codec_name": "h264",
+        "width": 2304,
+        "height": 768,
+        "r_frame_rate": "10/1",
+        "nb_frames": "26"
+      },
+      "duration_seconds": 2.6
+    },
+    {
+      "name": "episode_0002_part_segmentation_triptych_10fps.mp4",
+      "sha256": "bc5711867789a1a269005f55817e491e014e4fb7c268a592ae752fbf7b23fcee",
+      "stream": {
+        "codec_name": "h264",
+        "width": 2304,
+        "height": 768,
+        "r_frame_rate": "10/1",
+        "nb_frames": "27"
+      },
+      "duration_seconds": 2.7
+    }
+  ]
+}
