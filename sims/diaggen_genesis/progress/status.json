@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T21:01:28+08:00",
+  "updated_at": "2026-10-22T21:04:02+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-22T21:01:28+08:00",
+      "updated_at": "2026-10-22T21:04:02+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -222,7 +222,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T06:03:34.261605+00:00",
-      "updated_at": "2026-10-22T21:01:28+08:00",
+      "updated_at": "2026-10-22T21:04:02+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -396,7 +396,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T09:14:45.699903+00:00",
-      "updated_at": "2026-10-22T21:01:28+08:00",
+      "updated_at": "2026-10-22T21:04:02+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -575,7 +575,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-22T21:01:28+08:00",
+      "updated_at": "2026-10-22T21:04:02+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -764,7 +764,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-22T21:01:28+08:00",
+      "updated_at": "2026-10-22T21:04:02+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -953,7 +953,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-22T21:01:28+08:00",
+      "updated_at": "2026-10-22T21:04:02+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1142,7 +1142,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T12:48:11.503190+00:00",
-      "updated_at": "2026-10-22T21:01:28+08:00",
+      "updated_at": "2026-10-22T21:04:02+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1268,6 +1268,36 @@
           "path": "media/dragon_segmentation_overlay.png",
           "bytes": 61258,
           "sha256": "f1ea2cc05dc8f1de4b2c798fd86573b54e1104a18cba63b893a02a62182b1a01"
+        },
+        {
+          "path": "media/dragon_omnipart_top.png",
+          "bytes": 8917,
+          "sha256": "202ee5e95ea6494aa2c50d59110d4cb8ecbedf20560450ff1e0bb97955116e72"
+        },
+        {
+          "path": "media/dragon_omnipart_bottom.png",
+          "bytes": 7531,
+          "sha256": "a81f17753c213a021278b9433de9610903fc4aa7cd5ff7c543da5aef627825c7"
+        },
+        {
+          "path": "media/dragon_omnipart_front.png",
+          "bytes": 10589,
+          "sha256": "769b44667b9ad6e37263084cc5f1f0e90b851d755493a206e152115123374efa"
+        },
+        {
+          "path": "media/dragon_omnipart_back.png",
+          "bytes": 8925,
+          "sha256": "fa9eb6cc5c286611edc410b6bedea0582a8fe21a4276c73687f8dd814eb2c8a4"
+        },
+        {
+          "path": "media/dragon_omnipart_left.png",
+          "bytes": 9725,
+          "sha256": "a2ab1cc6ec6bf9e26d5ebfb916dd10da22f91fd521709f46ddd6f6061028b66b"
+        },
+        {
+          "path": "media/dragon_omnipart_right.png",
+          "bytes": 9688,
+          "sha256": "7cc5e972fc1b4d7754014eb0bb921b9815d3110536b50e813deb4d9438f21936"
         }
       ],
       "id": "dragon",
@@ -1286,7 +1316,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T21:01:28+08:00",
+      "updated_at": "2026-10-22T21:04:02+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1430,7 +1460,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T21:01:28+08:00",
+      "updated_at": "2026-10-22T21:04:02+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -2031,6 +2061,36 @@
       "sha256": "f1ea2cc05dc8f1de4b2c798fd86573b54e1104a18cba63b893a02a62182b1a01"
     },
     {
+      "path": "media/dragon_omnipart_top.png",
+      "bytes": 8917,
+      "sha256": "202ee5e95ea6494aa2c50d59110d4cb8ecbedf20560450ff1e0bb97955116e72"
+    },
+    {
+      "path": "media/dragon_omnipart_bottom.png",
+      "bytes": 7531,
+      "sha256": "a81f17753c213a021278b9433de9610903fc4aa7cd5ff7c543da5aef627825c7"
+    },
+    {
+      "path": "media/dragon_omnipart_front.png",
+      "bytes": 10589,
+      "sha256": "769b44667b9ad6e37263084cc5f1f0e90b851d755493a206e152115123374efa"
+    },
+    {
+      "path": "media/dragon_omnipart_back.png",
+      "bytes": 8925,
+      "sha256": "fa9eb6cc5c286611edc410b6bedea0582a8fe21a4276c73687f8dd814eb2c8a4"
+    },
+    {
+      "path": "media/dragon_omnipart_left.png",
+      "bytes": 9725,
+      "sha256": "a2ab1cc6ec6bf9e26d5ebfb916dd10da22f91fd521709f46ddd6f6061028b66b"
+    },
+    {
+      "path": "media/dragon_omnipart_right.png",
+      "bytes": 9688,
+      "sha256": "7cc5e972fc1b4d7754014eb0bb921b9815d3110536b50e813deb4d9438f21936"
+    },
+    {
       "path": "media/capybara_plush_toy_cleaned_image.png",
       "bytes": 2311951,
       "sha256": "94bffd6c88b772cd5c34fd16919e6edcd2ea6aa78011c2662ffa43dbe4089331"
@@ -2130,7 +2190,7 @@
     "enabled": true,
     "interval_seconds": 60,
     "max_resumes_per_run": 2,
-    "updated_at": "2026-10-22T21:01:03+08:00",
+    "updated_at": "2026-10-22T21:03:03+08:00",
     "jobs": [
       {
         "id": "baseball_cap",
@@ -2189,5 +2249,5 @@
     "classification": "pipeline_runtime",
     "outcome": "repaired_and_requeued"
   },
-  "signature": "71fc0b5531eb35e0baf04c4f19345be3f6bd02cebdd50b1a18e3c2132cc8899c"
+  "signature": "f91a88e374f0d0e717e6e54a5b880f527a062a28cc48ecbcace784939205ccfa"
 }
