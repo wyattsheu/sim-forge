@@ -2,9 +2,9 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T15:05:48+08:00（Asia/Taipei）
+更新：2026-10-22T15:06:05+08:00（Asia/Taipei）
 
-共 9 件：等待 1、執行中 3、完成 1、失敗 4、取消 0。
+共 9 件：等待 1、執行中 2、完成 1、失敗 5、取消 0。
 
 GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢查。  
 允許與既有運算共用 GPU：是。
@@ -17,7 +17,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 |---|---|---|---|---|---|---|
 | baseball_cap | failed | seeded | revision_0000 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
 | kitchen_tongs | failed | seeded | revision_0000 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
-| sneaker | running | failed | revision_0000 | 24576 MiB | 6/9 | 重試材質快照與磁碟既有檔案衝突 |
+| sneaker | failed | failed | revision_0000 | 24576 MiB | 6/9 | 重試材質快照與磁碟既有檔案衝突 |
 | usb_hub | running | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
 | sloth | failed | failed | revision_0000 | 24576 MiB | 6/9 | 重試材質快照與磁碟既有檔案衝突 |
 | sauce_keeper | running | seeded | revision_0000 | 24576 MiB | 6/9 | 診斷紀錄逾 15 分鐘未更新，需檢查 |
@@ -65,7 +65,7 @@ Genesis 診斷 episode 數：0。
 
 ## sneaker
 
-Run：`genesis_sneaker_20261021`；執行中。
+Run：`genesis_sneaker_20261021`；執行失敗。
 
 | 階段 | 狀態 |
 |---|---|
