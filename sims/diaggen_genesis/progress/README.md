@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T17:19:17+08:00（Asia/Taipei）
+更新：2026-10-22T17:19:51+08:00（Asia/Taipei）
 
 共 9 件：等待 2、執行中 3、完成 2、失敗 2、取消 0。
 
@@ -53,7 +53,7 @@ Run：`genesis_kitchen_tongs_20261022_segmentation_retry1`；執行中。
 | 階段 | 狀態 |
 |---|---|
 | 圖片清理 | success |
-| SAM3 分割 | pending |
+| SAM3 分割 | failed |
 | OmniPart 幾何生成 | pending |
 | 材料推估 | pending |
 | 材料參數配置 | pending |
@@ -65,6 +65,14 @@ Run：`genesis_kitchen_tongs_20261022_segmentation_retry1`；執行中。
 Genesis 診斷 episode 數：0。
 
 ![kitchen_tongs_cleaned_image](media/kitchen_tongs_cleaned_image.png)
+
+![kitchen_tongs_processed_white_bg_png](media/kitchen_tongs_processed_white_bg_png.png)
+
+![kitchen_tongs_processed_rgba](media/kitchen_tongs_processed_rgba.png)
+
+![kitchen_tongs_ordered_mask_vis](media/kitchen_tongs_ordered_mask_vis.png)
+
+![kitchen_tongs_segmentation_overlay](media/kitchen_tongs_segmentation_overlay.png)
 
 
 ## sneaker
