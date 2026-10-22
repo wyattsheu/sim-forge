@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-23T01:11:45+08:00",
+  "updated_at": "2026-10-23T02:23:31+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -13,10 +13,10 @@
     "max_parallel_jobs": 4
   },
   "counts": {
-    "queued": 0,
+    "queued": 2,
     "running": 1,
     "success": 6,
-    "failed": 2,
+    "failed": 0,
     "cancelled": 0,
     "unknown": 0,
     "total": 9
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-23T01:11:45+08:00",
+      "updated_at": "2026-10-23T02:23:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -222,7 +222,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T16:01:05.614594+00:00",
-      "updated_at": "2026-10-23T01:11:45+08:00",
+      "updated_at": "2026-10-23T02:23:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -404,18 +404,18 @@
       "schema_version": "diaggen-public-progress-v1",
       "pipeline": "DiagGen",
       "simulator": "Genesis",
-      "run_id": "genesis_sneaker_20261022_native6",
-      "phase": "failed",
-      "pipeline_status": "seeded",
+      "run_id": "genesis_sneaker_20261023_sole_group6",
+      "phase": "waiting_gpu",
+      "pipeline_status": "not_initialized",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
-      "active_revision": "revision_0000",
-      "created_at": "2026-10-22T16:03:07.162969+00:00",
-      "updated_at": "2026-10-23T01:11:45+08:00",
+      "active_revision": null,
+      "created_at": null,
+      "updated_at": "2026-10-23T02:23:31+08:00",
       "diagnostics": {
-        "enabled": true,
-        "episode_count": 2,
-        "terminal_status": "halted",
+        "enabled": null,
+        "episode_count": 0,
+        "terminal_status": "not_available",
         "recommendation": "not_available",
         "export_outcome": "not_exported"
       },
@@ -423,65 +423,65 @@
         {
           "name": "image_cleanup",
           "label": "圖片清理",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-21T09:44:43.466370+00:00",
-          "finished_at": "2026-10-22T04:44:31.015032+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-21T09:47:24.703091+00:00",
-          "finished_at": "2026-10-21T09:47:53.489515+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "omnipart_generate_parts",
           "label": "OmniPart 幾何生成",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-21T09:50:20.395830+00:00",
-          "finished_at": "2026-10-21T10:05:39.218308+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_gpt_staged_material_inference",
           "label": "材料推估",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-21T10:06:52.812290+00:00",
-          "finished_at": "2026-10-21T10:09:10.850697+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_assign_params_to_prims",
           "label": "材料參數配置",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-21T10:11:14.406461+00:00",
-          "finished_at": "2026-10-21T10:11:15.410581+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_combined_to_monolithic",
           "label": "體積網格處理",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-21T10:12:06.400806+00:00",
-          "finished_at": "2026-10-21T10:12:06.400806+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "genesis_live_diagnostic_loop",
           "label": "Genesis 物理診斷",
-          "status": "failed",
-          "ledger_status": "failed",
+          "status": "pending",
+          "ledger_status": "pending",
           "ok": false,
-          "started_at": "2026-10-22T16:04:59.420195+00:00",
-          "finished_at": "2026-10-22T16:35:08.591687+00:00"
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_post_mesh_texture",
@@ -505,72 +505,16 @@
       "health": {
         "warnings": [],
         "diagnostic_counters": {
-          "episodes": 2,
-          "tool_results": 27,
-          "diagnostic_probe_attempts": 4,
-          "region_settlements": 2
+          "episodes": 0,
+          "tool_results": 0,
+          "diagnostic_probe_attempts": 0,
+          "region_settlements": 0
         },
         "meaning": "observation_only_not_retry_authorization"
       },
-      "media": [
-        {
-          "path": "media/sneaker_cleaned_image.png",
-          "bytes": 2165814,
-          "sha256": "f6b03c7d6bd4e326741a69dd40a82f15cf398ecd4df3197ba4dc920ef504df93"
-        },
-        {
-          "path": "media/sneaker_processed_white_bg_png.png",
-          "bytes": 224061,
-          "sha256": "a0348613dd60c4e98db9b41f3267a16807c97249ad2ae64defd882589f1ef259"
-        },
-        {
-          "path": "media/sneaker_processed_rgba.png",
-          "bytes": 254767,
-          "sha256": "75721d2bd86d237487b43f6b3ffab71f692580ac7587741f750403be3b0f0bd6"
-        },
-        {
-          "path": "media/sneaker_ordered_mask_vis.png",
-          "bytes": 2269,
-          "sha256": "48c763ff48895c62a9548593255e69b333c28f63f354ca837218d6071f353734"
-        },
-        {
-          "path": "media/sneaker_segmentation_overlay.png",
-          "bytes": 194543,
-          "sha256": "f61d25b8cc7e6b1ca159bdc37b362e173ffac1410199559e86886de1907de496"
-        },
-        {
-          "path": "media/sneaker_omnipart_top.png",
-          "bytes": 11255,
-          "sha256": "8a1f9fbc024009e7df343b6a96464ac0e4acfe57d1938f46ee92d3545fcebcfa"
-        },
-        {
-          "path": "media/sneaker_omnipart_bottom.png",
-          "bytes": 7851,
-          "sha256": "22d706e057ea280f5762e9be36a3c92118321fe4926a27658bfbfa51afc13c78"
-        },
-        {
-          "path": "media/sneaker_omnipart_front.png",
-          "bytes": 12594,
-          "sha256": "4633f20cc1723246ef8bb57a5031dbd27db0434737f9e4cf29316b0d28a220b3"
-        },
-        {
-          "path": "media/sneaker_omnipart_back.png",
-          "bytes": 13116,
-          "sha256": "e5502a5a3774d914423cb317bdaa89ddf3b0a4c4affa1a1fbef5262a618a07bf"
-        },
-        {
-          "path": "media/sneaker_omnipart_left.png",
-          "bytes": 9321,
-          "sha256": "5870493595e3998bfe2019cfbf251bb98ac37b6c90e9a42b4cddd49d91ea2920"
-        },
-        {
-          "path": "media/sneaker_omnipart_right.png",
-          "bytes": 9678,
-          "sha256": "db4ba55885ed522bc4e367674ec755352c5d4146d558baf33c306ea93dad3f7f"
-        }
-      ],
+      "media": [],
       "id": "sneaker",
-      "status": "failed",
+      "status": "queued",
       "attempts": 5,
       "minimum_free_mib": 24576
     },
@@ -585,7 +529,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-23T01:11:45+08:00",
+      "updated_at": "2026-10-23T02:23:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -774,7 +718,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-23T01:11:45+08:00",
+      "updated_at": "2026-10-23T02:23:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -963,7 +907,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-23T01:11:45+08:00",
+      "updated_at": "2026-10-23T02:23:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1145,18 +1089,18 @@
       "schema_version": "diaggen-public-progress-v1",
       "pipeline": "DiagGen",
       "simulator": "Genesis",
-      "run_id": "genesis_dragon_20261022_native6",
-      "phase": "failed",
-      "pipeline_status": "failed",
+      "run_id": "genesis_dragon_20261023_coarse_connector6",
+      "phase": "waiting_gpu",
+      "pipeline_status": "not_initialized",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
-      "active_revision": "revision_0000",
-      "created_at": "2026-10-22T16:18:45.488388+00:00",
-      "updated_at": "2026-10-23T01:11:45+08:00",
+      "active_revision": null,
+      "created_at": null,
+      "updated_at": "2026-10-23T02:23:31+08:00",
       "diagnostics": {
-        "enabled": true,
-        "episode_count": 1,
-        "terminal_status": "halted",
+        "enabled": null,
+        "episode_count": 0,
+        "terminal_status": "not_available",
         "recommendation": "not_available",
         "export_outcome": "not_exported"
       },
@@ -1164,65 +1108,65 @@
         {
           "name": "image_cleanup",
           "label": "圖片清理",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T12:54:35.828391+00:00",
-          "finished_at": "2026-10-22T12:54:35.843046+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T12:57:24.659330+00:00",
-          "finished_at": "2026-10-22T12:58:42.445807+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "omnipart_generate_parts",
           "label": "OmniPart 幾何生成",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T13:01:17.756791+00:00",
-          "finished_at": "2026-10-22T13:04:03.550952+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_gpt_staged_material_inference",
           "label": "材料推估",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T13:06:24.304231+00:00",
-          "finished_at": "2026-10-22T13:10:12.258056+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_assign_params_to_prims",
           "label": "材料參數配置",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T13:38:00.889002+00:00",
-          "finished_at": "2026-10-22T13:38:01.815475+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_combined_to_monolithic",
           "label": "體積網格處理",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T13:38:26.455360+00:00",
-          "finished_at": "2026-10-22T13:39:39.722846+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "genesis_live_diagnostic_loop",
           "label": "Genesis 物理診斷",
-          "status": "failed",
-          "ledger_status": "failed",
+          "status": "pending",
+          "ledger_status": "pending",
           "ok": false,
-          "started_at": "2026-10-22T16:23:04.409983+00:00",
-          "finished_at": "2026-10-22T16:35:24.131727+00:00"
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_post_mesh_texture",
@@ -1246,72 +1190,16 @@
       "health": {
         "warnings": [],
         "diagnostic_counters": {
-          "episodes": 1,
-          "tool_results": 6,
+          "episodes": 0,
+          "tool_results": 0,
           "diagnostic_probe_attempts": 0,
-          "region_settlements": 1
+          "region_settlements": 0
         },
         "meaning": "observation_only_not_retry_authorization"
       },
-      "media": [
-        {
-          "path": "media/dragon_cleaned_image.png",
-          "bytes": 1209886,
-          "sha256": "7f11477353a235bf5b669d7c8ba80c1e2ac8b5b2dc82c026a65068955e0dc492"
-        },
-        {
-          "path": "media/dragon_processed_white_bg_png.png",
-          "bytes": 70538,
-          "sha256": "f0919320fe4cfaaab1d58862bf66facb9c53adc2b084b99b946075b44d399512"
-        },
-        {
-          "path": "media/dragon_processed_rgba.png",
-          "bytes": 88717,
-          "sha256": "96333ffbe432c6929a5aeef0de87fd9ead53dbb3060d9920d2efc5536498952f"
-        },
-        {
-          "path": "media/dragon_ordered_mask_vis.png",
-          "bytes": 2158,
-          "sha256": "23791a34b990c9bda42e3a96415963b7966acbc33e39efd11aed17c377637927"
-        },
-        {
-          "path": "media/dragon_segmentation_overlay.png",
-          "bytes": 61258,
-          "sha256": "f1ea2cc05dc8f1de4b2c798fd86573b54e1104a18cba63b893a02a62182b1a01"
-        },
-        {
-          "path": "media/dragon_omnipart_top.png",
-          "bytes": 8917,
-          "sha256": "202ee5e95ea6494aa2c50d59110d4cb8ecbedf20560450ff1e0bb97955116e72"
-        },
-        {
-          "path": "media/dragon_omnipart_bottom.png",
-          "bytes": 7531,
-          "sha256": "a81f17753c213a021278b9433de9610903fc4aa7cd5ff7c543da5aef627825c7"
-        },
-        {
-          "path": "media/dragon_omnipart_front.png",
-          "bytes": 10589,
-          "sha256": "769b44667b9ad6e37263084cc5f1f0e90b851d755493a206e152115123374efa"
-        },
-        {
-          "path": "media/dragon_omnipart_back.png",
-          "bytes": 8925,
-          "sha256": "fa9eb6cc5c286611edc410b6bedea0582a8fe21a4276c73687f8dd814eb2c8a4"
-        },
-        {
-          "path": "media/dragon_omnipart_left.png",
-          "bytes": 9725,
-          "sha256": "a2ab1cc6ec6bf9e26d5ebfb916dd10da22f91fd521709f46ddd6f6061028b66b"
-        },
-        {
-          "path": "media/dragon_omnipart_right.png",
-          "bytes": 9688,
-          "sha256": "7cc5e972fc1b4d7754014eb0bb921b9815d3110536b50e813deb4d9438f21936"
-        }
-      ],
+      "media": [],
       "id": "dragon",
-      "status": "failed",
+      "status": "queued",
       "attempts": 6,
       "minimum_free_mib": 24576
     },
@@ -1326,7 +1214,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T17:03:25.448128+00:00",
-      "updated_at": "2026-10-23T01:11:45+08:00",
+      "updated_at": "2026-10-23T02:23:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1470,7 +1358,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-23T01:11:45+08:00",
+      "updated_at": "2026-10-23T02:23:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1791,61 +1679,6 @@
       "sha256": "997dc3205211dd988746a5c963fc68ca8946c991d22988b9d9ab89b6916314bf"
     },
     {
-      "path": "media/sneaker_cleaned_image.png",
-      "bytes": 2165814,
-      "sha256": "f6b03c7d6bd4e326741a69dd40a82f15cf398ecd4df3197ba4dc920ef504df93"
-    },
-    {
-      "path": "media/sneaker_processed_white_bg_png.png",
-      "bytes": 224061,
-      "sha256": "a0348613dd60c4e98db9b41f3267a16807c97249ad2ae64defd882589f1ef259"
-    },
-    {
-      "path": "media/sneaker_processed_rgba.png",
-      "bytes": 254767,
-      "sha256": "75721d2bd86d237487b43f6b3ffab71f692580ac7587741f750403be3b0f0bd6"
-    },
-    {
-      "path": "media/sneaker_ordered_mask_vis.png",
-      "bytes": 2269,
-      "sha256": "48c763ff48895c62a9548593255e69b333c28f63f354ca837218d6071f353734"
-    },
-    {
-      "path": "media/sneaker_segmentation_overlay.png",
-      "bytes": 194543,
-      "sha256": "f61d25b8cc7e6b1ca159bdc37b362e173ffac1410199559e86886de1907de496"
-    },
-    {
-      "path": "media/sneaker_omnipart_top.png",
-      "bytes": 11255,
-      "sha256": "8a1f9fbc024009e7df343b6a96464ac0e4acfe57d1938f46ee92d3545fcebcfa"
-    },
-    {
-      "path": "media/sneaker_omnipart_bottom.png",
-      "bytes": 7851,
-      "sha256": "22d706e057ea280f5762e9be36a3c92118321fe4926a27658bfbfa51afc13c78"
-    },
-    {
-      "path": "media/sneaker_omnipart_front.png",
-      "bytes": 12594,
-      "sha256": "4633f20cc1723246ef8bb57a5031dbd27db0434737f9e4cf29316b0d28a220b3"
-    },
-    {
-      "path": "media/sneaker_omnipart_back.png",
-      "bytes": 13116,
-      "sha256": "e5502a5a3774d914423cb317bdaa89ddf3b0a4c4affa1a1fbef5262a618a07bf"
-    },
-    {
-      "path": "media/sneaker_omnipart_left.png",
-      "bytes": 9321,
-      "sha256": "5870493595e3998bfe2019cfbf251bb98ac37b6c90e9a42b4cddd49d91ea2920"
-    },
-    {
-      "path": "media/sneaker_omnipart_right.png",
-      "bytes": 9678,
-      "sha256": "db4ba55885ed522bc4e367674ec755352c5d4146d558baf33c306ea93dad3f7f"
-    },
-    {
       "path": "media/usb_hub_cleaned_image.png",
       "bytes": 1324164,
       "sha256": "e4264e42306c814048634899bc6fa1413bb1779905549bcfca29e1c6abadcb96"
@@ -2056,61 +1889,6 @@
       "sha256": "bc5711867789a1a269005f55817e491e014e4fb7c268a592ae752fbf7b23fcee"
     },
     {
-      "path": "media/dragon_cleaned_image.png",
-      "bytes": 1209886,
-      "sha256": "7f11477353a235bf5b669d7c8ba80c1e2ac8b5b2dc82c026a65068955e0dc492"
-    },
-    {
-      "path": "media/dragon_processed_white_bg_png.png",
-      "bytes": 70538,
-      "sha256": "f0919320fe4cfaaab1d58862bf66facb9c53adc2b084b99b946075b44d399512"
-    },
-    {
-      "path": "media/dragon_processed_rgba.png",
-      "bytes": 88717,
-      "sha256": "96333ffbe432c6929a5aeef0de87fd9ead53dbb3060d9920d2efc5536498952f"
-    },
-    {
-      "path": "media/dragon_ordered_mask_vis.png",
-      "bytes": 2158,
-      "sha256": "23791a34b990c9bda42e3a96415963b7966acbc33e39efd11aed17c377637927"
-    },
-    {
-      "path": "media/dragon_segmentation_overlay.png",
-      "bytes": 61258,
-      "sha256": "f1ea2cc05dc8f1de4b2c798fd86573b54e1104a18cba63b893a02a62182b1a01"
-    },
-    {
-      "path": "media/dragon_omnipart_top.png",
-      "bytes": 8917,
-      "sha256": "202ee5e95ea6494aa2c50d59110d4cb8ecbedf20560450ff1e0bb97955116e72"
-    },
-    {
-      "path": "media/dragon_omnipart_bottom.png",
-      "bytes": 7531,
-      "sha256": "a81f17753c213a021278b9433de9610903fc4aa7cd5ff7c543da5aef627825c7"
-    },
-    {
-      "path": "media/dragon_omnipart_front.png",
-      "bytes": 10589,
-      "sha256": "769b44667b9ad6e37263084cc5f1f0e90b851d755493a206e152115123374efa"
-    },
-    {
-      "path": "media/dragon_omnipart_back.png",
-      "bytes": 8925,
-      "sha256": "fa9eb6cc5c286611edc410b6bedea0582a8fe21a4276c73687f8dd814eb2c8a4"
-    },
-    {
-      "path": "media/dragon_omnipart_left.png",
-      "bytes": 9725,
-      "sha256": "a2ab1cc6ec6bf9e26d5ebfb916dd10da22f91fd521709f46ddd6f6061028b66b"
-    },
-    {
-      "path": "media/dragon_omnipart_right.png",
-      "bytes": 9688,
-      "sha256": "7cc5e972fc1b4d7754014eb0bb921b9815d3110536b50e813deb4d9438f21936"
-    },
-    {
       "path": "media/capybara_plush_toy_cleaned_image.png",
       "bytes": 2378340,
       "sha256": "86bdd72de60babf6291167c820f60bad462707c54554478ba8041626ee90c016"
@@ -2210,7 +1988,7 @@
     "enabled": true,
     "interval_seconds": 60,
     "max_resumes_per_run": 2,
-    "updated_at": "2026-10-23T01:11:03+08:00",
+    "updated_at": "2026-10-23T02:23:03+08:00",
     "jobs": [
       {
         "id": "baseball_cap",
@@ -2221,11 +1999,6 @@
         "id": "kitchen_tongs",
         "run_id": "genesis_kitchen_tongs_20261022_native6",
         "outcome": "completed"
-      },
-      {
-        "id": "sneaker",
-        "run_id": "genesis_sneaker_20261022_native6",
-        "outcome": "business_halt"
       },
       {
         "id": "usb_hub",
@@ -2241,11 +2014,6 @@
         "id": "sauce_keeper",
         "run_id": "genesis_sauce_keeper_20261022_clean_diagnostics2",
         "outcome": "completed"
-      },
-      {
-        "id": "dragon",
-        "run_id": "genesis_dragon_20261022_native6",
-        "outcome": "business_halt"
       },
       {
         "id": "capybara_plush_toy",
@@ -2269,5 +2037,5 @@
     "classification": "native_business_halt",
     "outcome": "needs_attention"
   },
-  "signature": "c39998a15608e5c4b34a025e8d6083ceabb14c68513f13de55ae75c70c7ac860"
+  "signature": "518313de85b368ddb19d72713937bc16bfe6e7c02ecc108ebbf2e9f0c0ab870e"
 }

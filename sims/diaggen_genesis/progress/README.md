@@ -2,9 +2,9 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-23T01:11:45+08:00（Asia/Taipei）
+更新：2026-10-23T02:23:31+08:00（Asia/Taipei）
 
-共 9 件：等待 0、執行中 1、完成匯出 6、失敗 2、取消 0。
+共 9 件：等待 2、執行中 1、完成匯出 6、失敗 0、取消 0。
 
 已完成匯出中：Genesis accept 6 件；仍需修正 0 件。
 
@@ -21,11 +21,11 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 |---|---|---|---|---|---|---|---|
 | baseball_cap | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
 | kitchen_tongs | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
-| sneaker | failed | seeded | revision_0000 | 24576 MiB | 6/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
+| sneaker | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
 | usb_hub | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
 | sloth | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
 | sauce_keeper | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
-| dragon | failed | failed | revision_0000 | 24576 MiB | 6/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
+| dragon | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
 | capybara_plush_toy | running | seeded | revision_0000 | 49152 MiB | 2/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
 | curling_iron | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
 
@@ -35,11 +35,9 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 |---|---|
 | baseball_cap | completed |
 | kitchen_tongs | completed |
-| sneaker | business_halt |
 | usb_hub | completed |
 | sloth | completed |
 | sauce_keeper | completed |
-| dragon | business_halt |
 | capybara_plush_toy | running |
 | curling_iron | completed |
 
@@ -143,43 +141,21 @@ Genesis 診斷 episode 數：2；結果：accept。
 
 ## sneaker
 
-Run：`genesis_sneaker_20261022_native6`；執行失敗。
+Run：`genesis_sneaker_20261023_sole_group6`；等待空閒 GPU。
 
 | 階段 | 狀態 |
 |---|---|
-| 圖片清理 | success |
-| SAM3 分割 | success |
-| OmniPart 幾何生成 | success |
-| 材料推估 | success |
-| 材料參數配置 | success |
-| 體積網格處理 | success |
-| Genesis 物理診斷 | failed |
+| 圖片清理 | pending |
+| SAM3 分割 | pending |
+| OmniPart 幾何生成 | pending |
+| 材料推估 | pending |
+| 材料參數配置 | pending |
+| 體積網格處理 | pending |
+| Genesis 物理診斷 | pending |
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
-Genesis 診斷 episode 數：2；結果：尚未判定。
-
-![sneaker_cleaned_image](media/sneaker_cleaned_image.png)
-
-![sneaker_processed_white_bg_png](media/sneaker_processed_white_bg_png.png)
-
-![sneaker_processed_rgba](media/sneaker_processed_rgba.png)
-
-![sneaker_ordered_mask_vis](media/sneaker_ordered_mask_vis.png)
-
-![sneaker_segmentation_overlay](media/sneaker_segmentation_overlay.png)
-
-![sneaker_omnipart_top](media/sneaker_omnipart_top.png)
-
-![sneaker_omnipart_bottom](media/sneaker_omnipart_bottom.png)
-
-![sneaker_omnipart_front](media/sneaker_omnipart_front.png)
-
-![sneaker_omnipart_back](media/sneaker_omnipart_back.png)
-
-![sneaker_omnipart_left](media/sneaker_omnipart_left.png)
-
-![sneaker_omnipart_right](media/sneaker_omnipart_right.png)
+Genesis 診斷 episode 數：0；結果：尚未判定。
 
 
 ## usb_hub
@@ -325,43 +301,21 @@ Genesis 診斷 episode 數：2；結果：accept。
 
 ## dragon
 
-Run：`genesis_dragon_20261022_native6`；執行失敗。
+Run：`genesis_dragon_20261023_coarse_connector6`；等待空閒 GPU。
 
 | 階段 | 狀態 |
 |---|---|
-| 圖片清理 | success |
-| SAM3 分割 | success |
-| OmniPart 幾何生成 | success |
-| 材料推估 | success |
-| 材料參數配置 | success |
-| 體積網格處理 | success |
-| Genesis 物理診斷 | failed |
+| 圖片清理 | pending |
+| SAM3 分割 | pending |
+| OmniPart 幾何生成 | pending |
+| 材料推估 | pending |
+| 材料參數配置 | pending |
+| 體積網格處理 | pending |
+| Genesis 物理診斷 | pending |
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
-Genesis 診斷 episode 數：1；結果：尚未判定。
-
-![dragon_cleaned_image](media/dragon_cleaned_image.png)
-
-![dragon_processed_white_bg_png](media/dragon_processed_white_bg_png.png)
-
-![dragon_processed_rgba](media/dragon_processed_rgba.png)
-
-![dragon_ordered_mask_vis](media/dragon_ordered_mask_vis.png)
-
-![dragon_segmentation_overlay](media/dragon_segmentation_overlay.png)
-
-![dragon_omnipart_top](media/dragon_omnipart_top.png)
-
-![dragon_omnipart_bottom](media/dragon_omnipart_bottom.png)
-
-![dragon_omnipart_front](media/dragon_omnipart_front.png)
-
-![dragon_omnipart_back](media/dragon_omnipart_back.png)
-
-![dragon_omnipart_left](media/dragon_omnipart_left.png)
-
-![dragon_omnipart_right](media/dragon_omnipart_right.png)
+Genesis 診斷 episode 數：0；結果：尚未判定。
 
 
 ## capybara_plush_toy
