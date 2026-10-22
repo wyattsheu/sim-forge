@@ -1,0 +1,27 @@
+--- a/hag4r/agentic/runtime_tools/diagnostics.py
++++ b/hag4r/agentic/runtime_tools/diagnostics.py
+@@ -1982,8 +1982,13 @@
+     paths = state.get("paths")
+     if not isinstance(paths, Mapping):
+         raise ValueError("state.paths must be an object")
+     revision_id = str(state.get("active_revision") or "revision_0000")
++    attempt_id = diagnostics.get("active_diagnostic_attempt_id")
++    if not _validate_diagnostic_attempt_archives(
++        diagnostics.get("diagnostic_attempt_archives", []), attempt_id
++    ):
++        raise GenesisVlmSchemaError("invalid diagnostic attempt namespace")
+     existing = [
+         item for item in _material_audit_registration_records(state)
+         if item.get("active_revision_id") == revision_id
+     ]
+@@ -2031,8 +2036,10 @@
+             # workspace index's established part_grounding_context entry.
+             workspace_copy = path
+         else:
+             workspace_artifact_dir = runtime_paths["workspace_dir"] / "material_audit_authoritative" / revision_id
++            if attempt_id is not None:
++                workspace_artifact_dir = workspace_artifact_dir / attempt_id
+             workspace_artifact_dir.mkdir(parents=True, exist_ok=True)
+             suffix = path.suffix or ".bin"
+             workspace_copy = workspace_artifact_dir / f"{artifact_id}{suffix}"
+             if workspace_copy.exists():

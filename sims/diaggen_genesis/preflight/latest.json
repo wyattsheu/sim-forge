@@ -22,7 +22,8 @@
     "No full-model peak VRAM measurement; admission does not reserve GPU memory.",
     "Hardware checks are reused only where native sources, inputs, environments and binaries match the prior certificate.",
     "Watchdog does not repair business halts, failed native stages, exhausted revision budgets or the capybara spconv limitation; unknown active processes prevent automatic resume.",
-    "The investigator is admitted only for new failures and cannot guarantee a faithful fix; real business halts and automatic-review rejections are preserved. Real Codex incident execution is a separate deployment observation."
+    "The investigator is admitted only for new failures and cannot guarantee a faithful fix; real business halts and automatic-review rejections are preserved. Real Codex incident execution is a separate deployment observation.",
+    "This incident revalidation is CPU-only; it does not claim the queued Dragon run has started, completed, or passed native acceptance."
   ],
   "checks": [
     {
@@ -443,6 +444,109 @@
     ],
     "unaccepted_exports": [
       "sneaker"
+    ],
+    "current_incident": {
+      "incident_id": "20261022_202420_af4645266949",
+      "changed_fingerprint_entries": {
+        "binaries": [],
+        "environments": [],
+        "inputs": [],
+        "sources": [
+          "tools/diaggen/hag4r/agentic/runtime_tools/diagnostics.py",
+          "tools/diaggen_support/diagnostic_retry_snapshot_namespace.json",
+          "tools/diaggen_support/diagnostic_retry_snapshot_namespace.patch",
+          "tools/diaggen_support/native_patches.json"
+        ]
+      },
+      "unchanged_fingerprint_counts": {
+        "binaries": 6,
+        "environments": 5,
+        "inputs": 9
+      },
+      "hardware_evidence_reuse_basis": "Prior hardware results are reused only for the unchanged physical probe dependencies: all planned inputs, environments, binaries, and mesh/FEM/Genesis/OmniPart implementation sources match; the changed native source is limited to diagnostic artifact registration, which was revalidated by the current CPU suite."
+    }
+  },
+  "last_full_runtime_probe_at": "2026-10-22T12:23:51.466357+00:00",
+  "latest_updated_at": "2026-10-22T20:39:47+08:00",
+  "incident_revalidation": {
+    "change": "Attempt-scoped source snapshots for validated successor diagnostic attempts; first-attempt path and immutable collision guard retained.",
+    "checked_at": "2026-10-22T20:39:47+08:00",
+    "classification": "pipeline_runtime",
+    "fingerprint_comparison": {
+      "changed": {
+        "binaries": [],
+        "environments": [],
+        "inputs": [],
+        "sources": [
+          "tools/diaggen/hag4r/agentic/runtime_tools/diagnostics.py",
+          "tools/diaggen_support/diagnostic_retry_snapshot_namespace.json",
+          "tools/diaggen_support/diagnostic_retry_snapshot_namespace.patch",
+          "tools/diaggen_support/native_patches.json"
+        ]
+      },
+      "unchanged_counts": {
+        "binaries": 6,
+        "environments": 5,
+        "inputs": 9
+      }
+    },
+    "full_cpu_collection": {
+      "counts": {
+        "error": 0,
+        "expected_fail": 0,
+        "fail": 0,
+        "pass": 380,
+        "run": 380,
+        "skip": 0,
+        "unexpected_success": 0
+      },
+      "report": "tools/diaggen/outputs/preflight/20261022_202420_af4645266949/orchestration_final/report.json",
+      "report_sha256": "9b4f99a239916d9fc8fc00495857487d89125c4a9ef68d11a7716f1f1b20a1e5",
+      "status": "pass"
+    },
+    "incident_id": "20261022_202420_af4645266949",
+    "limitations": [
+      "The new run had not started or completed at inspection time.",
+      "No full Genesis diagnostic episode or acceptance result is claimed."
+    ],
+    "queue": {
+      "attempts": 4,
+      "execution_mode": "fresh",
+      "job_id": "dragon",
+      "new_run_id": "genesis_dragon_20261022_retryfix_af4645266949",
+      "old_native_state_and_snapshot_unchanged": true,
+      "previous_run_id": "genesis_dragon_20261021",
+      "status_at_inspection": "queued"
+    },
+    "readiness_certificate": {
+      "checks_passed": 3,
+      "path": "sims/diaggen_genesis/queue/runtime_preflight.json",
+      "sha256": "7dde812c57626afd61f40ee870138be44a858fa2ad55cc7d57238f79522affb3",
+      "status": "verified"
+    },
+    "reason": "A validated diagnostic retry reused the revision-level snapshot path and halted before episode creation.",
+    "status": "pass",
+    "targeted_regressions": [
+      {
+        "fail": 0,
+        "pass": 3,
+        "suite": "test_material_audit_retry_namespace.py"
+      },
+      {
+        "fail": 0,
+        "pass": 16,
+        "suite": "test_diagnostic_retry_reset.py"
+      },
+      {
+        "fail": 0,
+        "pass": 14,
+        "suite": "test_diagnostic_history_settlement.py"
+      },
+      {
+        "fail": 0,
+        "pass": 10,
+        "suite": "test_runtime_support_install.py"
+      }
     ]
   }
 }

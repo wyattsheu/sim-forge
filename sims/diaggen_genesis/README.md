@@ -17,12 +17,13 @@
 
 依使用者 2026-10-22 的要求，本次以忠實復現論文與官方技能流程為準，不自行加入新的生成、分割、物理或診斷方法。現況須稱為 **官方 commit `3d2d377` 加本機執行修補的復現**，不能稱為完全未修改的原版。模型從論文 GPT-5.6 Luna Max 改為 GPT-6 Luna Max，是使用者先前允許的版本差異。
 
-八份原生補丁涉及七個官方檔案，差異如下：
+原有八份原生補丁涉及七個官方檔案，差異如下。2026-10-22 的重試快照碰撞另外加入一份相容性補丁；原八份補丁保持不變：
 
 | 補丁 | 實際影響 |
 | --- | --- |
 | `diagnostic_history_settlement` | 合法關閉的歷史 session 可在 owner 失效後重新驗證；不允許舊 owner 建立新 close。 |
 | `diagnostic_retry_reset` | 依原有 archive/reset 流程歸檔並清空逐次量測歷史，讓新的診斷執行符合原 fresh 驗證。 |
+| `diagnostic_retry_snapshot_namespace` | 只在已驗證的後續診斷 attempt 下，把四個來源快照寫入獨立 attempt 子目錄；首輪仍使用原路徑，舊快照、雜湊驗證及不合法 lineage 拒絕條件保留。 |
 | `anchor_preview_recovery`、`anchor_preview_index` | 修正兩份 SKILL 的重編譯指令，使用原 revise 工具已回傳的修改結果；不改錨點演算法或試驗上限。 |
 | `probe_preview_recovery` | 修正 probe-targeting SKILL：revise 已自動編譯並記錄唯一預覽，應讀取回傳的 PNG 與識別碼；再次 preview 會被原有唯一預覽驗證拒絕。沒有修改原生 Python、重疊檢查或 reflection 驗收。 |
 | `snapshot_export_inputs` | 換 output tag 時複製既有四張材質檢查 PNG 並記錄來源，沒有重算物理參數。四圖完整性是本機工程要求；低階原生匯出 API 將其列為 optional，不能說是論文必要條件。 |
@@ -62,7 +63,7 @@
 
 啟動前的必要檢查共 **80 項通過**：重跑主機 21 項及 Genesis 25 項，沿用未變更的網格／OmniPart kernel 25 項，再加測試收集、真實電捲棒匯出、四件原生恢復契約及小型 spconv Native 對照。其內部實際執行 **256 個 CPU／回歸測試，0 fail、0 error、0 skip**，並比對執行前後來源雜湊；80 與 256 是不同層級，不能相加。未宣稱完整水豚峰值顯存或新診斷結果已通過。
 
-`tools/diaggen_support/native_patches.json` 是七份原生補丁的安裝順序。`bash tools/setup_diaggen_runtime_support.sh` 先在暫存副本逆序還原及順序重放每條補丁鏈，核對所有中間 SHA256，全部通過才以原子寫入安裝；未知來源、竄改與 fuzz 都會拒絕。只在 DiagGen 工作停止時執行。八件舊失敗、日誌與歸檔保留在 history；Python 僅做確定性工具及外部工作記帳，pipeline 仍由 GPT-6 Luna Max Codex 與同模型子代理執行。
+`tools/diaggen_support/native_patches.json` 保留原有八份補丁並追加上述第九份相容性補丁。`bash tools/setup_diaggen_runtime_support.sh` 先在暫存副本逆序還原及順序重放每條補丁鏈，核對所有中間 SHA256，全部通過才以原子寫入安裝；未知來源、竄改與 fuzz 都會拒絕。只在 DiagGen 工作停止時執行。八件舊失敗、日誌與歸檔保留在 history；Python 僅做確定性工具及外部工作記帳，pipeline 仍由 GPT-6 Luna Max Codex 與同模型子代理執行。
 
 ## 2026-10-22：夜間續跑結果
 

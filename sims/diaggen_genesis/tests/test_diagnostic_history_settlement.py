@@ -21,45 +21,58 @@ sys.path.insert(0, str(NATIVE))
 
 def load_verified_module(*, baseline=False):
     manifest = json.loads((SUPPORT / "diagnostic_history_settlement.json").read_text())
+    series = json.loads((SUPPORT / "native_patches.json").read_text())
+    names = series.get("patches", [])
+    patch_name = "diagnostic_history_settlement"
+    if patch_name not in names:
+        raise AssertionError("historical settlement patch is missing from the verified series")
+    chain = []
+    for name in names[names.index(patch_name):]:
+        later_manifest = json.loads((SUPPORT / (name + ".json")).read_text())
+        if later_manifest["target"] != manifest["target"]:
+            continue
+        later_patch = SUPPORT / (name + ".patch")
+        if hashlib.sha256(later_patch.read_bytes()).hexdigest() != later_manifest["patch_sha256"]:
+            raise AssertionError("verified patch digest changed: " + name)
+        chain.append((name, later_manifest, later_patch))
+    endpoints = [chain[0][1]["before_sha256"], *[item[1]["after_sha256"] for item in chain]]
+    if endpoints[0] != manifest["before_sha256"] or len(endpoints) != len(set(endpoints)):
+        raise AssertionError("historical regression patch chain is invalid")
+
     source = (NATIVE / manifest["target"]).read_bytes()
-    patch = (SUPPORT / "diagnostic_history_settlement.patch").read_bytes()
-    if hashlib.sha256(patch).hexdigest() != manifest["patch_sha256"]:
-        raise AssertionError("verified patch digest changed")
-    # Later verified fixes share this source. Restore this test's exact
-    # historical baseline in a disposable copy, never in the native checkout.
-    followup_path = SUPPORT / "diagnostic_retry_reset.json"
-    if followup_path.is_file():
-        followup = json.loads(followup_path.read_text())
-        if hashlib.sha256(source).hexdigest() == followup["after_sha256"]:
-            if followup["target"] != manifest["target"] or followup["before_sha256"] != manifest["after_sha256"]:
-                raise AssertionError("historical regression patch chain is discontinuous")
-            followup_patch = (SUPPORT / "diagnostic_retry_reset.patch").read_bytes()
-            if hashlib.sha256(followup_patch).hexdigest() != followup["patch_sha256"]:
-                raise AssertionError("follow-up patch digest changed")
-            with tempfile.TemporaryDirectory() as folder:
-                target = Path(folder) / manifest["target"]
-                target.parent.mkdir(parents=True)
-                target.write_bytes(source)
-                subprocess.run(["patch", "--batch", "--fuzz=0", "-p1", "--reverse"],
-                               input=followup_patch, cwd=folder, check=True, capture_output=True)
-                source = target.read_bytes()
-    digest = hashlib.sha256(source).hexdigest()
-    expected = manifest["before_sha256"] if baseline else manifest["after_sha256"]
-    if digest not in {manifest["before_sha256"], manifest["after_sha256"]}:
-        raise AssertionError("native source does not match either verified digest")
-    if digest != expected:
-        with tempfile.TemporaryDirectory() as folder:
-            target = Path(folder) / manifest["target"]
-            target.parent.mkdir(parents=True)
-            target.write_bytes(source)
-            command = ["patch", "--batch", "--fuzz=0", "-p1"]
-            if baseline:
-                command.append("--reverse")
-            subprocess.run(command, input=patch,
-                           cwd=folder, check=True, capture_output=True)
-            candidate = target.read_bytes()
-    else:
-        candidate = source
+    current_digest = hashlib.sha256(source).hexdigest()
+    if current_digest not in endpoints:
+        raise AssertionError("native source does not match a verified patch-chain endpoint")
+    current_position = endpoints.index(current_digest)
+    desired_position = 0 if baseline else 1
+    if desired_position >= len(endpoints):
+        raise AssertionError("historical settlement patch endpoint is missing")
+    with tempfile.TemporaryDirectory() as folder:
+        target = Path(folder) / manifest["target"]
+        target.parent.mkdir(parents=True)
+        target.write_bytes(source)
+        if current_position > desired_position:
+            for name, later_manifest, later_patch in reversed(chain[desired_position:current_position]):
+                if hashlib.sha256(target.read_bytes()).hexdigest() != later_manifest["after_sha256"]:
+                    raise AssertionError("historical patch chain is discontinuous: " + name)
+                subprocess.run(
+                    ["patch", "--batch", "--fuzz=0", "-p1", "--reverse", "--input", str(later_patch)],
+                    cwd=folder, check=True, capture_output=True,
+                )
+                if hashlib.sha256(target.read_bytes()).hexdigest() != later_manifest["before_sha256"]:
+                    raise AssertionError("historical patch reversal mismatch: " + name)
+        elif current_position < desired_position:
+            for name, later_manifest, later_patch in chain[current_position:desired_position]:
+                if hashlib.sha256(target.read_bytes()).hexdigest() != later_manifest["before_sha256"]:
+                    raise AssertionError("historical patch chain is discontinuous: " + name)
+                subprocess.run(
+                    ["patch", "--batch", "--fuzz=0", "-p1", "--forward", "--input", str(later_patch)],
+                    cwd=folder, check=True, capture_output=True,
+                )
+                if hashlib.sha256(target.read_bytes()).hexdigest() != later_manifest["after_sha256"]:
+                    raise AssertionError("historical patch application mismatch: " + name)
+        candidate = target.read_bytes()
+    expected = endpoints[desired_position]
     if hashlib.sha256(candidate).hexdigest() != expected:
         raise AssertionError("patched source digest mismatch")
     name = "hag4r.agentic.runtime_tools._diagnostic_history_" + ("baseline" if baseline else "regression")

@@ -19,6 +19,7 @@ EXPECTED_PATCHES = (
     "anchor_preview_index",
     "snapshot_export_inputs",
     "probe_preview_recovery",
+    "diagnostic_retry_snapshot_namespace",
 )
 
 

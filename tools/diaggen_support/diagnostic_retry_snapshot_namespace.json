@@ -1,0 +1,12 @@
+{
+  "after_sha256": "038497b56df745cc8530ce35d4f226e3cf0b1dbc75c656cd475b09d5994da0ea",
+  "application_state": "requires_quiescent_runtime",
+  "before_md5": "aa550e3997f284aba0a4b721b77cecc0",
+  "before_sha256": "4db3f9e625a48fbe415e20df3417353cdc9bc1c3b42db13f0ac994e03f204412",
+  "contract": "Use the validated diagnostic execution-attempt ID as an isolated material-audit snapshot namespace for retries. First attempts retain the canonical revision path; invalid archive/attempt lineage is rejected before writes; prior snapshots and hash verification remain unchanged.",
+  "depends_on": "diagnostic_retry_reset",
+  "native_commit": "3d2d3779613b9253109f63e1ff345b11c9097b70",
+  "patch_sha256": "aeb273707565a57c0a064fa6fe4baa21b462390240e42317d1081507576b2450",
+  "schema_version": "diaggen-verified-native-patch-v1",
+  "target": "hag4r/agentic/runtime_tools/diagnostics.py"
+}

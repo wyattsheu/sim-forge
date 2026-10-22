@@ -25,24 +25,58 @@ sys.path.insert(0, str(NATIVE))
 
 def load_verified_module(*, baseline=False):
     manifest = json.loads((SUPPORT / "diagnostic_retry_reset.json").read_text())
+    series = json.loads((SUPPORT / "native_patches.json").read_text())
+    names = series.get("patches", [])
+    if "diagnostic_retry_reset" not in names:
+        raise AssertionError("retry patch is missing from the verified series")
+    reset_index = names.index("diagnostic_retry_reset")
+    later = []
+    for name in names[reset_index + 1:]:
+        later_manifest = json.loads((SUPPORT / (name + ".json")).read_text())
+        if later_manifest["target"] != manifest["target"]:
+            continue
+        later_patch = SUPPORT / (name + ".patch")
+        if hashlib.sha256(later_patch.read_bytes()).hexdigest() != later_manifest["patch_sha256"]:
+            raise AssertionError("later native patch digest changed: " + name)
+        later.append((name, later_manifest, later_patch))
+
     source = (NATIVE / manifest["target"]).read_bytes()
-    patch = (SUPPORT / "diagnostic_retry_reset.patch").read_bytes()
-    if hashlib.sha256(patch).hexdigest() != manifest["patch_sha256"]:
+    current_digest = hashlib.sha256(source).hexdigest()
+    expected_tip = later[-1][1]["after_sha256"] if later else manifest["after_sha256"]
+    patch = SUPPORT / "diagnostic_retry_reset.patch"
+    if hashlib.sha256(patch.read_bytes()).hexdigest() != manifest["patch_sha256"]:
         raise AssertionError("retry patch digest changed")
-    digest = hashlib.sha256(source).hexdigest()
+
+    if current_digest not in {manifest["before_sha256"], manifest["after_sha256"], expected_tip}:
+        raise AssertionError("native source is not a verified retry patch-chain endpoint")
+
+    with tempfile.TemporaryDirectory(prefix="diaggen-retry-test-") as folder:
+        target = Path(folder) / manifest["target"]
+        target.parent.mkdir(parents=True)
+        target.write_bytes(source)
+        if current_digest == expected_tip:
+            for name, later_manifest, later_patch in reversed(later):
+                if hashlib.sha256(target.read_bytes()).hexdigest() != later_manifest["after_sha256"]:
+                    raise AssertionError("later native patch chain is discontinuous: " + name)
+                subprocess.run(
+                    ["patch", "--batch", "--fuzz=0", "-p1", "--reverse", "--input", str(later_patch)],
+                    cwd=folder, check=True, capture_output=True,
+                )
+                if hashlib.sha256(target.read_bytes()).hexdigest() != later_manifest["before_sha256"]:
+                    raise AssertionError("later native patch reversal mismatch: " + name)
+        elif current_digest == manifest["before_sha256"] and not baseline:
+            subprocess.run(
+                ["patch", "--batch", "--fuzz=0", "-p1", "--forward", "--input", str(patch)],
+                cwd=folder, check=True, capture_output=True,
+            )
+        if baseline and hashlib.sha256(target.read_bytes()).hexdigest() == manifest["after_sha256"]:
+            subprocess.run(
+                ["patch", "--batch", "--fuzz=0", "-p1", "--reverse", "--input", str(patch)],
+                cwd=folder, check=True, capture_output=True,
+            )
+        source = target.read_bytes()
+
     expected = manifest["before_sha256"] if baseline else manifest["after_sha256"]
-    if digest not in {manifest["before_sha256"], manifest["after_sha256"]}:
-        raise AssertionError("native source is not a verified retry patch endpoint")
-    if digest != expected:
-        with tempfile.TemporaryDirectory(prefix="diaggen-retry-test-") as folder:
-            target = Path(folder) / manifest["target"]
-            target.parent.mkdir(parents=True)
-            target.write_bytes(source)
-            args = ["patch", "--batch", "--fuzz=0", "-p1"]
-            if baseline:
-                args.append("--reverse")
-            subprocess.run(args, input=patch, cwd=folder, check=True, capture_output=True)
-            source = target.read_bytes()
     if hashlib.sha256(source).hexdigest() != expected:
         raise AssertionError("temporary module digest mismatch")
     name = "hag4r.agentic.runtime_tools._retry_reset_" + ("before" if baseline else "after")
