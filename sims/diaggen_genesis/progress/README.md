@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T17:36:17+08:00（Asia/Taipei）
+更新：2026-10-22T17:36:34+08:00（Asia/Taipei）
 
 共 9 件：等待 2、執行中 4、完成 2、失敗 1、取消 0。
 
@@ -164,7 +164,7 @@ Run：`genesis_usb_hub_20261022_clean_diagnostics3`；執行中。
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
-Genesis 診斷 episode 數：1。
+Genesis 診斷 episode 數：2。
 
 ![usb_hub_cleaned_image](media/usb_hub_cleaned_image.png)
 
