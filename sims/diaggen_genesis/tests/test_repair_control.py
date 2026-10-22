@@ -1,6 +1,8 @@
 """Incident-triggered investigator bookkeeping, never model/pipeline execution."""
 import importlib.util
 import json
+import subprocess
+import shlex
 from pathlib import Path
 import sys
 import tempfile
@@ -16,6 +18,22 @@ SPEC.loader.exec_module(repair)
 
 
 class RepairTests(unittest.TestCase):
+    def test_real_cli_parses_the_complete_disabled_diagnostic_transport(self):
+        workspace = QUEUE.parents[2]
+        python = workspace / 'tools/diaggen/.conda/hag4r/bin/python'
+        # No model/service call: validate config using the installed CLI parser.
+        configs = []
+        for line in (QUEUE / 'run_repair.sh').read_text().splitlines():
+            if '-c ' in line and not line.lstrip().startswith('#'):
+                tokens = shlex.split(line.rstrip().removesuffix('\\'))
+                for index, token in enumerate(tokens):
+                    if token == '-c':
+                        configs += ['-c', tokens[index + 1].replace('$PYTHON', str(python))]
+        result = subprocess.run(['codex', 'mcp', 'list', '--json', *configs],
+            check=True, capture_output=True, text=True, timeout=15)
+        entry = next(item for item in json.loads(result.stdout) if item['name'] == 'hag4r_genesis_diagnostics')
+        self.assertFalse(entry['enabled'])
+
     def setUp(self):
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
@@ -176,6 +194,32 @@ class RepairTests(unittest.TestCase):
         self.seconds += 901
         self.refresh()
         self.assertIsNone(again.prepare(runner_pid=99999999))
+
+    def test_verified_pre_model_launch_retry_keeps_failure_and_consumes_next_slot(self):
+        first = self.prepare()
+        directory = self.q / 'repair_jobs' / first
+        (directory / 'events.jsonl').write_text('')
+        (directory / 'stderr.log').write_text('Error loading config.toml: invalid transport\nin `mcp_servers.hag4r_genesis_diagnostics`\n\n')
+        self.control.finish(first, 1)
+        self.assertIsNone(self.prepare())
+        second = self.prepare(retry_launch_fix=True)
+        request = repair.object_file(self.q / 'repair_jobs' / second / 'request.json')
+        self.assertEqual(request['verified_launch_fix_retry_of'], first)
+        self.assertTrue((directory / 'completion.json').exists())
+        self.assertEqual(self.control.state()['incidents'][request['incident']['signature']]['attempts'], 2)
+
+    def test_launch_retry_cannot_override_a_started_model_or_stale_certificate(self):
+        first = self.prepare()
+        directory = self.q / 'repair_jobs' / first
+        (directory / 'events.jsonl').write_text('{"type":"thread.started"}\n')
+        (directory / 'stderr.log').write_text('Error loading config.toml: invalid transport\nin `mcp_servers.hag4r_genesis_diagnostics`\n')
+        self.control.finish(first, 1)
+        with self.assertRaises(ValueError):
+            self.prepare(retry_launch_fix=True)
+        (directory / 'events.jsonl').write_text('')
+        self.control.readiness.side_effect = ValueError('stale certificate')
+        with self.assertRaisesRegex(ValueError, 'stale certificate'):
+            self.prepare(retry_launch_fix=True)
 
     def test_abandoned_repair_retains_evidence_and_same_attempt_budget(self):
         first = self.prepare()

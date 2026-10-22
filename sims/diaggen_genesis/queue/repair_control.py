@@ -127,7 +127,7 @@ class RepairControl:
         from readiness import verify
         return verify(self.workspace, self.directory / 'runtime_preflight.json')
 
-    def prepare(self, *, audit=False, runner_pid=None):
+    def prepare(self, *, audit=False, runner_pid=None, retry_launch_fix=False):
         runner_pid = os.getpid() if runner_pid is None else runner_pid
         with self.locked():
             state = self.state()
@@ -151,13 +151,30 @@ class RepairControl:
             # A human HOLD means work is being reviewed; do not compete with it.
             if hold.exists() and not (owned_hold or machine_hold):
                 return None
+            previous_launch = None
+            if retry_launch_fix:
+                # Explicit operator retry after a verified CLI configuration fix.
+                # No model/stage budget is reset and the failed launch stays intact.
+                self.readiness()
+                previous = object_file(self.directory / 'repair_status.json')
+                validate_identifier(previous['id'])
+                prior = self.directory / 'repair_jobs' / previous['id']
+                completion = object_file(prior / 'completion.json')
+                events = prior / 'events.jsonl'
+                if (completion.get('exit_code') != 1 or completion.get('result_valid') is not False
+                        or (events.exists() and events.stat().st_size != 0)
+                        or (prior / 'stderr.log').read_text().strip() !=
+                        'Error loading config.toml: invalid transport\nin `mcp_servers.hag4r_genesis_diagnostics`'):
+                    raise ValueError('Immediate launch retry requires a proven pre-model transport failure')
+                previous_launch = object_file(prior / 'request.json')
             found = [{'kind': 'read_only_audit', 'signature': digest('read_only_audit')}]
             if not audit:
                 found = ([state['owned_hold_incident']] if owned_hold and state.get('owned_hold_incident')
                          else self.incidents(state))
                 found = [i for i in found if state.get('incidents', {}).get(i['signature'], {}).get('attempts', 0) < MAX_ATTEMPTS
                          and not state.get('incidents', {}).get(i['signature'], {}).get('resolved', False)
-                         and self.clock() - state.get('incidents', {}).get(i['signature'], {}).get('last_attempt', 0) >= COOLDOWN_SECONDS]
+                         and (self.clock() - state.get('incidents', {}).get(i['signature'], {}).get('last_attempt', 0) >= COOLDOWN_SECONDS
+                              or (previous_launch is not None and i['signature'] == previous_launch['incident']['signature']))]
                 if not found:
                     atomic_json(self.path, state)
                     return None
@@ -178,6 +195,8 @@ class RepairControl:
                        'hold_sha256': hashlib.sha256(held.encode()).hexdigest() if held else None,
                        'hold_owned': not audit and held == state.get('owned_hold'),
                        'machine_hold': machine_hold, 'baseline_known_failures': state.get('baseline', [])}
+            if previous_launch is not None:
+                request['verified_launch_fix_retry_of'] = previous_launch['id']
             atomic_json(target / 'request.json', request)
             template = (self.directory / 'repair_prompt.md').read_text()
             (target / 'prompt.txt').write_text(template.replace('@REQUEST@', str(target / 'request.json'))
@@ -260,12 +279,14 @@ def main():
     parser.add_argument('command', choices=('baseline', 'prepare', 'finish'))
     parser.add_argument('arguments', nargs='*')
     parser.add_argument('--audit', action='store_true')
+    parser.add_argument('--retry-launch-fix', action='store_true')
     args = parser.parse_args()
     control = RepairControl()
     if args.command == 'baseline':
         control.baseline()
     elif args.command == 'prepare':
-        value = control.prepare(audit=args.audit, runner_pid=int(os.environ['DIAGGEN_REPAIR_RUNNER_PID']))
+        value = control.prepare(audit=args.audit, runner_pid=int(os.environ['DIAGGEN_REPAIR_RUNNER_PID']),
+                                retry_launch_fix=args.retry_launch_fix)
         if value:
             print(value)
     elif args.command == 'finish' and len(args.arguments) == 2:

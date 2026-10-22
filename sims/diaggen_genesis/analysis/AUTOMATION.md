@@ -66,3 +66,6 @@ Dragon 在 19:10 的 bind 呼叫回傳錯誤後停止；原生 MCP 隨後記錄 
 本機調查紀錄在 `queue/repair_jobs/<id>/`，包含 request、Codex JSONL、結果與完成記帳；`queue/repair_status.json` 的允許枚舉會進 GitHub 即時進度。原始紀錄、憑證、session 識別資訊不公開。修正由調查工作以專用 worktree、精確檔案清單推送，沒有共同作者註記。`queue/REPAIR_STOP` 可暫停新的模型調查；原有一分鐘監看與執行工作仍可繼續。
 
 Dragon 在 20:07 暴露的新事件是 `material audit registration snapshot path already exists: cleaned_source_image`：重試的登錄資料已清空，但先前快照檔仍存在，child 寫入 native halt。它會列為新 halt 調查，不直接當作物理不通過，也不直接刪檔重試。先前 19:58 的成功續跑仍是啟動證據，不能稱為完整成功。
+
+
+第一次正式診斷工作在模型啟動前被 CLI 拒絕：只設定 disabled 的 MCP entry 缺少 transport，屬於新增修復程序的部署設定錯誤。已補齊停用的完整 Python command/args，透過本機 Codex CLI 實際解析 worker 的原始設定參數；377 項測試、98 項啟動檢查通過。已失敗的啟動及其紀錄保留。只有在憑證通過、確認先前是此特定 transport 錯誤且沒有任何模型事件時，才可明確以 `run_repair.sh --retry-launch-fix` 立即使用下一次既有事件名額；不重設事件次數，也不能跳過已開始的模型或原生階段上限。

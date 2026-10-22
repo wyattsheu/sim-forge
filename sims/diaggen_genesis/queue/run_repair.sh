@@ -12,6 +12,8 @@ flock -n 9 || exit 0
 MODE=()
 if [[ "${1:-}" == --audit && $# == 1 ]]; then
     MODE=(--audit)
+elif [[ "${1:-}" == --retry-launch-fix && $# == 1 ]]; then
+    MODE=(--retry-launch-fix)
 elif [[ $# != 0 ]]; then
     exit 2
 fi
@@ -31,6 +33,8 @@ trap finish_repair EXIT
 timeout --signal=TERM --kill-after=30s 2700 \
   codex exec --approve-for-me --cd "$WORKSPACE" --disable multi_agent_v2 \
     --model gpt-6-luna -c 'model_reasoning_effort="max"' \
+    -c "mcp_servers.hag4r_genesis_diagnostics.command=\"$PYTHON\"" \
+    -c 'mcp_servers.hag4r_genesis_diagnostics.args=["-B","-m","hag4r.agentic.diagnostic_mcp_server"]' \
     -c 'mcp_servers.hag4r_genesis_diagnostics.enabled=false' \
     --output-schema "$QUEUE_DIR/repair_result.schema.json" \
     --json -o "$JOB_DIR/result.json" - \
