@@ -2,9 +2,9 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T17:25:46+08:00（Asia/Taipei）
+更新：2026-10-22T17:26:03+08:00（Asia/Taipei）
 
-共 9 件：等待 3、執行中 3、完成 2、失敗 1、取消 0。
+共 9 件：等待 2、執行中 4、完成 2、失敗 1、取消 0。
 
 GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢查。  
 允許與既有運算共用 GPU：是。
@@ -16,9 +16,9 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | 物件 | 排程狀態 | Runtime | Revision | 顯存門檻 | 已完成階段 | 健康提示 |
 |---|---|---|---|---|---|---|
 | baseball_cap | running | seeded | revision_0000 | 24576 MiB | 2/9 | 未偵測到上述異常（非成功保證） |
-| kitchen_tongs | running | seeded | revision_0000 | 24576 MiB | 2/9 | 未偵測到上述異常（非成功保證） |
+| kitchen_tongs | running | seeded | revision_0000 | 24576 MiB | 3/9 | 未偵測到上述異常（非成功保證） |
 | sneaker | running | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
-| usb_hub | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
+| usb_hub | running | not_initialized | 尚未初始化 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
 | sloth | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
 | sauce_keeper | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
 | dragon | queued | seeded | revision_0000 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
@@ -62,7 +62,7 @@ Run：`genesis_kitchen_tongs_20261022_segmentation_retry1`；執行中。
 |---|---|
 | 圖片清理 | success |
 | SAM3 分割 | success |
-| OmniPart 幾何生成 | running |
+| OmniPart 幾何生成 | success |
 | 材料推估 | pending |
 | 材料參數配置 | pending |
 | 體積網格處理 | pending |
@@ -138,7 +138,7 @@ Genesis 診斷 episode 數：1。
 
 ## usb_hub
 
-Run：`genesis_usb_hub_20261022_clean_diagnostics3`；等待空閒 GPU。
+Run：`genesis_usb_hub_20261022_clean_diagnostics3`；執行中。
 
 | 階段 | 狀態 |
 |---|---|
