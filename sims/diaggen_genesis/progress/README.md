@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T17:25:29+08:00（Asia/Taipei）
+更新：2026-10-22T17:25:46+08:00（Asia/Taipei）
 
 共 9 件：等待 3、執行中 3、完成 2、失敗 1、取消 0。
 
@@ -81,6 +81,18 @@ Genesis 診斷 episode 數：0。
 ![kitchen_tongs_ordered_mask_vis](media/kitchen_tongs_ordered_mask_vis.png)
 
 ![kitchen_tongs_segmentation_overlay](media/kitchen_tongs_segmentation_overlay.png)
+
+![kitchen_tongs_omnipart_top](media/kitchen_tongs_omnipart_top.png)
+
+![kitchen_tongs_omnipart_bottom](media/kitchen_tongs_omnipart_bottom.png)
+
+![kitchen_tongs_omnipart_front](media/kitchen_tongs_omnipart_front.png)
+
+![kitchen_tongs_omnipart_back](media/kitchen_tongs_omnipart_back.png)
+
+![kitchen_tongs_omnipart_left](media/kitchen_tongs_omnipart_left.png)
+
+![kitchen_tongs_omnipart_right](media/kitchen_tongs_omnipart_right.png)
 
 
 ## sneaker
