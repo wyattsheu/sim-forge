@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T18:33:29+08:00",
+  "updated_at": "2026-10-22T18:33:46+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-22T18:33:29+08:00",
+      "updated_at": "2026-10-22T18:33:46+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -220,7 +220,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T06:03:34.261605+00:00",
-      "updated_at": "2026-10-22T18:33:29+08:00",
+      "updated_at": "2026-10-22T18:33:46+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -392,7 +392,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T09:14:45.699903+00:00",
-      "updated_at": "2026-10-22T18:33:29+08:00",
+      "updated_at": "2026-10-22T18:33:46+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -569,7 +569,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-22T18:33:29+08:00",
+      "updated_at": "2026-10-22T18:33:46+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -756,7 +756,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-22T18:33:29+08:00",
+      "updated_at": "2026-10-22T18:33:46+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -943,7 +943,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-22T18:33:29+08:00",
+      "updated_at": "2026-10-22T18:33:46+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1130,7 +1130,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-22T18:33:29+08:00",
+      "updated_at": "2026-10-22T18:33:46+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1149,11 +1149,11 @@
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
+          "started_at": "2026-10-22T10:33:29.847228+00:00",
+          "finished_at": "2026-10-22T10:33:42.723012+00:00"
         },
         {
           "name": "omnipart_generate_parts",
@@ -1234,6 +1234,26 @@
           "path": "media/dragon_cleaned_image.png",
           "bytes": 1178899,
           "sha256": "0373d28f252cef518e13b1a79de7aadce4be485cc9bdf87c9550bf32bd2f4826"
+        },
+        {
+          "path": "media/dragon_processed_white_bg_png.png",
+          "bytes": 70482,
+          "sha256": "88e7debb5b374dd33de384fbce4f37af0f65cda9e61edd84655c9f972cc75c93"
+        },
+        {
+          "path": "media/dragon_processed_rgba.png",
+          "bytes": 88506,
+          "sha256": "038b183d154dc42ff4f72a6998d2ba051de33824f9b931c450a3987a9423ed36"
+        },
+        {
+          "path": "media/dragon_ordered_mask_vis.png",
+          "bytes": 2054,
+          "sha256": "269096751cce0f22b2555375f7f4933335ce6a8f6f4c60e2e0cd7dc91e121db8"
+        },
+        {
+          "path": "media/dragon_segmentation_overlay.png",
+          "bytes": 61119,
+          "sha256": "65e5cd85c7a77fcd810abf02b2d868041ea84fbf76116c4817c22b9680a4e84a"
         }
       ],
       "id": "dragon",
@@ -1252,7 +1272,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T18:33:29+08:00",
+      "updated_at": "2026-10-22T18:33:46+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1394,7 +1414,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T18:33:29+08:00",
+      "updated_at": "2026-10-22T18:33:46+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1973,6 +1993,26 @@
       "sha256": "0373d28f252cef518e13b1a79de7aadce4be485cc9bdf87c9550bf32bd2f4826"
     },
     {
+      "path": "media/dragon_processed_white_bg_png.png",
+      "bytes": 70482,
+      "sha256": "88e7debb5b374dd33de384fbce4f37af0f65cda9e61edd84655c9f972cc75c93"
+    },
+    {
+      "path": "media/dragon_processed_rgba.png",
+      "bytes": 88506,
+      "sha256": "038b183d154dc42ff4f72a6998d2ba051de33824f9b931c450a3987a9423ed36"
+    },
+    {
+      "path": "media/dragon_ordered_mask_vis.png",
+      "bytes": 2054,
+      "sha256": "269096751cce0f22b2555375f7f4933335ce6a8f6f4c60e2e0cd7dc91e121db8"
+    },
+    {
+      "path": "media/dragon_segmentation_overlay.png",
+      "bytes": 61119,
+      "sha256": "65e5cd85c7a77fcd810abf02b2d868041ea84fbf76116c4817c22b9680a4e84a"
+    },
+    {
       "path": "media/capybara_plush_toy_cleaned_image.png",
       "bytes": 2311951,
       "sha256": "94bffd6c88b772cd5c34fd16919e6edcd2ea6aa78011c2662ffa43dbe4089331"
@@ -2068,5 +2108,5 @@
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "1148d4e61f5aea7d938b04e8b3c43510159988f726f29a020ec6ec97c7e7a0c6"
+  "signature": "281084541496927de87858a82990a5bdbcd60e50fbd42587a1e2464b7d23abb5"
 }
