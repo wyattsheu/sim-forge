@@ -48,6 +48,31 @@ def pid_alive(pid):
     return True
 
 
+def native_resource_profiler(entry, argv, run_root):
+    """Recognize only the checkout's exact detached resource sampler.
+
+    The official profiler survives retryable diagnostics for up to 24 hours.
+    It samples resources and writes profiling reports, not pipeline state. Its
+    locked PID, interpreter, argv and cwd must all match before excluding it.
+    """
+    try:
+        root = run_root.parents[2]
+        python = root / '.conda/hag4r/bin/python'
+        arguments = [value for value in argv if value]
+        if (len(arguments) != 6 or arguments[1:] !=
+                [b'-m', b'hag4r.agentic.runtime_profiler', b'monitor', b'--run-root',
+                 str(run_root).encode()]):
+            return False
+        lock = run_root / 'profiling/resource_monitor.lock'
+        return (not lock.is_symlink() and lock.is_file()
+                and lock.read_text().strip() == entry.name
+                and Path(os.fsdecode(arguments[0])).resolve() == python.resolve()
+                and (entry / 'exe').resolve(strict=True) == python.resolve(strict=True)
+                and (entry / 'cwd').resolve(strict=True) == root.resolve())
+    except (OSError, ValueError, IndexError):
+        return False
+
+
 def run_processes(run_id, run_root):
     """Conservative own-UID orphan check; never signal any process.
 
@@ -70,6 +95,8 @@ def run_processes(run_id, run_root):
             if any(line.startswith('State:') and line.split()[1] == 'Z' for line in status.splitlines()):
                 continue
             argv = (entry / 'cmdline').read_bytes().split(b'\0')
+            if native_resource_profiler(entry, argv, run_root):
+                continue
             comm = (entry / 'comm').read_text().strip()
             if ((comm == '(sd-pam)' and argv[0] == b'(sd-pam)')
                     or (comm == 'sshd' and argv[0].startswith(b'sshd: ') and b'@' in argv[0])):

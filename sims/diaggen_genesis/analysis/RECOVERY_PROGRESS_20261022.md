@@ -134,3 +134,10 @@ completion validator 與獨立唯讀驗收都通過：6405 個頂點、22287 個
 原外部驗收器無條件要求 accept，錯拒官方允許的 diagnostics snapshot 最後一輪 revise 匯出。現在直接使用原生 `_is_final_revise_export_policy` 驗證完整政策；球鞋 accepted_revision 保持 null、exported revision 為 revision_0001、metadata 保持 exported_unaccepted。只恢復外部匯出完成記帳，不寫入物理 accept。原 stage submit 錯誤與失敗驗收紀錄保留；當前 revision 沒有新的 live episode，舊影片保留在 trace。
 
 333 項 CPU／回歸測試全通過，0 fail/error/skip。92 項啟動檢查包含未變更 runtime 的既有硬體證據、最新測試與兩件實際匯出驗證；原生程式、環境、模型與診斷門檻未修改。料理夾已正確續跑到原生 revision budget exhausted，不能把此 halt 直接改為成功或清除預算。
+
+
+## 19:58：監看誤認官方 profiler，修正後自動續跑 Dragon
+
+Dragon 19:10 的診斷 bind 回傳 Error，原生 server 後續清理完成並留下未形成業務推薦的可恢復終端。外部監看將只負責 profiling 的官方 detached sampler 視為殘留運算，造成約 48 分鐘未接續。現在嚴格核對 sampler 的 module/argv、run-root、interpreter、cwd 和 lock PID 後排除此程序，未殺任何程序、未改原生診斷或修正預算。
+
+原生唯讀 successor admission 通過，353 項測試及 95 項啟動檢查通過。排程於 19:58:21 實際沿原 run/GPU 接續，新的 Codex thread 已啟動，前六個成功階段保留。Dragon 仍未完成；其餘五件 accept、一件 exported_unaccepted 與兩件既有 blocker 均保留原結果。

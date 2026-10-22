@@ -1,0 +1,26 @@
+{
+  "schema_version": "diaggen-scheduled-recovery-validation-v1",
+  "observed_at": "2026-10-22T19:59:20.478966+08:00",
+  "run_id": "genesis_dragon_20261021",
+  "restarted_at": "2026-10-22T19:58:21+08:00",
+  "scheduled_recovery": true,
+  "worker_thread_started": true,
+  "same_run_preserved": true,
+  "same_persisted_gpu_preserved": true,
+  "successful_upstream_stages_preserved": 6,
+  "diagnostic_retry_type": "cleanup_retryable",
+  "recovery_blocker": "official_resource_profiler_misclassified_as_active_work",
+  "fix": "Exclude only exact official profiler argv plus matching interpreter, cwd and locked PID; keep computational descendants blocking recovery.",
+  "native_pipeline_sources_changed": false,
+  "native_acceptance_budgets_changed": false,
+  "actual_cpu_tests_passed": 353,
+  "cpu_failures": 0,
+  "cpu_errors": 0,
+  "cpu_skips": 0,
+  "runtime_preflight_checks_passed": 95,
+  "pipeline_complete": false,
+  "known_remaining_blockers": {
+    "kitchen_tongs": "native_revision_budget_exhausted",
+    "capybara_plush_toy": "spconv_int32_tensor_limit"
+  }
+}

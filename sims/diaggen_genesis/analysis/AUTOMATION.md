@@ -42,3 +42,12 @@ systemctl --user enable --now diaggen-genesis-monitor.timer
 原生 source、環境或輸入改變後，啟動憑證會失效；需完成對應驗證再恢復。服務重啟會恢復監看，並不代表任意中途斷電的 native stage 都符合官方續跑條件。
 
 Codex 官方提供 [`codex exec` 非互動執行](https://learn.chatgpt.com/docs/non-interactive-mode)；既有 worker 已使用這個入口。本次只增加 server timer、確定性外部記帳與監看，沒有建立新的 Python pipeline agent，也沒有額外啟動持續推理的監看模型。
+
+
+## 2026-10-22 19:58：首次正式自動續跑與修正
+
+Dragon 在 19:10 的 bind 呼叫回傳錯誤後停止；原生 MCP 隨後記錄 `cleanup_retryable`、cleanup complete，尚未形成業務推薦。外部監看把原生 detached `runtime_profiler monitor`（只記錄資源與 profiling 報告）算成仍在運算的殘留工作，導致一直 waiting_cleanup。這是本機新增監看的判斷錯誤。
+
+現在只排除 argv、run-root、原生 hag4r Python、cwd 以及 resource_monitor.lock 中 PID 全部相符的 profiler。沒有停止 profiler、清除診斷鎖或更改原生程式；未知程序與真正的子工作仍會阻止恢復。353 項 CPU／回歸測試全通過，含其他 module、額外參數、不同 PID／exe／cwd 的拒絕對照；95 項啟動憑證通過。
+
+19:58:21 排程實際呼叫既有 Queue.resume，Dragon 已以原 run、原 GPU 和前六個成功階段重新啟動 Codex。這是正式續跑證據，尚不是完成或物理 accept；詳細見 [恢復驗證](dragon_scheduled_recovery_20261022.json)。

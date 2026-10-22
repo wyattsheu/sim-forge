@@ -1,10 +1,10 @@
 {
   "schema_version": "diaggen-full-runtime-preflight-v1",
-  "checked_at": "2026-10-22T11:04:30.298359+00:00",
+  "checked_at": "2026-10-22T11:58:19.366914+00:00",
   "overall_status": "pass",
   "simulator": "Genesis",
   "counts": {
-    "pass": 93,
+    "pass": 95,
     "fail": 0,
     "skip": 0
   },
@@ -15,7 +15,7 @@
       "reason": "Not required by the installed precompiled runtime or validated Ninja JIT"
     }
   ],
-  "scope": "Server-side minutely watchdog with bounded existing Queue.resume/export recovery. Official pipeline, budgets, models, inputs, native sources and environments unchanged.",
+  "scope": "Correct external watchdog false-positive for the exact official runtime resource profiler; restore guarded native dragon operational retry. No native code, stage, business budget, model or environment change.",
   "limitations": [
     "Five production assets have strict Genesis accept; sneaker is an exported_unaccepted native snapshot result with revise, not a physics acceptance.",
     "Capybara spconv int32 limitation and kitchen-tongs native revision budget remain unresolved.",
@@ -395,26 +395,29 @@
     {
       "name": "server_monitor/systemd_unit_validation",
       "status": "pass"
+    },
+    {
+      "name": "server_monitor/exact_native_profiler_exclusion",
+      "status": "pass"
+    },
+    {
+      "name": "server_monitor/dragon_native_readonly_resume_admission",
+      "status": "pass"
     }
   ],
   "evidence_reuse": {
-    "unchanged_checks_reused": 89,
+    "unchanged_checks_reused": 90,
     "actual_cpu_tests": {
       "error": 0,
       "expected_fail": 0,
       "fail": 0,
-      "pass": 352,
-      "run": 352,
+      "pass": 353,
+      "run": 353,
       "skip": 0,
       "unexpected_success": 0
     },
     "changed_sources": [
-      "sims/diaggen_genesis/preflight/readiness.py",
-      "sims/diaggen_genesis/queue/install_monitor.sh",
-      "sims/diaggen_genesis/queue/monitor.py",
-      "sims/diaggen_genesis/queue/run_monitor.sh",
-      "sims/diaggen_genesis/queue/systemd/diaggen-genesis-monitor.service.in",
-      "sims/diaggen_genesis/queue/systemd/diaggen-genesis-monitor.timer.in"
+      "sims/diaggen_genesis/queue/monitor.py"
     ],
     "native_sources_changed": false,
     "completed_production_assets": [

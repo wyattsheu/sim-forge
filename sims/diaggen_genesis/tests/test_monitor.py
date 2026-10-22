@@ -234,6 +234,37 @@ class MonitorTests(unittest.TestCase):
 
 
 class MonitorPrivacyTests(unittest.TestCase):
+    def test_profiler_exclusion_requires_exact_module_pid_interpreter_and_cwd(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / 'diaggen'
+            run = root / 'outputs/agentic_asset_refinement/test_run'
+            lock = run / 'profiling/resource_monitor.lock'
+            lock.parent.mkdir(parents=True)
+            lock.write_text('1234\n')
+            python = root / '.conda/hag4r/bin/python'
+            python.parent.mkdir(parents=True)
+            python.symlink_to(sys.executable)
+            entry = Path(directory) / 'proc/1234'
+            entry.mkdir(parents=True)
+            (entry / 'exe').symlink_to(sys.executable)
+            (entry / 'cwd').symlink_to(root)
+            args = [str(python).encode(), b'-m', b'hag4r.agentic.runtime_profiler',
+                    b'monitor', b'--run-root', str(run).encode(), b'']
+            self.assertTrue(monitor.native_resource_profiler(entry, args, run))
+            self.assertFalse(monitor.native_resource_profiler(entry, args[:-1] + [b'--other-work'], run))
+            self.assertFalse(monitor.native_resource_profiler(entry, args[:2] + [b'hag4r.agentic.diagnostic_mcp_server'] + args[3:], run))
+            lock.write_text('5678\n')
+            self.assertFalse(monitor.native_resource_profiler(entry, args, run))
+            lock.write_text('1234\n')
+            (entry / 'cwd').unlink()
+            (entry / 'cwd').symlink_to(Path(directory))
+            self.assertFalse(monitor.native_resource_profiler(entry, args, run))
+            (entry / 'cwd').unlink()
+            (entry / 'cwd').symlink_to(root)
+            (entry / 'exe').unlink()
+            (entry / 'exe').symlink_to('/bin/false')
+            self.assertFalse(monitor.native_resource_profiler(entry, args, run))
+
     def test_real_orphan_scan_finds_only_its_owned_test_process(self):
         run_id = 'watchdog_test_' + str(os.getpid())
         environment = dict(os.environ, DIAGGEN_QUEUE_RUN_ID=run_id)
