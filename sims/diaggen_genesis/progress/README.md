@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T12:30:18+08:00（Asia/Taipei）
+更新：2026-10-22T12:33:02+08:00（Asia/Taipei）
 
 共 9 件：等待 6、執行中 2、完成 1、失敗 0、取消 0。
 
@@ -15,7 +15,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 2 件；排程每 15 秒檢
 |---|---|---|---|---|---|
 | sneaker | queued | seeded | revision_0000 | 24576 MiB | 6/9 |
 | usb_hub | running | seeded | revision_0000 | 24576 MiB | 6/9 |
-| capybara_plush_toy | running | seeded | revision_0000 | 49152 MiB | 0/9 |
+| capybara_plush_toy | running | seeded | revision_0000 | 49152 MiB | 1/9 |
 | sloth | queued | seeded | revision_0000 | 24576 MiB | 6/9 |
 | sauce_keeper | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 |
 | dragon | queued | seeded | revision_0000 | 24576 MiB | 0/9 |
@@ -111,7 +111,7 @@ Run：`genesis_capybara_plush_toy_20261022_native_retry3`；執行中。
 
 | 階段 | 狀態 |
 |---|---|
-| 圖片清理 | pending |
+| 圖片清理 | success |
 | SAM3 分割 | pending |
 | OmniPart 幾何生成 | pending |
 | 材料推估 | pending |
@@ -122,6 +122,8 @@ Run：`genesis_capybara_plush_toy_20261022_native_retry3`；執行中。
 | 最終匯出 | pending |
 
 Genesis 診斷 episode 數：0。
+
+![capybara_plush_toy_cleaned_image](media/capybara_plush_toy_cleaned_image.png)
 
 
 ## sloth

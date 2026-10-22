@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T12:30:18+08:00",
+  "updated_at": "2026-10-22T12:33:02+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:39:46.288097+00:00",
-      "updated_at": "2026-10-22T12:30:18+08:00",
+      "updated_at": "2026-10-22T12:33:02+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -195,7 +195,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:30:09.878929+00:00",
-      "updated_at": "2026-10-22T12:30:18+08:00",
+      "updated_at": "2026-10-22T12:33:02+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -357,7 +357,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T12:30:18+08:00",
+      "updated_at": "2026-10-22T12:33:02+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -367,11 +367,11 @@
         {
           "name": "image_cleanup",
           "label": "圖片清理",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
+          "started_at": "2026-10-22T04:32:37.723749+00:00",
+          "finished_at": "2026-10-22T04:32:37.743039+00:00"
         },
         {
           "name": "sam3_omnipart_2d_segmentation",
@@ -446,7 +446,13 @@
           "finished_at": null
         }
       ],
-      "media": [],
+      "media": [
+        {
+          "path": "media/capybara_plush_toy_cleaned_image.png",
+          "bytes": 2311951,
+          "sha256": "94bffd6c88b772cd5c34fd16919e6edcd2ea6aa78011c2662ffa43dbe4089331"
+        }
+      ],
       "id": "capybara_plush_toy",
       "status": "running",
       "attempts": 4,
@@ -463,7 +469,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:26:08.183115+00:00",
-      "updated_at": "2026-10-22T12:30:18+08:00",
+      "updated_at": "2026-10-22T12:33:02+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 3,
@@ -625,7 +631,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-22T12:30:18+08:00",
+      "updated_at": "2026-10-22T12:33:02+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -731,7 +737,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-22T12:30:18+08:00",
+      "updated_at": "2026-10-22T12:33:02+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -837,7 +843,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-22T12:30:18+08:00",
+      "updated_at": "2026-10-22T12:33:02+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -943,7 +949,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-22T12:30:18+08:00",
+      "updated_at": "2026-10-22T12:33:02+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1049,7 +1055,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T12:30:18+08:00",
+      "updated_at": "2026-10-22T12:33:02+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1328,6 +1334,11 @@
       "sha256": "6d3f5577ad1bcdaf27abec1a24e8eb4fd07a54d6010649e382247addcb3a5c59"
     },
     {
+      "path": "media/capybara_plush_toy_cleaned_image.png",
+      "bytes": 2311951,
+      "sha256": "94bffd6c88b772cd5c34fd16919e6edcd2ea6aa78011c2662ffa43dbe4089331"
+    },
+    {
       "path": "media/sloth_cleaned_image.png",
       "bytes": 1560674,
       "sha256": "2859d083668dfbe2ec280ab6315f2d95a1aaf3e55bea07352e91cb53a388e035"
@@ -1453,5 +1464,5 @@
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "5d6a43ce07318e26bb07fb3649d86a80e1d4903aaa59ee1e1b80500749f229a8"
+  "signature": "4a9814734936877f0e6dddb1f029db341891b5317ec86af05674f3fe3c272916"
 }
