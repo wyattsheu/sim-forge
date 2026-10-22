@@ -2,9 +2,9 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T18:40:09+08:00（Asia/Taipei）
+更新：2026-10-22T18:42:12+08:00（Asia/Taipei）
 
-共 9 件：等待 0、執行中 1、完成 5、失敗 3、取消 0。
+共 9 件：等待 0、執行中 1、完成 6、失敗 2、取消 0。
 
 GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢查。  
 允許與既有運算共用 GPU：是。
@@ -17,7 +17,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 |---|---|---|---|---|---|---|
 | baseball_cap | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
 | kitchen_tongs | failed | failed | revision_0001 | 24576 MiB | 7/9 | 未偵測到上述異常（非成功保證） |
-| sneaker | failed | success | revision_0001 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
+| sneaker | success | success | revision_0001 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
 | usb_hub | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
 | sloth | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
 | sauce_keeper | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
@@ -115,7 +115,7 @@ Genesis 診斷 episode 數：0。
 
 ## sneaker
 
-Run：`genesis_sneaker_20261022_clean_diagnostics1`；執行失敗。
+Run：`genesis_sneaker_20261022_clean_diagnostics1`；完成。
 
 | 階段 | 狀態 |
 |---|---|
@@ -306,7 +306,7 @@ Run：`genesis_dragon_20261021`；執行中。
 | 圖片清理 | success |
 | SAM3 分割 | success |
 | OmniPart 幾何生成 | success |
-| 材料推估 | pending |
+| 材料推估 | running |
 | 材料參數配置 | pending |
 | 體積網格處理 | pending |
 | Genesis 物理診斷 | pending |
