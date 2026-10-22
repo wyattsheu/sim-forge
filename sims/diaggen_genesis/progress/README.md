@@ -1,10 +1,10 @@
 # DiagGen / Genesis 批次執行進度
 
-狀態：**執行失敗**  
+狀態：**等待空閒 GPU**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T17:00:12+08:00（Asia/Taipei）
+更新：2026-10-22T17:02:46+08:00（Asia/Taipei）
 
-共 9 件：等待 0、執行中 0、完成 2、失敗 7、取消 0。
+共 9 件：等待 4、執行中 0、完成 2、失敗 3、取消 0。
 
 GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢查。  
 允許與既有運算共用 GPU：是。
@@ -15,19 +15,19 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 
 | 物件 | 排程狀態 | Runtime | Revision | 顯存門檻 | 已完成階段 | 健康提示 |
 |---|---|---|---|---|---|---|
-| baseball_cap | failed | seeded | revision_0000 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
-| kitchen_tongs | failed | seeded | revision_0000 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
-| sneaker | failed | failed | revision_0000 | 24576 MiB | 6/9 | 重試材質快照與磁碟既有檔案衝突 |
+| baseball_cap | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
+| kitchen_tongs | queued | seeded | revision_0000 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
+| sneaker | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
 | usb_hub | failed | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
 | sloth | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
-| sauce_keeper | failed | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
+| sauce_keeper | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
 | dragon | failed | seeded | revision_0000 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
 | capybara_plush_toy | failed | seeded | revision_0000 | 49152 MiB | 2/9 | 未偵測到上述異常（非成功保證） |
 | curling_iron | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
 
 ## baseball_cap
 
-Run：`genesis_baseball_cap_20261022_cleanup_retry2`；執行失敗。
+Run：`genesis_baseball_cap_20261022_fresh3`；等待空閒 GPU。
 
 | 階段 | 狀態 |
 |---|---|
@@ -46,7 +46,7 @@ Genesis 診斷 episode 數：0。
 
 ## kitchen_tongs
 
-Run：`genesis_kitchen_tongs_20261022_segmentation_retry1`；執行失敗。
+Run：`genesis_kitchen_tongs_20261022_segmentation_retry1`；等待空閒 GPU。
 
 | 階段 | 狀態 |
 |---|---|
@@ -65,43 +65,21 @@ Genesis 診斷 episode 數：0。
 
 ## sneaker
 
-Run：`genesis_sneaker_20261021`；執行失敗。
+Run：`genesis_sneaker_20261022_clean_diagnostics1`；等待空閒 GPU。
 
 | 階段 | 狀態 |
 |---|---|
-| 圖片清理 | success |
-| SAM3 分割 | success |
-| OmniPart 幾何生成 | success |
-| 材料推估 | success |
-| 材料參數配置 | success |
-| 體積網格處理 | success |
-| Genesis 物理診斷 | failed |
+| 圖片清理 | pending |
+| SAM3 分割 | pending |
+| OmniPart 幾何生成 | pending |
+| 材料推估 | pending |
+| 材料參數配置 | pending |
+| 體積網格處理 | pending |
+| Genesis 物理診斷 | pending |
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
 Genesis 診斷 episode 數：0。
-
-![sneaker_cleaned_image](media/sneaker_cleaned_image.png)
-
-![sneaker_processed_white_bg_png](media/sneaker_processed_white_bg_png.png)
-
-![sneaker_processed_rgba](media/sneaker_processed_rgba.png)
-
-![sneaker_ordered_mask_vis](media/sneaker_ordered_mask_vis.png)
-
-![sneaker_segmentation_overlay](media/sneaker_segmentation_overlay.png)
-
-![sneaker_omnipart_top](media/sneaker_omnipart_top.png)
-
-![sneaker_omnipart_bottom](media/sneaker_omnipart_bottom.png)
-
-![sneaker_omnipart_front](media/sneaker_omnipart_front.png)
-
-![sneaker_omnipart_back](media/sneaker_omnipart_back.png)
-
-![sneaker_omnipart_left](media/sneaker_omnipart_left.png)
-
-![sneaker_omnipart_right](media/sneaker_omnipart_right.png)
 
 
 ## usb_hub
@@ -194,43 +172,21 @@ Genesis 診斷 episode 數：2。
 
 ## sauce_keeper
 
-Run：`genesis_sauce_keeper_20261022_clean_diagnostics1`；執行失敗。
+Run：`genesis_sauce_keeper_20261022_clean_diagnostics2`；等待空閒 GPU。
 
 | 階段 | 狀態 |
 |---|---|
-| 圖片清理 | success |
-| SAM3 分割 | success |
-| OmniPart 幾何生成 | success |
-| 材料推估 | success |
-| 材料參數配置 | success |
-| 體積網格處理 | success |
-| Genesis 物理診斷 | running |
+| 圖片清理 | pending |
+| SAM3 分割 | pending |
+| OmniPart 幾何生成 | pending |
+| 材料推估 | pending |
+| 材料參數配置 | pending |
+| 體積網格處理 | pending |
+| Genesis 物理診斷 | pending |
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
-Genesis 診斷 episode 數：1。
-
-![sauce_keeper_cleaned_image](media/sauce_keeper_cleaned_image.png)
-
-![sauce_keeper_processed_white_bg_png](media/sauce_keeper_processed_white_bg_png.png)
-
-![sauce_keeper_processed_rgba](media/sauce_keeper_processed_rgba.png)
-
-![sauce_keeper_ordered_mask_vis](media/sauce_keeper_ordered_mask_vis.png)
-
-![sauce_keeper_segmentation_overlay](media/sauce_keeper_segmentation_overlay.png)
-
-![sauce_keeper_omnipart_top](media/sauce_keeper_omnipart_top.png)
-
-![sauce_keeper_omnipart_bottom](media/sauce_keeper_omnipart_bottom.png)
-
-![sauce_keeper_omnipart_front](media/sauce_keeper_omnipart_front.png)
-
-![sauce_keeper_omnipart_back](media/sauce_keeper_omnipart_back.png)
-
-![sauce_keeper_omnipart_left](media/sauce_keeper_omnipart_left.png)
-
-![sauce_keeper_omnipart_right](media/sauce_keeper_omnipart_right.png)
+Genesis 診斷 episode 數：0。
 
 
 ## dragon
