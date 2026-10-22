@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T17:43:14+08:00",
+  "updated_at": "2026-10-22T17:43:31+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-22T17:43:14+08:00",
+      "updated_at": "2026-10-22T17:43:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -205,7 +205,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T06:03:34.261605+00:00",
-      "updated_at": "2026-10-22T17:43:14+08:00",
+      "updated_at": "2026-10-22T17:43:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -377,7 +377,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:45.699903+00:00",
-      "updated_at": "2026-10-22T17:43:14+08:00",
+      "updated_at": "2026-10-22T17:43:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -470,9 +470,9 @@
         "warnings": [],
         "diagnostic_counters": {
           "episodes": 2,
-          "tool_results": 25,
+          "tool_results": 27,
           "diagnostic_probe_attempts": 4,
-          "region_settlements": 1
+          "region_settlements": 2
         },
         "meaning": "observation_only_not_retry_authorization"
       },
@@ -549,7 +549,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-22T17:43:14+08:00",
+      "updated_at": "2026-10-22T17:43:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -736,7 +736,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-22T17:43:14+08:00",
+      "updated_at": "2026-10-22T17:43:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -923,7 +923,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-22T17:43:14+08:00",
+      "updated_at": "2026-10-22T17:43:31+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1039,7 +1039,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-22T17:43:14+08:00",
+      "updated_at": "2026-10-22T17:43:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1155,7 +1155,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T17:43:14+08:00",
+      "updated_at": "2026-10-22T17:43:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1297,7 +1297,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T17:43:14+08:00",
+      "updated_at": "2026-10-22T17:43:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1876,5 +1876,5 @@
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "c34d09d82d8a62acfe82a7b9c07acfc3c45b37dc044adc0a71b600cbb8206101"
+  "signature": "251676e89a67634e7da9d3ba3d791bd2958e73d368e3666057d5d62b9eb8f56d"
 }
