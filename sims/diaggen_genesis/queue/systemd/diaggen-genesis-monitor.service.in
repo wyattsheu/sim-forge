@@ -1,0 +1,12 @@
+# Managed by sim-forge DiagGen
+[Unit]
+Description=DiagGen Genesis queue watchdog
+
+[Service]
+Type=oneshot
+WorkingDirectory=@WORKSPACE@
+ExecStart=/usr/bin/bash "@QUEUE@/run_monitor.sh"
+TimeoutStartSec=180
+# tmux workers live in their own server. A watchdog timeout must not kill them.
+KillMode=process
+UMask=0077

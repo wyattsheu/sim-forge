@@ -1,0 +1,73 @@
+{
+  "schema_version": "diaggen-server-monitor-deployment-validation-v1",
+  "checked_at": "2026-10-22T19:05:03+08:00",
+  "enabled": true,
+  "interval_seconds": 60,
+  "user_linger": true,
+  "timer_trigger_observed": true,
+  "service_result": "success",
+  "service_exit_code": 0,
+  "publisher_restored_on_first_tick": true,
+  "singleton_locked_tick_noop_verified": true,
+  "actual_cpu_tests": 352,
+  "cpu_failures": 0,
+  "cpu_errors": 0,
+  "cpu_skips": 0,
+  "runtime_preflight_checks": 93,
+  "max_auto_resumes_per_run": 2,
+  "retry_delay_seconds": 300,
+  "native_pipeline_source_changed": false,
+  "native_business_budgets_changed": false,
+  "monitor_outcomes": [
+    {
+      "id": "baseball_cap",
+      "run_id": "genesis_baseball_cap_20261022_fresh3",
+      "outcome": "completed"
+    },
+    {
+      "id": "kitchen_tongs",
+      "run_id": "genesis_kitchen_tongs_20261022_segmentation_retry1",
+      "outcome": "business_halt"
+    },
+    {
+      "id": "sneaker",
+      "run_id": "genesis_sneaker_20261022_clean_diagnostics1",
+      "outcome": "exported_unaccepted"
+    },
+    {
+      "id": "usb_hub",
+      "run_id": "genesis_usb_hub_20261022_clean_diagnostics3",
+      "outcome": "completed"
+    },
+    {
+      "id": "sloth",
+      "run_id": "genesis_sloth_20261022_clean_diagnostics3",
+      "outcome": "completed"
+    },
+    {
+      "id": "sauce_keeper",
+      "run_id": "genesis_sauce_keeper_20261022_clean_diagnostics2",
+      "outcome": "completed"
+    },
+    {
+      "id": "dragon",
+      "run_id": "genesis_dragon_20261021",
+      "outcome": "running"
+    },
+    {
+      "id": "capybara_plush_toy",
+      "run_id": "genesis_capybara_plush_toy_20261022_native_retry3",
+      "outcome": "stage_failed"
+    },
+    {
+      "id": "curling_iron",
+      "run_id": "genesis_curling_iron_20261021_exr_retry1",
+      "outcome": "completed"
+    }
+  ],
+  "limitations": [
+    "Native business halts and failed stages require a reviewed fix. This scheduler cannot promise all assets will reach strict accept.",
+    "An actual production resume was not forced; positive same-run recovery was exercised through real Queue.resume on isolated artifact fixtures.",
+    "Unknown protected compute processes or active descendants block automatic resume."
+  ]
+}

@@ -7,6 +7,10 @@ queue/*
 !queue/batch_control.py
 !queue/run_one.sh
 !queue/reconcile_export.py
+!queue/monitor.py
+!queue/run_monitor.sh
+!queue/install_monitor.sh
+!queue/systemd/
 
 # Large reference downloads and the complete local execution archive.
 references/

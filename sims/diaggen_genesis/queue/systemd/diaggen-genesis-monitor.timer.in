@@ -1,0 +1,13 @@
+# Managed by sim-forge DiagGen
+[Unit]
+Description=Check DiagGen Genesis queue every minute
+
+[Timer]
+OnCalendar=*-*-* *:*:00
+AccuracySec=5s
+RandomizedDelaySec=3s
+Persistent=true
+Unit=diaggen-genesis-monitor.service
+
+[Install]
+WantedBy=timers.target

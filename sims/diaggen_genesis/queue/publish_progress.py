@@ -303,6 +303,34 @@ def bounded_integer(value, lower, upper):
     return value if isinstance(value, int) and not isinstance(value, bool) and lower <= value <= upper else None
 
 
+def monitor_snapshot(queue, jobs):
+    """Copy only typed watchdog outcomes, never arbitrary monitor payloads."""
+    path = queue / 'monitor_status.json'
+    if not path.exists():
+        return None
+    if path.is_symlink() or not inside(path.resolve(), queue.resolve()):
+        raise ValueError('monitor status escapes queue')
+    source = read_object(path)
+    if source.get('schema_version') != 'diaggen-server-monitor-v1':
+        return None
+    outcomes = {'completed', 'exported_unaccepted', 'queued', 'cancelled', 'running',
+                'quiet', 'process_inspection_unavailable', 'waiting_cleanup',
+                'unbound_worker_review', 'awaiting_worker_binding', 'changed_during_observation',
+                'hold', 'business_halt', 'stage_failed', 'resume_ineligible', 'retry_limit',
+                'retry_backoff', 'export_recovered', 'export_validation_failed',
+                'preflight_failed', 'resumed', 'queue_stopped', 'inspection_failed'}
+    allowed = {(job['id'], job['run_id']) for job in jobs}
+    records = []
+    for item in source.get('jobs', [])[:100]:
+        item = object_value(item)
+        if (item.get('id'), item.get('run_id')) in allowed:
+            records.append({'id': item['id'], 'run_id': item['run_id'],
+                            'outcome': enum(item.get('outcome'), outcomes)})
+    return {'enabled': source.get('enabled') is True, 'interval_seconds': 60,
+            'max_resumes_per_run': 2, 'updated_at': timestamp(source.get('updated_at')),
+            'jobs': records}
+
+
 def build_batch_snapshot(workspace, queued, batch):
     if batch.get("schema_version") != "diaggen-batch-v1":
         raise ValueError("unsupported batch schema")
@@ -374,6 +402,9 @@ def build_batch_snapshot(workspace, queued, batch):
         snapshot["jobs"].append(progress)
         snapshot["media"].extend(progress["media"])
     snapshot["counts"]["total"] = len(snapshot["jobs"])
+    automation = monitor_snapshot(queue, snapshot['jobs'])
+    if automation is not None:
+        snapshot['automation'] = automation
     snapshot["signature"] = semantic_signature(snapshot)
     return snapshot, media
 
@@ -416,6 +447,11 @@ def render_batch_readme(snapshot):
     for job in snapshot["jobs"]:
         completed = sum(stage["ok"] for stage in job["stages"])
         lines.append(f"| {job['id']} | {job['status']} | {job['pipeline_status']} | {job['active_revision'] or '尚未初始化'} | {job['minimum_free_mib']} MiB | {completed}/{len(STAGES)} | {diagnostic_label(job)} | {health_label(job)} |")
+    if snapshot.get('automation') is not None:
+        auto = snapshot['automation']
+        lines += ['', f"伺服器自動監看：{'啟用' if auto['enabled'] else '暫停'}；每 60 秒檢查，原 run 最多自動續跑 2 次。", '',
+                  '| 物件 | 自動監看結果 |', '|---|---|']
+        lines += [f"| {item['id']} | {item['outcome']} |" for item in auto['jobs']]
     for job in snapshot["jobs"]:
         lines += ["", f"## {job['id']}", "", f"Run：`{job['run_id']}`；{PHASE_LABELS[job['phase']]}。", "",
                   "| 階段 | 狀態 |", "|---|---|"]
