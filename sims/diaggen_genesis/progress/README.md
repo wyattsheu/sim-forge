@@ -2,9 +2,9 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T16:36:37+08:00（Asia/Taipei）
+更新：2026-10-22T16:38:25+08:00（Asia/Taipei）
 
-共 9 件：等待 0、執行中 2、完成 1、失敗 6、取消 0。
+共 9 件：等待 0、執行中 1、完成 1、失敗 7、取消 0。
 
 GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢查。  
 允許與既有運算共用 GPU：是。
@@ -20,7 +20,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | sneaker | failed | failed | revision_0000 | 24576 MiB | 6/9 | 重試材質快照與磁碟既有檔案衝突 |
 | usb_hub | failed | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
 | sloth | running | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
-| sauce_keeper | running | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
+| sauce_keeper | failed | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
 | dragon | failed | seeded | revision_0000 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
 | capybara_plush_toy | failed | seeded | revision_0000 | 49152 MiB | 2/9 | 未偵測到上述異常（非成功保證） |
 | curling_iron | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
@@ -188,7 +188,7 @@ Genesis 診斷 episode 數：1。
 
 ## sauce_keeper
 
-Run：`genesis_sauce_keeper_20261022_clean_diagnostics1`；執行中。
+Run：`genesis_sauce_keeper_20261022_clean_diagnostics1`；執行失敗。
 
 | 階段 | 狀態 |
 |---|---|
