@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T18:18:39+08:00（Asia/Taipei）
+更新：2026-10-22T18:18:56+08:00（Asia/Taipei）
 
 共 9 件：等待 1、執行中 3、完成 4、失敗 1、取消 0。
 
@@ -17,7 +17,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 |---|---|---|---|---|---|---|
 | baseball_cap | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
 | kitchen_tongs | running | running | revision_0001 | 24576 MiB | 4/9 | 未偵測到上述異常（非成功保證） |
-| sneaker | running | running | revision_0001 | 24576 MiB | 7/9 | 未偵測到上述異常（非成功保證） |
+| sneaker | running | running | revision_0001 | 24576 MiB | 8/9 | 未偵測到上述異常（非成功保證） |
 | usb_hub | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
 | sloth | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
 | sauce_keeper | running | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
@@ -126,7 +126,7 @@ Run：`genesis_sneaker_20261022_clean_diagnostics1`；執行中。
 | 材料參數配置 | success |
 | 體積網格處理 | success |
 | Genesis 物理診斷 | success |
-| 貼圖生成 | running |
+| 貼圖生成 | success |
 | 最終匯出 | pending |
 
 Genesis 診斷 episode 數：0。
@@ -140,6 +140,8 @@ Genesis 診斷 episode 數：0。
 ![sneaker_ordered_mask_vis](media/sneaker_ordered_mask_vis.png)
 
 ![sneaker_segmentation_overlay](media/sneaker_segmentation_overlay.png)
+
+![sneaker_albedo](media/sneaker_albedo.png)
 
 ![sneaker_omnipart_top](media/sneaker_omnipart_top.png)
 
