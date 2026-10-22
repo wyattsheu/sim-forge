@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T19:04:31+08:00（Asia/Taipei）
+更新：2026-10-22T19:06:41+08:00（Asia/Taipei）
 
 共 9 件：等待 0、執行中 1、完成匯出 6、失敗 2、取消 0。
 
@@ -331,7 +331,7 @@ Run：`genesis_dragon_20261021`；執行中。
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
-Genesis 診斷 episode 數：0；結果：尚未判定。
+Genesis 診斷 episode 數：1；結果：尚未判定。
 
 ![dragon_cleaned_image](media/dragon_cleaned_image.png)
 
