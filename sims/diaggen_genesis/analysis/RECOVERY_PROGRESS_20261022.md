@@ -112,7 +112,7 @@ Dragon 的原始 cleanup 子代理紀錄也已找到：兩次真實 built-in ima
 
 completion validator 與獨立唯讀驗收都通過：6405 個頂點、22287 個四面體、材料標籤 0／1／2、一個 face-connected component、16 個 canonical 檔案；空心體積拓撲，目標最大尺寸 0.25 m。兩段 H.264 診斷影片均為 2304×768、10 fps、3.6 秒。完整成品在 `sims/diaggen_genesis/runs/genesis_baseball_cap_20261022_fresh3/asset/`。
 
-見 [棒球帽驗收](baseball_cap_completed_validation.json) 與 [這次完整嘗試的模型用量](baseball_cap_token_usage.json)。[USB 完整取景預覽](media/usb_hub_full_asset_preview.png)／[棒球帽完整取景預覽](media/baseball_cap_full_asset_preview.png) 由既有 GLB 與貼圖另行渲染；軟體 renderer、留白邊界與來源雜湊均有 JSON 證明。原生 QA 截圖、GLB、貼圖及物理資產均未修改，這些額外預覽不是新的物理驗收。
+見 [棒球帽驗收](baseball_cap_completed_validation.json) 與 [這次完整嘗試的模型用量](baseball_cap_token_usage.json)。[USB 完整取景預覽](media/usb_hub_full_asset_preview.png)／[棒球帽完整取景預覽](media/baseball_cap_full_asset_preview_light.png) 由既有 GLB 與貼圖另行渲染；軟體 renderer、留白邊界與來源雜湊均有 JSON 證明。原生 QA 截圖、GLB、貼圖及物理資產均未修改，這些額外預覽不是新的物理驗收。
 
 ## 修復版本的既有提交紀錄與官方恢復函式
 

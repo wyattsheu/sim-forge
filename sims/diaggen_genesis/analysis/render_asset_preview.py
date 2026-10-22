@@ -18,6 +18,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--asset-dir", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--background", choices=("dark", "light"), default="dark")
     args = parser.parse_args()
     asset, output = args.asset_dir.resolve(), args.output.resolve()
     if output.is_relative_to(asset) or output.exists():
@@ -54,9 +55,10 @@ def main():
         surface.active_texture_coordinates = np.asarray(mesh.visual.uv)
         texture = pv.numpy_to_texture(np.asarray(Image.open(albedo).convert("RGB")))
         plotter = pv.Plotter(off_screen=True, window_size=(768, 768))
+        background = 245 if args.background == "light" else 32
         try:
             plotter.disable_anti_aliasing()
-            plotter.set_background((32 / 255,) * 3)
+            plotter.set_background((background / 255,) * 3)
             plotter.add_mesh(surface, texture=texture, lighting=False)
             center = mesh.bounds.mean(axis=0)
             radius = float(np.linalg.norm(mesh.extents))
@@ -68,7 +70,7 @@ def main():
             plotter.render()
             pixels = plotter.screenshot(str(output))
             border = np.concatenate((pixels[0], pixels[-1], pixels[:, 0], pixels[:, -1]))
-            if np.any(border[:, :3] != 32) or not np.any(pixels[:, :, :3] != 32):
+            if np.any(border[:, :3] != background) or not np.any(pixels[:, :, :3] != background):
                 raise RuntimeError("Preview must show the asset with an empty image border")
             capabilities = plotter.ren_win.ReportCapabilities()
             renderer = next((line.split(":", 1)[1].strip() for line in capabilities.splitlines()
@@ -83,6 +85,7 @@ def main():
                   "source_glb_sha256": digest(glb), "source_albedo_sha256": digest(albedo),
                   "preview_sha256": digest(output), "vertices": len(mesh.vertices),
                   "faces": len(mesh.faces), "image_size": [768, 768],
+                  "background_rgb": [background] * 3,
                   "empty_image_border": True, "renderer": renderer}
         output.with_suffix(".json").write_text(json.dumps(report, indent=2) + "\n")
         print(json.dumps(report))
