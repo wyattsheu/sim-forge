@@ -9,6 +9,25 @@
 - 8 張官方 demo 圖片擷取自影片的輸入照片區，解析度受影片限制，未放大；另外 1 張水豚玩偶照片由使用者提供。總覽圖片只包含 8 張官方擷取圖。
 - 模型權重、第三方環境與完整工作檔保留在伺服器。此目錄的程式負責等待、整理和進度發布；實際 pipeline 由原專案的 Codex skill 執行。
 
+## 復現原則與差異
+
+依使用者 2026-10-22 的要求，本次以忠實復現論文與官方技能流程為準，不自行加入新的生成、分割、物理或診斷方法。現況須稱為 **官方 commit `3d2d377` 加本機執行修補的復現**，不能稱為完全未修改的原版。模型從論文 GPT-5.6 Luna Max 改為 GPT-6 Luna Max，是使用者先前允許的版本差異。
+
+七份原生補丁涉及六個官方檔案，差異如下：
+
+| 補丁 | 實際影響 |
+| --- | --- |
+| `diagnostic_history_settlement` | 合法關閉的歷史 session 可在 owner 失效後重新驗證；不允許舊 owner 建立新 close。 |
+| `diagnostic_retry_reset` | 依原有 archive/reset 流程歸檔並清空逐次量測歷史，讓新的診斷執行符合原 fresh 驗證。 |
+| `anchor_preview_recovery`、`anchor_preview_index` | 修正兩份 SKILL 的重編譯指令，使用原 revise 工具已回傳的修改結果；不改錨點演算法或試驗上限。 |
+| `snapshot_export_inputs` | 換 output tag 時複製既有四張材質檢查 PNG 並記錄來源，沒有重算物理參數。四圖完整性是本機工程要求；低階原生匯出 API 將其列為 optional，不能說是論文必要條件。 |
+| `strict_material_coverage` | 正常網格路徑缺少材料標籤從 warning 改成 failure，符合官方 SKILL 的 exact 要求，但確實改動了原程式的接受條件。 |
+| `segmentation_raw_prediction_guard` | 拒絕沒有原始 SAM3 預測、只剩 foreground-fill 的結果；符合官方 SKILL 的原始預測要求，但比原程式的實作更嚴格，須列為差異。 |
+
+另有依賴修復、私有 Xvfb、缺少的 MP4 編碼入口、同 GPU 顯存等待、單次原生函式 CLI、歸檔及 GitHub 發布。水豚使用官方 OmniPart app 已提供的 Native 後端選項；不應將後端小型探針通過宣稱為完整模型錯誤已解決。
+
+本次忠實性核對另發現一項**尚待校正的外部限制**：`tools/diaggen_support/validate_completed_export.py` 無條件以 exact 材料覆蓋驗證最終網格；官方 mesh-processing SKILL 則允許經過原生最大連通元件處理後使用 subset 覆蓋。這個外加檢查可能拒絕官方合法結果，應依可驗證的原生 component-resolution 紀錄回到官方規則，不能把它當作論文標準。此核對沒有修改執行中程式或現有產物。
+
 ## 2026-10-22：修復後重新執行
 
 已安裝可重現補丁、恢復 tmux 佇列，八件未完成工作均已重新排程。12:31 查核為 **電捲棒 1 件完成、水豚與 USB Hub 2 件執行中、其餘 6 件排隊**。這是啟動狀態，新的完整資產成功數仍以 [即時進度](progress/) 為準。
