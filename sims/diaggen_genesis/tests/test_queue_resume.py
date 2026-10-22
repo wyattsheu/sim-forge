@@ -93,7 +93,7 @@ def temporary_patched_sources(destination):
         actual = digest(destination / relative)
         if actual == record["before_sha256"]:
             selected.extend(item for item in sections if item.splitlines()[0][6:] == relative)
-        elif actual != record["after_sha256"]:
+        elif actual not in {record["after_sha256"], verified_files.get(relative, {}).get("after_sha256")}:
             raise AssertionError("GPU sharing baseline changed: " + relative)
     if selected:
         subprocess.run(["patch", "--batch", "--fuzz=0", "-p1"], input="".join(selected),
@@ -485,6 +485,58 @@ class SameRunResumeTests(unittest.TestCase):
         self.save_native()
         with self.assertRaisesRegex(ValueError, "changed after admission"):
             self.queue.validate_snapshot("object_0")
+
+    def make_failed_snapshot_successor(self):
+        self.make_business_halt_snapshot()
+        self.snapshot_retry()
+        self.hold.unlink()
+        self.assertEqual(self.queue.claim(GPU), "object_0")
+        self.queue.bind("object_0", 99999999)
+        self.queue.finish("object_0", "failed", "execution_failed")
+        self.hold.touch()
+        job = self.queue_state()["jobs"][0]
+        current = self.native / "outputs/agentic_asset_refinement" / job["run_id"]
+        current.mkdir(parents=True)
+        self.job_directory.mkdir(parents=True)
+        (self.job_directory / "failed_snapshot.log").write_text("preserve the interrupted diagnostic run")
+        state = {"run_root": str(current), "status": "seeded", "accepted_revision": None,
+                 "paths": {"sim_diagnostics_dir": str(current / "sim_diagnostics")},
+                 "diagnostic_runtime_attachments": [{"status": "failed"}],
+                 "diagnostic_runtime_sessions": [{"lifecycle_state": "closed_failed"}]}
+        (current / "state.json").write_text(json.dumps(state))
+        return current, state
+
+    def test_explicit_snapshot_origin_retry_preserves_both_failed_runs(self):
+        current, state = self.make_failed_snapshot_successor()
+        origin_bytes = (self.run_root / "state.json").read_bytes()
+        current_bytes = (current / "state.json").read_bytes()
+        result = self.queue.diagnostics_snapshot_origin("object_0", "snapshot_second", "private_response_instruction_fixed")
+        self.assertEqual(result["snapshot_source_run_id"], self.run_id)
+        self.assertEqual((self.run_root / "state.json").read_bytes(), origin_bytes)
+        self.assertEqual((current / "state.json").read_bytes(), current_bytes)
+        self.assertTrue((self.base / "queue/job_history/object_0" / current.name / "failed_snapshot.log").is_file())
+
+    def test_snapshot_origin_retry_rejects_active_current_owner(self):
+        current, state = self.make_failed_snapshot_successor()
+        state["diagnostic_runtime_attachments"][0]["status"] = "attached"
+        (current / "state.json").write_text(json.dumps(state))
+        before = self.queue.path.read_bytes()
+        with self.assertRaisesRegex(ValueError, "ownership is still active"):
+            self.queue.diagnostics_snapshot_origin("object_0", "snapshot_second", "retry_denied")
+        self.assertEqual(self.queue.path.read_bytes(), before)
+
+    def test_snapshot_origin_retry_rejects_changed_origin_and_accepted_current(self):
+        current, state = self.make_failed_snapshot_successor()
+        state["accepted_revision"] = "revision_0000"
+        (current / "state.json").write_text(json.dumps(state))
+        with self.assertRaisesRegex(ValueError, "reconciled"):
+            self.queue.diagnostics_snapshot_origin("object_0", "snapshot_second", "retry_denied")
+        state["accepted_revision"] = None
+        (current / "state.json").write_text(json.dumps(state))
+        origin = self.run_root / "state.json"
+        origin.write_text(origin.read_text() + " ")
+        with self.assertRaisesRegex(ValueError, "origin changed"):
+            self.queue.diagnostics_snapshot_origin("object_0", "snapshot_second", "retry_denied")
 
     def test_snapshot_requires_hold_dead_runner_and_unused_run_root(self):
         self.make_business_halt_snapshot()

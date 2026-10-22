@@ -1,10 +1,10 @@
 {
   "schema_version": "diaggen-full-runtime-preflight-v1",
-  "checked_at": "2026-10-22T15:28:24+08:00",
+  "checked_at": "2026-10-22T15:42:25+08:00",
   "overall_status": "pass",
   "simulator": "Genesis",
   "counts": {
-    "pass": 82,
+    "pass": 83,
     "fail": 0,
     "skip": 0
   },
@@ -16,29 +16,26 @@
     }
   ],
   "evidence_reuse": {
-    "unchanged_checks_reused": 78,
+    "unchanged_checks_reused": 79,
     "orchestration_checks_rerun": 3,
     "actual_cpu_tests": {
       "error": 0,
       "expected_fail": 0,
       "fail": 0,
-      "pass": 290,
-      "run": 290,
+      "pass": 293,
+      "run": 293,
       "skip": 0,
       "unexpected_success": 0
     },
-    "snapshot_admission_checks": 1,
+    "snapshot_origin_retry_admission": 1,
     "reviewed_runtime_source_changes": [
-      "sims/diaggen_genesis/preflight/probe_orchestration.py",
-      "sims/diaggen_genesis/preflight/readiness.py",
+      "sims/diaggen_genesis/queue/batch_control.py",
       "sims/diaggen_genesis/queue/run_one.sh",
-      "tools/diaggen_support/diagnostic_credentials.js",
       "tools/diaggen_support/diagnostic_credentials.md",
       "tools/diaggen_support/queue_verified_diagnostics.json",
       "tools/diaggen_support/queue_verified_diagnostics.patch"
     ],
-    "native_method_changed": false,
-    "note": "Exact native/input/environment/binary inventories unchanged; JS tests use mock MCP endpoints and do not establish production success."
+    "native_method_changed": false
   },
   "scope": "Verified credential transport and mode-specific launcher; native sources and environment unchanged.",
   "limitations": [
@@ -744,6 +741,10 @@
       "status": "pass"
     },
     {
+      "name": "verified_diagnostics/sloth_clean_snapshot_admission",
+      "status": "pass"
+    },
+    {
       "name": "namespace_unittest_suite",
       "status": "pass"
     },
@@ -756,7 +757,7 @@
       "status": "pass"
     },
     {
-      "name": "verified_diagnostics/sloth_clean_snapshot_admission",
+      "name": "verified_diagnostics/closed_failed_snapshot_origin_retry",
       "status": "pass"
     }
   ]

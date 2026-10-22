@@ -30,3 +30,13 @@
 - **15:28:04（Asia/Taipei）由既有背景 watcher 啟動樹懶，GPU 0。** 實際通過 runtime、EXR、六視角顯示檢查，完成 native snapshot initializer；新 ledger 中六個上游 stage 成功，診斷尚待執行。
 
 本機可稽核證據位於 `tools/diaggen/outputs/preflight/verified_diagnostics_20261022/`，包含舊 launcher、舊 certificate、完整測試紀錄與來源差異。原始私人 ledger 不發布。接下來的實際階段與產物以 [動態進度](../progress/) 為準。
+
+## 15:37 中斷與 15:42:40 立即恢復
+
+第一輪成功跨過舊快照衝突：完成材質快照登記、建立 episode、建立並綁定 Genesis live session。但 child 把自己收到的原生回應中的 session／attachment 識別碼誤判成須立即停止的洩露，因此自行結束，沒有產生 business terminal。原生 MCP 在 worker 結束時以 shutdown recovery 清理 session；沒有 token mismatch。
+
+這是新增指令過度限制正常私有工具回應造成的問題。已釐清：原生回應在該 child 私有上下文中包含 session 識別碼是正常現象，不應視為認證失敗；仍由工具 store 取值，禁止手抄 token／handle 到新請求或公開報告。
+
+外部 queue 新增明確的 `diagnostics-snapshot-origin` 恢復操作：只針對先前已核准的快照來源，要求目前失敗 worker 已退出、兩份 ownership ledger 的 session／attachment 均關閉、來源狀態雜湊不變，且目前沒有 accepted revision。操作保留兩個失敗 run，重新通過原生快照預檢；不改寫失敗或手動解除鎖。三項新增回歸測試驗證保留證據、拒絕尚未清理的 owner、拒絕來源變動／已接受結果。
+
+**293 項 CPU／回歸測試全數通過，0 fail／error／skip；啟動檢查為 83 項通過。15:42:40 已由背景 watcher 在 GPU 0 啟動 `genesis_sloth_20261022_clean_diagnostics2`。** 前六個成功階段繼續保留；完成與否仍以原生診斷、貼圖、匯出與驗收結果為準。第二輪本機證據位於上述 audit 的 `round2/`。

@@ -418,7 +418,7 @@ class Queue:
                 job["reason"] = reason
             self._save(batch)
 
-    def retry(self, job_id, new_run_id, reason, *, diagnostics_snapshot=False):
+    def retry(self, job_id, new_run_id, reason, *, diagnostics_snapshot=False, reuse_snapshot_origin=False):
         """Archive failed launcher logs and explicitly queue a fresh native run."""
         validate_identifier(new_run_id)
         if not isinstance(reason, str) or not REASON.fullmatch(reason):
@@ -430,7 +430,28 @@ class Queue:
             job = self._job(batch, job_id)
             if job["status"] != "failed":
                 raise ValueError("Only a failed job can be retried")
-            snapshot_details = self._snapshot_details(job) if diagnostics_snapshot else None
+            snapshot_job = job
+            if reuse_snapshot_origin:
+                if not diagnostics_snapshot or job.get("execution_mode") != "diagnostics_snapshot":
+                    raise ValueError("Origin retry requires a previously admitted diagnostics snapshot")
+                source_id = validate_identifier(job.get("snapshot_source_run_id"))
+                native = self.base.parents[1] / "tools/diaggen/outputs/agentic_asset_refinement"
+                current_root = native / job["run_id"]
+                current_path = current_root / "state.json"
+                if current_root.is_symlink() or current_path.is_symlink() or not current_path.is_file():
+                    raise ValueError("Current failed snapshot state is missing or unsafe")
+                current_state = json.loads(current_path.read_text())
+                if current_state.get("run_root") != str(current_root):
+                    raise ValueError("Current snapshot state root differs")
+                if current_state.get("status") == "success" or current_state.get("accepted_revision") is not None:
+                    raise ValueError("Accepted snapshot must be reconciled, not restarted from its origin")
+                self._assert_snapshot_ownership_closed(current_state, current_root)
+                source_path = native / source_id / "state.json"
+                if (not source_path.is_file() or source_path.is_symlink()
+                        or hashlib.sha256(source_path.read_bytes()).hexdigest() != job.get("snapshot_source_state_sha256")):
+                    raise ValueError("Previously admitted snapshot origin changed")
+                snapshot_job = {**job, "run_id": source_id}
+            snapshot_details = self._snapshot_details(snapshot_job) if diagnostics_snapshot else None
             previous_run_id = job["run_id"]
             used_run_ids = {entry["run_id"] for entry in batch["jobs"]}
             for entry in batch["jobs"]:
@@ -500,18 +521,8 @@ class Queue:
             atomic_json(self.directory / "status.json", self._summary(batch))
             return mapping
 
-    def _snapshot_details(self, job, *, check_digest=False):
-        root = self.base.parents[1] / "tools" / "diaggen"
-        source_id = job["snapshot_source_run_id"] if check_digest else job["run_id"]
-        source_root = root / "outputs/agentic_asset_refinement" / source_id
-        source_state = source_root / "state.json"
-        if source_root.is_symlink() or source_state.is_symlink() or not source_state.is_file():
-            raise ValueError("Snapshot recovery needs a safe failed source state")
-        raw = source_state.read_bytes()
-        state = json.loads(raw)
-        if (state.get("status") != "failed" or state.get("run_root") != str(source_root)
-                or state.get("diagnostics", {}).get("terminal", {}).get("business_outcome", {}).get("status") != "business_halt"):
-            raise ValueError("Snapshot recovery requires a preserved diagnostic business halt")
+    @staticmethod
+    def _assert_snapshot_ownership_closed(state, source_root):
         ownership = [state]
         ownership_path = Path(str(state.get("paths", {}).get("sim_diagnostics_dir", ""))) / "runtime_ownership.json"
         if ownership_path.is_file():
@@ -526,6 +537,20 @@ class Queue:
                 records = ledger.get(key, [])
                 if not isinstance(records, list) or any(not isinstance(record, dict) or record.get(field) not in closed for record in records):
                     raise ValueError("Snapshot source diagnostic ownership is still active or malformed")
+
+    def _snapshot_details(self, job, *, check_digest=False):
+        root = self.base.parents[1] / "tools" / "diaggen"
+        source_id = job["snapshot_source_run_id"] if check_digest else job["run_id"]
+        source_root = root / "outputs/agentic_asset_refinement" / source_id
+        source_state = source_root / "state.json"
+        if source_root.is_symlink() or source_state.is_symlink() or not source_state.is_file():
+            raise ValueError("Snapshot recovery needs a safe failed source state")
+        raw = source_state.read_bytes()
+        state = json.loads(raw)
+        if (state.get("status") != "failed" or state.get("run_root") != str(source_root)
+                or state.get("diagnostics", {}).get("terminal", {}).get("business_outcome", {}).get("status") != "business_halt"):
+            raise ValueError("Snapshot recovery requires a preserved diagnostic business halt")
+        self._assert_snapshot_ownership_closed(state, source_root)
         revision = state.get("active_revision")
         if not isinstance(revision, str) or not IDENTIFIER.fullmatch(revision):
             raise ValueError("Snapshot source has no valid active revision")
@@ -548,6 +573,9 @@ class Queue:
 
     def diagnostics_snapshot(self, job_id, new_run_id, reason):
         return self.retry(job_id, new_run_id, reason, diagnostics_snapshot=True)
+
+    def diagnostics_snapshot_origin(self, job_id, new_run_id, reason):
+        return self.retry(job_id, new_run_id, reason, diagnostics_snapshot=True, reuse_snapshot_origin=True)
 
     def validate_snapshot(self, job_id):
         with self._locked():
@@ -822,6 +850,8 @@ def main(argv=None):
         print(json.dumps(queue.validate_resume(*rest), ensure_ascii=False))
     elif command == "diagnostics-snapshot" and len(rest) == 3:
         print(json.dumps(queue.diagnostics_snapshot(*rest), ensure_ascii=False))
+    elif command == "diagnostics-snapshot-origin" and len(rest) == 3:
+        print(json.dumps(queue.diagnostics_snapshot_origin(*rest), ensure_ascii=False))
     elif command == "validate-snapshot" and len(rest) == 1:
         print(json.dumps(queue.validate_snapshot(*rest), ensure_ascii=False))
     elif command == "summary" and not rest:

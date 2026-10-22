@@ -51,7 +51,15 @@ result. Preserve the same explicit call order and media inspection as the
 official skill. A helper call is not permission to skip evidence or take a
 terminal shortcut. Never run periodic renewals or background work.
 
-On any stale/expired/mismatched credential error, stop immediately. Do not attach
+Native tool responses can contain attachment/session identifiers and paths.
+They are expected private diagnostic context inside this child's tool session;
+receiving or displaying such a native response here is not an authentication
+failure and is not a reason to stop. Do not manually transcribe those fields
+into new requests; the helper retains and forwards them. Keep them out of the
+final report to the parent and out of public outputs. The attach lease token is
+retained by the helper and is not printed by its successful attach response.
+
+On an actual stale/expired/mismatched credential error, stop immediately. Do not attach
 again, recover the token from logs, edit this helper, write credentials to disk,
 invoke a raw MCP endpoint as a workaround, or ask the parent to take over. Report
 the actual error and existing artifacts without credentials. After the one

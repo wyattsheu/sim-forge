@@ -5,9 +5,14 @@
     "sims/diaggen_genesis/queue/run_one.sh": {
       "before_sha256": "4dce13cf532e45fa4b3a31d080b0f768defde7fbdc575d55b0737890a5c873a3",
       "before_md5": "240c5c5500c457496a8a6660da3b2734",
-      "after_sha256": "15daa36fcb5cda0121f1368217a553c18011d3acb1cbcd1a3c14f6c5cfec7fc5"
+      "after_sha256": "540369655d3cb009135c3d95bd07d1f765db6b184c38fa88c19acc9b1a97477f"
+    },
+    "sims/diaggen_genesis/queue/batch_control.py": {
+      "before_sha256": "894ed2d47e4224e7b2d0fa61e1d8c9a046fe790cec13570ed8d725b6dd94e05f",
+      "before_md5": "6227da8e4d19edcbbe5a85d00f780398",
+      "after_sha256": "3727627d83c86248de1b225b4fe9d99b695a0f5282c563d8be2c7de07d6297fe"
     }
   },
-  "patch_sha256": "9c0af4d8af67ba05110d4404c9ae65a7f2380c2c7aa81b8a0f27b9e63a819185",
-  "contract": "Separate fresh/resume/snapshot instructions and retain native MCP credentials byte-for-byte in the owning child tool store; no native methods or acceptance conditions changed. Existing workers retain old open shell inode and old prompt; new workers alone use this source."
+  "patch_sha256": "1074a4721b7c7991106815c5c740f12cc501cbeacdb1deb0323888b7244eca12",
+  "contract": "Separate fresh/resume/snapshot instructions and retain native MCP credentials byte-for-byte in the owning child tool store; no native methods or acceptance conditions changed. Existing workers retain old open shell inode and old prompt; new workers alone use this source. Origin retry is explicit, requires a dead failed worker with closed native ownership, unchanged previously admitted origin and no accepted current revision; preserves all old runs."
 }

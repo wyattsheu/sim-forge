@@ -240,7 +240,9 @@ and use its single-call JavaScript credential forwarder for every diagnostic MCP
 The child loads the exact file through functions.exec, retains its source in the child's
 private store, attaches exactly once, then obtains all authentication and live handles
 from that same private store. Never print, copy, transcribe, guess, or manually supply an
-owner_lease_token or live_session_handle. The parent never loads this private credential store.
+owner_lease_token. Session selectors in native private tool responses are expected; never
+transcribe them into requests or public reports. Their presence is not a failure and must
+not cause the child to stop. The parent never loads this private credential store.
 The forwarder changes argument transport only: all plans, episodes, probes, reflections,
 evidence, verdicts and terminal calls remain explicitly chosen by the owning child.
 If the child stops without a lawful native terminal, stop this orchestration promptly with
