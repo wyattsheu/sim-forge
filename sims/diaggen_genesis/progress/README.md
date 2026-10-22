@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T17:21:14+08:00（Asia/Taipei）
+更新：2026-10-22T17:21:23+08:00（Asia/Taipei）
 
 共 9 件：等待 3、執行中 3、完成 2、失敗 1、取消 0。
 
@@ -32,7 +32,7 @@ Run：`genesis_baseball_cap_20261022_fresh3`；執行中。
 | 階段 | 狀態 |
 |---|---|
 | 圖片清理 | success |
-| SAM3 分割 | pending |
+| SAM3 分割 | running |
 | OmniPart 幾何生成 | pending |
 | 材料推估 | pending |
 | 材料參數配置 | pending |
@@ -44,6 +44,10 @@ Run：`genesis_baseball_cap_20261022_fresh3`；執行中。
 Genesis 診斷 episode 數：0。
 
 ![baseball_cap_cleaned_image](media/baseball_cap_cleaned_image.png)
+
+![baseball_cap_processed_white_bg_png](media/baseball_cap_processed_white_bg_png.png)
+
+![baseball_cap_processed_rgba](media/baseball_cap_processed_rgba.png)
 
 
 ## kitchen_tongs
