@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T17:18:30+08:00",
+  "updated_at": "2026-10-22T17:19:17+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-22T17:18:30+08:00",
+      "updated_at": "2026-10-22T17:19:17+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -43,11 +43,11 @@
         {
           "name": "image_cleanup",
           "label": "圖片清理",
-          "status": "failed",
-          "ledger_status": "failed",
-          "ok": false,
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
           "started_at": "2026-10-22T09:18:28.418472+00:00",
-          "finished_at": "2026-10-22T09:18:28.431595+00:00"
+          "finished_at": "2026-10-22T09:19:10.627214+00:00"
         },
         {
           "name": "sam3_omnipart_2d_segmentation",
@@ -132,7 +132,13 @@
         },
         "meaning": "observation_only_not_retry_authorization"
       },
-      "media": [],
+      "media": [
+        {
+          "path": "media/baseball_cap_cleaned_image.png",
+          "bytes": 2758773,
+          "sha256": "aec30a3b3acb8e5d07017e747c7efa6068cfbe476c17764f606fd18636646c70"
+        }
+      ],
       "id": "baseball_cap",
       "status": "running",
       "attempts": 4,
@@ -149,7 +155,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T06:03:34.261605+00:00",
-      "updated_at": "2026-10-22T17:18:30+08:00",
+      "updated_at": "2026-10-22T17:19:17+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -271,7 +277,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:45.699903+00:00",
-      "updated_at": "2026-10-22T17:18:30+08:00",
+      "updated_at": "2026-10-22T17:19:18+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -443,7 +449,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-22T17:18:30+08:00",
+      "updated_at": "2026-10-22T17:19:18+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -559,7 +565,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-22T17:18:30+08:00",
+      "updated_at": "2026-10-22T17:19:18+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -746,7 +752,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-22T17:18:30+08:00",
+      "updated_at": "2026-10-22T17:19:18+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -862,7 +868,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-22T17:18:30+08:00",
+      "updated_at": "2026-10-22T17:19:18+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -978,7 +984,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T17:18:30+08:00",
+      "updated_at": "2026-10-22T17:19:18+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1120,7 +1126,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T17:18:30+08:00",
+      "updated_at": "2026-10-22T17:19:18+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1298,6 +1304,11 @@
     }
   ],
   "media": [
+    {
+      "path": "media/baseball_cap_cleaned_image.png",
+      "bytes": 2758773,
+      "sha256": "aec30a3b3acb8e5d07017e747c7efa6068cfbe476c17764f606fd18636646c70"
+    },
     {
       "path": "media/kitchen_tongs_cleaned_image.png",
       "bytes": 1056973,
@@ -1524,5 +1535,5 @@
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "614a468fc16fd930215b93e14106ef48cd1cfebb8ba64a0b2c1bcbf91131b268"
+  "signature": "3a4b752672aecab39d32d50c225f1d4fab18899ad45f37c8a1b415e4c1155837"
 }
