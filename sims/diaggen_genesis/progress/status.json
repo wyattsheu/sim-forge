@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T18:01:09+08:00",
+  "updated_at": "2026-10-22T18:02:58+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-22T18:01:09+08:00",
+      "updated_at": "2026-10-22T18:02:58+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -220,7 +220,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T06:03:34.261605+00:00",
-      "updated_at": "2026-10-22T18:01:09+08:00",
+      "updated_at": "2026-10-22T18:02:58+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -392,7 +392,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T09:14:45.699903+00:00",
-      "updated_at": "2026-10-22T18:01:09+08:00",
+      "updated_at": "2026-10-22T18:02:58+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -420,11 +420,11 @@
         {
           "name": "omnipart_generate_parts",
           "label": "OmniPart 幾何生成",
-          "status": "running",
-          "ledger_status": "pending",
-          "ok": false,
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
           "started_at": "2026-10-22T09:54:49.966781+00:00",
-          "finished_at": null
+          "finished_at": "2026-10-22T10:02:53.297056+00:00"
         },
         {
           "name": "hag4r_gpt_staged_material_inference",
@@ -516,6 +516,36 @@
           "path": "media/sneaker_segmentation_overlay.png",
           "bytes": 194197,
           "sha256": "7030a1443c7f35da2e81eb91cb906afd408338184fc9639859e407570eb17d72"
+        },
+        {
+          "path": "media/sneaker_omnipart_top.png",
+          "bytes": 9239,
+          "sha256": "e3ea2fdf54121f55a0c1705d26dabf7bb2a7974043b302d1e9d14e12fbb68d8e"
+        },
+        {
+          "path": "media/sneaker_omnipart_bottom.png",
+          "bytes": 7391,
+          "sha256": "93f2af71b5a3abc3ff22fcdd8d32a65eff2db3d69628f993621fce073e6722f2"
+        },
+        {
+          "path": "media/sneaker_omnipart_front.png",
+          "bytes": 9291,
+          "sha256": "967dcbe1dea8b29bb25c9a04ae199066a80706bc6e6facd6e68d64df2118c407"
+        },
+        {
+          "path": "media/sneaker_omnipart_back.png",
+          "bytes": 10140,
+          "sha256": "c798e33dedbf4f3ed3fb7a8a2b4853bd987c20ba4271083a0bf8d7d33bb36559"
+        },
+        {
+          "path": "media/sneaker_omnipart_left.png",
+          "bytes": 7402,
+          "sha256": "79273217338d0edc05ecf070cd6a61080974f869eb0bd2963b9df7bbf3601e07"
+        },
+        {
+          "path": "media/sneaker_omnipart_right.png",
+          "bytes": 8261,
+          "sha256": "12a87a356e874b88fce0fe80515e88afacadbc81536bd7a12c5318e388953e25"
         }
       ],
       "id": "sneaker",
@@ -534,7 +564,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-22T18:01:09+08:00",
+      "updated_at": "2026-10-22T18:02:58+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -721,7 +751,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-22T18:01:09+08:00",
+      "updated_at": "2026-10-22T18:02:58+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -908,7 +938,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-22T18:01:09+08:00",
+      "updated_at": "2026-10-22T18:02:58+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1080,7 +1110,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-22T18:01:09+08:00",
+      "updated_at": "2026-10-22T18:02:58+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1196,7 +1226,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T18:01:09+08:00",
+      "updated_at": "2026-10-22T18:02:58+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1338,7 +1368,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T18:01:09+08:00",
+      "updated_at": "2026-10-22T18:02:58+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1667,6 +1697,36 @@
       "sha256": "7030a1443c7f35da2e81eb91cb906afd408338184fc9639859e407570eb17d72"
     },
     {
+      "path": "media/sneaker_omnipart_top.png",
+      "bytes": 9239,
+      "sha256": "e3ea2fdf54121f55a0c1705d26dabf7bb2a7974043b302d1e9d14e12fbb68d8e"
+    },
+    {
+      "path": "media/sneaker_omnipart_bottom.png",
+      "bytes": 7391,
+      "sha256": "93f2af71b5a3abc3ff22fcdd8d32a65eff2db3d69628f993621fce073e6722f2"
+    },
+    {
+      "path": "media/sneaker_omnipart_front.png",
+      "bytes": 9291,
+      "sha256": "967dcbe1dea8b29bb25c9a04ae199066a80706bc6e6facd6e68d64df2118c407"
+    },
+    {
+      "path": "media/sneaker_omnipart_back.png",
+      "bytes": 10140,
+      "sha256": "c798e33dedbf4f3ed3fb7a8a2b4853bd987c20ba4271083a0bf8d7d33bb36559"
+    },
+    {
+      "path": "media/sneaker_omnipart_left.png",
+      "bytes": 7402,
+      "sha256": "79273217338d0edc05ecf070cd6a61080974f869eb0bd2963b9df7bbf3601e07"
+    },
+    {
+      "path": "media/sneaker_omnipart_right.png",
+      "bytes": 8261,
+      "sha256": "12a87a356e874b88fce0fe80515e88afacadbc81536bd7a12c5318e388953e25"
+    },
+    {
       "path": "media/usb_hub_cleaned_image.png",
       "bytes": 1324164,
       "sha256": "e4264e42306c814048634899bc6fa1413bb1779905549bcfca29e1c6abadcb96"
@@ -1957,5 +2017,5 @@
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "479bebb0c6f124431b910a5847c20fad00575c70d131fcb898ba9af75df9e0b4"
+  "signature": "2f4db08dff12d8198765fbe999c48e681184c00c9c00cfe80d8543c7590d23f4"
 }
