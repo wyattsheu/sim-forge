@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T18:18:04+08:00（Asia/Taipei）
+更新：2026-10-22T18:18:22+08:00（Asia/Taipei）
 
 共 9 件：等待 1、執行中 3、完成 4、失敗 1、取消 0。
 
@@ -126,7 +126,7 @@ Run：`genesis_sneaker_20261022_clean_diagnostics1`；執行中。
 | 材料參數配置 | success |
 | 體積網格處理 | success |
 | Genesis 物理診斷 | success |
-| 貼圖生成 | pending |
+| 貼圖生成 | running |
 | 最終匯出 | pending |
 
 Genesis 診斷 episode 數：0。
