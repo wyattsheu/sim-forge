@@ -55,3 +55,5 @@ observed: 2026-10-22
 ## 證據
 
 `tools/diaggen_support/diagnostic_retry_reset.{patch,json}`；`tools/diaggen_support/check_diagnostic_retry.py`；`sims/diaggen_genesis/tests/test_diagnostic_retry_reset.py`；本機 `tools/diaggen/outputs/preflight/diagnostic_retry_reset_baseline_20261022/{manifest,sneaker,sloth}.json`。16 項測試證明的是轉移修復與驗證契約，不能據此宣稱兩個物件已完成完整診斷或匯出。
+
+- 區分轉送器的本地參數拒絕、原生認證錯誤與自動審查拒絕：本地尚未送出的呼叫若只是多填身份欄位，應列出欄位名稱並依原契約移除；不能誤判為巢狀業務欄位被禁用、重新 attach 或繞過真正的審查。
