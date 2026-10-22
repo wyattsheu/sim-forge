@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T16:44:02+08:00（Asia/Taipei）
+更新：2026-10-22T16:45:19+08:00（Asia/Taipei）
 
 共 9 件：等待 0、執行中 2、完成 1、失敗 6、取消 0。
 
@@ -158,7 +158,7 @@ Run：`genesis_sloth_20261022_clean_diagnostics3`；執行中。
 | 材料參數配置 | success |
 | 體積網格處理 | success |
 | Genesis 物理診斷 | success |
-| 貼圖生成 | pending |
+| 貼圖生成 | running |
 | 最終匯出 | pending |
 
 Genesis 診斷 episode 數：2。
