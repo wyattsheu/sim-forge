@@ -2,9 +2,9 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-23T02:24:05+08:00（Asia/Taipei）
+更新：2026-10-23T02:33:25+08:00（Asia/Taipei）
 
-共 9 件：等待 2、執行中 1、完成匯出 6、失敗 0、取消 0。
+共 9 件：等待 1、執行中 2、完成匯出 6、失敗 0、取消 0。
 
 已完成匯出中：Genesis accept 6 件；仍需修正 0 件。
 
@@ -21,7 +21,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 |---|---|---|---|---|---|---|---|
 | baseball_cap | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
 | kitchen_tongs | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
-| sneaker | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
+| sneaker | running | not_initialized | 尚未初始化 | 24576 MiB | 0/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
 | usb_hub | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
 | sloth | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
 | sauce_keeper | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
@@ -143,7 +143,7 @@ Genesis 診斷 episode 數：2；結果：accept。
 
 ## sneaker
 
-Run：`genesis_sneaker_20261023_sole_group6`；等待空閒 GPU。
+Run：`genesis_sneaker_20261023_sole_group6`；執行中。
 
 | 階段 | 狀態 |
 |---|---|
