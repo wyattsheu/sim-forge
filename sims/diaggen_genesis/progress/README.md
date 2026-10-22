@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-23T02:23:31+08:00（Asia/Taipei）
+更新：2026-10-23T02:24:05+08:00（Asia/Taipei）
 
 共 9 件：等待 2、執行中 1、完成匯出 6、失敗 0、取消 0。
 
@@ -35,9 +35,11 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 |---|---|
 | baseball_cap | completed |
 | kitchen_tongs | completed |
+| sneaker | queued |
 | usb_hub | completed |
 | sloth | completed |
 | sauce_keeper | completed |
+| dragon | queued |
 | capybara_plush_toy | running |
 | curling_iron | completed |
 
