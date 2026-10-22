@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T20:57:52+08:00",
+  "updated_at": "2026-10-22T20:58:54+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-22T20:57:52+08:00",
+      "updated_at": "2026-10-22T20:58:55+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -222,7 +222,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T06:03:34.261605+00:00",
-      "updated_at": "2026-10-22T20:57:52+08:00",
+      "updated_at": "2026-10-22T20:58:55+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -396,7 +396,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T09:14:45.699903+00:00",
-      "updated_at": "2026-10-22T20:57:52+08:00",
+      "updated_at": "2026-10-22T20:58:55+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -575,7 +575,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-22T20:57:52+08:00",
+      "updated_at": "2026-10-22T20:58:55+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -764,7 +764,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-22T20:57:52+08:00",
+      "updated_at": "2026-10-22T20:58:55+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -953,7 +953,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-22T20:57:52+08:00",
+      "updated_at": "2026-10-22T20:58:55+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1142,7 +1142,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T12:48:11.503190+00:00",
-      "updated_at": "2026-10-22T20:57:52+08:00",
+      "updated_at": "2026-10-22T20:58:55+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1163,11 +1163,11 @@
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "failed",
-          "ledger_status": "failed",
-          "ok": false,
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
           "started_at": "2026-10-22T12:57:24.659330+00:00",
-          "finished_at": "2026-10-22T12:57:35.639116+00:00"
+          "finished_at": "2026-10-22T12:58:42.445807+00:00"
         },
         {
           "name": "omnipart_generate_parts",
@@ -1261,13 +1261,13 @@
         },
         {
           "path": "media/dragon_ordered_mask_vis.png",
-          "bytes": 2243,
-          "sha256": "1c076bec91817fc03fc98b75216e8dc5da4aae7fa9eb9623113ec87242c527a0"
+          "bytes": 2158,
+          "sha256": "23791a34b990c9bda42e3a96415963b7966acbc33e39efd11aed17c377637927"
         },
         {
           "path": "media/dragon_segmentation_overlay.png",
-          "bytes": 61899,
-          "sha256": "ef87f9a09ab3bfc0459f33a833571c993cf73936fd37a1fbce95a16c9cf019cb"
+          "bytes": 61258,
+          "sha256": "f1ea2cc05dc8f1de4b2c798fd86573b54e1104a18cba63b893a02a62182b1a01"
         }
       ],
       "id": "dragon",
@@ -1286,7 +1286,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T20:57:52+08:00",
+      "updated_at": "2026-10-22T20:58:55+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1430,7 +1430,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T20:57:52+08:00",
+      "updated_at": "2026-10-22T20:58:55+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -2022,13 +2022,13 @@
     },
     {
       "path": "media/dragon_ordered_mask_vis.png",
-      "bytes": 2243,
-      "sha256": "1c076bec91817fc03fc98b75216e8dc5da4aae7fa9eb9623113ec87242c527a0"
+      "bytes": 2158,
+      "sha256": "23791a34b990c9bda42e3a96415963b7966acbc33e39efd11aed17c377637927"
     },
     {
       "path": "media/dragon_segmentation_overlay.png",
-      "bytes": 61899,
-      "sha256": "ef87f9a09ab3bfc0459f33a833571c993cf73936fd37a1fbce95a16c9cf019cb"
+      "bytes": 61258,
+      "sha256": "f1ea2cc05dc8f1de4b2c798fd86573b54e1104a18cba63b893a02a62182b1a01"
     },
     {
       "path": "media/capybara_plush_toy_cleaned_image.png",
@@ -2130,7 +2130,7 @@
     "enabled": true,
     "interval_seconds": 60,
     "max_resumes_per_run": 2,
-    "updated_at": "2026-10-22T20:57:03+08:00",
+    "updated_at": "2026-10-22T20:58:03+08:00",
     "jobs": [
       {
         "id": "baseball_cap",
@@ -2189,5 +2189,5 @@
     "classification": "pipeline_runtime",
     "outcome": "repaired_and_requeued"
   },
-  "signature": "e388929fa79f2d50d09020b79126f3539aff5b44bc47c5460ffdc71ce06f596f"
+  "signature": "6a3d7ec6c9c8f27314cdef48cb5963092ef32b9fa22af2df34437def34da26e4"
 }
