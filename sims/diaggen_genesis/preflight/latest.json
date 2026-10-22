@@ -1,10 +1,10 @@
 {
   "schema_version": "diaggen-full-runtime-preflight-v1",
-  "checked_at": "2026-10-22T16:18:48+08:00",
+  "checked_at": "2026-10-22T17:04:08+08:00",
   "overall_status": "pass",
   "simulator": "Genesis",
   "counts": {
-    "pass": 84,
+    "pass": 85,
     "fail": 0,
     "skip": 0
   },
@@ -16,32 +16,29 @@
     }
   ],
   "evidence_reuse": {
-    "unchanged_checks_reused": 80,
+    "unchanged_checks_reused": 81,
     "orchestration_checks_rerun": 3,
     "actual_cpu_tests": {
       "error": 0,
       "expected_fail": 0,
       "fail": 0,
-      "pass": 300,
-      "run": 300,
+      "pass": 302,
+      "run": 302,
       "skip": 0,
       "unexpected_success": 0
     },
-    "native_preview_contract_checks": 1,
+    "new_production_success": "genesis_sloth_20261022_clean_diagnostics3",
+    "native_sources_changed": false,
     "reviewed_runtime_source_changes": [
-      "tools/diaggen/.agents/skills/run-diaggen-pipeline/genesis-diagnostics/probe-targeting/SKILL.md",
-      "tools/diaggen_support/diagnostic_credentials.js",
+      "sims/diaggen_genesis/queue/run_one.sh",
       "tools/diaggen_support/diagnostic_credentials.md",
-      "tools/diaggen_support/native_patches.json",
-      "tools/diaggen_support/probe_preview_recovery.json",
-      "tools/diaggen_support/probe_preview_recovery.patch"
-    ],
-    "native_python_and_physical_libraries_changed": false,
-    "native_skill_documentation_changed": true
+      "tools/diaggen_support/queue_verified_diagnostics.json",
+      "tools/diaggen_support/queue_verified_diagnostics.patch"
+    ]
   },
   "scope": "Verified credential transport and mode-specific launcher; native sources and environment unchanged.",
   "limitations": [
-    "Only curling iron is a completed production asset.",
+    "Curling iron and sloth are completed production assets; other jobs may still fail.",
     "No full-model peak VRAM measurement; large-tensor capybara fix awaits production validation.",
     "New diagnostic/snapshot production success is not established by preflight.",
     "LLM/imagegen access uses existing successful execution evidence; no new cloud call in preflight.",
@@ -751,6 +748,10 @@
       "status": "pass"
     },
     {
+      "name": "probe_preview_contract/native_revision_preview_uniqueness",
+      "status": "pass"
+    },
+    {
       "name": "namespace_unittest_suite",
       "status": "pass"
     },
@@ -763,7 +764,7 @@
       "status": "pass"
     },
     {
-      "name": "probe_preview_contract/native_revision_preview_uniqueness",
+      "name": "completed_export/sloth_actual_strict_accepted_export",
       "status": "pass"
     }
   ]

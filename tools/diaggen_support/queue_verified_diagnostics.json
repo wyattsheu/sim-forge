@@ -5,7 +5,7 @@
     "sims/diaggen_genesis/queue/run_one.sh": {
       "before_sha256": "4dce13cf532e45fa4b3a31d080b0f768defde7fbdc575d55b0737890a5c873a3",
       "before_md5": "240c5c5500c457496a8a6660da3b2734",
-      "after_sha256": "540369655d3cb009135c3d95bd07d1f765db6b184c38fa88c19acc9b1a97477f"
+      "after_sha256": "9bc85fbfb54864245cbd622490fafe7a36ea45458865d28f38d7fcfa54b3c034"
     },
     "sims/diaggen_genesis/queue/batch_control.py": {
       "before_sha256": "894ed2d47e4224e7b2d0fa61e1d8c9a046fe790cec13570ed8d725b6dd94e05f",
@@ -13,6 +13,6 @@
       "after_sha256": "3727627d83c86248de1b225b4fe9d99b695a0f5282c563d8be2c7de07d6297fe"
     }
   },
-  "patch_sha256": "1074a4721b7c7991106815c5c740f12cc501cbeacdb1deb0323888b7244eca12",
+  "patch_sha256": "34093d95a655d534328f0b88aa5291a711b6ea49e5dd2c8506694be300f4b2f4",
   "contract": "Separate fresh/resume/snapshot instructions and retain native MCP credentials byte-for-byte in the owning child tool store; no native methods or acceptance conditions changed. Existing workers retain old open shell inode and old prompt; new workers alone use this source. Origin retry is explicit, requires a dead failed worker with closed native ownership, unchanged previously admitted origin and no accepted current revision; preserves all old runs."
 }

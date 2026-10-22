@@ -1,0 +1,94 @@
+{
+  "run_id": "genesis_sloth_20261022_clean_diagnostics3",
+  "accepted_revision": "revision_0000",
+  "all_native_stages_successful": true,
+  "strict_genesis_accept": true,
+  "valid": true,
+  "artifact_count": 16,
+  "artifact_sha256": {
+    "appearance/albedo.png": "f416645bbdfb12da98727fc0809702241f70fe2c4ec5117f4737a16939906620",
+    "appearance/post_mesh_texture_request.json": "71a8f65c40c5c19d4a5ae2467a5ea1ccfd55f37471f07ee3ff2bb38389990719",
+    "appearance/qa/confidence.png": "1722205b72260185a9b6a8e52f00a0165e2c6b60f18f4548287e4f7a224b89dc",
+    "appearance/qa/fill_provenance.png": "ac6b06c3484380e0621aff0f918c60fa15b6763dd10de48d57e961f496bf374e",
+    "appearance/qa/observed_coverage.png": "67a7366f79cb0a9d6205afd9b454a30cea80f40df6b6dedbcb51ade2529686af",
+    "appearance/qa/report.json": "6e6ed2749cef077319983ccaf190595bdf8662321988e441cecfcfc27a500452",
+    "appearance/qa/rest_pose_render.png": "d73059d4885300805115338dea7720026b5d83d387fbada325634e6db8e1c8fb",
+    "appearance/visual_manifest.json": "7654da9f4520f6b8d12f10df73965efb46d9e7aa1d3856811a9db37c5b3ca112",
+    "appearance/visual_mesh.glb": "53c980e3be122b093629fce07e4384c99259ed9705eba9e359fed4a1a42b0d83",
+    "appearance/visual_to_physics.npz": "697ac833212b497cd367c95d294999087400d9179c0153c073b49ff38d088d0f",
+    "final_mesh.mesh": "99f9c0a6facc4310a01dbc21fc7b5082a9ea320650759a0ebddea1b313c1ab3e",
+    "heterogeneous_params.npz": "4b506f181da16a7ea41054f51e57bc331982fedc6f7cd481ee0133705f935a8c",
+    "inferred_params.json": "14153224e50bd9ecf5768d06d24e20a5a3bbb12350fa1b1b78451351efcceb25",
+    "metric_mesh_scaling.json": "86b015f6c53017b4894fcd8cb01ce141683a0baf804732bbece759663f0372d4",
+    "volume_topology.json": "48337b09e6f652b19adf406a3d214e90b62b3b92b8563f8573638acbc15818d4"
+  },
+  "manifest_sha256": "1797e34939dad888ccd05b456fdf617dbe2cc1dad53cbbb997d05a6cbaa46f46",
+  "native_validation": {
+    "appearance_schema": "hag4r-post-mesh-texture-visual-v1",
+    "face_connected_components": 1,
+    "material_labels": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "native_appearance_valid": true,
+    "native_tet_valid": true,
+    "physical_contract": {
+      "metric_mesh_scaling": {
+        "scale_factor": 0.4506391112215761,
+        "schema_version": "hag4r-metric-max-dimension-scaling-v1",
+        "target_max_dimension_m": 0.45
+      },
+      "params": {
+        "keys": [
+          "part_E_nu",
+          "part_colors",
+          "part_density",
+          "part_indices",
+          "part_volume_fill_mode_codes",
+          "tet_E_nu",
+          "tet_density",
+          "tet_part_labels"
+        ],
+        "tet_count": 21133
+      },
+      "volume_topology": {
+        "schema_version": "hag4r-volume-topology-v3",
+        "tet_budget_status": "within_budget",
+        "tet_count": 21133,
+        "volume_topology": "mixed",
+        "warnings": []
+      }
+    },
+    "point_count": 4912,
+    "tet_count": 21133
+  },
+  "state_sha256": "caa22a0fdd5a86a427651a1487da70b06b3cd7ad0093b0880a6bf78918378a46",
+  "schema_version": "diaggen-public-completed-export-v1",
+  "started_at": "2026-10-22T16:18:53+08:00",
+  "finished_at": "2026-10-22T16:49:42+08:00",
+  "successful_attempt_seconds": 1849,
+  "timing_scope": "Diagnostics snapshot suffix only; six completed upstream stages were preserved",
+  "videos": [
+    {
+      "episode": 1,
+      "codec": "h264",
+      "width": 2304,
+      "height": 768,
+      "fps": 10,
+      "frames": 55,
+      "seconds": 5.5
+    },
+    {
+      "episode": 2,
+      "codec": "h264",
+      "width": 2304,
+      "height": 768,
+      "fps": 10,
+      "frames": 28,
+      "seconds": 2.8
+    }
+  ]
+}

@@ -751,6 +751,9 @@ exec PYTHON "$@"
             self.assertTrue((self.job_directory / "RESUMED").is_file())
         prompt = (self.job_directory / "synthetic_codex_prompt.txt").read_text()
         self.assertIn("Execution mode is " + ("diagnostics_snapshot" if snapshot else "resume"), prompt)
+        self.assertIn("These restrictions apply only to Genesis diagnostics", prompt)
+        self.assertIn("stage agents may call their documented native halt_*_stage", prompt)
+        self.assertIn("The forwarder is authorized to inject that original value", prompt)
         self.assertIn("stage_tool.py TOOL_NAME --input-json", prompt)
         self.assertIn("hag4r_mesh/bin/python", prompt)
         return self.queue_state()["jobs"][0]

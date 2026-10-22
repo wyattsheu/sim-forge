@@ -84,7 +84,11 @@
       store(bindingKey, {authInvalid: true});
       const result = await endpoint("attach_diagnostic_run")({run_root: runRoot, agent_invocation_id: invocationId});
       const payloads = objects(result);
-      if (payloads.some(item => item.isError === true)) return result;
+      if (payloads.some(item => item.isError === true)) {
+        const message = payloads.filter(item => typeof item.text === "string")
+          .map(item => item.text).join("\n").slice(0, 2000);
+        throw new Error("Native diagnostic attach rejected: " + (message || "native MCP error without message"));
+      }
       const candidates = payloads.filter(item => typeof item.owner_lease_token === "string");
       const unique = new Map(candidates.map(item => [JSON.stringify(item), item]));
       if (unique.size !== 1) throw new Error("Attach response has missing or ambiguous credentials");

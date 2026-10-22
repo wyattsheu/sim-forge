@@ -2,6 +2,8 @@
 from pathlib import Path
 import shutil
 import subprocess
+import inspect
+import sys
 import unittest
 
 SOURCE = Path(__file__).resolve().parents[3] / "tools/diaggen_support/diagnostic_credentials.js"
@@ -21,6 +23,7 @@ function setup(options = {}) {
   for (const name of methods) tools['mcp__hag4r_genesis_diagnostics__'+name] = async args => {
     calls.push({name, args});
     if (name === 'attach_diagnostic_run') {
+      if (options.attachError) return {isError:true,result:[{type:'text',text:'actual native attach rejection'}]};
       const result = {...auth, ...(options.badIdentity ? {agent_invocation_id:'wrong-id'} : {})};
       if (options.duplicateCredentials) return {content:[{type:'text', text:JSON.stringify(result)},
         {type:'text', text:JSON.stringify({...result, owner_lease_token:'different'})}]};
@@ -53,6 +56,15 @@ CASE
 
 
 class CredentialForwarderTests(unittest.TestCase):
+    def test_native_authenticated_log_signature_requires_forwarded_credentials(self):
+        sys.path.insert(0, str(SOURCE.parent.parent / "diaggen"))
+        from hag4r.agentic.diagnostic_mcp_server import _authenticated_diagnostic_signature
+        from hag4r.agentic.runtime_tools import diagnostics
+        signature = _authenticated_diagnostic_signature(diagnostics.inspect_genesis_runtime_logs)
+        for name in ("run_root", "agent_invocation_id", "owner_lease_token", "live_session_handle"):
+            self.assertEqual(signature.parameters[name].default, inspect.Parameter.empty)
+            self.assertEqual(signature.parameters[name].kind, inspect.Parameter.KEYWORD_ONLY)
+
     def run_js(self, case):
         node = shutil.which("node")
         self.assertIsNotNone(node, "Node is required to test the real JS source")
@@ -154,6 +166,13 @@ class CredentialForwarderTests(unittest.TestCase):
           s.client().show(r); assert.equal(s.displayed.length,2);
           assert.equal(JSON.parse(s.displayed[0].value).compile_id,'actual-native-compile-02');
           assert.equal(s.displayed[1].value.data,'unchanged-image-bytes');assert.equal(s.calls.length,2);""")
+
+    def test_native_attach_error_cannot_be_ignored_as_success_and_retains_real_reason(self):
+        self.run_js("""const s=setup({attachError:true}); let falselyClaimed=false;
+          await assert.rejects((async()=>{await s.client().attach('/native/outputs/run','fresh-id'); falselyClaimed=true;})(),
+            /Native diagnostic attach rejected: actual native attach rejection/);
+          assert.equal(falselyClaimed,false);assert.equal(s.calls.length,1);
+          await assert.rejects(s.client().call('compute_part_grounding_context',{}),/No usable/);""")
 
 
 if __name__ == "__main__":

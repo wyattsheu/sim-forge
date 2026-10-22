@@ -1,6 +1,6 @@
 # 15:28 起的正式恢復驗證
 
-使用者要求先跑通一件新物件，遇到錯誤立即分析再繼續。這次的實際目標是樹懶的新 run `genesis_sloth_20261022_clean_diagnostics1` 完成原生診斷、貼圖與最終匯出驗收；啟動和測試通過均不當作完成。
+**樹懶已於 16:49:42 完整成功。** 最終 run 為 `genesis_sloth_20261022_clean_diagnostics3`，九階段紀錄均成功、原生 strict accept、貼圖／匯出與完成驗收通過。下列保留每次失敗、修正與驗證的紀錄；前兩輪不當作成功。
 
 ## 新查明：USB Hub 最近一次中斷是憑證抄寫錯誤
 
@@ -52,3 +52,25 @@
 新增回歸測試執行真正的 native revise／preview／reflection 函式本體，重現「額外 preview → 唯一性失敗」，並驗證「使用 revise 回傳的單一 preview → 通過該反思登記邊界」。這是 bookkeeping 契約測試，不冒充物理探測或完整 accept。
 
 完整收集初次有 10 項失敗，原因是安裝測試的固定補丁清單仍只列七份；加入已核對的第八份補丁後，重跑完整收集，**300 項通過，0 fail／error／skip；啟動憑證 84 項通過**。第一次失敗與後續通過的報告都保留在本機 audit 的 `round3/`。第三個乾淨 run 為 `genesis_sloth_20261022_clean_diagnostics3`，仍由原始六階段成功快照啟動，尚待正式結果。
+
+## 正式成功與獨立驗收
+
+第三輪於 **16:18:53–16:49:42** 完成（30 分 49 秒）。這是保留六個成功上游階段後的診斷、貼圖、匯出耗時，不是從原始圖片重新生成全部幾何的時間。
+
+- 兩個區域 `raised_arm_flex`、`face_panel_edge` 均完成 qualifying probe 與 `coverage_complete` 結算，selected-part fraction 分別為 0.9166666666666666／1.0；兩 session 正常關閉。
+- 原生嚴格 `accept`，parent 正式轉移至貼圖，再執行 final export；accepted／exported revision 都是 `revision_0000`。
+- 九個 stage 成功，16 個匯出產物驗證通過。獨立唯讀 validator 再次通過；包含 4912 vertices、21133 tets、五個材料標籤、單一 face-connected component，以及有效的 visual／physics 綁定。
+- 兩段 H.264 triptych 影片皆為 2304×768、10 fps，分別 55 frames／5.5 秒與 28 frames／2.8 秒。
+- 完整歸檔位於 `sims/diaggen_genesis/runs/genesis_sloth_20261022_clean_diagnostics3/`。核心成品在 `tools/diaggen/outputs/run_pipeline/genesis_sloth_20261022_clean_diagnostics3/`，包括 `.mesh`、異質材料 `.npz`、貼圖 `.glb` 與 `albedo.png`。
+
+公開驗收與產物雜湊見 [sloth_completed_validation.json](sloth_completed_validation.json)。[第一段影片](../progress/media/sloth_episode_001_triptych_video.mp4)／[第二段影片](../progress/media/sloth_episode_002_triptych_video.mp4) 由背景發布器同步。外觀仍較粗糙，未宣稱與實物量測校準一致。
+
+## 接續工作與授權範圍釐清
+
+USB 的一次 attach 實際未成立，child 卻忽略回應後輸出成功訊息，之後才被本機憑證 guard 擋住。forwarder 現在會對 native attach error 直接拋出原始錯誤，防止這種假成功；既有 credential store 保護保留。該修改的 301 項完整回歸通過，已另建 USB 的乾淨 run。
+
+醬料盒一次 bounded runtime-log 讀取遭自動審核拒絕，理由是直接供應 lease token。但實際 caller 使用 `client.call`，沒有手填 authentication 欄位；原生 MCP 簽名又要求該欄位。龍的 cleanup halt 也被誤套為 diagnostics 的 business-halt 禁令。這些拒絕都沒有被間接執行；已保存紀錄並整理 [原生授權與 scope 證據](NATIVE_AUTHORIZATION_SCOPE.md)，釐清 forwarder 必須傳送保留值、diagnostics 禁令與合法 non-diagnostic stage terminal 的不同範圍。
+
+目前完整 CPU／回歸為 **302 項通過，0 fail／error／skip**。啟動憑證 **85 項通過**，新增樹懶正式成功產物核對；沿用的原生／環境證據都經來源、輸入與 binary inventory 比對，不能把這個數量當作其他物件成功。
+
+修正已接續安排球鞋乾淨診斷快照、醬料盒新診斷、料理夾同 run 候選重驗，以及棒球帽 fresh run。每件是否完成仍依自己的 native terminal、產物與驗收判定；水豚的 spconv 大張量限制與龍的候選原始 metadata 缺口仍須獨立處理。

@@ -34,7 +34,7 @@
  cat > "$DIAGGEN_JOB_QUEUE_DIR/prompt.txt" <<EOF
  Complete this one user-authorized DiagGen asset-generation run in native Genesis.
  Read and use .agents/skills/run-diaggen-pipeline/SKILL.md; the initialized run is $RUN_ROOT.
-@@ -205,18 +232,24 @@
+@@ -205,18 +232,33 @@
  output quality. The guard is an observation, not a memory reservation or OOM guarantee.
  For fresh image cleanup, stop after a passing Attempt 1; do not generate Attempt 2 after it
  passes. For a resume with successful cleanup, skip all imagegen and cleanup registration.
@@ -59,13 +59,22 @@
 +owner_lease_token. Session selectors in native private tool responses are expected; never
 +transcribe them into requests or public reports. Their presence is not a failure and must
 +not cause the child to stop. The parent never loads this private credential store.
++Native diagnostic MCP signatures require the retained owner_lease_token in the wire
++request. The forwarder is authorized to inject that original value from its own successful
++attach; the child must not put authentication fields in client.call arguments. This is
++normal native authentication, and private custody does not mean omitting required fields.
++Read $WORKSPACE/sims/diaggen_genesis/analysis/NATIVE_AUTHORIZATION_SCOPE.md for the verified
++call path and scope if provenance is in doubt; never bypass an actual approval denial.
 +The forwarder changes argument transport only: all plans, episodes, probes, reflections,
 +evidence, verdicts and terminal calls remain explicitly chosen by the owning child.
 +If the child stops without a lawful native terminal, stop this orchestration promptly with
 +the actual error and existing artifact paths. Do not spin through lease countdowns or spawn
 +another diagnostic retry in this run. The interactive supervisor will inspect and repair
 +that failure before authorizing a separate fresh child/run. Preserve all native ledgers;
-+never force a business halt, close, lease deletion, takeover, or fabricated recommendation.
++These restrictions apply only to Genesis diagnostics: never fabricate a diagnostic
++business halt, close, lease deletion, takeover, or recommendation. Owning non-diagnostic
++stage agents may call their documented native halt_*_stage tools when their real inputs
++or outputs fail the owning skill's checks; preserve the actual reason and stage budget.
  After successful diagnostic transition, texture, and final export, the parent must run:
  $MESH_PYTHON $COMPLETION_VALIDATOR --run-root $RUN_ROOT --settle
  This deterministic completion check must pass before reporting the full run successful.

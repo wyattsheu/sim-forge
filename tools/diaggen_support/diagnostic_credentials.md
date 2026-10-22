@@ -5,6 +5,15 @@ MCP call with the original credentials; it does not choose actions, retry, plan,
 probe, synthesize, close or finalize automatically. Only the owning diagnostic
 child uses it. Never give its private store or credentials to the parent.
 
+The native MCP request requires its `owner_lease_token` field. The helper is
+explicitly authorized to supply the exact original token from its successful
+attach; the child must not manually supply it in `client.call` arguments. Keeping
+the token private does not mean omitting mandatory native authentication.
+Provenance and stage scope are recorded in
+`sims/diaggen_genesis/analysis/NATIVE_AUTHORIZATION_SCOPE.md`. An actual denied
+action must stop; read the evidence and report a remaining block without an
+indirect retry.
+
 In the child's first `functions.exec` call, load the exact repository file and
 retain the source in this child's tool store. This filesystem read is not a
 diagnostic runtime action. The first diagnostic runtime action remains attach:
