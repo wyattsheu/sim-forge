@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T18:36:20+08:00",
+  "updated_at": "2026-10-22T18:40:09+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-22T18:36:20+08:00",
+      "updated_at": "2026-10-22T18:40:09+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -220,7 +220,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T06:03:34.261605+00:00",
-      "updated_at": "2026-10-22T18:36:20+08:00",
+      "updated_at": "2026-10-22T18:40:09+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -392,7 +392,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T09:14:45.699903+00:00",
-      "updated_at": "2026-10-22T18:36:20+08:00",
+      "updated_at": "2026-10-22T18:40:09+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -569,7 +569,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-22T18:36:20+08:00",
+      "updated_at": "2026-10-22T18:40:09+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -756,7 +756,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-22T18:36:20+08:00",
+      "updated_at": "2026-10-22T18:40:09+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -943,7 +943,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-22T18:36:20+08:00",
+      "updated_at": "2026-10-22T18:40:09+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1130,7 +1130,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-22T18:36:20+08:00",
+      "updated_at": "2026-10-22T18:40:09+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1158,11 +1158,11 @@
         {
           "name": "omnipart_generate_parts",
           "label": "OmniPart 幾何生成",
-          "status": "running",
-          "ledger_status": "pending",
-          "ok": false,
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
           "started_at": "2026-10-22T10:36:12.736347+00:00",
-          "finished_at": null
+          "finished_at": "2026-10-22T10:40:05.464513+00:00"
         },
         {
           "name": "hag4r_gpt_staged_material_inference",
@@ -1254,6 +1254,36 @@
           "path": "media/dragon_segmentation_overlay.png",
           "bytes": 61119,
           "sha256": "65e5cd85c7a77fcd810abf02b2d868041ea84fbf76116c4817c22b9680a4e84a"
+        },
+        {
+          "path": "media/dragon_omnipart_top.png",
+          "bytes": 8230,
+          "sha256": "e9303e7fffdf8103be4880e71c40426b255a72272dec7b76f6bf3f6a6b756631"
+        },
+        {
+          "path": "media/dragon_omnipart_bottom.png",
+          "bytes": 7178,
+          "sha256": "33d6446f793ab9b378c7c32d95174d3b64e312ce1ab309d5e228509ffa5bbc16"
+        },
+        {
+          "path": "media/dragon_omnipart_front.png",
+          "bytes": 8759,
+          "sha256": "98ec8dd84bca2491e0448fdfbd2cfe79df8a9304f8f0aab62b7db3410c55d324"
+        },
+        {
+          "path": "media/dragon_omnipart_back.png",
+          "bytes": 9219,
+          "sha256": "5e296b41ea717b54c55654f7fd2092d495eae1a870dcbe70d608ef372f6cf326"
+        },
+        {
+          "path": "media/dragon_omnipart_left.png",
+          "bytes": 9636,
+          "sha256": "0403ca19e0d3f5063905ba623b861809e6a4dfa099051b770fe142ebe68e5f2b"
+        },
+        {
+          "path": "media/dragon_omnipart_right.png",
+          "bytes": 9428,
+          "sha256": "1da6378eb0ac18ff70af1e586dcb1355e083b43b71260e144733453674387c9f"
         }
       ],
       "id": "dragon",
@@ -1272,7 +1302,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T18:36:20+08:00",
+      "updated_at": "2026-10-22T18:40:09+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1414,7 +1444,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T18:36:20+08:00",
+      "updated_at": "2026-10-22T18:40:09+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -2013,6 +2043,36 @@
       "sha256": "65e5cd85c7a77fcd810abf02b2d868041ea84fbf76116c4817c22b9680a4e84a"
     },
     {
+      "path": "media/dragon_omnipart_top.png",
+      "bytes": 8230,
+      "sha256": "e9303e7fffdf8103be4880e71c40426b255a72272dec7b76f6bf3f6a6b756631"
+    },
+    {
+      "path": "media/dragon_omnipart_bottom.png",
+      "bytes": 7178,
+      "sha256": "33d6446f793ab9b378c7c32d95174d3b64e312ce1ab309d5e228509ffa5bbc16"
+    },
+    {
+      "path": "media/dragon_omnipart_front.png",
+      "bytes": 8759,
+      "sha256": "98ec8dd84bca2491e0448fdfbd2cfe79df8a9304f8f0aab62b7db3410c55d324"
+    },
+    {
+      "path": "media/dragon_omnipart_back.png",
+      "bytes": 9219,
+      "sha256": "5e296b41ea717b54c55654f7fd2092d495eae1a870dcbe70d608ef372f6cf326"
+    },
+    {
+      "path": "media/dragon_omnipart_left.png",
+      "bytes": 9636,
+      "sha256": "0403ca19e0d3f5063905ba623b861809e6a4dfa099051b770fe142ebe68e5f2b"
+    },
+    {
+      "path": "media/dragon_omnipart_right.png",
+      "bytes": 9428,
+      "sha256": "1da6378eb0ac18ff70af1e586dcb1355e083b43b71260e144733453674387c9f"
+    },
+    {
       "path": "media/capybara_plush_toy_cleaned_image.png",
       "bytes": 2311951,
       "sha256": "94bffd6c88b772cd5c34fd16919e6edcd2ea6aa78011c2662ffa43dbe4089331"
@@ -2108,5 +2168,5 @@
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "ff2c26b974bac2eb2298b213c1230e651db433f5d39401d84c1f967d722f69ec"
+  "signature": "b45745638452ebe9ed349312d2637d9e3ef958017978bec0080a27c3dcbb6cbb"
 }
