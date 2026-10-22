@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T16:42:59+08:00（Asia/Taipei）
+更新：2026-10-22T16:44:02+08:00（Asia/Taipei）
 
 共 9 件：等待 0、執行中 2、完成 1、失敗 6、取消 0。
 
@@ -19,7 +19,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | kitchen_tongs | failed | seeded | revision_0000 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
 | sneaker | failed | failed | revision_0000 | 24576 MiB | 6/9 | 重試材質快照與磁碟既有檔案衝突 |
 | usb_hub | running | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
-| sloth | running | seeded | revision_0000 | 24576 MiB | 7/9 | 未偵測到上述異常（非成功保證） |
+| sloth | running | running | revision_0000 | 24576 MiB | 7/9 | 未偵測到上述異常（非成功保證） |
 | sauce_keeper | failed | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
 | dragon | failed | seeded | revision_0000 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
 | capybara_plush_toy | failed | seeded | revision_0000 | 49152 MiB | 2/9 | 未偵測到上述異常（非成功保證） |
