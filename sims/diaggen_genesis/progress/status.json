@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T16:42:12+08:00",
+  "updated_at": "2026-10-22T16:42:59+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T05:52:10.698856+00:00",
-      "updated_at": "2026-10-22T16:42:12+08:00",
+      "updated_at": "2026-10-22T16:42:59+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -149,7 +149,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T06:03:34.261605+00:00",
-      "updated_at": "2026-10-22T16:42:12+08:00",
+      "updated_at": "2026-10-22T16:42:59+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -265,7 +265,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:39:46.288097+00:00",
-      "updated_at": "2026-10-22T16:42:12+08:00",
+      "updated_at": "2026-10-22T16:42:59+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -439,7 +439,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:39:25.082354+00:00",
-      "updated_at": "2026-10-22T16:42:12+08:00",
+      "updated_at": "2026-10-22T16:42:59+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -611,11 +611,11 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-22T16:42:12+08:00",
+      "updated_at": "2026-10-22T16:42:59+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
-        "terminal_status": "not_available"
+        "terminal_status": "success"
       },
       "stages": [
         {
@@ -675,11 +675,11 @@
         {
           "name": "genesis_live_diagnostic_loop",
           "label": "Genesis 物理診斷",
-          "status": "running",
-          "ledger_status": "running",
-          "ok": false,
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
           "started_at": "2026-10-22T08:21:56.949779+00:00",
-          "finished_at": null
+          "finished_at": "2026-10-22T08:42:57.419715+00:00"
         },
         {
           "name": "hag4r_post_mesh_texture",
@@ -765,6 +765,16 @@
           "path": "media/sloth_omnipart_right.png",
           "bytes": 8937,
           "sha256": "ddff1aafb93a7b73c104c6a6ba4579306783e99f13c729e12def6e3d1b3b9458"
+        },
+        {
+          "path": "media/sloth_episode_001_triptych_video.mp4",
+          "bytes": 373379,
+          "sha256": "a250ac0c6ef275903d8ba1e4b654c7b5639be3f7e2e0d2ac49ece1a9ceecfcaa"
+        },
+        {
+          "path": "media/sloth_episode_002_triptych_video.mp4",
+          "bytes": 103158,
+          "sha256": "20b6d66e11778b8ac83531952a1251f5d9067139acb116fe8a36f28d4edf4499"
         }
       ],
       "id": "sloth",
@@ -783,7 +793,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:24:07.068324+00:00",
-      "updated_at": "2026-10-22T16:42:12+08:00",
+      "updated_at": "2026-10-22T16:42:59+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
@@ -955,7 +965,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-22T16:42:12+08:00",
+      "updated_at": "2026-10-22T16:42:59+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1071,7 +1081,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T16:42:12+08:00",
+      "updated_at": "2026-10-22T16:42:59+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1213,7 +1223,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T16:42:12+08:00",
+      "updated_at": "2026-10-22T16:42:59+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1557,6 +1567,16 @@
       "sha256": "ddff1aafb93a7b73c104c6a6ba4579306783e99f13c729e12def6e3d1b3b9458"
     },
     {
+      "path": "media/sloth_episode_001_triptych_video.mp4",
+      "bytes": 373379,
+      "sha256": "a250ac0c6ef275903d8ba1e4b654c7b5639be3f7e2e0d2ac49ece1a9ceecfcaa"
+    },
+    {
+      "path": "media/sloth_episode_002_triptych_video.mp4",
+      "bytes": 103158,
+      "sha256": "20b6d66e11778b8ac83531952a1251f5d9067139acb116fe8a36f28d4edf4499"
+    },
+    {
       "path": "media/sauce_keeper_cleaned_image.png",
       "bytes": 1143799,
       "sha256": "10ae73d5cd9ee8685801e36006d683a6eff6ead160e164083509fa908bf8130c"
@@ -1707,5 +1727,5 @@
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "bc07c169b148e9b21cf057841a7c55eefecdab5194dfac058433fa3b5bdcd241"
+  "signature": "503fc589f3715d18802a167349a802faf0a3b941128c0759b2cff6a9d7eccb23"
 }
