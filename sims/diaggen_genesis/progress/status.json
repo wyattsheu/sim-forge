@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-23T03:02:26+08:00",
+  "updated_at": "2026-10-23T03:03:45+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-23T03:02:26+08:00",
+      "updated_at": "2026-10-23T03:03:45+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -222,7 +222,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T16:01:05.614594+00:00",
-      "updated_at": "2026-10-23T03:02:26+08:00",
+      "updated_at": "2026-10-23T03:03:45+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -406,12 +406,12 @@
       "simulator": "Genesis",
       "run_id": "genesis_sneaker_20261023_sole_group6",
       "phase": "running",
-      "pipeline_status": "running",
+      "pipeline_status": "success",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T18:33:27.681672+00:00",
-      "updated_at": "2026-10-23T03:02:26+08:00",
+      "updated_at": "2026-10-23T03:03:45+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -600,7 +600,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-23T03:02:26+08:00",
+      "updated_at": "2026-10-23T03:03:45+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -789,7 +789,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-23T03:02:26+08:00",
+      "updated_at": "2026-10-23T03:03:45+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -978,7 +978,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-23T03:02:26+08:00",
+      "updated_at": "2026-10-23T03:03:45+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1167,7 +1167,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-23T03:02:26+08:00",
+      "updated_at": "2026-10-23T03:03:45+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1285,7 +1285,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T17:03:25.448128+00:00",
-      "updated_at": "2026-10-23T03:02:26+08:00",
+      "updated_at": "2026-10-23T03:03:45+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1429,7 +1429,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-23T03:02:26+08:00",
+      "updated_at": "2026-10-23T03:03:45+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -2129,7 +2129,7 @@
     "enabled": true,
     "interval_seconds": 60,
     "max_resumes_per_run": 2,
-    "updated_at": "2026-10-23T03:02:03+08:00",
+    "updated_at": "2026-10-23T03:03:03+08:00",
     "jobs": [
       {
         "id": "baseball_cap",
@@ -2188,5 +2188,5 @@
     "classification": "native_business_halt",
     "outcome": "needs_attention"
   },
-  "signature": "b75431566854857e3fb946e577e43ddbb57b4b274a5b236c994c37ca7f7d51c4"
+  "signature": "0d3d4d41e13585abd3169aceffd7db1fa7f902113f5c460c6319117ba4353c17"
 }
