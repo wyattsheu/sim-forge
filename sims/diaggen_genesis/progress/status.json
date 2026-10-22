@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T21:43:07+08:00",
+  "updated_at": "2026-10-22T21:50:13+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-22T21:43:07+08:00",
+      "updated_at": "2026-10-22T21:50:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -222,7 +222,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T06:03:34.261605+00:00",
-      "updated_at": "2026-10-22T21:43:07+08:00",
+      "updated_at": "2026-10-22T21:50:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -396,7 +396,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T09:14:45.699903+00:00",
-      "updated_at": "2026-10-22T21:43:07+08:00",
+      "updated_at": "2026-10-22T21:50:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -575,7 +575,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-22T21:43:07+08:00",
+      "updated_at": "2026-10-22T21:50:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -764,7 +764,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-22T21:43:07+08:00",
+      "updated_at": "2026-10-22T21:50:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -953,7 +953,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-22T21:43:07+08:00",
+      "updated_at": "2026-10-22T21:50:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1142,12 +1142,12 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T12:48:11.503190+00:00",
-      "updated_at": "2026-10-22T21:43:07+08:00",
+      "updated_at": "2026-10-22T21:50:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
-        "terminal_status": "not_available",
-        "recommendation": "not_available",
+        "terminal_status": "success",
+        "recommendation": "revise",
         "export_outcome": "not_exported"
       },
       "stages": [
@@ -1208,11 +1208,11 @@
         {
           "name": "genesis_live_diagnostic_loop",
           "label": "Genesis 物理診斷",
-          "status": "running",
-          "ledger_status": "running",
-          "ok": false,
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
           "started_at": "2026-10-22T13:43:02.609395+00:00",
-          "finished_at": null
+          "finished_at": "2026-10-22T13:50:12.703841+00:00"
         },
         {
           "name": "hag4r_post_mesh_texture",
@@ -1316,7 +1316,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T21:43:07+08:00",
+      "updated_at": "2026-10-22T21:50:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1460,7 +1460,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T21:43:07+08:00",
+      "updated_at": "2026-10-22T21:50:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -2190,7 +2190,7 @@
     "enabled": true,
     "interval_seconds": 60,
     "max_resumes_per_run": 2,
-    "updated_at": "2026-10-22T21:43:03+08:00",
+    "updated_at": "2026-10-22T21:50:03+08:00",
     "jobs": [
       {
         "id": "baseball_cap",
@@ -2249,5 +2249,5 @@
     "classification": "pipeline_runtime",
     "outcome": "repaired_and_requeued"
   },
-  "signature": "0fd6f072bbcfee4b8a69a1604fbf00e0bcd37d31e0037da5cb5a9347c9ee7823"
+  "signature": "fe052cfcf4d1ca78dbf2976d5c107860a3baa6c8aa3bd0830a7ac202e77b8ac1"
 }
