@@ -1,5 +1,16 @@
 # 伺服器排程與自動監看
 
+## 2026-10-23：球鞋與龍的有依據重試
+
+使用者要求兩件再嘗試，並詢問原架構是否有可能透過修改完成。料理夾已於 00:34 完成 strict accept 與匯出，原九件目前六件完成。球鞋／龍的新工作保留所有舊原生 state、失敗及 queue log 歷史，仍使用原模型與六版本設定。
+
+- `genesis_sneaker_20261023_sole_group6`：沿用已核准、雜湊不變的 full-image snapshot origin，經既有 `diagnostics_snapshot_origin` 和原生 snapshot preflight 排隊。舊診斷僅將 `rubber_outsole` 作為目標，但 `side_perimeter_trim` 同樣被原材質推論判為橡膠。使用未修改的原生 `validate_grabbed_vertices_against_part` 重算三次保存的實際頂點與標籤，原結果 0.444／0.406／0.451 完全重現；候選鞋底組件 `[0,2]` 為 0.650／0.643／0.670。這是離線反事實分析，不是新探測或把舊失敗改成通過。新 owning child 必須重新查 grounding、檢視來源與各 part，確認這兩者確實是同一個有物理意義的區域後，才可用官方 `semantic_group_part_ids`／逐成員 grounding；不能加入鞋面等無關零件提高分數，完整 coverage／settlement／accept 條件不變。
+- `genesis_dragon_20261023_coarse_connector6`：使用同一張原圖重新走原生 cleanup／segmentation／3D 流程。四個候選概念（黃龍身體、肚片、成對眼睛、金色鑰匙圈組件）已通過原生概念切分；沒有宣稱取得新 SAM3 遮罩或完成新網格。分割階段仍需自行觀察及驗證，保留所有金屬硬體與細連接；不能虛構連接橋或改真實大小。舊網格兩個 component 相距約 0.63 mm，原生 resolver 丟棄標籤 4、5。照片中的獨立互扣金屬環可能本來就不適合單一連通 FEM 體積；若新生成仍有此問題，須如實保留，真正獨立轉動需要明確的多物體／接觸支援，這次沒有實作該架構擴充。
+
+外部 `run_one.sh` 現在把本次 `user_hints` 逐字保存為私有 `experiment_hints.txt`，讓 snapshot／resume 的 pending-stage owning agent 也能讀到使用者授權的實驗觀察。原生 snapshot initializer 不會套用新的 `--user_hints`，因此沒有假裝該參數會修改 snapshot state，也沒有改舊 state。提示只作為新實驗上下文，不具有驗收、診斷憑證或任意語義分組的權限。已執行真實 Bash 的 snapshot／resume 測試，確認文字含 `$()`、反引號及換行仍完整保存且不執行 shell 指令，原生 state／上游檔案不變。
+
+435 項 CPU／回歸全通過；71 項既有硬體／環境證據在 native sources、五組環境、binary 與九個輸入指紋相同後重用，沒有宣稱重新執行 GPU smoke。78 項完整啟動檢查通過後才清除本次 HOLD，水豚既有 worker 不受中斷。詳見 [離線證據與派工](native_retry_20261023.json)。
+
 ## 2026-10-23：水豚的原生語義分割實驗
 
 官方替代後端的 CPU 稽核確認直接切換 TorchSparse 會漏載六份卷積權重，因此未部署後端切換。本次另沿用原生 segmentation skill 的「合併重複同材質部位」指引，在隔離目錄對同一清理圖執行三組 SAM3 concepts。`capybara stuffed toy; dark brown muzzle; green backpack` 產生三份真正 SAM3 證據，後處理為四個區域（含一個保留的 foreground-fill fallback）；相較原五區域，腳掌合併回絨毛身體，綠色配件有自己的 SAM3 遮罩。原生模型、解析度、精度、分數與面積門檻均未變，舊 state 雜湊未變。
@@ -67,7 +78,7 @@
 
 真正的 stage failure、診斷 business halt、原生 revision budget exhausted、未完成清理、人工 HOLD、缺少啟動憑證及已用盡自動續跑次數，均保留原因。這些情況不能靠重置預算或更換方法忠實重現論文。
 
-目前料理夾屬於原生修正預算已用完，水豚屬於 spconv int32 限制；排程會監看與發布這兩件的狀態，不會反覆從頭花 token 重跑。龍由既有 worker 自動走完剩餘原生階段；是否通過診斷仍取決於其實際結果。
+上述為早期部署時的恢復規則。後續料理夾已透過使用者授權的原生六版本實驗完成；水豚、球鞋與龍的各次新實驗與限制見本頁最上方更新及即時進度，舊失敗不會被覆寫。
 
 ## 狀態、安裝與暫停
 

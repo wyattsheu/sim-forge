@@ -10,15 +10,16 @@
  [[ "$EXECUTION_MODE" == fresh || "$EXECUTION_MODE" == resume || "$EXECUTION_MODE" == diagnostics_snapshot ]] || exit 2
  if ((REQUEST_RESUME)) && [[ "$EXECUTION_MODE" != resume ]]; then
      printf '%s\n' "--resume requires Queue.resume admission metadata" >&2
-@@ -72,6 +75,7 @@
+@@ -72,6 +75,8 @@
  export DIAGGEN_JOB_QUEUE_DIR="$ROOT_QUEUE/jobs/$JOB_ID"
  export DIAGGEN_WATCHER_PID=$$
  mkdir -p "$DIAGGEN_JOB_QUEUE_DIR"
 +batch info "$JOB_ID" diagnostic_continuation > "$DIAGGEN_JOB_QUEUE_DIR/continuation.json"
++printf '%s\n' "$NATIVE_USER_HINTS" > "$DIAGGEN_JOB_QUEUE_DIR/experiment_hints.txt"
  exec >> "$DIAGGEN_JOB_QUEUE_DIR/launcher.log" 2>&1
  
  RUN_ROOT="$DIAGGEN_ROOT/outputs/agentic_asset_refinement/$DIAGGEN_QUEUE_RUN_ID"
-@@ -158,6 +162,7 @@
+@@ -158,6 +163,7 @@
      "$PYTHON" -m hag4r.agentic.run_diaggen_pipeline \
          --diagnostics_revision_snapshot_dir "$SNAPSHOT_DIR" \
          --diagnostics-reroute-and-export --require-new-run-root \
@@ -26,7 +27,7 @@
          --run_id "$DIAGGEN_QUEUE_RUN_ID" --output_tag "$DIAGGEN_QUEUE_RUN_ID" \
          --run_root outputs/agentic_asset_refinement \
          --config configs/config_genesis_diagnostics_enabled.yaml \
-@@ -165,15 +170,57 @@
+@@ -165,15 +171,57 @@
  else
      mkdir -p outputs/inputs
      FROZEN_INPUT="$DIAGGEN_ROOT/outputs/inputs/${DIAGGEN_QUEUE_RUN_ID}.${SOURCE_IMAGE##*.}"
@@ -85,7 +86,7 @@
  
  cat > "$DIAGGEN_JOB_QUEUE_DIR/prompt.txt" <<EOF
  Complete this one user-authorized DiagGen asset-generation run in native Genesis.
-@@ -205,22 +252,48 @@
+@@ -205,22 +253,53 @@
  output quality. The guard is an observation, not a memory reservation or OOM guarantee.
  For fresh image cleanup, stop after a passing Attempt 1; do not generate Attempt 2 after it
  passes. For a resume with successful cleanup, skip all imagegen and cleanup registration.
@@ -100,6 +101,11 @@
 -revision into a new independent run. Preserve its successful stage prefix; diagnose with
 -a fresh child and use native recommendation transitions, including lawful repair reroutes.
 +$MODE_CONTEXT
++Read $DIAGGEN_JOB_QUEUE_DIR/experiment_hints.txt when nonempty. These are user-authorized
++experiment observations for this new run; pass relevant context to the owning pending-stage
++child. Recheck historical part IDs against fresh authoritative grounding. Follow native
++semantic, repair, ownership and acceptance rules; hints never change a terminal, make old
++probes qualify, authorize unrelated semantic groups or prove the experiment succeeded.
  Genesis diagnostics stays exclusively on its authenticated MCP and child-owned lifecycle;
  never use the stage bridge for diagnostic attach, probes, finalization, cleanup, or decisions.
 +The diagnostic child must read $WORKSPACE/tools/diaggen_support/diagnostic_credentials.md

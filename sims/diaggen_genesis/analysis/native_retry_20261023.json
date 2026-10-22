@@ -1,0 +1,131 @@
+{
+  "schema_version": "diaggen-native-retry-evidence-v1",
+  "updated_at": "2026-10-23T02:25:40+08:00",
+  "user_request": "Try sneaker and dragon again, starting from native repository capabilities and explain any architectural limits.",
+  "native_states_unchanged": true,
+  "source_state_sha256": {
+    "sneaker": "ac9d6c96cdf6a4f920a12a40d898f006c5bb5f96743aadfb86b49e140da76e9b",
+    "dragon": "7d1df9835d2118e91ab7874bafaf4e6be1831996ac03db6bb12cad1e897d4709"
+  },
+  "native_code_changed": false,
+  "native_acceptance_changed": false,
+  "model": "gpt-6-luna",
+  "reasoning_effort": "max",
+  "simulator": "Genesis 1.2.0",
+  "strict_completed_count": 6,
+  "sneaker": {
+    "run_id": "genesis_sneaker_20261023_sole_group6",
+    "admitted_mode": "diagnostics_snapshot",
+    "source_run_id": "genesis_sneaker_20261021",
+    "status_at_admission": "queued",
+    "diagnostic_max_runs": 6,
+    "offline_validator": "hag4r.tools.probe_targeting.validate_grabbed_vertices_against_part",
+    "saved_probe_replay": [
+      {
+        "tool_result_index": 16,
+        "payload_sha256": "405865fe26a1b6664dc813e5f96fae64d896a8e69428a773fdd004d184905c7c",
+        "grabbed_primary_label_counts": {
+          "0": 967,
+          "1": 265,
+          "2": 450,
+          "3": 498
+        },
+        "grabbed_vertex_count": 2180,
+        "original_outsole_only_fraction": 0.44357798165137613,
+        "counterfactual_outsole_and_rubber_trim_fraction": 0.65,
+        "unrelated_forefoot_group_fraction_not_authorized": 0.6720183486238532
+      },
+      {
+        "tool_result_index": 20,
+        "payload_sha256": "9e96a7a9db16bdd5097b8676e2ea8f6324d76dafd7c0326d11b41f2673765568",
+        "grabbed_primary_label_counts": {
+          "0": 674,
+          "1": 184,
+          "2": 392,
+          "3": 409
+        },
+        "grabbed_vertex_count": 1659,
+        "original_outsole_only_fraction": 0.4062688366485835,
+        "counterfactual_outsole_and_rubber_trim_fraction": 0.6425557564798071,
+        "unrelated_forefoot_group_fraction_not_authorized": 0.6528028933092225
+      },
+      {
+        "tool_result_index": 24,
+        "payload_sha256": "9a0f25c395bc0aff95ae767df57ea1ab50509e711c201d37f6489b4c04246db0",
+        "grabbed_primary_label_counts": {
+          "0": 853,
+          "1": 246,
+          "2": 414,
+          "3": 378
+        },
+        "grabbed_vertex_count": 1891,
+        "original_outsole_only_fraction": 0.4510840824960338,
+        "counterfactual_outsole_and_rubber_trim_fraction": 0.6700158646218932,
+        "unrelated_forefoot_group_fraction_not_authorized": 0.6509783183500794
+      }
+    ],
+    "candidate_semantic_members": [
+      {
+        "part_id": 0,
+        "part_name": "rubber_outsole",
+        "part_semantics": "thick, continuous, load-bearing rubber sole supporting the shoe and contacting the ground; profile=rubber_flexible; tuple density_kg_m3=1100, youngs_modulus_pa=5000000, poisson_ratio=0.49, friction_coefficient=0.90",
+        "major_material_name": "rubber"
+      },
+      {
+        "part_id": 2,
+        "part_name": "side_perimeter_trim",
+        "part_semantics": "narrow colored rubberized trim following the shoe side and the upper-to-sole boundary; profile=rubber_flexible; tuple density_kg_m3=1100, youngs_modulus_pa=5000000, poisson_ratio=0.49, friction_coefficient=0.90",
+        "major_material_name": "synthetic rubber"
+      }
+    ],
+    "guard": "Only a fresh source-grounded sole assembly may use native semantic groups. No unrelated upper/mesh/strap member, threshold change or old-probe acceptance.",
+    "scope": "Saved telemetry replay is counterfactual offline evidence; new compile/probe/complete coverage and strict accept remain unproven."
+  },
+  "dragon": {
+    "run_id": "genesis_dragon_20261023_coarse_connector6",
+    "admitted_mode": "fresh",
+    "status_at_admission": "queued",
+    "diagnostic_max_runs": 6,
+    "prior_component_count": 2,
+    "prior_dropped_part_indices": [
+      4,
+      5
+    ],
+    "nearest_disconnected_hardware_distance_m": 0.0006297778137753202,
+    "proposed_native_concepts": [
+      "yellow dragon body",
+      "pale belly patch",
+      "paired eyes",
+      "gold keychain assembly"
+    ],
+    "scope": "Native concept tokenization only, not newly predicted masks or completed generation.",
+    "limitation": "Independent interlocked rings need a multi-body/contact representation for faithful relative motion. The current single face-connected FEM contract is preserved; no artificial bridge or hardware deletion is introduced."
+  },
+  "external_queue_change": "Record literal per-experiment hints in a private text sidecar and reference it from the new snapshot/resume orchestrator prompt. Native snapshot initializer does not consume new user_hints.",
+  "verification": {
+    "cpu_regression_counts": {
+      "error": 0,
+      "expected_fail": 0,
+      "fail": 0,
+      "pass": 435,
+      "run": 435,
+      "skip": 0,
+      "unexpected_success": 0
+    },
+    "full_launch_checks": 78,
+    "hardware_checks_reused": 71,
+    "fresh_full_hardware_checks": 0,
+    "exact_unchanged_fingerprints": [
+      "native sources",
+      "five environments",
+      "binaries",
+      "nine qualification inputs"
+    ],
+    "active_capybara_worker_preserved": true
+  },
+  "official_sources": [
+    "https://github.com/diaggen/diaggen/blob/master/.agents/skills/run-diaggen-pipeline/genesis-diagnostics/probe-targeting/SKILL.md",
+    "https://github.com/diaggen/diaggen/blob/master/.agents/skills/run-diaggen-pipeline/mesh-processing/SKILL.md",
+    "https://github.com/diaggen/diaggen/blob/master/.agents/skills/run-diaggen-pipeline/segmentation/SKILL.md"
+  ]
+}

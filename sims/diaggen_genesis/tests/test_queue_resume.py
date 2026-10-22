@@ -891,7 +891,7 @@ mkdir -p outputs/inputs
         self.assertIn("--diagnostics-reroute-and-export --require-new-run-root", text)
         self.assertIn("Do not call imagegen a third time", text)
 
-    def run_stubbed_resume_shell(self, *, completion_failure=False, snapshot=False, budget=2):
+    def run_stubbed_resume_shell(self, *, completion_failure=False, snapshot=False, budget=2, user_hints=''):
         """Execute the real patched shell using fake external engines, never Codex/GPU."""
         if snapshot:
             snapshot_dir = self.make_business_halt_snapshot()
@@ -900,6 +900,7 @@ mkdir -p outputs/inputs
             self.resume()
         batch = self.queue_state()
         batch['jobs'][0]['sim_diagnostics_max_runs'] = budget
+        batch['jobs'][0]['user_hints'] = user_hints
         self.queue._save(batch)
         self.hold.unlink()
         self.assertEqual(self.queue.claim(GPU), "object_0")
@@ -996,6 +997,25 @@ exec PYTHON "$@"
     def test_real_resume_shell_reaches_stubbed_codex_without_initializer_or_input_copy(self):
         job = self.run_stubbed_resume_shell()
         self.assertEqual(job["status"], "success")
+
+    def test_snapshot_experiment_hints_are_literal_and_reach_orchestrator_context(self):
+        marker = self.workspace / 'hints_must_not_execute'
+        hints = f'sole assembly; $(touch {marker}) `touch {marker}`\nreground every member afresh'
+        job = self.run_stubbed_resume_shell(snapshot=True, user_hints=hints)
+        self.assertEqual(job['status'], 'success')
+        hint_path = self.job_directory / 'experiment_hints.txt'
+        self.assertEqual(hint_path.read_text(), hints + '\n')
+        prompt = (self.job_directory / 'synthetic_codex_prompt.txt').read_text()
+        self.assertIn(str(hint_path), prompt)
+        self.assertIn('hints never change a terminal', prompt)
+        self.assertNotIn(hints, prompt)
+        self.assertFalse(marker.exists())
+
+    def test_resume_experiment_context_does_not_mutate_native_state_or_reinitialize(self):
+        job = self.run_stubbed_resume_shell(user_hints='Read preserved evidence before choosing a pending stage.')
+        self.assertEqual(job['status'], 'success')
+        self.assertEqual((self.job_directory / 'experiment_hints.txt').read_text(),
+                         'Read preserved evidence before choosing a pending stage.\n')
         self.assertEqual(job["run_id"], self.run_id)
 
     def test_real_snapshot_shell_uses_public_snapshot_initializer_and_preserves_old_halt(self):

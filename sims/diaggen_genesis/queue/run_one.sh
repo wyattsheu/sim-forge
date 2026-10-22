@@ -76,6 +76,7 @@ export DIAGGEN_JOB_QUEUE_DIR="$ROOT_QUEUE/jobs/$JOB_ID"
 export DIAGGEN_WATCHER_PID=$$
 mkdir -p "$DIAGGEN_JOB_QUEUE_DIR"
 batch info "$JOB_ID" diagnostic_continuation > "$DIAGGEN_JOB_QUEUE_DIR/continuation.json"
+printf '%s\n' "$NATIVE_USER_HINTS" > "$DIAGGEN_JOB_QUEUE_DIR/experiment_hints.txt"
 exec >> "$DIAGGEN_JOB_QUEUE_DIR/launcher.log" 2>&1
 
 RUN_ROOT="$DIAGGEN_ROOT/outputs/agentic_asset_refinement/$DIAGGEN_QUEUE_RUN_ID"
@@ -253,6 +254,11 @@ output quality. The guard is an observation, not a memory reservation or OOM gua
 For fresh image cleanup, stop after a passing Attempt 1; do not generate Attempt 2 after it
 passes. For a resume with successful cleanup, skip all imagegen and cleanup registration.
 $MODE_CONTEXT
+Read $DIAGGEN_JOB_QUEUE_DIR/experiment_hints.txt when nonempty. These are user-authorized
+experiment observations for this new run; pass relevant context to the owning pending-stage
+child. Recheck historical part IDs against fresh authoritative grounding. Follow native
+semantic, repair, ownership and acceptance rules; hints never change a terminal, make old
+probes qualify, authorize unrelated semantic groups or prove the experiment succeeded.
 Genesis diagnostics stays exclusively on its authenticated MCP and child-owned lifecycle;
 never use the stage bridge for diagnostic attach, probes, finalization, cleanup, or decisions.
 The diagnostic child must read $WORKSPACE/tools/diaggen_support/diagnostic_credentials.md

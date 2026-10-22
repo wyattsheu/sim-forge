@@ -1,59 +1,8 @@
 {
   "schema_version": "diaggen-full-runtime-preflight-v1",
-  "checked_at": "2026-10-23T00:16:26+08:00",
+  "checked_at": "2026-10-23T02:24:07+08:00",
   "overall_status": "pass",
   "simulator": "Genesis",
-  "counts": {
-    "pass": 84,
-    "fail": 0,
-    "skip": 0
-  },
-  "optional_checks": [
-    {
-      "name": "host/optional_cmake",
-      "status": "skip",
-      "reason": "Not required by the installed precompiled runtime or validated Ninja JIT"
-    }
-  ],
-  "scope": "433 fresh CPU tests, literal official-user-hints forwarding, and three actual isolated native SAM3 concept executions; unchanged native/environment/binary/input hardware qualification and prior snapshot admissions reused. No new strict asset accept claimed.",
-  "limitations": [
-    "Chosen output has four final regions: three SAM3 evidence regions and one foreground-fill fallback; fallback provenance remains explicit.",
-    "Reducing unnecessary same-material fragmentation may reduce sparse part complexity but does not establish that the int32 issue is fixed.",
-    "The new pipeline must freshly validate its own cleanup and segmentation. Prior candidates are not imported into its stage ledger.",
-    "No unsupported backend, model-weight conversion, assertion bypass, reduced precision/resolution or physical acceptance relaxation was deployed.",
-    "The existing hardware qualification was reused after exact source/environment/binary/input fingerprint comparison; those full smoke suites were not rerun."
-  ],
-  "evidence_reuse": {
-    "hardware_checks_reused": 71,
-    "fresh_full_hardware_environment_checks": 0,
-    "actual_native_sam3_concept_variants": 3,
-    "prior_full_report_sha256": "a08f58d6560e61074bdb5f9e24b73e4a694491a56b02c34b21befbc2f4828b53",
-    "unchanged": [
-      "all native tracked sources",
-      "five environment inventories",
-      "required executables",
-      "nine qualification inputs"
-    ],
-    "actual_cpu_tests": {
-      "error": 0,
-      "expected_fail": 0,
-      "fail": 0,
-      "pass": 433,
-      "run": 433,
-      "skip": 0,
-      "unexpected_success": 0
-    },
-    "native_patch_count": 9,
-    "changed_external_sources": [
-      "sims/diaggen_genesis/queue/batch_control.py",
-      "sims/diaggen_genesis/queue/image_intake.py",
-      "sims/diaggen_genesis/queue/repair_control.py",
-      "sims/diaggen_genesis/queue/repair_prompt.md",
-      "sims/diaggen_genesis/queue/run_one.sh",
-      "tools/diaggen_support/queue_verified_diagnostics.json",
-      "tools/diaggen_support/queue_verified_diagnostics.patch"
-    ]
-  },
   "checks": [
     {
       "name": "host/nine_input_decode_hash_dimensions",
@@ -340,38 +289,28 @@
       "status": "pass"
     },
     {
-      "name": "launch_gate/rejects_orchestration_only_certificate",
-      "status": "pass"
-    },
-    {
-      "name": "entrypoint/real_cli_starts_user_timers",
-      "status": "pass"
-    },
-    {
-      "name": "entrypoint/real_inbox_stable_duplicate_no_new_model_run",
-      "status": "pass"
-    },
-    {
-      "name": "continuation/dragon_native_snapshot_admission",
-      "status": "pass"
-    },
-    {
-      "name": "continuation/kitchen_tongs_native_snapshot_admission",
-      "status": "pass"
-    },
-    {
-      "name": "continuation/sneaker_native_snapshot_admission",
-      "status": "pass"
-    },
-    {
-      "name": "continuation/old_native_state_hashes_and_budgets_preserved",
-      "status": "pass"
-    },
-    {
+      "detail": {
+        "error": 0,
+        "expected_fail": 0,
+        "fail": 0,
+        "pass": 429,
+        "run": 429,
+        "skip": 0,
+        "unexpected_success": 0
+      },
       "name": "orchestration/namespace_unittest_suite",
       "status": "pass"
     },
     {
+      "detail": {
+        "error": 0,
+        "expected_fail": 0,
+        "fail": 0,
+        "pass": 6,
+        "run": 6,
+        "skip": 0,
+        "unexpected_success": 0
+      },
       "name": "orchestration/preflight_negative_controls",
       "status": "pass"
     },
@@ -380,16 +319,67 @@
       "status": "pass"
     },
     {
-      "name": "native_user_hints/literal_initializer_argument_no_shell_execution",
+      "name": "native_retry/saved_sneaker_probe_replay_reproduces_native_fractions",
       "status": "pass"
     },
     {
-      "name": "native_concepts/three_actual_default_sam3_variants",
+      "name": "native_retry/old_native_states_preserved_after_admission",
       "status": "pass"
     },
     {
-      "name": "native_concepts/old_state_preserved_after_new_admission",
+      "name": "native_retry/public_sneaker_origin_snapshot_admission",
+      "status": "pass"
+    },
+    {
+      "name": "native_retry/native_concept_tokenization",
       "status": "pass"
     }
-  ]
+  ],
+  "optional_checks": [
+    {
+      "name": "host/optional_cmake",
+      "status": "skip",
+      "reason": "Not required by the installed precompiled runtime or validated Ninja JIT"
+    }
+  ],
+  "counts": {
+    "pass": 78,
+    "fail": 0,
+    "skip": 0
+  },
+  "scope": "435 fresh CPU regression tests and read-only saved-artifact evidence; 71 unchanged native/environment/input/binary hardware checks reused after exact fingerprint comparison.",
+  "limitations": [
+    "Saved-probe replay is a counterfactual semantic hypothesis, not a newly qualified probe, completed coverage or physical accept.",
+    "New sole grouping requires source-grounded fresh canonical member semantics and a new native compile, preview, probe and full strict diagnostic workflow.",
+    "Dragon native concept tokenization was checked; no new SAM3 masks or complete 3D generation are claimed by this preflight.",
+    "Interlocked independently moving hardware may need multi-body/contact support beyond the original single-component FEM contract. No representation change or artificial bridge is deployed.",
+    "No native code, package, model, precision, resolution, acceptance condition or previous result was changed."
+  ],
+  "evidence_reuse": {
+    "hardware_checks_reused": 71,
+    "fresh_full_hardware_environment_checks": 0,
+    "prior_full_report_sha256": "2704af87cc4bdc6b97a4c5c66819ae310b555dae34fbc1c645ffba89b019513c",
+    "unchanged": [
+      "all native tracked sources",
+      "five environment inventories",
+      "required executables",
+      "nine qualification inputs"
+    ],
+    "changed_external_sources": [
+      "sims/diaggen_genesis/queue/run_one.sh",
+      "tools/diaggen_support/queue_verified_diagnostics.json",
+      "tools/diaggen_support/queue_verified_diagnostics.patch"
+    ],
+    "actual_cpu_tests": {
+      "error": 0,
+      "expected_fail": 0,
+      "fail": 0,
+      "pass": 435,
+      "run": 435,
+      "skip": 0,
+      "unexpected_success": 0
+    },
+    "cpu_report_sha256": "2f1c9d6144c24ec8625fa444c9889267c9741cb2098218398ad626d3cb00538b",
+    "native_patch_count": 9
+  }
 }

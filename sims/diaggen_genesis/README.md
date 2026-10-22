@@ -4,7 +4,9 @@
 
 使用 DiagGen 內附的 **Genesis 1.2.0**，開啟 Genesis 診斷，排程 9 張圖片的完整生成流程。
 
-**10/23 繼續嘗試：** 料理夾與球鞋的新原生快照實驗已啟動，實際 state 確認 `max_runs=6`；龍等待 GPU。水豚另以原生 SAM3 的同材質合併指引做隔離實驗，已取得身體／口鼻／綠色背包三份真實遮罩，保留後處理的第四個 fallback 區域；新 raw-image 工作使用官方 `--user_hints` 與六版本設定排程，尚未證明完整解碼成功。433 項回歸通過，無 native source／正式環境變更。見 [語義實驗與限制](analysis/capybara_native_concepts_20261023.json)、[後端權重稽核](analysis/incident_20261022_235219_ff1b8ecd0a10.md) 及 [即時進度](progress/)。
+**10/23 最新重試：** 料理夾已完整 strict accept／匯出，總計 **6／9 件完成**。球鞋與龍的新六版本實驗已重新排隊等待顯存：球鞋保留既有上游網格，以官方 semantic group 檢查有物理意義的鞋底／橡膠邊條組件；龍從原圖重跑較粗的原生概念分割，保留所有硬體與細連接。球鞋舊探測的原生離線重算支持分組假說，但不代表新探測或完整診斷已通過。龍的互扣金屬環可能需要多物體／接觸表示，這項原生重試不會偷偷補橋、移除硬體或改變單體連通規則。435 項 CPU／回歸通過，未改 native source／正式環境。見 [重試證據與限制](analysis/native_retry_20261023.json) 及 [即時進度](progress/)。
+
+**10/23 水豚實驗：** 依原生 SAM3 同材質合併指引，隔離實驗已取得身體／口鼻／綠色背包三份真實遮罩，保留後處理的第四個 fallback 區域；新 raw-image 工作使用官方 `--user_hints` 與六版本設定，已完成清理／分割，等待其綁定 GPU 有足夠顯存再進 OmniPart。尚未證明完整解碼成功。見 [語義實驗與限制](analysis/capybara_native_concepts_20261023.json) 及 [後端權重稽核](analysis/incident_20261022_235219_ff1b8ecd0a10.md)。
 
 **繼續修復：** 使用者授權優先沿用原 Repo 功能，龍、料理夾與球鞋以通過原生預檢的 full-image snapshot 另開實驗，使用官方 `--sim-diagnostics-max-runs 6`，由原階段 agents 接續診斷／修正；舊預算、失敗／未通過匯出紀錄保留。430 項 CPU／回歸測試通過，含實際 shell 傳遞官方參數的隔離引擎測試。此為重新派工，不代表已通過物理驗收；新工作以 [progress](progress/) 為準。詳見 [接續驗證](analysis/native_continuation_20261022.json) 與 [排程政策](analysis/AUTOMATION.md)。
 
