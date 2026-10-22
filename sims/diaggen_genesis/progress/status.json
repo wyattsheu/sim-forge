@@ -2,10 +2,10 @@
   "schema_version": "diaggen-public-batch-progress-v1",
   "pipeline": "DiagGen",
   "simulator": "Genesis",
-  "phase": "waiting_gpu",
+  "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-23T00:00:54+08:00",
+  "updated_at": "2026-10-23T00:01:12+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -13,8 +13,8 @@
     "max_parallel_jobs": 4
   },
   "counts": {
-    "queued": 3,
-    "running": 0,
+    "queued": 2,
+    "running": 1,
     "success": 5,
     "failed": 1,
     "cancelled": 0,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-23T00:00:54+08:00",
+      "updated_at": "2026-10-23T00:01:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -216,15 +216,15 @@
       "pipeline": "DiagGen",
       "simulator": "Genesis",
       "run_id": "genesis_kitchen_tongs_20261022_native6",
-      "phase": "waiting_gpu",
-      "pipeline_status": "not_initialized",
+      "phase": "running",
+      "pipeline_status": "seeded",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
-      "active_revision": null,
-      "created_at": null,
-      "updated_at": "2026-10-23T00:00:54+08:00",
+      "active_revision": "revision_0000",
+      "created_at": "2026-10-22T16:01:05.614594+00:00",
+      "updated_at": "2026-10-23T00:01:12+08:00",
       "diagnostics": {
-        "enabled": null,
+        "enabled": true,
         "episode_count": 0,
         "terminal_status": "not_available",
         "recommendation": "not_available",
@@ -234,56 +234,56 @@
         {
           "name": "image_cleanup",
           "label": "圖片清理",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
+          "started_at": "2026-10-22T09:17:33.203832+00:00",
+          "finished_at": "2026-10-22T09:17:33.216515+00:00"
         },
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
+          "started_at": "2026-10-22T09:46:54.126435+00:00",
+          "finished_at": "2026-10-22T09:47:04.536109+00:00"
         },
         {
           "name": "omnipart_generate_parts",
           "label": "OmniPart 幾何生成",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
+          "started_at": "2026-10-22T09:50:33.846975+00:00",
+          "finished_at": "2026-10-22T09:52:41.427186+00:00"
         },
         {
           "name": "hag4r_gpt_staged_material_inference",
           "label": "材料推估",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
+          "started_at": "2026-10-22T10:16:22.255072+00:00",
+          "finished_at": "2026-10-22T10:18:30.440075+00:00"
         },
         {
           "name": "hag4r_assign_params_to_prims",
           "label": "材料參數配置",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
+          "started_at": "2026-10-22T10:20:42.541408+00:00",
+          "finished_at": "2026-10-22T10:20:43.573011+00:00"
         },
         {
           "name": "hag4r_combined_to_monolithic",
           "label": "體積網格處理",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
+          "started_at": "2026-10-22T10:21:19.538587+00:00",
+          "finished_at": "2026-10-22T10:21:19.538587+00:00"
         },
         {
           "name": "genesis_live_diagnostic_loop",
@@ -323,10 +323,66 @@
         },
         "meaning": "observation_only_not_retry_authorization"
       },
-      "media": [],
+      "media": [
+        {
+          "path": "media/kitchen_tongs_cleaned_image.png",
+          "bytes": 1056973,
+          "sha256": "47fee394794adda8173f40d91d7bed86c80315475d87859bf1d92d0e66dcca97"
+        },
+        {
+          "path": "media/kitchen_tongs_processed_white_bg_png.png",
+          "bytes": 30317,
+          "sha256": "80aed918bda76d0c1587809050b1449569fa3726c004593c7196bc03ac7015fc"
+        },
+        {
+          "path": "media/kitchen_tongs_processed_rgba.png",
+          "bytes": 40638,
+          "sha256": "8cf39bc0ef8611f453144db3323292f05f9dd2a79f5796c549cc321ed5b958dc"
+        },
+        {
+          "path": "media/kitchen_tongs_ordered_mask_vis.png",
+          "bytes": 1915,
+          "sha256": "8464b313b1de18336e35dd169f22ff22cc585c729630a8b1ee6c341254a9a046"
+        },
+        {
+          "path": "media/kitchen_tongs_segmentation_overlay.png",
+          "bytes": 27642,
+          "sha256": "7226fc8551d400ae2d27cf5d0da54655b1efcd5f94eddd9dfa9a6d4ef9ecdc39"
+        },
+        {
+          "path": "media/kitchen_tongs_omnipart_top.png",
+          "bytes": 7523,
+          "sha256": "131c633596d9b7c7428f5b302d3ca3ef9caf3aadcbcd5de766503255a89f7dc4"
+        },
+        {
+          "path": "media/kitchen_tongs_omnipart_bottom.png",
+          "bytes": 7221,
+          "sha256": "5dbe8a8ce0e47427cadb6fdb35e6caa70d1f66cd57f05a72936191aa7145fed9"
+        },
+        {
+          "path": "media/kitchen_tongs_omnipart_front.png",
+          "bytes": 6503,
+          "sha256": "9053a1fb2ffe203e533b90addaaad78b99e140fe3c0ed5fe4824a66a6345e0dc"
+        },
+        {
+          "path": "media/kitchen_tongs_omnipart_back.png",
+          "bytes": 5785,
+          "sha256": "234dc12189f718203fe8acc204b9ce3f30f4f7f761b6c3592ba7a0dcc21b635f"
+        },
+        {
+          "path": "media/kitchen_tongs_omnipart_left.png",
+          "bytes": 6961,
+          "sha256": "4ccda358645e6d99de7834a6c9b449b7d95c72390f107f0597feb72c46cd2bba"
+        },
+        {
+          "path": "media/kitchen_tongs_omnipart_right.png",
+          "bytes": 6758,
+          "sha256": "5d79094b439770233851be0bd58adf38f5a87f1e80616438ef55c37e0dd0bd13"
+        }
+      ],
       "id": "kitchen_tongs",
-      "status": "queued",
-      "attempts": 4,
+      "status": "running",
+      "attempts": 5,
       "minimum_free_mib": 24576
     },
     {
@@ -340,7 +396,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-23T00:00:54+08:00",
+      "updated_at": "2026-10-23T00:01:12+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -458,7 +514,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-23T00:00:54+08:00",
+      "updated_at": "2026-10-23T00:01:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -647,7 +703,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-23T00:00:54+08:00",
+      "updated_at": "2026-10-23T00:01:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -836,7 +892,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-23T00:00:54+08:00",
+      "updated_at": "2026-10-23T00:01:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1025,7 +1081,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-23T00:00:54+08:00",
+      "updated_at": "2026-10-23T00:01:12+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1143,7 +1199,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-23T00:00:54+08:00",
+      "updated_at": "2026-10-23T00:01:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1287,7 +1343,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-23T00:00:54+08:00",
+      "updated_at": "2026-10-23T00:01:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1536,6 +1592,61 @@
       "path": "media/baseball_cap_episode_002_triptych_video.mp4",
       "bytes": 111562,
       "sha256": "f6284b14c8d95ccbcaae92eb1129f5234b56408b0f6c84c5cdcfb270ea987964"
+    },
+    {
+      "path": "media/kitchen_tongs_cleaned_image.png",
+      "bytes": 1056973,
+      "sha256": "47fee394794adda8173f40d91d7bed86c80315475d87859bf1d92d0e66dcca97"
+    },
+    {
+      "path": "media/kitchen_tongs_processed_white_bg_png.png",
+      "bytes": 30317,
+      "sha256": "80aed918bda76d0c1587809050b1449569fa3726c004593c7196bc03ac7015fc"
+    },
+    {
+      "path": "media/kitchen_tongs_processed_rgba.png",
+      "bytes": 40638,
+      "sha256": "8cf39bc0ef8611f453144db3323292f05f9dd2a79f5796c549cc321ed5b958dc"
+    },
+    {
+      "path": "media/kitchen_tongs_ordered_mask_vis.png",
+      "bytes": 1915,
+      "sha256": "8464b313b1de18336e35dd169f22ff22cc585c729630a8b1ee6c341254a9a046"
+    },
+    {
+      "path": "media/kitchen_tongs_segmentation_overlay.png",
+      "bytes": 27642,
+      "sha256": "7226fc8551d400ae2d27cf5d0da54655b1efcd5f94eddd9dfa9a6d4ef9ecdc39"
+    },
+    {
+      "path": "media/kitchen_tongs_omnipart_top.png",
+      "bytes": 7523,
+      "sha256": "131c633596d9b7c7428f5b302d3ca3ef9caf3aadcbcd5de766503255a89f7dc4"
+    },
+    {
+      "path": "media/kitchen_tongs_omnipart_bottom.png",
+      "bytes": 7221,
+      "sha256": "5dbe8a8ce0e47427cadb6fdb35e6caa70d1f66cd57f05a72936191aa7145fed9"
+    },
+    {
+      "path": "media/kitchen_tongs_omnipart_front.png",
+      "bytes": 6503,
+      "sha256": "9053a1fb2ffe203e533b90addaaad78b99e140fe3c0ed5fe4824a66a6345e0dc"
+    },
+    {
+      "path": "media/kitchen_tongs_omnipart_back.png",
+      "bytes": 5785,
+      "sha256": "234dc12189f718203fe8acc204b9ce3f30f4f7f761b6c3592ba7a0dcc21b635f"
+    },
+    {
+      "path": "media/kitchen_tongs_omnipart_left.png",
+      "bytes": 6961,
+      "sha256": "4ccda358645e6d99de7834a6c9b449b7d95c72390f107f0597feb72c46cd2bba"
+    },
+    {
+      "path": "media/kitchen_tongs_omnipart_right.png",
+      "bytes": 6758,
+      "sha256": "5d79094b439770233851be0bd58adf38f5a87f1e80616438ef55c37e0dd0bd13"
     },
     {
       "path": "media/usb_hub_cleaned_image.png",
@@ -1847,7 +1958,7 @@
     "enabled": true,
     "interval_seconds": 60,
     "max_resumes_per_run": 2,
-    "updated_at": "2026-10-23T00:00:02+08:00",
+    "updated_at": "2026-10-23T00:01:01+08:00",
     "jobs": [
       {
         "id": "baseball_cap",
@@ -1857,7 +1968,7 @@
       {
         "id": "kitchen_tongs",
         "run_id": "genesis_kitchen_tongs_20261022_native6",
-        "outcome": "queued"
+        "outcome": "running"
       },
       {
         "id": "sneaker",
@@ -1906,5 +2017,5 @@
     "classification": "dependency",
     "outcome": "needs_attention"
   },
-  "signature": "da938ba6b420d586b654dca073aebbdea954c115eb732d62b14967351cb6ca00"
+  "signature": "9005471f34f535a4c6e62f93195b8eb54ff2391401d76c534497f4d6c20e1840"
 }
