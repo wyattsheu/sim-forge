@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T20:54:44+08:00（Asia/Taipei）
+更新：2026-10-22T20:57:34+08:00（Asia/Taipei）
 
 共 9 件：等待 0、執行中 1、完成匯出 6、失敗 2、取消 0。
 
@@ -326,7 +326,7 @@ Run：`genesis_dragon_20261022_retryfix_af4645266949`；執行中。
 | 階段 | 狀態 |
 |---|---|
 | 圖片清理 | success |
-| SAM3 分割 | pending |
+| SAM3 分割 | running |
 | OmniPart 幾何生成 | pending |
 | 材料推估 | pending |
 | 材料參數配置 | pending |
@@ -338,6 +338,14 @@ Run：`genesis_dragon_20261022_retryfix_af4645266949`；執行中。
 Genesis 診斷 episode 數：0；結果：尚未判定。
 
 ![dragon_cleaned_image](media/dragon_cleaned_image.png)
+
+![dragon_processed_white_bg_png](media/dragon_processed_white_bg_png.png)
+
+![dragon_processed_rgba](media/dragon_processed_rgba.png)
+
+![dragon_ordered_mask_vis](media/dragon_ordered_mask_vis.png)
+
+![dragon_segmentation_overlay](media/dragon_segmentation_overlay.png)
 
 
 ## capybara_plush_toy
