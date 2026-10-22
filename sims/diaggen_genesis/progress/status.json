@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T17:40:30+08:00",
+  "updated_at": "2026-10-22T17:40:47+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-22T17:40:30+08:00",
+      "updated_at": "2026-10-22T17:40:47+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -97,10 +97,10 @@
         {
           "name": "genesis_live_diagnostic_loop",
           "label": "Genesis 物理診斷",
-          "status": "pending",
-          "ledger_status": "pending",
+          "status": "running",
+          "ledger_status": "running",
           "ok": false,
-          "started_at": null,
+          "started_at": "2026-10-22T09:40:43.603694+00:00",
           "finished_at": null
         },
         {
@@ -205,7 +205,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T06:03:34.261605+00:00",
-      "updated_at": "2026-10-22T17:40:30+08:00",
+      "updated_at": "2026-10-22T17:40:47+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -377,7 +377,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:45.699903+00:00",
-      "updated_at": "2026-10-22T17:40:30+08:00",
+      "updated_at": "2026-10-22T17:40:47+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -470,7 +470,7 @@
         "warnings": [],
         "diagnostic_counters": {
           "episodes": 2,
-          "tool_results": 22,
+          "tool_results": 23,
           "diagnostic_probe_attempts": 3,
           "region_settlements": 1
         },
@@ -549,11 +549,11 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-22T17:40:30+08:00",
+      "updated_at": "2026-10-22T17:40:47+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
-        "terminal_status": "not_available"
+        "terminal_status": "success"
       },
       "stages": [
         {
@@ -613,11 +613,11 @@
         {
           "name": "genesis_live_diagnostic_loop",
           "label": "Genesis 物理診斷",
-          "status": "running",
-          "ledger_status": "running",
-          "ok": false,
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
           "started_at": "2026-10-22T09:28:13.847758+00:00",
-          "finished_at": null
+          "finished_at": "2026-10-22T09:40:34.852530+00:00"
         },
         {
           "name": "hag4r_post_mesh_texture",
@@ -703,6 +703,16 @@
           "path": "media/usb_hub_omnipart_right.png",
           "bytes": 8681,
           "sha256": "6d3f5577ad1bcdaf27abec1a24e8eb4fd07a54d6010649e382247addcb3a5c59"
+        },
+        {
+          "path": "media/usb_hub_episode_001_triptych_video.mp4",
+          "bytes": 50627,
+          "sha256": "a948c3c3ee4d0797a130d130979e06fdbaf4b58a6866ff62fc2fdb8e5341424e"
+        },
+        {
+          "path": "media/usb_hub_episode_002_triptych_video.mp4",
+          "bytes": 52813,
+          "sha256": "05136fff284266544a73c71d2e9851f239570d65cedb1e7ae57f67daceb8ae50"
         }
       ],
       "id": "usb_hub",
@@ -721,7 +731,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-22T17:40:30+08:00",
+      "updated_at": "2026-10-22T17:40:47+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -908,7 +918,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-22T17:40:30+08:00",
+      "updated_at": "2026-10-22T17:40:47+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1024,7 +1034,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-22T17:40:30+08:00",
+      "updated_at": "2026-10-22T17:40:47+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1140,7 +1150,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T17:40:30+08:00",
+      "updated_at": "2026-10-22T17:40:47+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1282,7 +1292,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T17:40:30+08:00",
+      "updated_at": "2026-10-22T17:40:47+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1681,6 +1691,16 @@
       "sha256": "6d3f5577ad1bcdaf27abec1a24e8eb4fd07a54d6010649e382247addcb3a5c59"
     },
     {
+      "path": "media/usb_hub_episode_001_triptych_video.mp4",
+      "bytes": 50627,
+      "sha256": "a948c3c3ee4d0797a130d130979e06fdbaf4b58a6866ff62fc2fdb8e5341424e"
+    },
+    {
+      "path": "media/usb_hub_episode_002_triptych_video.mp4",
+      "bytes": 52813,
+      "sha256": "05136fff284266544a73c71d2e9851f239570d65cedb1e7ae57f67daceb8ae50"
+    },
+    {
       "path": "media/sloth_cleaned_image.png",
       "bytes": 1560674,
       "sha256": "2859d083668dfbe2ec280ab6315f2d95a1aaf3e55bea07352e91cb53a388e035"
@@ -1846,5 +1866,5 @@
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "cb9f7216dc0934bf18f477328e2ed860e7b5f486d9e776057e5369f439b2e49d"
+  "signature": "2d3f4ce0d6ccff702e3091a75277e93c67814f9a039593d648ad5f99c1e3306c"
 }

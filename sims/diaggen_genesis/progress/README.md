@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T17:40:30+08:00（Asia/Taipei）
+更新：2026-10-22T17:40:47+08:00（Asia/Taipei）
 
 共 9 件：等待 2、執行中 4、完成 2、失敗 1、取消 0。
 
@@ -18,7 +18,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | baseball_cap | running | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
 | kitchen_tongs | running | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
 | sneaker | running | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
-| usb_hub | running | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
+| usb_hub | running | seeded | revision_0000 | 24576 MiB | 7/9 | 未偵測到上述異常（非成功保證） |
 | sloth | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
 | sauce_keeper | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
 | dragon | queued | seeded | revision_0000 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
@@ -37,7 +37,7 @@ Run：`genesis_baseball_cap_20261022_fresh3`；執行中。
 | 材料推估 | success |
 | 材料參數配置 | success |
 | 體積網格處理 | success |
-| Genesis 物理診斷 | pending |
+| Genesis 物理診斷 | running |
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
@@ -160,7 +160,7 @@ Run：`genesis_usb_hub_20261022_clean_diagnostics3`；執行中。
 | 材料推估 | success |
 | 材料參數配置 | success |
 | 體積網格處理 | success |
-| Genesis 物理診斷 | running |
+| Genesis 物理診斷 | success |
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
@@ -187,6 +187,10 @@ Genesis 診斷 episode 數：2。
 ![usb_hub_omnipart_left](media/usb_hub_omnipart_left.png)
 
 ![usb_hub_omnipart_right](media/usb_hub_omnipart_right.png)
+
+[usb_hub_episode_001_triptych_video](media/usb_hub_episode_001_triptych_video.mp4)
+
+[usb_hub_episode_002_triptych_video](media/usb_hub_episode_002_triptych_video.mp4)
 
 
 ## sloth
