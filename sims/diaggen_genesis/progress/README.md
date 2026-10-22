@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T15:28:32+08:00（Asia/Taipei）
+更新：2026-10-22T15:30:36+08:00（Asia/Taipei）
 
 共 9 件：等待 1、執行中 3、完成 1、失敗 4、取消 0。
 
@@ -20,7 +20,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | sneaker | failed | failed | revision_0000 | 24576 MiB | 6/9 | 重試材質快照與磁碟既有檔案衝突 |
 | usb_hub | running | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
 | sloth | running | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
-| sauce_keeper | running | seeded | revision_0000 | 24576 MiB | 6/9 | 診斷紀錄逾 15 分鐘未更新，需檢查 |
+| sauce_keeper | running | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
 | dragon | queued | seeded | revision_0000 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
 | capybara_plush_toy | failed | seeded | revision_0000 | 49152 MiB | 2/9 | 未偵測到上述異常（非成功保證） |
 | curling_iron | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
@@ -157,7 +157,7 @@ Run：`genesis_sloth_20261022_clean_diagnostics1`；執行中。
 | 材料推估 | success |
 | 材料參數配置 | success |
 | 體積網格處理 | success |
-| Genesis 物理診斷 | pending |
+| Genesis 物理診斷 | running |
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
@@ -198,7 +198,7 @@ Run：`genesis_sauce_keeper_20261022_anchor_retry`；執行中。
 | 材料推估 | success |
 | 材料參數配置 | success |
 | 體積網格處理 | success |
-| Genesis 物理診斷 | running |
+| Genesis 物理診斷 | pending_retry |
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
