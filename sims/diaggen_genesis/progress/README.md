@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T15:46:11+08:00（Asia/Taipei）
+更新：2026-10-22T15:49:59+08:00（Asia/Taipei）
 
 共 9 件：等待 1、執行中 3、完成 1、失敗 4、取消 0。
 
@@ -161,7 +161,7 @@ Run：`genesis_sloth_20261022_clean_diagnostics2`；執行中。
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
-Genesis 診斷 episode 數：0。
+Genesis 診斷 episode 數：1。
 
 ![sloth_cleaned_image](media/sloth_cleaned_image.png)
 
