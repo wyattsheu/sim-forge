@@ -103,7 +103,9 @@ class Intake:
         self.base = self.queue.base
         self.clock = clock
 
-    def submit(self, paths, *, recursive=False, dry_run=False):
+    def submit(self, paths, *, recursive=False, dry_run=False, diagnostic_runs=2):
+        if type(diagnostic_runs) is not int or diagnostic_runs < 1:
+            raise ValueError('Diagnostic version budget must be a positive integer')
         paths = collect_images(paths, recursive)
         # Validate every input before admitting any job from this invocation.
         records = []
@@ -135,6 +137,7 @@ class Intake:
                            'input_sha256': digest, 'status': 'queued', 'gpu_uuid': None,
                            'runner_pid': None, 'attempts': 0, 'started_at': None, 'finished_at': None,
                            'execution_mode': 'fresh', 'submitted_at': now(),
+                           'sim_diagnostics_max_runs': diagnostic_runs,
                            'submission': {key: record[key] for key in
                                           ('format', 'width', 'height', 'size_bytes')}}
                     batch['jobs'].append(job)

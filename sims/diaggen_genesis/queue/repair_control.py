@@ -32,6 +32,7 @@ OUTCOMES = {'repaired_and_requeued', 'recovered', 'waiting_native_cleanup',
 ACTIONABLE = {'resume_ineligible', 'export_validation_failed', 'retry_limit',
               'process_inspection_unavailable', 'unbound_worker_review',
               'inspection_failed', 'preflight_failed', 'stage_failed', 'quiet'}
+CONTINUABLE = {'native_revision_budget_exhausted', 'exported_unaccepted'}
 
 
 def digest(value):
@@ -84,6 +85,23 @@ class RepairControl:
                 atomic_json(self.path, state)
             return state
 
+    def request_job(self, job_id, reason):
+        """Record an explicit operator investigation without erasing prior limits."""
+        validate_identifier(job_id)
+        validate_identifier(reason)
+        with self.locked():
+            job = next((j for j in self.batch()['jobs'] if j['id'] == job_id), None)
+            if job is None:
+                raise ValueError('Unknown investigation job')
+            state = self.state()
+            request_id = uuid.uuid4().hex
+            state.setdefault('requested', []).append({
+                'kind': 'user_requested_investigation', 'job_id': job_id, 'run_id': job['run_id'],
+                'prior_resume_id': job.get('resume_id'), 'prior_attempts': job['attempts'],
+                'reason': reason, 'signature': digest({'request': request_id, 'job': job_id})})
+            atomic_json(self.path, state)
+            return request_id
+
     def incidents(self, state):
         monitor_path = self.directory / 'monitor_status.json'
         if not monitor_path.exists():
@@ -96,23 +114,27 @@ class RepairControl:
         if self.clock() - stamp > MONITOR_STALE_SECONDS:
             return [{'kind': 'monitor_stale', 'signature': digest('monitor_stale')}]
         index = {(j.get('id'), j.get('run_id')): j for j in observed.get('jobs', [])}
-        result = []
+        try:
+            batch = self.batch()
+        except (ValueError, KeyError, FileNotFoundError):
+            return [{'kind': 'queue_ledger_invalid', 'signature': digest('queue_ledger_invalid')}]
+        current_runs = {(j['id'], j['run_id']) for j in batch['jobs']}
+        result = [item for item in state.get('requested', [])
+                  if (item.get('job_id'), item.get('run_id')) in current_runs]
         inbox = observed.get('inbox', {})
         if inbox.get('outcome') == 'scan_failed' or inbox.get('runtime_errors', 0):
             result.append({'kind': 'image_intake_failed',
                            'signature': digest({'kind': 'image_intake_failed',
                                                 'error_type': inbox.get('error_type')})})
-        try:
-            batch = self.batch()
-        except (ValueError, KeyError, FileNotFoundError):
-            return [{'kind': 'queue_ledger_invalid', 'signature': digest('queue_ledger_invalid')}]
         for job in batch['jobs']:
             observation = index.get((job['id'], job['run_id']), {})
             outcome = observation.get('outcome')
-            if job['status'] in ('success', 'cancelled'):
+            continuing = bool(job.get('diagnostic_continuation'))
+            if job['status'] == 'cancelled' or (job['status'] == 'success'
+                                               and not (continuing and outcome == 'exported_unaccepted')):
                 continue
             identity = self.job_signature(job)
-            if identity in state.get('baseline', []):
+            if identity in state.get('baseline', []) and not continuing:
                 continue
             if outcome == 'business_halt':
                 outcome = 'new_native_halt'
@@ -121,7 +143,8 @@ class RepairControl:
                 finished = job.get('finished_at')
                 if finished and self.clock() - datetime.fromisoformat(finished).timestamp() > 600:
                     outcome = 'cleanup_wait_excessive'
-            if outcome in ACTIONABLE or outcome in ('cleanup_wait_excessive', 'new_native_halt'):
+            if (outcome in ACTIONABLE or outcome in ('cleanup_wait_excessive', 'new_native_halt')
+                    or (continuing and outcome in CONTINUABLE)):
                 result.append({'kind': outcome, 'job_id': job['id'], 'run_id': job['run_id'],
                                'prior_resume_id': job.get('resume_id'), 'prior_attempts': job['attempts'],
                                'signature': digest({'state': identity, 'kind': outcome})})
@@ -270,7 +293,9 @@ class RepairControl:
                         'classification': classification, 'outcome': outcome}
             atomic_json(target / 'completion.json', evidence)
             state.pop('active', None)
-            if outcome in ('healthy', 'recovered', 'repaired_and_requeued') or classification == 'native_business_halt':
+            if (outcome in ('healthy', 'recovered', 'repaired_and_requeued')
+                    or (classification == 'native_business_halt'
+                        and request['incident']['kind'] not in CONTINUABLE)):
                 state['incidents'][request['incident']['signature']]['resolved'] = True
             atomic_json(self.path, state)
             self.publish('finished' if valid else 'needs_attention', job_id,
@@ -281,7 +306,7 @@ class RepairControl:
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('command', choices=('baseline', 'prepare', 'finish'))
+    parser.add_argument('command', choices=('baseline', 'prepare', 'finish', 'request'))
     parser.add_argument('arguments', nargs='*')
     parser.add_argument('--audit', action='store_true')
     parser.add_argument('--retry-launch-fix', action='store_true')
@@ -289,6 +314,8 @@ def main():
     control = RepairControl()
     if args.command == 'baseline':
         control.baseline()
+    elif args.command == 'request' and len(args.arguments) == 2:
+        print(control.request_job(*args.arguments))
     elif args.command == 'prepare':
         value = control.prepare(audit=args.audit, runner_pid=int(os.environ['DIAGGEN_REPAIR_RUNNER_PID']),
                                 retry_launch_fix=args.retry_launch_fix)

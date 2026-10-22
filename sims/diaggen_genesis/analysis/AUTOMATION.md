@@ -1,5 +1,17 @@
 # 伺服器排程與自動監看
 
+## 2026-10-22：使用官方參數繼續修復
+
+使用者要求依原 Repo 現有功能繼續嘗試完成。官方 initializer 已支援 `--sim-diagnostics-max-runs`，預設 2，表示初始版本與一個修正版。本次龍、料理夾與球鞋的新實驗改用 **6 個版本**，接受條件、模型、精度及 Genesis 診斷保持不變；這是官方參數的實驗設定差異，不是重寫舊 run 的預算或結果。
+
+`batch_control.py continue-native JOB NEW_RUN_ID MAX_RUNS REASON` 在 HOLD 下檢查舊 worker 已停止、原生 ownership 已關閉、沒有 accepted revision、原始輸入與父 run／來源雜湊未變，並執行原生 snapshot preflight，才把新實驗排入既有 GPU queue。只接受有效的 revision-budget halt 或經獨立驗收的 final-revise 未通過匯出；真正的 business halt 不能藉此改成成功。原生僅允許 full-image snapshot 作為此類來源，因此已是 snapshot 的球鞋沿用先前已核准、雜湊不變的 full-image origin。舊 queue 紀錄移入 history，原生檔案、已匯出結果及接受狀態全部保留；正式啟動前再次檢查。
+
+外層監看現在區分 `native_revision_budget_exhausted` 與 `business_halt`。帶有明確 continuation provenance 的工作若再次用完版本，或再次匯出為 `exported_unaccepted`，仍交給故障調查讀取實際原因；不能只因分類為 native_business_halt 就標為已處理。使用者授權的後續實驗可透過同一 guard 使用當前上限加四（至少六）的官方參數。每個失敗事件原有兩次調查上限與冷卻仍保留，新 run 會形成新事件；原生 stage 的獨立嘗試限制、真正無法重試的失敗與自動審核拒絕仍如實記錄，不能保證任意輸入都能完成。
+
+`repair_control.py request JOB REASON` 可記錄使用者明確要求的重新調查，不刪除 baseline 或舊調查計數；本次用於水豚的官方 sparse backend／權重相容性研究。只在隔離目錄與環境做未驗證實驗，不在其他 worker 執行時修改正式 native source 或環境。
+
+新圖片也可選擇官方版本上限：`./diaggen submit /path/to/image.png --diagnostic-runs 6`。未指定時仍保留原預設 2；同內容圖片仍沿用已有工作，不會藉再次提交重設它的預算。實際新實驗與測試證據見 [接續驗證](native_continuation_20261022.json)。
+
 ## 圖片入口：不必開啟 Codex 對話
 
 在 `/mnt/HDD4/wyattsheu/ITRI/sim-forge` 執行一次：

@@ -1,10 +1,10 @@
 {
   "schema_version": "diaggen-full-runtime-preflight-v1",
-  "checked_at": "2026-10-22T21:17:59+08:00",
+  "checked_at": "2026-10-22T23:51:41+08:00",
   "overall_status": "pass",
   "simulator": "Genesis",
   "counts": {
-    "pass": 77,
+    "pass": 81,
     "fail": 0,
     "skip": 0
   },
@@ -15,20 +15,20 @@
       "reason": "Not required by the installed precompiled runtime or validated Ninja JIT"
     }
   ],
-  "scope": "Unchanged host/mesh/OmniPart/Genesis qualification reused after exact native/environment/binary/input fingerprint comparison; 414 freshly executed CPU tests and real detached CLI/inbox service checks.",
+  "scope": "Official native snapshot continuation and version-budget forwarding; 430 fresh CPU regressions and real read-only native preflight/admission on three production snapshots. Unchanged native/environment/binary/input qualification reused.",
   "limitations": [
-    "New admission and queue lifecycle tested with real PNG/JPEG fixtures; these tests do not establish physical acceptance of arbitrary new user images.",
-    "Hardware probes were reused, not rerun, because native sources, all five environments, executable inventories and qualification inputs matched the prior passing certificate.",
-    "Known capybara spconv limitation and tongs native revision-budget halt remain; sneaker export remains unaccepted.",
-    "Backend still requires authenticated Codex CLI, model/imagegen access and network. Queue history is currently limited to 100 jobs; static PNG/JPG/JPEG images up to 64 MiB each."
+    "User-authorized new native experiments use max_runs=6 instead of the default two; this setting change is recorded and old failed/unaccepted native results remain intact.",
+    "Admission, native appearance/snapshot preflight and CPU regressions do not establish a new strict Genesis accept.",
+    "Hardware checks were reused after exact native source, environment, binary and qualification-input inventory comparison; they were not rerun.",
+    "Capybara full-size spconv int32 failure remains unresolved and requires isolated backend/kernel compatibility research."
   ],
   "evidence_reuse": {
     "hardware_checks_reused": 71,
     "fresh_hardware_environment_checks": 0,
-    "hardware_evidence": "analysis/repair_supervision_review_20261022.json",
+    "prior_full_report_sha256": "14d593de0eafebe398a3d2b9dae16845c5868695833bc41e99db1588339aef43",
     "unchanged": [
-      "all native tracked sources",
-      "five environment inventories",
+      "all native tracked source",
+      "five environments",
       "required executable inventories",
       "nine qualification inputs"
     ],
@@ -36,20 +36,19 @@
       "error": 0,
       "expected_fail": 0,
       "fail": 0,
-      "pass": 414,
-      "run": 414,
+      "pass": 430,
+      "run": 430,
       "skip": 0,
       "unexpected_success": 0
     },
     "native_patch_count": 9,
-    "changed_sources": [
-      "diaggen",
-      "sims/diaggen_genesis/preflight/probe_orchestration.py",
-      "sims/diaggen_genesis/preflight/readiness.py",
+    "changed_external_sources": [
+      "sims/diaggen_genesis/queue/batch_control.py",
       "sims/diaggen_genesis/queue/client.py",
       "sims/diaggen_genesis/queue/image_intake.py",
       "sims/diaggen_genesis/queue/monitor.py",
       "sims/diaggen_genesis/queue/repair_control.py",
+      "sims/diaggen_genesis/queue/repair_prompt.md",
       "sims/diaggen_genesis/queue/run_one.sh",
       "tools/diaggen_support/queue_verified_diagnostics.json",
       "tools/diaggen_support/queue_verified_diagnostics.patch"
@@ -345,6 +344,14 @@
       "status": "pass"
     },
     {
+      "name": "entrypoint/real_cli_starts_user_timers",
+      "status": "pass"
+    },
+    {
+      "name": "entrypoint/real_inbox_stable_duplicate_no_new_model_run",
+      "status": "pass"
+    },
+    {
       "name": "orchestration/namespace_unittest_suite",
       "status": "pass"
     },
@@ -357,11 +364,19 @@
       "status": "pass"
     },
     {
-      "name": "entrypoint/real_cli_starts_user_timers",
+      "name": "continuation/dragon_native_snapshot_admission",
       "status": "pass"
     },
     {
-      "name": "entrypoint/real_inbox_stable_duplicate_no_new_model_run",
+      "name": "continuation/kitchen_tongs_native_snapshot_admission",
+      "status": "pass"
+    },
+    {
+      "name": "continuation/sneaker_native_snapshot_admission",
+      "status": "pass"
+    },
+    {
+      "name": "continuation/old_native_state_hashes_and_budgets_preserved",
       "status": "pass"
     }
   ]

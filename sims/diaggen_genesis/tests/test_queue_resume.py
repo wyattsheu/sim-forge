@@ -505,6 +505,130 @@ class SameRunResumeTests(unittest.TestCase):
         with patch.object(self.batch.os, "kill", side_effect=ProcessLookupError):
             return self.queue.diagnostics_snapshot("object_0", new_run_id, "grounded_setup_retry")
 
+    def make_budget_halt(self):
+        snapshot = self.make_business_halt_snapshot()
+        self.state['diagnostics'].update(max_runs=2, terminal={
+            'business_outcome': {'status': 'recommendation_valid'},
+            'operational_outcome': {'status': 'complete'}})
+        self.state['route_state'] = {'orchestrator_diagnostic_decision': {
+            'transition_action': 'halt', 'failure_kind': 'revision_budget_exhausted'}}
+        self.save_native()
+        (snapshot / 'state.json').write_text(json.dumps(self.state))
+        self.native_preflight.return_value['snapshot_state_sha256'] = digest(snapshot / 'state.json')
+        return snapshot
+
+    def continue_native(self, budget=6, run_id='genesis_object_0_more_native_revisions'):
+        with patch.object(self.batch.os, 'kill', side_effect=ProcessLookupError):
+            return self.queue.continue_native('object_0', run_id, budget, 'user_requested_more_revisions')
+
+    def test_native_budget_continuation_preserves_parent_and_uses_official_snapshot(self):
+        self.make_budget_halt()
+        before = (self.run_root / 'state.json').read_bytes()
+        result = self.continue_native()
+        job = self.queue_state()['jobs'][0]
+        self.assertEqual(job['execution_mode'], 'diagnostics_snapshot')
+        self.assertEqual(job['sim_diagnostics_max_runs'], 6)
+        self.assertEqual(self.queue.info('object_0', 'sim_diagnostics_max_runs'), 6)
+        self.assertEqual(result['diagnostic_continuation']['prior_max_runs'], 2)
+        self.assertEqual(before, (self.run_root / 'state.json').read_bytes())
+        self.assertEqual(job['attempts_history'][-1]['status'], 'failed')
+        self.queue.validate_snapshot('object_0')
+
+    def test_continuation_rejects_unchanged_smaller_boolean_and_invalid_budget(self):
+        self.make_budget_halt()
+        before = self.queue.path.read_bytes()
+        for value in (2, 1, 0, -1, True, '6'):
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                self.continue_native(value)
+        self.assertEqual(before, self.queue.path.read_bytes())
+
+    def test_continuation_does_not_override_genuine_business_halt(self):
+        self.make_business_halt_snapshot()
+        self.state['diagnostics']['max_runs'] = 2
+        self.save_native()
+        with self.assertRaisesRegex(ValueError, 'budget halt'):
+            self.continue_native()
+
+    def test_continuation_rejects_accepted_parent(self):
+        self.make_budget_halt()
+        self.state['accepted_revision'] = 'revision_0000'
+        self.save_native()
+        with self.assertRaisesRegex(ValueError, 'Accepted'):
+            self.continue_native()
+
+    def test_continuation_requires_closed_ownership_and_native_preflight(self):
+        self.make_budget_halt()
+        self.state['diagnostic_runtime_sessions'] = [{'lifecycle_state': 'open'}]
+        self.save_native()
+        with self.assertRaisesRegex(ValueError, 'active'):
+            self.continue_native()
+        self.state['diagnostic_runtime_sessions'] = []
+        self.save_native()
+        self.native_preflight.side_effect = ValueError('actual native snapshot rejection')
+        with self.assertRaisesRegex(ValueError, 'native snapshot rejection'):
+            self.continue_native()
+
+    def test_continuation_launch_rejects_changed_parent_even_with_unchanged_snapshot(self):
+        self.make_budget_halt()
+        self.continue_native()
+        self.state['updated_at'] = 'changed after admission'
+        self.save_native()
+        with self.assertRaisesRegex(ValueError, 'parent changed'):
+            self.queue.validate_snapshot('object_0')
+
+    def make_unaccepted_export_parent(self):
+        origin = self.make_business_halt_snapshot()
+        original_id = self.run_id
+        origin_hash = digest(self.run_root / 'state.json')
+        parent = self.native / 'outputs/agentic_asset_refinement/unaccepted_snapshot_run'
+        parent.mkdir()
+        native = dict(self.state)
+        native.update(run_id=parent.name, run_root=str(parent), status='success',
+                      run_mode='post_mesh_processing_diagnostics', accepted_revision=None,
+                      diagnostics_reroute_and_export=True, diagnostics_stage_only=False,
+                      revisions={'revision_0000': {'status': 'exported_unaccepted'}},
+                      diagnostics={'max_runs': 2}, route_state={'orchestrator_diagnostic_decision': {
+                          'diagnostic_export_policy': 'export_after_revision_budget_revise'}})
+        (parent / 'state.json').write_text(json.dumps(native))
+        batch = self.queue_state()
+        job = batch['jobs'][0]
+        job.update(status='success', run_id=parent.name, execution_mode='diagnostics_snapshot',
+                   snapshot_source_run_id=original_id, snapshot_source_state_sha256=origin_hash,
+                   diagnostics_snapshot_dir=str(origin), diagnostics_snapshot_input=str(self.frozen),
+                   snapshot_state_sha256=digest(origin / 'state.json'))
+        self.queue._save(batch)
+        report = {'valid': True, 'run_id': parent.name, 'strict_genesis_accept': False,
+                  'state_sha256': digest(parent / 'state.json'), 'completion_kind': 'native_final_revise_export'}
+        (self.job_directory / 'completion_validation.json').write_text(json.dumps(report))
+        return parent, report
+
+    def test_unaccepted_export_continues_from_preserved_full_image_origin(self):
+        parent, report = self.make_unaccepted_export_parent()
+        before = (parent / 'state.json').read_bytes()
+        result = self.continue_native()
+        self.assertEqual(result['snapshot_source_run_id'], self.run_id)
+        self.assertEqual(result['diagnostic_continuation']['parent_run_id'], parent.name)
+        self.assertEqual((parent / 'state.json').read_bytes(), before)
+        self.assertEqual(self.queue_state()['jobs'][0]['attempts_history'][-1]['status'], 'success')
+        self.queue.validate_snapshot('object_0')
+
+    def test_unaccepted_export_requires_matching_completion_evidence(self):
+        parent, report = self.make_unaccepted_export_parent()
+        report['state_sha256'] = 'a' * 64
+        (self.job_directory / 'completion_validation.json').write_text(json.dumps(report))
+        with self.assertRaisesRegex(ValueError, 'verified unaccepted export'):
+            self.continue_native()
+
+    def test_unaccepted_export_cannot_continue_from_changed_origin(self):
+        self.make_unaccepted_export_parent()
+        self.state['updated_at'] = 'origin changed'
+        self.save_native()
+        with self.assertRaisesRegex(ValueError, 'origin changed'):
+            self.continue_native()
+
+    def test_native_budget_default_remains_two_for_unchanged_jobs(self):
+        self.assertEqual(self.queue.info('object_0', 'sim_diagnostics_max_runs'), 2)
+
     def test_snapshot_creates_new_run_preserves_halt_and_logs_and_can_claim_any_gpu(self):
         snapshot = self.make_business_halt_snapshot()
         before = (self.run_root / "state.json").read_bytes()
@@ -737,13 +861,16 @@ class SameRunResumeTests(unittest.TestCase):
         self.assertIn("--diagnostics-reroute-and-export --require-new-run-root", text)
         self.assertIn("Do not call imagegen a third time", text)
 
-    def run_stubbed_resume_shell(self, *, completion_failure=False, snapshot=False):
+    def run_stubbed_resume_shell(self, *, completion_failure=False, snapshot=False, budget=2):
         """Execute the real patched shell using fake external engines, never Codex/GPU."""
         if snapshot:
             snapshot_dir = self.make_business_halt_snapshot()
             self.snapshot_retry()
         else:
             self.resume()
+        batch = self.queue_state()
+        batch['jobs'][0]['sim_diagnostics_max_runs'] = budget
+        self.queue._save(batch)
         self.hold.unlink()
         self.assertEqual(self.queue.claim(GPU), "object_0")
         queue_directory = self.base / "queue"
@@ -812,6 +939,7 @@ exec PYTHON "$@"
             self.assertEqual(len(external), 2)
             self.assertIn("--diagnostics_revision_snapshot_dir " + str(snapshot_dir), external[0])
             self.assertIn("--diagnostics-reroute-and-export --require-new-run-root", external[0])
+            self.assertIn('--sim-diagnostics-max-runs ' + str(budget), external[0])
             self.assertNotIn("--source_image", external[0])
             self.assertEqual(external[1], "archive")
             self.assertTrue((self.job_directory / "initializer.json").is_file())
@@ -844,6 +972,10 @@ exec PYTHON "$@"
         job = self.run_stubbed_resume_shell(snapshot=True)
         self.assertEqual(job["status"], "success")
         self.assertEqual(job["run_id"], "genesis_object_0_snapshot_retry")
+
+    def test_real_snapshot_shell_forwards_larger_official_version_budget(self):
+        job = self.run_stubbed_resume_shell(snapshot=True, budget=6)
+        self.assertEqual(job['sim_diagnostics_max_runs'], 6)
         self.assertEqual(job["snapshot_source_run_id"], self.run_id)
 
     def test_real_resume_shell_rejects_completion_failure_despite_codex_and_archive_zero(self):

@@ -53,6 +53,8 @@ batch bind "$JOB_ID" "$$"
 DIAGGEN_QUEUE_RUN_ID="$(batch info "$JOB_ID" run_id)"
 export DIAGGEN_QUEUE_RUN_ID
 EXECUTION_MODE="$(batch info "$JOB_ID" execution_mode)"
+NATIVE_DIAGNOSTICS_MAX_RUNS="$(batch info "$JOB_ID" sim_diagnostics_max_runs)"
+[[ "$NATIVE_DIAGNOSTICS_MAX_RUNS" =~ ^[1-9][0-9]*$ ]] || exit 2
 [[ "$EXECUTION_MODE" == fresh || "$EXECUTION_MODE" == resume || "$EXECUTION_MODE" == diagnostics_snapshot ]] || exit 2
 if ((REQUEST_RESUME)) && [[ "$EXECUTION_MODE" != resume ]]; then
     printf '%s\n' "--resume requires Queue.resume admission metadata" >&2
@@ -72,6 +74,7 @@ SOURCE_IMAGE="$(batch info "$JOB_ID" input)"
 export DIAGGEN_JOB_QUEUE_DIR="$ROOT_QUEUE/jobs/$JOB_ID"
 export DIAGGEN_WATCHER_PID=$$
 mkdir -p "$DIAGGEN_JOB_QUEUE_DIR"
+batch info "$JOB_ID" diagnostic_continuation > "$DIAGGEN_JOB_QUEUE_DIR/continuation.json"
 exec >> "$DIAGGEN_JOB_QUEUE_DIR/launcher.log" 2>&1
 
 RUN_ROOT="$DIAGGEN_ROOT/outputs/agentic_asset_refinement/$DIAGGEN_QUEUE_RUN_ID"
@@ -158,6 +161,7 @@ elif [[ "$EXECUTION_MODE" == diagnostics_snapshot ]]; then
     "$PYTHON" -m hag4r.agentic.run_diaggen_pipeline \
         --diagnostics_revision_snapshot_dir "$SNAPSHOT_DIR" \
         --diagnostics-reroute-and-export --require-new-run-root \
+        --sim-diagnostics-max-runs "$NATIVE_DIAGNOSTICS_MAX_RUNS" \
         --run_id "$DIAGGEN_QUEUE_RUN_ID" --output_tag "$DIAGGEN_QUEUE_RUN_ID" \
         --run_root outputs/agentic_asset_refinement \
         --config configs/config_genesis_diagnostics_enabled.yaml \
@@ -169,6 +173,7 @@ else
     printf '%s\n' "$FROZEN_INPUT" > "$DIAGGEN_JOB_QUEUE_DIR/selected_input.txt"
     "$PYTHON" -m hag4r.agentic.run_diaggen_pipeline \
         --source_image "$FROZEN_INPUT" --run_id "$DIAGGEN_QUEUE_RUN_ID" \
+        --sim-diagnostics-max-runs "$NATIVE_DIAGNOSTICS_MAX_RUNS" \
         --output_tag "$DIAGGEN_QUEUE_RUN_ID" \
         --run_root outputs/agentic_asset_refinement \
         --config configs/config_genesis_diagnostics_enabled.yaml \
@@ -202,7 +207,12 @@ Successful cleanup and all successful upstream stages must be preserved."
         MODE_CONTEXT="This is an independent diagnostics_snapshot run from the public native
 initializer. Read $DIAGGEN_JOB_QUEUE_DIR/snapshot_validation.json and initializer.json;
 there is no resume.json to read. The initializer preserved a completed upstream revision
-and created a clean diagnostic workspace. Keep its successful stage prefix, use one fresh
+and created a clean diagnostic workspace. The official version budget for this experiment
+is $NATIVE_DIAGNOSTICS_MAX_RUNS. If continuation.json is nonempty, read its recorded parent
+run's durable diagnostic summary and repair cues as historical evidence. Pass those cues
+to the appropriate owning stage when the native diagnostic recommendation reroutes it;
+do not repeat an unchanged unsuccessful prompt, invent a pass, or use old live ownership.
+Keep the successful stage prefix, use one fresh
 diagnostic child, and consume native recommendation transitions and lawful repair reroutes."
         ;;
 esac

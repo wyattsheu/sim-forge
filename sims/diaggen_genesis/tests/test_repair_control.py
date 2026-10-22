@@ -275,6 +275,46 @@ class RepairTests(unittest.TestCase):
         self.assertEqual(self.control.baseline()['baseline'], original)
         self.assertIsNotNone(self.prepare())
 
+    def mark_authorized_continuation(self, *, status='failed', outcome='native_revision_budget_exhausted'):
+        self.job.update(status=status, sim_diagnostics_max_runs=6, diagnostic_continuation={
+            'schema_version': 'diaggen-native-continuation-v1', 'parent_run_id': 'prior_run',
+            'source_run_id': 'origin_run', 'parent_state_sha256': 'a' * 64, 'prior_max_runs': 2})
+        repair.atomic_json(self.q / 'batch.json', self.batch)
+        self.observed['jobs'][0]['outcome'] = outcome
+        self.refresh()
+
+    def test_authorized_revision_budget_is_not_marked_resolved_without_continuation(self):
+        self.mark_authorized_continuation()
+        job_id = self.prepare()
+        request = repair.object_file(self.q / 'repair_jobs' / job_id / 'request.json')
+        self.assertEqual(request['incident']['kind'], 'native_revision_budget_exhausted')
+        self.result(job_id, classification='native_business_halt', outcome='needs_attention')
+        self.control.finish(job_id, 0)
+        counter = self.control.state()['incidents'][request['incident']['signature']]
+        self.assertFalse(counter.get('resolved', False))
+        self.seconds += 901
+        self.refresh()
+        self.assertIsNotNone(self.prepare())
+
+    def test_authorized_unaccepted_export_gets_further_native_investigation(self):
+        self.mark_authorized_continuation(status='success', outcome='exported_unaccepted')
+        request_id = self.prepare()
+        request = repair.object_file(self.q / 'repair_jobs' / request_id / 'request.json')
+        self.assertEqual(request['incident']['kind'], 'exported_unaccepted')
+
+    def test_operator_request_reopens_baseline_without_erasing_previous_counter(self):
+        self.job['id'] = 'capybara_plush_toy'
+        self.observed['jobs'][0].update(id=self.job['id'], outcome='stage_failed')
+        repair.atomic_json(self.q / 'batch.json', self.batch)
+        self.refresh()
+        baseline = self.control.baseline()['baseline']
+        self.control.request_job(self.job['id'], 'investigate_official_backend')
+        request_id = self.prepare()
+        request = repair.object_file(self.q / 'repair_jobs' / request_id / 'request.json')
+        self.assertEqual(request['incident']['kind'], 'user_requested_investigation')
+        self.assertEqual(self.control.state()['baseline'], baseline)
+        self.assertEqual(self.control.state()['incidents'][request['incident']['signature']]['attempts'], 1)
+
     def test_missing_stale_invalid_monitor_and_invalid_batch_create_incidents(self):
         path = self.q / 'monitor_status.json'
         path.unlink()

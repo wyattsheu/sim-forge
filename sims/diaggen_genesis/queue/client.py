@@ -52,6 +52,7 @@ def status(base):
     jobs = []
     for job in batch['jobs']:
         entry = {key: job.get(key) for key in ('id', 'run_id', 'status')}
+        entry['diagnostic_max_runs'] = job.get('sim_diagnostics_max_runs', 2)
         entry['completion_status'] = None
         evidence = queue.directory / 'jobs' / job['id'] / 'completion_validation.json'
         if job['status'] == 'success':
@@ -86,13 +87,16 @@ def main(argv=None, *, base=BASE):
     submit.add_argument('paths', nargs='+', help='PNG/JPG/JPEG 圖片或資料夾，支援空白與中文路徑')
     submit.add_argument('--recursive', action='store_true', help='包含資料夾的子目錄')
     submit.add_argument('--dry-run', action='store_true', help='只檢查圖片與重複項目，不寫入或啟動工作')
+    submit.add_argument('--diagnostic-runs', type=int, default=2,
+                        help='官方診斷版本上限，含初始版；預設 2，可指定 6 等正整數')
     subs.add_parser('start', help='啟用收件資料夾與背景排程；保留人工暫停旗標')
     state = subs.add_parser('status', help='查看所有任務與背景服務狀態')
     state.add_argument('--json', action='store_true')
     args = parser.parse_args(argv)
     try:
         if args.command == 'submit':
-            items = Intake(base).submit(args.paths, recursive=args.recursive, dry_run=args.dry_run)
+            items = Intake(base).submit(args.paths, recursive=args.recursive, dry_run=args.dry_run,
+                                        diagnostic_runs=args.diagnostic_runs)
             for item in items:
                 label = '重複圖片，沿用既有任務' if item['duplicate'] else ('可提交' if args.dry_run else '已加入佇列')
                 print(f"{label}：{item['id']} [{item['status']}]\n  結果：{item['results_directory']}")

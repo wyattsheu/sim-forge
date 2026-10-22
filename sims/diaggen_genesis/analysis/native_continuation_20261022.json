@@ -1,0 +1,64 @@
+{
+  "schema_version": "diaggen-native-continuation-validation-v1",
+  "checked_at": "2026-10-22T23:51:41+08:00",
+  "overall_status": "pass",
+  "generation_and_diagnostics_model": "gpt-6-luna",
+  "reasoning_effort": "max",
+  "simulator": "Genesis 1.2.0",
+  "scope": "Native CLI settings and external queue admission only; no native code or acceptance conditions changed.",
+  "actual_cpu_tests": {
+    "error": 0,
+    "expected_fail": 0,
+    "fail": 0,
+    "pass": 430,
+    "run": 430,
+    "skip": 0,
+    "unexpected_success": 0
+  },
+  "required_full_runtime_checks": 81,
+  "native_patch_count": 9,
+  "native_source_changes": 0,
+  "hardware_checks_reused": 71,
+  "fresh_hardware_checks": 0,
+  "old_native_budgets_preserved": true,
+  "new_native_max_runs": 6,
+  "jobs": [
+    {
+      "job_id": "dragon",
+      "parent_run_id": "genesis_dragon_20261022_retryfix_af4645266949",
+      "run_id": "genesis_dragon_20261022_native6",
+      "snapshot_source_run_id": "genesis_dragon_20261022_retryfix_af4645266949",
+      "status": "queued",
+      "native_preflight": "pass",
+      "old_native_state_sha256": "131bf3b4315291578d60200c7135f3fc9b8815a1dd3c7f00db22be3c9d175e88",
+      "old_native_state_unchanged": true
+    },
+    {
+      "job_id": "kitchen_tongs",
+      "parent_run_id": "genesis_kitchen_tongs_20261022_segmentation_retry1",
+      "run_id": "genesis_kitchen_tongs_20261022_native6",
+      "snapshot_source_run_id": "genesis_kitchen_tongs_20261022_segmentation_retry1",
+      "status": "queued",
+      "native_preflight": "pass",
+      "old_native_state_sha256": "c19228a0696e1a6d6968436ca39df89ef7720b73f76e7fa7c4b8f48d1fa33b49",
+      "old_native_state_unchanged": true
+    },
+    {
+      "job_id": "sneaker",
+      "parent_run_id": "genesis_sneaker_20261022_clean_diagnostics1",
+      "run_id": "genesis_sneaker_20261022_native6",
+      "snapshot_source_run_id": "genesis_sneaker_20261021",
+      "status": "queued",
+      "native_preflight": "pass",
+      "old_native_state_sha256": "118c58a38928b231421c3079e2e901ebcec77d1c27e7e8e6053402c0e88c4778",
+      "old_native_state_unchanged": true
+    }
+  ],
+  "supervision": "Authorized continuation budget halts and unaccepted exports remain actionable; a new independent experiment may use the current official native version maximum plus four. Actual native acceptance is still required.",
+  "limitations": [
+    "User-authorized new native experiments use max_runs=6 instead of the default two; this setting change is recorded and old failed/unaccepted native results remain intact.",
+    "Admission, native appearance/snapshot preflight and CPU regressions do not establish a new strict Genesis accept.",
+    "Hardware checks were reused after exact native source, environment, binary and qualification-input inventory comparison; they were not rerun.",
+    "Capybara full-size spconv int32 failure remains unresolved and requires isolated backend/kernel compatibility research."
+  ]
+}

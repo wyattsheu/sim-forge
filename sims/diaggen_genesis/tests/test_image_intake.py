@@ -133,6 +133,14 @@ class IntakeTests(unittest.TestCase):
         self.assertEqual(self.queue.path.read_bytes(), before)
         self.assertFalse((self.base / 'inputs').exists())
 
+    def test_native_version_budget_can_be_selected_without_changing_duplicate_jobs(self):
+        self.intake.submit([self.source], diagnostic_runs=6)
+        self.assertEqual(self.jobs()[0]['sim_diagnostics_max_runs'], 6)
+        self.intake.submit([self.source], diagnostic_runs=10)
+        self.assertEqual(self.jobs()[0]['sim_diagnostics_max_runs'], 6)
+        with self.assertRaises(ValueError):
+            self.intake.submit([self.source], diagnostic_runs=0)
+
     def test_batch_limit_rejects_whole_invocation(self):
         with patch.object(image_intake, 'MAX_JOBS', 0):
             with self.assertRaisesRegex(ValueError, 'limit'):

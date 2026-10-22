@@ -316,7 +316,7 @@ def monitor_snapshot(queue, jobs):
     outcomes = {'completed', 'exported_unaccepted', 'queued', 'cancelled', 'running',
                 'quiet', 'process_inspection_unavailable', 'waiting_cleanup',
                 'unbound_worker_review', 'awaiting_worker_binding', 'changed_during_observation',
-                'hold', 'business_halt', 'stage_failed', 'resume_ineligible', 'retry_limit',
+                'hold', 'business_halt', 'native_revision_budget_exhausted', 'stage_failed', 'resume_ineligible', 'retry_limit',
                 'retry_backoff', 'export_recovered', 'export_validation_failed',
                 'preflight_failed', 'resumed', 'queue_stopped', 'inspection_failed'}
     allowed = {(job['id'], job['run_id']) for job in jobs}
@@ -347,7 +347,8 @@ def repair_snapshot(queue):
                 'queue_ledger_invalid', 'resume_ineligible', 'export_validation_failed', 'retry_limit',
                 'process_inspection_unavailable', 'unbound_worker_review', 'inspection_failed',
                 'preflight_failed', 'stage_failed', 'quiet', 'cleanup_wait_excessive',
-                'new_native_halt', 'read_only_audit'}),
+                'new_native_halt', 'read_only_audit', 'native_revision_budget_exhausted',
+                'exported_unaccepted', 'user_requested_investigation', 'image_intake_failed'}),
             'classification': enum(value.get('classification'), {'scheduler', 'pipeline_runtime',
                 'dependency', 'external_service', 'native_business_halt', 'unknown', 'no_issue'}),
             'outcome': enum(value.get('outcome'), {'repaired_and_requeued', 'recovered',

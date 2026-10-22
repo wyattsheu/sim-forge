@@ -190,6 +190,11 @@ class Monitor:
         terminal = native.get('diagnostics', {}).get('terminal') or {}
         business = terminal.get('business_outcome') or {}
         if status == 'failed' and native.get('status') != 'success':
+            decision = native.get('route_state', {}).get('orchestrator_diagnostic_decision') or {}
+            if (decision.get('failure_kind') == 'revision_budget_exhausted'
+                    and decision.get('transition_action') == 'halt'
+                    and business.get('status') == 'recommendation_valid'):
+                return 'native_revision_budget_exhausted'
             if terminal.get('status') == 'halted' or business.get('status') in ('recommendation_valid', 'business_halt'):
                 return 'business_halt'
             if any(s.get('status') in ('failed', 'halted') for s in native.get('stages', {}).values()):

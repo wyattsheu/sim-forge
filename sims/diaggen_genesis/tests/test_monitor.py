@@ -74,6 +74,14 @@ class MonitorTests(unittest.TestCase):
         self.m.queue.resume.assert_not_called()
         self.proc.assert_not_called()
 
+    def test_native_revision_budget_is_distinct_from_business_halt(self):
+        self.native['diagnostics']['terminal'] = {'business_outcome': {'status': 'recommendation_valid'}}
+        self.native['route_state'] = {'orchestrator_diagnostic_decision': {
+            'failure_kind': 'revision_budget_exhausted', 'transition_action': 'halt'}}
+        monitor.atomic_json(self.run / 'state.json', self.native)
+        self.assertEqual(self.m.observe_job(self.job), 'native_revision_budget_exhausted')
+        self.m.queue.resume.assert_not_called()
+
     def test_live_runner_or_descendant_blocks_recovery(self):
         self.pid.return_value = True
         self.assertEqual(self.m.observe_job(self.job), 'quiet')

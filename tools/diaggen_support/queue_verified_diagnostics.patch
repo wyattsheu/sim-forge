@@ -1,6 +1,31 @@
 --- a/sims/diaggen_genesis/queue/run_one.sh
 +++ b/sims/diaggen_genesis/queue/run_one.sh
-@@ -165,7 +165,7 @@
+@@ -53,6 +53,8 @@
+ DIAGGEN_QUEUE_RUN_ID="$(batch info "$JOB_ID" run_id)"
+ export DIAGGEN_QUEUE_RUN_ID
+ EXECUTION_MODE="$(batch info "$JOB_ID" execution_mode)"
++NATIVE_DIAGNOSTICS_MAX_RUNS="$(batch info "$JOB_ID" sim_diagnostics_max_runs)"
++[[ "$NATIVE_DIAGNOSTICS_MAX_RUNS" =~ ^[1-9][0-9]*$ ]] || exit 2
+ [[ "$EXECUTION_MODE" == fresh || "$EXECUTION_MODE" == resume || "$EXECUTION_MODE" == diagnostics_snapshot ]] || exit 2
+ if ((REQUEST_RESUME)) && [[ "$EXECUTION_MODE" != resume ]]; then
+     printf '%s\n' "--resume requires Queue.resume admission metadata" >&2
+@@ -72,6 +74,7 @@
+ export DIAGGEN_JOB_QUEUE_DIR="$ROOT_QUEUE/jobs/$JOB_ID"
+ export DIAGGEN_WATCHER_PID=$$
+ mkdir -p "$DIAGGEN_JOB_QUEUE_DIR"
++batch info "$JOB_ID" diagnostic_continuation > "$DIAGGEN_JOB_QUEUE_DIR/continuation.json"
+ exec >> "$DIAGGEN_JOB_QUEUE_DIR/launcher.log" 2>&1
+ 
+ RUN_ROOT="$DIAGGEN_ROOT/outputs/agentic_asset_refinement/$DIAGGEN_QUEUE_RUN_ID"
+@@ -158,6 +161,7 @@
+     "$PYTHON" -m hag4r.agentic.run_diaggen_pipeline \
+         --diagnostics_revision_snapshot_dir "$SNAPSHOT_DIR" \
+         --diagnostics-reroute-and-export --require-new-run-root \
++        --sim-diagnostics-max-runs "$NATIVE_DIAGNOSTICS_MAX_RUNS" \
+         --run_id "$DIAGGEN_QUEUE_RUN_ID" --output_tag "$DIAGGEN_QUEUE_RUN_ID" \
+         --run_root outputs/agentic_asset_refinement \
+         --config configs/config_genesis_diagnostics_enabled.yaml \
+@@ -165,15 +169,53 @@
  else
      mkdir -p outputs/inputs
      FROZEN_INPUT="$DIAGGEN_ROOT/outputs/inputs/${DIAGGEN_QUEUE_RUN_ID}.${SOURCE_IMAGE##*.}"
@@ -9,7 +34,9 @@
      printf '%s\n' "$FROZEN_INPUT" > "$DIAGGEN_JOB_QUEUE_DIR/selected_input.txt"
      "$PYTHON" -m hag4r.agentic.run_diaggen_pipeline \
          --source_image "$FROZEN_INPUT" --run_id "$DIAGGEN_QUEUE_RUN_ID" \
-@@ -174,6 +174,38 @@
++        --sim-diagnostics-max-runs "$NATIVE_DIAGNOSTICS_MAX_RUNS" \
+         --output_tag "$DIAGGEN_QUEUE_RUN_ID" \
+         --run_root outputs/agentic_asset_refinement \
          --config configs/config_genesis_diagnostics_enabled.yaml \
          > "$DIAGGEN_JOB_QUEUE_DIR/initializer.json"
  fi
@@ -41,14 +68,19 @@
 +        MODE_CONTEXT="This is an independent diagnostics_snapshot run from the public native
 +initializer. Read $DIAGGEN_JOB_QUEUE_DIR/snapshot_validation.json and initializer.json;
 +there is no resume.json to read. The initializer preserved a completed upstream revision
-+and created a clean diagnostic workspace. Keep its successful stage prefix, use one fresh
++and created a clean diagnostic workspace. The official version budget for this experiment
++is $NATIVE_DIAGNOSTICS_MAX_RUNS. If continuation.json is nonempty, read its recorded parent
++run's durable diagnostic summary and repair cues as historical evidence. Pass those cues
++to the appropriate owning stage when the native diagnostic recommendation reroutes it;
++do not repeat an unchanged unsuccessful prompt, invent a pass, or use old live ownership.
++Keep the successful stage prefix, use one fresh
 +diagnostic child, and consume native recommendation transitions and lawful repair reroutes."
 +        ;;
 +esac
  
  cat > "$DIAGGEN_JOB_QUEUE_DIR/prompt.txt" <<EOF
  Complete this one user-authorized DiagGen asset-generation run in native Genesis.
-@@ -205,22 +237,48 @@
+@@ -205,22 +247,48 @@
  output quality. The guard is an observation, not a memory reservation or OOM guarantee.
  For fresh image cleanup, stop after a passing Attempt 1; do not generate Attempt 2 after it
  passes. For a resume with successful cleanup, skip all imagegen and cleanup registration.
@@ -110,12 +142,10 @@
  The GPU is shared with existing work. Do not stop or alter other processes, claim another GPU,
 --- a/sims/diaggen_genesis/queue/batch_control.py
 +++ b/sims/diaggen_genesis/queue/batch_control.py
-@@ -151,6 +151,32 @@
-     if not isinstance(report, dict) or report.get("valid") is not True:
-         raise ValueError("Native recovery preflight did not establish validity")
+@@ -153,6 +153,32 @@
      return report
-+
-+
+ 
+ 
 +def verified_repair_prefix(state):
 +    """Recognize only native copied prefixes with matching repair provenance."""
 +    repair = state.get("route_state", {}).get("active_repair_revision")
@@ -140,24 +170,130 @@
 +            or state["revisions"][base].get("superseded_by") != active):
 +        raise ValueError("Native repair-prefix provenance mismatch")
 +    return {"base_revision": base, "revision": active, "copied_stage_prefix": expected}
- 
- 
++
++
  class Queue:
-@@ -418,7 +444,7 @@
+     def __init__(self, base=None, *, gpu_query=None):
+         self.base = Path(base).resolve() if base is not None else Path(__file__).resolve().parent.parent
+@@ -193,6 +219,20 @@
+             raise ValueError("Invalid input SHA256")
+         if "minimum_free_mib" in job and (type(job["minimum_free_mib"]) is not int or job["minimum_free_mib"] <= 0):
+             raise ValueError("Job minimum free memory must be a positive integer")
++        if 'sim_diagnostics_max_runs' in job and (type(job['sim_diagnostics_max_runs']) is not int
++                                                  or job['sim_diagnostics_max_runs'] < 1):
++            raise ValueError('Diagnostic version budget must be a positive integer')
++        continuation = job.get('diagnostic_continuation')
++        if continuation is not None:
++            if not isinstance(continuation, dict) or continuation.get('schema_version') != 'diaggen-native-continuation-v1':
++                raise ValueError('Invalid native continuation provenance')
++            for key in ('parent_run_id', 'source_run_id'):
++                validate_identifier(continuation.get(key))
++            if not re.fullmatch(r'[a-f0-9]{64}', str(continuation.get('parent_state_sha256', ''))):
++                raise ValueError('Invalid continuation parent digest')
++            prior = continuation.get('prior_max_runs')
++            if type(prior) is not int or prior < 1 or job.get('sim_diagnostics_max_runs', 0) <= prior:
++                raise ValueError('Continuation requires an explicitly larger native version budget')
+         if "scheduling_note" in job and (not isinstance(job["scheduling_note"], str) or not REASON.fullmatch(job["scheduling_note"])):
+             raise ValueError("Scheduling note must be a short lowercase enum")
+ 
+@@ -363,7 +403,7 @@
+             self._save(batch)
+ 
+     def info(self, job_id, field):
+-        if field not in ("input", "run_id", "gpu_uuid", "status", "minimum_free_mib", "execution_mode", "resume_id", "resume_frozen_input", "diagnostics_snapshot_dir", "diagnostics_snapshot_input"):
++        if field not in ("input", "run_id", "gpu_uuid", "status", "minimum_free_mib", "execution_mode", "resume_id", "resume_frozen_input", "diagnostics_snapshot_dir", "diagnostics_snapshot_input", "sim_diagnostics_max_runs", "diagnostic_continuation"):
+             raise ValueError("Unsupported job info field")
+         with self._locked():
+             batch = self._load()
+@@ -372,6 +412,8 @@
+                 return job.get(field, "fresh")
+             if field == "minimum_free_mib":
+                 return effective_minimum_free_mib(batch["policy"], job)
++            if field == 'sim_diagnostics_max_runs':
++                return job.get(field, 2)
+             return job.get(field)
+ 
+     def policy(self, field):
+@@ -418,7 +460,60 @@
                  job["reason"] = reason
              self._save(batch)
  
 -    def retry(self, job_id, new_run_id, reason, *, diagnostics_snapshot=False):
-+    def retry(self, job_id, new_run_id, reason, *, diagnostics_snapshot=False, reuse_snapshot_origin=False):
++    def _continuation_context(self, job, max_runs):
++        """Admit an explicit user-requested experiment; never edit the old run."""
++        root = self.base.parents[1] / 'tools/diaggen/outputs/agentic_asset_refinement'
++        parent = root / job['run_id']
++        path = parent / 'state.json'
++        if parent.is_symlink() or path.is_symlink() or not path.is_file():
++            raise ValueError('Continuation parent is missing or unsafe')
++        raw = path.read_bytes()
++        state = json.loads(raw)
++        prior = state.get('diagnostics', {}).get('max_runs')
++        if (type(max_runs) is not int or type(prior) is not int or prior < 1 or max_runs <= prior):
++            raise ValueError('Continuation needs a larger official diagnostic version budget')
++        if state.get('run_root') != str(parent) or state.get('accepted_revision') is not None:
++            raise ValueError('Accepted or mismatched native runs cannot be continued')
++        terminal = state.get('diagnostics', {}).get('terminal') or {}
++        decision = state.get('route_state', {}).get('orchestrator_diagnostic_decision') or {}
++        budget_halt = (job['status'] == 'failed' and state.get('status') == 'failed'
++                       and terminal.get('business_outcome', {}).get('status') == 'recommendation_valid'
++                       and terminal.get('operational_outcome', {}).get('status') == 'complete'
++                       and decision.get('transition_action') == 'halt'
++                       and decision.get('failure_kind') == 'revision_budget_exhausted')
++        final_revise = False
++        if job['status'] == 'success' and state.get('status') == 'success':
++            evidence = self.directory / 'jobs' / job['id'] / 'completion_validation.json'
++            if evidence.is_file() and not evidence.is_symlink():
++                report = json.loads(evidence.read_text())
++                revision = state.get('active_revision')
++                final_revise = (state.get('run_mode') == 'post_mesh_processing_diagnostics'
++                                and state.get('diagnostics_reroute_and_export') is True
++                                and state.get('diagnostics_stage_only') is False
++                                and state.get('revisions', {}).get(revision, {}).get('status') == 'exported_unaccepted'
++                                and decision.get('diagnostic_export_policy') == 'export_after_revision_budget_revise'
++                                and report.get('valid') is True and report.get('run_id') == job['run_id']
++                                and report.get('state_sha256') == hashlib.sha256(raw).hexdigest()
++                                and report.get('strict_genesis_accept') is False
++                                and report.get('completion_kind') == 'native_final_revise_export')
++        if not budget_halt and not final_revise:
++            raise ValueError('Continuation requires a preserved budget halt or verified unaccepted export')
++        self._assert_snapshot_ownership_closed(state, parent)
++        source_id = job['run_id']
++        if state.get('run_mode') == 'post_mesh_processing_diagnostics':
++            source_id = validate_identifier(job.get('snapshot_source_run_id'))
++            origin = root / source_id / 'state.json'
++            if (origin.is_symlink() or not origin.is_file()
++                    or hashlib.sha256(origin.read_bytes()).hexdigest() != job.get('snapshot_source_state_sha256')):
++                raise ValueError('Previously admitted full-image snapshot origin changed')
++        elif state.get('run_mode') != 'full_image':
++            raise ValueError('Unsupported continuation parent mode')
++        return {'schema_version': 'diaggen-native-continuation-v1',
++                'parent_run_id': job['run_id'], 'parent_state_sha256': hashlib.sha256(raw).hexdigest(),
++                'source_run_id': source_id, 'prior_max_runs': prior}
++
++    def retry(self, job_id, new_run_id, reason, *, diagnostics_snapshot=False, reuse_snapshot_origin=False,
++              continuation_max_runs=None):
          """Archive failed launcher logs and explicitly queue a fresh native run."""
          validate_identifier(new_run_id)
          if not isinstance(reason, str) or not REASON.fullmatch(reason):
-@@ -430,7 +456,28 @@
+@@ -428,9 +523,39 @@
+                 raise ValueError("Retry requires queue/HOLD until repair is reviewed")
+             batch = self._load()
              job = self._job(batch, job_id)
-             if job["status"] != "failed":
+-            if job["status"] != "failed":
++            continuation = None
++            if continuation_max_runs is not None:
++                if not diagnostics_snapshot or reuse_snapshot_origin:
++                    raise ValueError('Continuation must use the official independent snapshot entrypoint')
++                continuation = self._continuation_context(job, continuation_max_runs)
++            elif job["status"] != "failed":
                  raise ValueError("Only a failed job can be retried")
 -            snapshot_details = self._snapshot_details(job) if diagnostics_snapshot else None
-+            snapshot_job = job
++            snapshot_job = dict(job)
++            snapshot_job.pop('diagnostic_continuation', None)
++            if continuation is not None:
++                snapshot_job.update(diagnostic_continuation=continuation,
++                                    sim_diagnostics_max_runs=continuation_max_runs)
 +            if reuse_snapshot_origin:
 +                if not diagnostics_snapshot or job.get("execution_mode") != "diagnostics_snapshot":
 +                    raise ValueError("Origin retry requires a previously admitted diagnostics snapshot")
@@ -182,7 +318,19 @@
              previous_run_id = job["run_id"]
              used_run_ids = {entry["run_id"] for entry in batch["jobs"]}
              for entry in batch["jobs"]:
-@@ -500,18 +547,8 @@
+@@ -486,6 +611,11 @@
+             if snapshot_details is not None:
+                 job.update(execution_mode="diagnostics_snapshot", **snapshot_details)
+                 mapping.update(snapshot_details)
++            job.pop('diagnostic_continuation', None)
++            if continuation is not None:
++                job.update(diagnostic_continuation=continuation, sim_diagnostics_max_runs=continuation_max_runs)
++                mapping.update(diagnostic_continuation=continuation, sim_diagnostics_max_runs=continuation_max_runs)
++            self._validate_jobs(batch['jobs'], dynamic=True)
+             job.pop("reason", None)
+             # All queue operations honor batch.lock, so this rename cannot collide
+             # with another retry. Native output and its completed archive stay put.
+@@ -500,18 +630,8 @@
              atomic_json(self.directory / "status.json", self._summary(batch))
              return mapping
  
@@ -203,38 +351,56 @@
          ownership = [state]
          ownership_path = Path(str(state.get("paths", {}).get("sim_diagnostics_dir", ""))) / "runtime_ownership.json"
          if ownership_path.is_file():
-@@ -526,6 +563,20 @@
+@@ -526,6 +646,34 @@
                  records = ledger.get(key, [])
                  if not isinstance(records, list) or any(not isinstance(record, dict) or record.get(field) not in closed for record in records):
                      raise ValueError("Snapshot source diagnostic ownership is still active or malformed")
 +
 +    def _snapshot_details(self, job, *, check_digest=False):
 +        root = self.base.parents[1] / "tools" / "diaggen"
-+        source_id = job["snapshot_source_run_id"] if check_digest else job["run_id"]
++        continuation = job.get('diagnostic_continuation')
++        source_id = job["snapshot_source_run_id"] if check_digest else (
++            continuation['source_run_id'] if continuation is not None else job['run_id'])
++        if continuation is not None:
++            parent = root / 'outputs/agentic_asset_refinement' / continuation['parent_run_id'] / 'state.json'
++            if (parent.is_symlink() or not parent.is_file()
++                    or hashlib.sha256(parent.read_bytes()).hexdigest() != continuation['parent_state_sha256']):
++                raise ValueError('Continuation parent changed after admission')
 +        source_root = root / "outputs/agentic_asset_refinement" / source_id
 +        source_state = source_root / "state.json"
 +        if source_root.is_symlink() or source_state.is_symlink() or not source_state.is_file():
 +            raise ValueError("Snapshot recovery needs a safe failed source state")
 +        raw = source_state.read_bytes()
 +        state = json.loads(raw)
++        terminal = state.get('diagnostics', {}).get('terminal') or {}
++        decision = state.get('route_state', {}).get('orchestrator_diagnostic_decision') or {}
++        budget_halt = (continuation is not None
++                       and terminal.get('business_outcome', {}).get('status') == 'recommendation_valid'
++                       and terminal.get('operational_outcome', {}).get('status') == 'complete'
++                       and decision.get('transition_action') == 'halt'
++                       and decision.get('failure_kind') == 'revision_budget_exhausted')
 +        if (state.get("status") != "failed" or state.get("run_root") != str(source_root)
-+                or state.get("diagnostics", {}).get("terminal", {}).get("business_outcome", {}).get("status") != "business_halt"):
++                or not (terminal.get('business_outcome', {}).get('status') == 'business_halt' or budget_halt)):
 +            raise ValueError("Snapshot recovery requires a preserved diagnostic business halt")
 +        self._assert_snapshot_ownership_closed(state, source_root)
          revision = state.get("active_revision")
          if not isinstance(revision, str) or not IDENTIFIER.fullmatch(revision):
              raise ValueError("Snapshot source has no valid active revision")
-@@ -549,6 +600,9 @@
+@@ -549,6 +697,13 @@
      def diagnostics_snapshot(self, job_id, new_run_id, reason):
          return self.retry(job_id, new_run_id, reason, diagnostics_snapshot=True)
  
 +    def diagnostics_snapshot_origin(self, job_id, new_run_id, reason):
 +        return self.retry(job_id, new_run_id, reason, diagnostics_snapshot=True, reuse_snapshot_origin=True)
 +
++    def continue_native(self, job_id, new_run_id, max_runs, reason):
++        return self.retry(job_id, new_run_id, reason, diagnostics_snapshot=True,
++                          continuation_max_runs=max_runs)
++
      def validate_snapshot(self, job_id):
          with self._locked():
              job = self._job(self._load(), job_id)
-@@ -582,9 +636,13 @@
+@@ -582,9 +737,13 @@
          if check_digest and digest != job.get("resume_state_sha256"):
              raise ValueError("Native state changed after resume admission")
          state = json.loads(state_bytes)
@@ -249,7 +415,7 @@
                  or state.get("runtime_kind") != "codex_skill" or state.get("status") not in ("seeded", "running", "failed")
                  or state.get("diagnostics", {}).get("enabled") is not True):
              raise ValueError("Native state is incompatible with same-run Genesis resume")
-@@ -612,7 +670,12 @@
+@@ -612,7 +771,12 @@
              stage = stages[name]
              if not isinstance(stage, dict):
                  raise ValueError("Invalid native stage record")
@@ -263,7 +429,7 @@
                  if unfinished:
                      raise ValueError("Successful native stages must form a prefix")
                  expected = stage.get("artifacts", {}).get("expected")
-@@ -624,6 +687,9 @@
+@@ -624,6 +788,9 @@
                          if (not path.is_absolute() or path.is_symlink() or not path.is_file() or path.stat().st_size <= 0
                                  or not path.resolve().is_relative_to(run_root.resolve())):
                              raise ValueError("A required upstream artifact is missing or unsafe")
@@ -273,12 +439,23 @@
                  completed.append(name)
              else:
                  if stage.get("ok") is not False or stage.get("status") not in ("pending", "pending_retry"):
-@@ -822,6 +888,8 @@
+@@ -806,7 +973,7 @@
+     elif command == "info" and len(rest) == 2:
+         value = queue.info(*rest)
+         if value is not None:
+-            print(value)
++            print(json.dumps(value, ensure_ascii=False) if isinstance(value, (dict, list)) else value)
+     elif command == "policy" and len(rest) == 1:
+         value = queue.policy(rest[0])
+         print(str(value).lower() if isinstance(value, bool) else value)
+@@ -822,6 +989,10 @@
          print(json.dumps(queue.validate_resume(*rest), ensure_ascii=False))
      elif command == "diagnostics-snapshot" and len(rest) == 3:
          print(json.dumps(queue.diagnostics_snapshot(*rest), ensure_ascii=False))
 +    elif command == "diagnostics-snapshot-origin" and len(rest) == 3:
 +        print(json.dumps(queue.diagnostics_snapshot_origin(*rest), ensure_ascii=False))
++    elif command == 'continue-native' and len(rest) == 4:
++        print(json.dumps(queue.continue_native(rest[0], rest[1], int(rest[2]), rest[3]), ensure_ascii=False))
      elif command == "validate-snapshot" and len(rest) == 1:
          print(json.dumps(queue.validate_snapshot(*rest), ensure_ascii=False))
      elif command == "summary" and not rest:
