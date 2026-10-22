@@ -5,12 +5,12 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T13:43:57+08:00",
+  "updated_at": "2026-10-22T13:50:01+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
     "check_interval_seconds": 15,
-    "max_parallel_jobs": 2
+    "max_parallel_jobs": 4
   },
   "counts": {
     "queued": 5,
@@ -26,6 +26,218 @@
       "schema_version": "diaggen-public-progress-v1",
       "pipeline": "DiagGen",
       "simulator": "Genesis",
+      "run_id": "genesis_baseball_cap_20261022_cleanup_retry2",
+      "phase": "waiting_gpu",
+      "pipeline_status": "not_initialized",
+      "generation_and_diagnostics_model": "gpt-6-luna",
+      "reasoning_effort": "max",
+      "active_revision": null,
+      "created_at": null,
+      "updated_at": "2026-10-22T13:50:01+08:00",
+      "diagnostics": {
+        "enabled": null,
+        "episode_count": 0,
+        "terminal_status": "not_available"
+      },
+      "stages": [
+        {
+          "name": "image_cleanup",
+          "label": "圖片清理",
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
+        },
+        {
+          "name": "sam3_omnipart_2d_segmentation",
+          "label": "SAM3 分割",
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
+        },
+        {
+          "name": "omnipart_generate_parts",
+          "label": "OmniPart 幾何生成",
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
+        },
+        {
+          "name": "hag4r_gpt_staged_material_inference",
+          "label": "材料推估",
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
+        },
+        {
+          "name": "hag4r_assign_params_to_prims",
+          "label": "材料參數配置",
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
+        },
+        {
+          "name": "hag4r_combined_to_monolithic",
+          "label": "體積網格處理",
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
+        },
+        {
+          "name": "genesis_live_diagnostic_loop",
+          "label": "Genesis 物理診斷",
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
+        },
+        {
+          "name": "hag4r_post_mesh_texture",
+          "label": "貼圖生成",
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
+        },
+        {
+          "name": "hag4r_final_export_bundle",
+          "label": "最終匯出",
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
+        }
+      ],
+      "media": [],
+      "id": "baseball_cap",
+      "status": "queued",
+      "attempts": 2,
+      "minimum_free_mib": 24576
+    },
+    {
+      "schema_version": "diaggen-public-progress-v1",
+      "pipeline": "DiagGen",
+      "simulator": "Genesis",
+      "run_id": "genesis_kitchen_tongs_20261022_segmentation_retry1",
+      "phase": "waiting_gpu",
+      "pipeline_status": "not_initialized",
+      "generation_and_diagnostics_model": "gpt-6-luna",
+      "reasoning_effort": "max",
+      "active_revision": null,
+      "created_at": null,
+      "updated_at": "2026-10-22T13:50:01+08:00",
+      "diagnostics": {
+        "enabled": null,
+        "episode_count": 0,
+        "terminal_status": "not_available"
+      },
+      "stages": [
+        {
+          "name": "image_cleanup",
+          "label": "圖片清理",
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
+        },
+        {
+          "name": "sam3_omnipart_2d_segmentation",
+          "label": "SAM3 分割",
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
+        },
+        {
+          "name": "omnipart_generate_parts",
+          "label": "OmniPart 幾何生成",
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
+        },
+        {
+          "name": "hag4r_gpt_staged_material_inference",
+          "label": "材料推估",
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
+        },
+        {
+          "name": "hag4r_assign_params_to_prims",
+          "label": "材料參數配置",
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
+        },
+        {
+          "name": "hag4r_combined_to_monolithic",
+          "label": "體積網格處理",
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
+        },
+        {
+          "name": "genesis_live_diagnostic_loop",
+          "label": "Genesis 物理診斷",
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
+        },
+        {
+          "name": "hag4r_post_mesh_texture",
+          "label": "貼圖生成",
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
+        },
+        {
+          "name": "hag4r_final_export_bundle",
+          "label": "最終匯出",
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
+        }
+      ],
+      "media": [],
+      "id": "kitchen_tongs",
+      "status": "queued",
+      "attempts": 1,
+      "minimum_free_mib": 24576
+    },
+    {
+      "schema_version": "diaggen-public-progress-v1",
+      "pipeline": "DiagGen",
+      "simulator": "Genesis",
       "run_id": "genesis_sneaker_20261021",
       "phase": "running",
       "pipeline_status": "seeded",
@@ -33,7 +245,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:39:46.288097+00:00",
-      "updated_at": "2026-10-22T13:43:58+08:00",
+      "updated_at": "2026-10-22T13:50:01+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -195,7 +407,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:30:09.878929+00:00",
-      "updated_at": "2026-10-22T13:43:58+08:00",
+      "updated_at": "2026-10-22T13:50:01+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
@@ -350,138 +562,6 @@
       "schema_version": "diaggen-public-progress-v1",
       "pipeline": "DiagGen",
       "simulator": "Genesis",
-      "run_id": "genesis_capybara_plush_toy_20261022_native_retry3",
-      "phase": "failed",
-      "pipeline_status": "seeded",
-      "generation_and_diagnostics_model": "gpt-6-luna",
-      "reasoning_effort": "max",
-      "active_revision": "revision_0000",
-      "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T13:43:58+08:00",
-      "diagnostics": {
-        "enabled": true,
-        "episode_count": 0,
-        "terminal_status": "not_available"
-      },
-      "stages": [
-        {
-          "name": "image_cleanup",
-          "label": "圖片清理",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T04:32:37.723749+00:00",
-          "finished_at": "2026-10-22T04:32:37.743039+00:00"
-        },
-        {
-          "name": "sam3_omnipart_2d_segmentation",
-          "label": "SAM3 分割",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T04:34:40.119091+00:00",
-          "finished_at": "2026-10-22T04:34:51.774012+00:00"
-        },
-        {
-          "name": "omnipart_generate_parts",
-          "label": "OmniPart 幾何生成",
-          "status": "failed",
-          "ledger_status": "failed",
-          "ok": false,
-          "started_at": "2026-10-22T04:36:47.268346+00:00",
-          "finished_at": "2026-10-22T04:38:22.003314+00:00"
-        },
-        {
-          "name": "hag4r_gpt_staged_material_inference",
-          "label": "材料推估",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
-        },
-        {
-          "name": "hag4r_assign_params_to_prims",
-          "label": "材料參數配置",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
-        },
-        {
-          "name": "hag4r_combined_to_monolithic",
-          "label": "體積網格處理",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
-        },
-        {
-          "name": "genesis_live_diagnostic_loop",
-          "label": "Genesis 物理診斷",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
-        },
-        {
-          "name": "hag4r_post_mesh_texture",
-          "label": "貼圖生成",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
-        },
-        {
-          "name": "hag4r_final_export_bundle",
-          "label": "最終匯出",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
-        }
-      ],
-      "media": [
-        {
-          "path": "media/capybara_plush_toy_cleaned_image.png",
-          "bytes": 2311951,
-          "sha256": "94bffd6c88b772cd5c34fd16919e6edcd2ea6aa78011c2662ffa43dbe4089331"
-        },
-        {
-          "path": "media/capybara_plush_toy_processed_white_bg_png.png",
-          "bytes": 313684,
-          "sha256": "2dece757f870b891fd78c84044bfa56e2479c776311b56f31a44071e740f41ea"
-        },
-        {
-          "path": "media/capybara_plush_toy_processed_rgba.png",
-          "bytes": 364544,
-          "sha256": "a9d1f8e885f3cb0f630435e4b9b0fe4657eae9d2e6cb68007092efa966f27177"
-        },
-        {
-          "path": "media/capybara_plush_toy_ordered_mask_vis.png",
-          "bytes": 2405,
-          "sha256": "d8098363d118bf76c8e4195d9709a841f4d8f2381973981886847f7eb01eb0e8"
-        },
-        {
-          "path": "media/capybara_plush_toy_segmentation_overlay.png",
-          "bytes": 270023,
-          "sha256": "f93be8d6ca975341fda0a5be8f8a3aee3be4c60c44b35065ad8ba5f3eae629fc"
-        }
-      ],
-      "id": "capybara_plush_toy",
-      "status": "failed",
-      "attempts": 4,
-      "minimum_free_mib": 49152
-    },
-    {
-      "schema_version": "diaggen-public-progress-v1",
-      "pipeline": "DiagGen",
-      "simulator": "Genesis",
       "run_id": "genesis_sloth_20261021",
       "phase": "waiting_gpu",
       "pipeline_status": "seeded",
@@ -489,7 +569,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:26:08.183115+00:00",
-      "updated_at": "2026-10-22T13:43:58+08:00",
+      "updated_at": "2026-10-22T13:50:01+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 3,
@@ -651,7 +731,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-22T13:43:58+08:00",
+      "updated_at": "2026-10-22T13:50:01+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -757,7 +837,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-22T13:43:58+08:00",
+      "updated_at": "2026-10-22T13:50:01+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -856,16 +936,16 @@
       "schema_version": "diaggen-public-progress-v1",
       "pipeline": "DiagGen",
       "simulator": "Genesis",
-      "run_id": "genesis_baseball_cap_20261022_cleanup_retry2",
-      "phase": "waiting_gpu",
-      "pipeline_status": "not_initialized",
+      "run_id": "genesis_capybara_plush_toy_20261022_native_retry3",
+      "phase": "failed",
+      "pipeline_status": "seeded",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
-      "active_revision": null,
-      "created_at": null,
-      "updated_at": "2026-10-22T13:43:58+08:00",
+      "active_revision": "revision_0000",
+      "created_at": "2026-10-22T04:27:02.196628+00:00",
+      "updated_at": "2026-10-22T13:50:01+08:00",
       "diagnostics": {
-        "enabled": null,
+        "enabled": true,
         "episode_count": 0,
         "terminal_status": "not_available"
       },
@@ -873,29 +953,29 @@
         {
           "name": "image_cleanup",
           "label": "圖片清理",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
+          "started_at": "2026-10-22T04:32:37.723749+00:00",
+          "finished_at": "2026-10-22T04:32:37.743039+00:00"
         },
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
+          "started_at": "2026-10-22T04:34:40.119091+00:00",
+          "finished_at": "2026-10-22T04:34:51.774012+00:00"
         },
         {
           "name": "omnipart_generate_parts",
           "label": "OmniPart 幾何生成",
-          "status": "pending",
-          "ledger_status": "pending",
+          "status": "failed",
+          "ledger_status": "failed",
           "ok": false,
-          "started_at": null,
-          "finished_at": null
+          "started_at": "2026-10-22T04:36:47.268346+00:00",
+          "finished_at": "2026-10-22T04:38:22.003314+00:00"
         },
         {
           "name": "hag4r_gpt_staged_material_inference",
@@ -952,117 +1032,37 @@
           "finished_at": null
         }
       ],
-      "media": [],
-      "id": "baseball_cap",
-      "status": "queued",
-      "attempts": 2,
-      "minimum_free_mib": 24576
-    },
-    {
-      "schema_version": "diaggen-public-progress-v1",
-      "pipeline": "DiagGen",
-      "simulator": "Genesis",
-      "run_id": "genesis_kitchen_tongs_20261022_segmentation_retry1",
-      "phase": "waiting_gpu",
-      "pipeline_status": "not_initialized",
-      "generation_and_diagnostics_model": "gpt-6-luna",
-      "reasoning_effort": "max",
-      "active_revision": null,
-      "created_at": null,
-      "updated_at": "2026-10-22T13:43:58+08:00",
-      "diagnostics": {
-        "enabled": null,
-        "episode_count": 0,
-        "terminal_status": "not_available"
-      },
-      "stages": [
+      "media": [
         {
-          "name": "image_cleanup",
-          "label": "圖片清理",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
+          "path": "media/capybara_plush_toy_cleaned_image.png",
+          "bytes": 2311951,
+          "sha256": "94bffd6c88b772cd5c34fd16919e6edcd2ea6aa78011c2662ffa43dbe4089331"
         },
         {
-          "name": "sam3_omnipart_2d_segmentation",
-          "label": "SAM3 分割",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
+          "path": "media/capybara_plush_toy_processed_white_bg_png.png",
+          "bytes": 313684,
+          "sha256": "2dece757f870b891fd78c84044bfa56e2479c776311b56f31a44071e740f41ea"
         },
         {
-          "name": "omnipart_generate_parts",
-          "label": "OmniPart 幾何生成",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
+          "path": "media/capybara_plush_toy_processed_rgba.png",
+          "bytes": 364544,
+          "sha256": "a9d1f8e885f3cb0f630435e4b9b0fe4657eae9d2e6cb68007092efa966f27177"
         },
         {
-          "name": "hag4r_gpt_staged_material_inference",
-          "label": "材料推估",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
+          "path": "media/capybara_plush_toy_ordered_mask_vis.png",
+          "bytes": 2405,
+          "sha256": "d8098363d118bf76c8e4195d9709a841f4d8f2381973981886847f7eb01eb0e8"
         },
         {
-          "name": "hag4r_assign_params_to_prims",
-          "label": "材料參數配置",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
-        },
-        {
-          "name": "hag4r_combined_to_monolithic",
-          "label": "體積網格處理",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
-        },
-        {
-          "name": "genesis_live_diagnostic_loop",
-          "label": "Genesis 物理診斷",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
-        },
-        {
-          "name": "hag4r_post_mesh_texture",
-          "label": "貼圖生成",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
-        },
-        {
-          "name": "hag4r_final_export_bundle",
-          "label": "最終匯出",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
+          "path": "media/capybara_plush_toy_segmentation_overlay.png",
+          "bytes": 270023,
+          "sha256": "f93be8d6ca975341fda0a5be8f8a3aee3be4c60c44b35065ad8ba5f3eae629fc"
         }
       ],
-      "media": [],
-      "id": "kitchen_tongs",
-      "status": "queued",
-      "attempts": 1,
-      "minimum_free_mib": 24576
+      "id": "capybara_plush_toy",
+      "status": "failed",
+      "attempts": 4,
+      "minimum_free_mib": 49152
     },
     {
       "schema_version": "diaggen-public-progress-v1",
@@ -1075,7 +1075,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T13:43:58+08:00",
+      "updated_at": "2026-10-22T13:50:01+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1354,31 +1354,6 @@
       "sha256": "6d3f5577ad1bcdaf27abec1a24e8eb4fd07a54d6010649e382247addcb3a5c59"
     },
     {
-      "path": "media/capybara_plush_toy_cleaned_image.png",
-      "bytes": 2311951,
-      "sha256": "94bffd6c88b772cd5c34fd16919e6edcd2ea6aa78011c2662ffa43dbe4089331"
-    },
-    {
-      "path": "media/capybara_plush_toy_processed_white_bg_png.png",
-      "bytes": 313684,
-      "sha256": "2dece757f870b891fd78c84044bfa56e2479c776311b56f31a44071e740f41ea"
-    },
-    {
-      "path": "media/capybara_plush_toy_processed_rgba.png",
-      "bytes": 364544,
-      "sha256": "a9d1f8e885f3cb0f630435e4b9b0fe4657eae9d2e6cb68007092efa966f27177"
-    },
-    {
-      "path": "media/capybara_plush_toy_ordered_mask_vis.png",
-      "bytes": 2405,
-      "sha256": "d8098363d118bf76c8e4195d9709a841f4d8f2381973981886847f7eb01eb0e8"
-    },
-    {
-      "path": "media/capybara_plush_toy_segmentation_overlay.png",
-      "bytes": 270023,
-      "sha256": "f93be8d6ca975341fda0a5be8f8a3aee3be4c60c44b35065ad8ba5f3eae629fc"
-    },
-    {
       "path": "media/sloth_cleaned_image.png",
       "bytes": 1560674,
       "sha256": "2859d083668dfbe2ec280ab6315f2d95a1aaf3e55bea07352e91cb53a388e035"
@@ -1432,6 +1407,31 @@
       "path": "media/sloth_omnipart_right.png",
       "bytes": 8937,
       "sha256": "ddff1aafb93a7b73c104c6a6ba4579306783e99f13c729e12def6e3d1b3b9458"
+    },
+    {
+      "path": "media/capybara_plush_toy_cleaned_image.png",
+      "bytes": 2311951,
+      "sha256": "94bffd6c88b772cd5c34fd16919e6edcd2ea6aa78011c2662ffa43dbe4089331"
+    },
+    {
+      "path": "media/capybara_plush_toy_processed_white_bg_png.png",
+      "bytes": 313684,
+      "sha256": "2dece757f870b891fd78c84044bfa56e2479c776311b56f31a44071e740f41ea"
+    },
+    {
+      "path": "media/capybara_plush_toy_processed_rgba.png",
+      "bytes": 364544,
+      "sha256": "a9d1f8e885f3cb0f630435e4b9b0fe4657eae9d2e6cb68007092efa966f27177"
+    },
+    {
+      "path": "media/capybara_plush_toy_ordered_mask_vis.png",
+      "bytes": 2405,
+      "sha256": "d8098363d118bf76c8e4195d9709a841f4d8f2381973981886847f7eb01eb0e8"
+    },
+    {
+      "path": "media/capybara_plush_toy_segmentation_overlay.png",
+      "bytes": 270023,
+      "sha256": "f93be8d6ca975341fda0a5be8f8a3aee3be4c60c44b35065ad8ba5f3eae629fc"
     },
     {
       "path": "media/curling_iron_cleaned_image.png",
@@ -1504,5 +1504,5 @@
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "05083dcaf204f5e48ee793b3c5d81da4f47889704bafca34f90b0892beb3e80f"
+  "signature": "718ed5cd18d828a5c042d24fedbf3628d337db68cf507df578302652e708d94c"
 }
