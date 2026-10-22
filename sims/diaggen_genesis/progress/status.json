@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T17:52:22+08:00",
+  "updated_at": "2026-10-22T17:52:39+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-22T17:52:22+08:00",
+      "updated_at": "2026-10-22T17:52:39+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -205,7 +205,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T06:03:34.261605+00:00",
-      "updated_at": "2026-10-22T17:52:22+08:00",
+      "updated_at": "2026-10-22T17:52:39+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -329,6 +329,36 @@
           "path": "media/kitchen_tongs_segmentation_overlay.png",
           "bytes": 27642,
           "sha256": "7226fc8551d400ae2d27cf5d0da54655b1efcd5f94eddd9dfa9a6d4ef9ecdc39"
+        },
+        {
+          "path": "media/kitchen_tongs_omnipart_top.png",
+          "bytes": 7523,
+          "sha256": "131c633596d9b7c7428f5b302d3ca3ef9caf3aadcbcd5de766503255a89f7dc4"
+        },
+        {
+          "path": "media/kitchen_tongs_omnipart_bottom.png",
+          "bytes": 7221,
+          "sha256": "5dbe8a8ce0e47427cadb6fdb35e6caa70d1f66cd57f05a72936191aa7145fed9"
+        },
+        {
+          "path": "media/kitchen_tongs_omnipart_front.png",
+          "bytes": 6503,
+          "sha256": "9053a1fb2ffe203e533b90addaaad78b99e140fe3c0ed5fe4824a66a6345e0dc"
+        },
+        {
+          "path": "media/kitchen_tongs_omnipart_back.png",
+          "bytes": 5785,
+          "sha256": "234dc12189f718203fe8acc204b9ce3f30f4f7f761b6c3592ba7a0dcc21b635f"
+        },
+        {
+          "path": "media/kitchen_tongs_omnipart_left.png",
+          "bytes": 6961,
+          "sha256": "4ccda358645e6d99de7834a6c9b449b7d95c72390f107f0597feb72c46cd2bba"
+        },
+        {
+          "path": "media/kitchen_tongs_omnipart_right.png",
+          "bytes": 6758,
+          "sha256": "5d79094b439770233851be0bd58adf38f5a87f1e80616438ef55c37e0dd0bd13"
         }
       ],
       "id": "kitchen_tongs",
@@ -347,7 +377,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T09:14:45.699903+00:00",
-      "updated_at": "2026-10-22T17:52:22+08:00",
+      "updated_at": "2026-10-22T17:52:39+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -489,7 +519,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-22T17:52:22+08:00",
+      "updated_at": "2026-10-22T17:52:39+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -676,7 +706,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-22T17:52:22+08:00",
+      "updated_at": "2026-10-22T17:52:39+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -863,7 +893,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-22T17:52:22+08:00",
+      "updated_at": "2026-10-22T17:52:39+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1035,7 +1065,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-22T17:52:22+08:00",
+      "updated_at": "2026-10-22T17:52:39+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1151,7 +1181,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T17:52:22+08:00",
+      "updated_at": "2026-10-22T17:52:39+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1293,7 +1323,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T17:52:22+08:00",
+      "updated_at": "2026-10-22T17:52:39+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1550,6 +1580,36 @@
       "path": "media/kitchen_tongs_segmentation_overlay.png",
       "bytes": 27642,
       "sha256": "7226fc8551d400ae2d27cf5d0da54655b1efcd5f94eddd9dfa9a6d4ef9ecdc39"
+    },
+    {
+      "path": "media/kitchen_tongs_omnipart_top.png",
+      "bytes": 7523,
+      "sha256": "131c633596d9b7c7428f5b302d3ca3ef9caf3aadcbcd5de766503255a89f7dc4"
+    },
+    {
+      "path": "media/kitchen_tongs_omnipart_bottom.png",
+      "bytes": 7221,
+      "sha256": "5dbe8a8ce0e47427cadb6fdb35e6caa70d1f66cd57f05a72936191aa7145fed9"
+    },
+    {
+      "path": "media/kitchen_tongs_omnipart_front.png",
+      "bytes": 6503,
+      "sha256": "9053a1fb2ffe203e533b90addaaad78b99e140fe3c0ed5fe4824a66a6345e0dc"
+    },
+    {
+      "path": "media/kitchen_tongs_omnipart_back.png",
+      "bytes": 5785,
+      "sha256": "234dc12189f718203fe8acc204b9ce3f30f4f7f761b6c3592ba7a0dcc21b635f"
+    },
+    {
+      "path": "media/kitchen_tongs_omnipart_left.png",
+      "bytes": 6961,
+      "sha256": "4ccda358645e6d99de7834a6c9b449b7d95c72390f107f0597feb72c46cd2bba"
+    },
+    {
+      "path": "media/kitchen_tongs_omnipart_right.png",
+      "bytes": 6758,
+      "sha256": "5d79094b439770233851be0bd58adf38f5a87f1e80616438ef55c37e0dd0bd13"
     },
     {
       "path": "media/sneaker_cleaned_image.png",
@@ -1867,5 +1927,5 @@
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "fa1cf3fa52536e1001794c688967e4668adcbe695dcd177f1d14ab9bae61df4c"
+  "signature": "1546d9c6a88b846b922ce82edcc23e21bde46ee29acd0e7fdc64ee36b7c9c95d"
 }
