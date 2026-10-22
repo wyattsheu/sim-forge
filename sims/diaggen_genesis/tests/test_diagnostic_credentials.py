@@ -12,9 +12,9 @@ const assert = require('node:assert/strict');
 const source = fs.readFileSync(process.argv[1], 'utf8');
 const methods = ['attach_diagnostic_run', 'compute_part_grounding_context', 'create_genesis_live_session',
   'inspect_genesis_runtime_logs', 'record_diagnostic_evidence', 'close_genesis_live_session',
-  'submit_diagnostic_recommendation', 'halt_diagnostics'];
+  'submit_diagnostic_recommendation', 'halt_diagnostics', 'revise_diagnostic_probe_target'];
 function setup(options = {}) {
-  const memory = new Map(); const calls = [];
+  const memory = new Map(); const calls = []; const displayed=[];
   const auth = {run_root:'/native/outputs/run', agent_invocation_id:'fresh-id',
     owner_lease_token:'opaque-original-token-000000000000000000000', attachment_id:'opaque-attachment', owner_lease_timeout_s:3900};
   const tools = {}; const ALL_TOOLS = methods.map(name => ({name:'mcp__hag4r_genesis_diagnostics__'+name}));
@@ -34,10 +34,17 @@ function setup(options = {}) {
     if (options.schemaError) return {isError:true,content:[{type:'text',text:'Error: expected a well-formed region'}]};
     if (name === 'create_genesis_live_session') return {content:[{type:'text',text:JSON.stringify({live_session_handle:'exact-live-handle'})}]};
     if (name === 'inspect_genesis_runtime_logs') assert.equal(args.live_session_handle,'exact-live-handle');
+    if (name === 'revise_diagnostic_probe_target') {
+      const content=[{type:'text',text:JSON.stringify({status:'success',compile_id:'actual-native-compile-02',
+        triple_view_evidence_id:'actual-native-preview-02',triptych_png_path:'/native/outputs/run/actual.png'})},
+        {type:'image',mimeType:'image/png',data:'unchanged-image-bytes'}];
+      return options.arrayReply ? content : {isError:false,result:content};
+    }
     return {content:[{type:'text',text:JSON.stringify({status:'success'})}]};
   };
-  const context = vm.createContext({tools, ALL_TOOLS, store:(k,v)=>memory.set(k,structuredClone(v)), load:k=>memory.get(k)});
-  return {calls, memory, auth, context, client:()=>vm.runInContext(source, context)};
+  const context = vm.createContext({tools, ALL_TOOLS, store:(k,v)=>memory.set(k,structuredClone(v)), load:k=>memory.get(k),
+    text:value=>displayed.push({type:'text',value}),image:value=>displayed.push({type:'image',value})});
+  return {calls, memory, auth, context, displayed, client:()=>vm.runInContext(source, context)};
 }
 (async () => {
 CASE
@@ -118,6 +125,35 @@ class CredentialForwarderTests(unittest.TestCase):
         self.run_js("""const s=setup(); await s.client().attach('/native/outputs/run','fresh-id');
           await assert.rejects(s.client().call('invented_diagnostic_tool',{}),/Exactly one/);
           assert.equal(s.calls.length,1);""")
+
+    def test_result_envelope_exposes_original_text_and_images_as_content(self):
+        self.run_js("""const s=setup(); await s.client().attach('/native/outputs/run','fresh-id');
+          const r=await s.client().call('revise_diagnostic_probe_target',{compile_id:'old',edit:{}});
+          assert.equal(r.content[0],r.result[0]); assert.equal(r.content[1].data,'unchanged-image-bytes');
+          assert.equal(s.calls.length,2);""")
+
+    def test_native_identifiers_remain_retrievable_without_another_runtime_call(self):
+        self.run_js("""const s=setup(); await s.client().attach('/native/outputs/run','fresh-id');
+          await s.client().call('revise_diagnostic_probe_target',{compile_id:'old',edit:{}});
+          await s.client().call('compute_part_grounding_context',{});
+          const r=s.client().lastMetadata('revise_diagnostic_probe_target');
+          const actual=r.records.find(item=>item.compile_id==='actual-native-compile-02');
+          assert.equal(actual.triple_view_evidence_id,'actual-native-preview-02');
+          assert.equal(actual.triptych_png_path,'/native/outputs/run/actual.png');
+          assert.equal(s.calls.length,3);""")
+
+    def test_direct_content_array_is_normalized_and_missing_metadata_fails_closed(self):
+        self.run_js("""const s=setup({arrayReply:true}); await s.client().attach('/native/outputs/run','fresh-id');
+          assert.throws(()=>s.client().lastMetadata('not_called'),/No retained/);
+          const r=await s.client().call('revise_diagnostic_probe_target',{compile_id:'old',edit:{}});
+          assert.equal(r.content.length,2);assert.equal(s.calls.length,2);""")
+
+    def test_show_forwards_native_text_and_image_without_extra_runtime_request(self):
+        self.run_js("""const s=setup(); await s.client().attach('/native/outputs/run','fresh-id');
+          const r=await s.client().call('revise_diagnostic_probe_target',{compile_id:'old',edit:{}});
+          s.client().show(r); assert.equal(s.displayed.length,2);
+          assert.equal(JSON.parse(s.displayed[0].value).compile_id,'actual-native-compile-02');
+          assert.equal(s.displayed[1].value.data,'unchanged-image-bytes');assert.equal(s.calls.length,2);""")
 
 
 if __name__ == "__main__":

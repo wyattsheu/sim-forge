@@ -4,6 +4,7 @@
 // this store to a parent, file, command line, or another diagnostic invocation.
 (() => {
   const bindingKey = "diaggen_diagnostic_credential_binding_v1";
+  const metadataKey = "diaggen_native_metadata_v1";
   const terminalTools = new Set(["submit_diagnostic_recommendation", "halt_diagnostics"]);
   const handleTools = new Set([
     "bind_genesis_live_handlers", "get_genesis_live_session_status",
@@ -34,6 +35,24 @@
     }
     return tools[matches[0].name];
   }
+  function normalize(result) {
+    const blocks = Array.isArray(result) ? result :
+      Array.isArray(result?.content) ? result.content :
+      Array.isArray(result?.result) ? result.result : null;
+    if (!blocks || !blocks.every(item => item && typeof item.type === "string")) return result;
+    return Array.isArray(result) ? {content: blocks} : {...result, content: blocks};
+  }
+  function retainMetadata(name, payloads) {
+    const keys = ["compile_id", "triple_view_evidence_id", "target_id", "anchor_id", "episode_id",
+                  "trial_id", "triptych_png_path", "preview_manifest_path", "next_action", "status",
+                  "selected_part_id", "part_name", "part_semantics"];
+    const records = payloads.map(item => Object.fromEntries(keys.filter(key =>
+      ["string", "number", "boolean"].includes(typeof item[key])).map(key => [key, item[key]])))
+      .filter(item => Object.keys(item).length);
+    const value = {tool: name, records};
+    store(metadataKey, value);
+    store(metadataKey + ":" + name, value);
+  }
   function getBinding() {
     const record = load(bindingKey);
     if (!record || record.closed || record.authInvalid) {
@@ -42,6 +61,19 @@
     return record;
   }
   return {
+    show(result) {
+      const normalized = normalize(result);
+      if (!Array.isArray(normalized?.content)) { text(normalized); return; }
+      for (const item of normalized.content) {
+        if (item.type === "image") image(item);
+        else if (item.type === "text") text(item.text);
+      }
+    },
+    lastMetadata(name) {
+      const value = load(name ? metadataKey + ":" + name : metadataKey);
+      if (!value) throw new Error("No retained native metadata for this child/tool; never guess identifiers");
+      return value;
+    },
     async attach(runRoot, invocationId) {
       if (load(bindingKey)) throw new Error("Attach is allowed exactly once per child session");
       if (typeof runRoot !== "string" || !runRoot.startsWith("/") ||
@@ -85,6 +117,7 @@
       }
       const result = await endpoint(name)(request);
       const payloads = objects(result);
+      retainMetadata(name, payloads);
       const failed = payloads.some(item => item.isError === true);
       if (failed) {
         const messages = payloads.filter(item => typeof item.text === "string").map(item => item.text).join("\n");
@@ -92,7 +125,7 @@
           record.authInvalid = true;
           store(bindingKey, record);
         }
-        return result;
+        return normalize(result);
       }
       if (name === "create_genesis_live_session") {
         const handles = [...new Set(payloads.map(item => item.live_session_handle).filter(item => typeof item === "string" && item))];
@@ -101,7 +134,7 @@
       }
       if (terminalTools.has(name)) record.closed = true;
       store(bindingKey, record);
-      return result;
+      return normalize(result);
     },
   };
 })()

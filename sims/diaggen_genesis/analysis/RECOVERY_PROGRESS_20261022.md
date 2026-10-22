@@ -40,3 +40,15 @@
 外部 queue 新增明確的 `diagnostics-snapshot-origin` 恢復操作：只針對先前已核准的快照來源，要求目前失敗 worker 已退出、兩份 ownership ledger 的 session／attachment 均關閉、來源狀態雜湊不變，且目前沒有 accepted revision。操作保留兩個失敗 run，重新通過原生快照預檢；不改寫失敗或手動解除鎖。三項新增回歸測試驗證保留證據、拒絕尚未清理的 owner、拒絕來源變動／已接受結果。
 
 **293 項 CPU／回歸測試全數通過，0 fail／error／skip；啟動檢查為 83 項通過。15:42:40 已由背景 watcher 在 GPU 0 啟動 `genesis_sloth_20261022_clean_diagnostics2`。** 前六個成功階段繼續保留；完成與否仍以原生診斷、貼圖、匯出與驗收結果為準。第二輪本機證據位於上述 audit 的 `round2/`。
+
+## 第三輪：修正原生 revise 使用契約與回應解析
+
+第二輪完成建立、綁定、reset、settling simulate 與日誌檢查；第一個互動 probe 在 dispatch 前被原生固定區／探測區正體積重疊檢查拒絕，未消耗 probe 次數。child 依規則做了 bounded relative edit，但又呼叫了一次 preview，導致同一 compile 有兩個 preview，原生 reflection 的「恰好一份」驗證因而失敗。
+
+原生 `revise_diagnostic_probe_target` 本身已呼叫 renderer 並記錄新 compile 的 preview；官方 micro-skill 卻指示 revise 後 recompile／preview。新補丁 `probe_preview_recovery` **只修正文檔以符合既有函式**：直接保留 revise 回傳的新 compile／preview ID，使用唯讀 image viewer 查看其既有 PNG，不能再呼叫 preview。原生 Python、reflection、overlap 與 probe 次數上限均保留。
+
+另一個實際問題是 child 自寫 formatter 只解析 `.content`，漏讀另一種 `.result` MCP envelope，後續自行拼接未取回的識別碼。自動審查正確拒絕該 reflection 提交，該寫入沒有執行，也沒有繞過。現在 forwarder 將原生兩種回應保留並正規化為 `.content`，由 `client.show(result)` 顯示原生文字／圖片；`client.lastMetadata(tool_name)` 可從該 child store 取回**原生實際回傳**的 compile、preview 與 PNG 路徑，不需另一個 runtime call，也不產生假識別碼。
+
+新增回歸測試執行真正的 native revise／preview／reflection 函式本體，重現「額外 preview → 唯一性失敗」，並驗證「使用 revise 回傳的單一 preview → 通過該反思登記邊界」。這是 bookkeeping 契約測試，不冒充物理探測或完整 accept。
+
+完整收集初次有 10 項失敗，原因是安裝測試的固定補丁清單仍只列七份；加入已核對的第八份補丁後，重跑完整收集，**300 項通過，0 fail／error／skip；啟動憑證 84 項通過**。第一次失敗與後續通過的報告都保留在本機 audit 的 `round3/`。第三個乾淨 run 為 `genesis_sloth_20261022_clean_diagnostics3`，仍由原始六階段成功快照啟動，尚待正式結果。

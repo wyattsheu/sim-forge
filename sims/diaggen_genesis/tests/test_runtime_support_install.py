@@ -18,6 +18,7 @@ EXPECTED_PATCHES = (
     "anchor_preview_recovery",
     "anchor_preview_index",
     "snapshot_export_inputs",
+    "probe_preview_recovery",
 )
 
 

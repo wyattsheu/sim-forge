@@ -15,13 +15,14 @@
 
 依使用者 2026-10-22 的要求，本次以忠實復現論文與官方技能流程為準，不自行加入新的生成、分割、物理或診斷方法。現況須稱為 **官方 commit `3d2d377` 加本機執行修補的復現**，不能稱為完全未修改的原版。模型從論文 GPT-5.6 Luna Max 改為 GPT-6 Luna Max，是使用者先前允許的版本差異。
 
-七份原生補丁涉及六個官方檔案，差異如下：
+八份原生補丁涉及七個官方檔案，差異如下：
 
 | 補丁 | 實際影響 |
 | --- | --- |
 | `diagnostic_history_settlement` | 合法關閉的歷史 session 可在 owner 失效後重新驗證；不允許舊 owner 建立新 close。 |
 | `diagnostic_retry_reset` | 依原有 archive/reset 流程歸檔並清空逐次量測歷史，讓新的診斷執行符合原 fresh 驗證。 |
 | `anchor_preview_recovery`、`anchor_preview_index` | 修正兩份 SKILL 的重編譯指令，使用原 revise 工具已回傳的修改結果；不改錨點演算法或試驗上限。 |
+| `probe_preview_recovery` | 修正 probe-targeting SKILL：revise 已自動編譯並記錄唯一預覽，應讀取回傳的 PNG 與識別碼；再次 preview 會被原有唯一預覽驗證拒絕。沒有修改原生 Python、重疊檢查或 reflection 驗收。 |
 | `snapshot_export_inputs` | 換 output tag 時複製既有四張材質檢查 PNG 並記錄來源，沒有重算物理參數。四圖完整性是本機工程要求；低階原生匯出 API 將其列為 optional，不能說是論文必要條件。 |
 | `strict_material_coverage` | 正常網格路徑缺少材料標籤從 warning 改成 failure，符合官方 SKILL 的 exact 要求，但確實改動了原程式的接受條件。 |
 | `segmentation_raw_prediction_guard` | 拒絕沒有原始 SAM3 預測、只剩 foreground-fill 的結果；符合官方 SKILL 的原始預測要求，但比原程式的實作更嚴格，須列為差異。 |

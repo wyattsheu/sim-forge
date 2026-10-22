@@ -1,0 +1,11 @@
+{
+  "schema_version": "diaggen-verified-native-patch-v1",
+  "native_commit": "3d2d3779613b9253109f63e1ff345b11c9097b70",
+  "target": ".agents/skills/run-diaggen-pipeline/genesis-diagnostics/probe-targeting/SKILL.md",
+  "before_sha256": "db6047d046541ea61e670b8a3a0c1a8a2653bceb2bea8c8fb4030eaa4d15b2ad",
+  "before_md5": "19d81ae7582258f2a7ee7d0b7a9d9a37",
+  "after_sha256": "4a46c64c88835c5f10c33c9d95c102a0b3c97baaf935dff2efb261f1a43ec64b",
+  "patch_sha256": "84784f96f92be45bc4ffb53304570bc26083c00c1c87fac602aeea6524f710d4",
+  "contract": "Document existing native revise auto-compile/auto-preview; inspect its existing PNG and exact returned evidence IDs without creating a duplicate preview. All reflection, overlap, edit and strict-accept gates remain unchanged.",
+  "application_state": "atomic_documentation_update_for_new_invocations; active model contexts and Python runtime unchanged"
+}

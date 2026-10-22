@@ -32,11 +32,7 @@ const source = load("diaggen_credential_forwarder_source_v1");
 if (typeof source !== "string") throw new Error("Child tool store was lost; stop this invocation");
 const client = eval(source);
 const result = await client.call("compute_part_grounding_context", {});
-for (const item of result.content || []) {
-  if (item.type === "image") image(item);
-  else if (item.type === "text") text(item.text);
-}
-if (!result.content) text(result);
+client.show(result);
 ```
 
 Replace the tool name and ordinary arguments according to the official skill and
@@ -45,6 +41,29 @@ the tool's real signature. Do not add `run_root`, `agent_invocation_id`,
 the helper supplies the original values. A newly created live session handle is
 retained from that native response. Plans, scene/model payloads, episode IDs,
 probe intents, evidence and recommendations remain authored by this child.
+
+Use `client.show(result)` to display the original text and images; do not replace
+it with a custom parser or a fabricated status summary. The forwarder preserves native text/image blocks and makes either MCP `result`
+or `content` envelopes available under `result.content`. Do not write a custom
+partial parser that only understands one envelope or silently loses identifiers.
+After each call it retains native metadata in this child's private store. If a
+formatter hid a result, recover its actual identifiers locally, without another
+runtime action:
+
+```javascript
+const client = eval(load("diaggen_credential_forwarder_source_v1"));
+text(client.lastMetadata("revise_diagnostic_probe_target"));
+```
+
+Use exactly the returned compile/evidence identifiers. A successful probe target
+revision already compiled and recorded a new preview. Inspect the returned
+`triptych_png_path` with `tools.view_image` (a read-only file view); **do not call
+`preview_diagnostic_probe_target` again for that compile**. The reflection gate
+requires exactly one preview. Never infer IDs from naming patterns. If native
+metadata is genuinely missing, read the current run ledger without mutation to
+recover its recorded identifiers and unique current preview; do not fabricate
+evidence or alter ledgers. A previous auto-review denial of unsupported IDs does
+not authorize resubmitting guessed IDs by another route.
 
 For live calls use a single `await client.call(...)` and display that native
 result. Preserve the same explicit call order and media inspection as the
