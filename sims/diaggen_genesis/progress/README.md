@@ -2,9 +2,9 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T18:10:58+08:00（Asia/Taipei）
+更新：2026-10-22T18:11:30+08:00（Asia/Taipei）
 
-共 9 件：等待 1、執行中 2、完成 4、失敗 2、取消 0。
+共 9 件：等待 2、執行中 2、完成 4、失敗 1、取消 0。
 
 GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢查。  
 允許與既有運算共用 GPU：是。
@@ -16,7 +16,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | 物件 | 排程狀態 | Runtime | Revision | 顯存門檻 | 已完成階段 | 健康提示 |
 |---|---|---|---|---|---|---|
 | baseball_cap | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
-| kitchen_tongs | failed | running | revision_0001 | 24576 MiB | 3/9 | 未偵測到上述異常（非成功保證） |
+| kitchen_tongs | queued | running | revision_0001 | 24576 MiB | 3/9 | 未偵測到上述異常（非成功保證） |
 | sneaker | running | running | revision_0001 | 24576 MiB | 5/9 | 未偵測到上述異常（非成功保證） |
 | usb_hub | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
 | sloth | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
@@ -74,7 +74,7 @@ Genesis 診斷 episode 數：2。
 
 ## kitchen_tongs
 
-Run：`genesis_kitchen_tongs_20261022_segmentation_retry1`；執行失敗。
+Run：`genesis_kitchen_tongs_20261022_segmentation_retry1`；等待空閒 GPU。
 
 | 階段 | 狀態 |
 |---|---|
@@ -124,7 +124,7 @@ Run：`genesis_sneaker_20261022_clean_diagnostics1`；執行中。
 | OmniPart 幾何生成 | success |
 | 材料推估 | success |
 | 材料參數配置 | success |
-| 體積網格處理 | pending |
+| 體積網格處理 | running |
 | Genesis 物理診斷 | pending |
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
