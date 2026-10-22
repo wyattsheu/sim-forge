@@ -57,3 +57,5 @@ observed: 2026-10-22
 `tools/diaggen_support/diagnostic_retry_reset.{patch,json}`；`tools/diaggen_support/check_diagnostic_retry.py`；`sims/diaggen_genesis/tests/test_diagnostic_retry_reset.py`；本機 `tools/diaggen/outputs/preflight/diagnostic_retry_reset_baseline_20261022/{manifest,sneaker,sloth}.json`。16 項測試證明的是轉移修復與驗證契約，不能據此宣稱兩個物件已完成完整診斷或匯出。
 
 - 區分轉送器的本地參數拒絕、原生認證錯誤與自動審查拒絕：本地尚未送出的呼叫若只是多填身份欄位，應列出欄位名稱並依原契約移除；不能誤判為巢狀業務欄位被禁用、重新 attach 或繞過真正的審查。
+
+- 修復 revision 要同時核對 global stage 成功與 owning-stage terminal 的版本：原生已提供 reset_active_revision_stage_runtime_terminals 時，先證明衝突紀錄逐欄等於 immutable base 且早於新 revision，才呼叫既有恢復函式。只認 success 的外部佇列也須辨識有 copied-prefix／來源與路徑證明的原生 reused；恢復後由 owning stage 重驗現有產物及補交 terminal，不得重做或捏造成功。
