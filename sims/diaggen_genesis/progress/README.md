@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T18:45:31+08:00（Asia/Taipei）
+更新：2026-10-22T18:48:35+08:00（Asia/Taipei）
 
 共 9 件：等待 0、執行中 1、完成 6、失敗 2、取消 0。
 
@@ -21,7 +21,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | usb_hub | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
 | sloth | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
 | sauce_keeper | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
-| dragon | running | seeded | revision_0000 | 24576 MiB | 4/9 | 未偵測到上述異常（非成功保證） |
+| dragon | running | seeded | revision_0000 | 24576 MiB | 5/9 | 未偵測到上述異常（非成功保證） |
 | capybara_plush_toy | failed | seeded | revision_0000 | 49152 MiB | 2/9 | 未偵測到上述異常（非成功保證） |
 | curling_iron | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
 
@@ -307,7 +307,7 @@ Run：`genesis_dragon_20261021`；執行中。
 | SAM3 分割 | success |
 | OmniPart 幾何生成 | success |
 | 材料推估 | success |
-| 材料參數配置 | pending |
+| 材料參數配置 | success |
 | 體積網格處理 | pending |
 | Genesis 物理診斷 | pending |
 | 貼圖生成 | pending |
