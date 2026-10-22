@@ -1,0 +1,25 @@
+{
+  "schema_version": "diaggen-incident-report-v1",
+  "incident_id": "20261022_215503_a1f338f30b6c",
+  "observed_at": "2026-10-22T22:00:31+08:00",
+  "job_id": "dragon",
+  "classification": "native_business_halt",
+  "outcome": "needs_attention",
+  "reason": "The native diagnostic terminal is valid and operationally complete. Its deterministic full-pipeline transition recorded revision_budget_exhausted and halt after revision 1 of max_runs 2. The queued launcher_error is downstream of that native result; it is not evidence of a timer, dependency, or runtime crash.",
+  "evidence": [
+    "The queue recorded the dragon job as failed; the monitor classified the durable native outcome as business_halt.",
+    "The native run status is failed, diagnostic terminal status is success, business status is recommendation_valid, and operational status is complete.",
+    "The orchestrator transition is halt with failure_kind revision_budget_exhausted; post-mesh texture and final export remain pending.",
+    "The exact-run process check found no live pipeline worker. The monitor timer was active and the repair timer had started this investigation."
+  ],
+  "diagnostic_recommendation_contents_read": false,
+  "changes": [],
+  "checks": [
+    "Read the automation policy, monitor and repair worker code, queue status, and filtered native terminal metadata.",
+    "Confirmed DiagGen source commit 3d2d377 and reviewed its local README and terminal transition implementation.",
+    "The official DiagGen pipeline skill documents that an exhausted full-pipeline revision budget returns halt, failed, and revision_budget_exhausted: https://github.com/diaggen/diaggen/blob/master/.agents/skills/run-diaggen-pipeline/SKILL.md",
+    "No source, environment, or native-state changes were made; tests and runtime probes were not run."
+  ],
+  "requeued": false,
+  "requeue_reason": "A native revision-budget halt has no faithful retry without changing the accepted diagnostic outcome or resetting the revision budget."
+}
