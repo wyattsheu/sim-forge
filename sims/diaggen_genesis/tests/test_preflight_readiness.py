@@ -33,8 +33,12 @@ class ReadinessTests(unittest.TestCase):
                          "input_sha256": readiness.sha256(path)})
         (self.workspace / readiness.BASE / "batch_plan.json").write_text(json.dumps({"jobs": jobs}))
         self.report = self.workspace / "full-report.json"
-        self.report.write_text(json.dumps({"overall_status": "pass", "checks": [
-            {"name": "actual_fixture", "status": "PASS"}]}))
+        names = ['host/fixture', 'mesh/fixture', 'genesis/fixture', 'omnipart/fixture',
+                 'namespace_unittest_suite', 'preflight_negative_controls', 'source_and_test_inventory_unchanged']
+        self.report.write_text(json.dumps({'schema_version': 'diaggen-full-runtime-preflight-v1',
+            'simulator': 'Genesis', 'overall_status': 'pass',
+            'checks': [{'name': name, 'status': 'PASS'} for name in names],
+            'counts': {'pass': len(names), 'fail': 0, 'skip': 0}}))
         self.certificate = self.workspace / "private/certificate.json"
         self.inventory = {"inventory_sha256": "fixture", "python_path": ["fixture"]}
         self.env_patch = patch.object(readiness, "environment_inventory", return_value=self.inventory)
@@ -77,6 +81,36 @@ class ReadinessTests(unittest.TestCase):
             self.verify()
         self.report.unlink()
         with self.assertRaises(FileNotFoundError):
+            self.certify()
+
+    def test_cpu_only_report_cannot_certify_or_replace_full_runtime_gate(self):
+        value = json.loads(self.report.read_text())
+        value['schema_version'] = 'diaggen-orchestration-preflight-v1'
+        self.report.write_text(json.dumps(value))
+        with self.assertRaisesRegex(ValueError, 'full runtime'):
+            self.certify()
+        self.assertFalse(self.certificate.exists())
+
+    def test_full_summary_must_cover_all_runtime_families_and_cpu_checks(self):
+        original = json.loads(self.report.read_text())
+        for missing in ('genesis/fixture', 'namespace_unittest_suite'):
+            value = json.loads(json.dumps(original))
+            value['checks'] = [x for x in value['checks'] if x['name'] != missing]
+            value['counts']['pass'] = len(value['checks'])
+            self.report.write_text(json.dumps(value))
+            with self.assertRaisesRegex(ValueError, 'missing required'):
+                self.certify()
+
+    def test_full_summary_rejects_duplicate_names_and_incorrect_totals(self):
+        value = json.loads(self.report.read_text())
+        value['counts']['pass'] += 1
+        self.report.write_text(json.dumps(value))
+        with self.assertRaisesRegex(ValueError, 'counts'):
+            self.certify()
+        value['counts']['pass'] -= 1
+        value['checks'][1]['name'] = value['checks'][0]['name']
+        self.report.write_text(json.dumps(value))
+        with self.assertRaisesRegex(ValueError, 'distinct'):
             self.certify()
 
     def test_changed_report_fails_verification(self):

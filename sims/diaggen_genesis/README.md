@@ -6,7 +6,9 @@
 
 **2026-10-22 18:55：5／9 件通過 Genesis strict accept 並完成匯出：電捲棒、樹懶、USB Hub、棒球帽、醬料盒。** 另有球鞋完成原生 snapshot 的 `exported_unaccepted` 匯出，診斷仍為 revise，不能算物理通過。龍仍執行中；料理夾在原生修正次數上限停止，水豚受 spconv int32 限制阻擋。即時狀態見 [progress/](progress/)，驗收見 [醬料盒](analysis/sauce_keeper_completed_validation.json)、[球鞋（未通過）](analysis/sneaker_completed_validation.json)、[棒球帽](analysis/baseball_cap_completed_validation.json)、[USB](analysis/usb_hub_completed_validation.json) 與 [樹懶](analysis/sloth_completed_validation.json)。
 
-**19:58 更新：** 修正外部監看誤認原生資源 profiler 的問題，Dragon 已由排程沿原 run／GPU 自動續跑；保留前六個成功階段，尚未完成。見 [續跑證據](analysis/dragon_scheduled_recovery_20261022.json)。
+**20:48 更新：** Dragon 的新 run 已由排程正式啟動，修正重試快照衝突；完整環境與 GPU 檢查、383 項回歸及嚴格啟動憑證通過。這次採新 raw-image run，舊 halt／產物保留；尚未完成。見 [自動修復及覆核](analysis/repair_supervision_review_20261022.json)。
+
+**19:58 歷史更新：** 修正外部監看誤認原生資源 profiler 的問題，Dragon 已由排程沿原 run／GPU 自動續跑；保留前六個成功階段，尚未完成。見 [續跑證據](analysis/dragon_scheduled_recovery_20261022.json)。
 
 - 生成與診斷：**GPT-6 Luna，Max reasoning**；各階段子代理沿用相同設定。
 - 論文對應設定為 GPT-5.6 Luna、Max；本次依要求改用同系列新版，並保留差異紀錄。

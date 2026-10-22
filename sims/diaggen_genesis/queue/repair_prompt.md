@@ -48,6 +48,12 @@ the rejected action/reason privately and in a sanitized progress note. A local
 bwrap/Operation not permitted error may request review for that exact necessary
 command, using the existing automatic-review workflow. Never disable review.
 
+Never pass an orchestration/report.json to readiness.certify. Build the full
+runtime summary with preflight/summarize.py from the host, mesh, Genesis and
+OmniPart reports, then append the three actual CPU collection checks. Its schema
+must be diaggen-full-runtime-preflight-v1 with all four runtime families, CPU
+checks and matching counts. A passing CPU suite alone cannot release a launch.
+
 Before changing source: save source hashes, previous certificate and relevant
 failure evidence under tools/diaggen/outputs/preflight/<unique_incident>/.
 Use minimal compatibility fixes. If native code changes are necessary after

@@ -69,3 +69,12 @@ Dragon 在 20:07 暴露的新事件是 `material audit registration snapshot pat
 
 
 第一次正式診斷工作在模型啟動前被 CLI 拒絕：只設定 disabled 的 MCP entry 缺少 transport，屬於新增修復程序的部署設定錯誤。已補齊停用的完整 Python command/args，透過本機 Codex CLI 實際解析 worker 的原始設定參數；377 項測試、98 項啟動檢查通過。已失敗的啟動及其紀錄保留。只有在憑證通過、確認先前是此特定 transport 錯誤且沒有任何模型事件時，才可明確以 `run_repair.sh --retry-launch-fix` 立即使用下一次既有事件名額；不重設事件次數，也不能跳過已開始的模型或原生階段上限。
+
+
+## 20:48：獨立覆核與實際重新派工
+
+故障觸發的 Codex 已重現快照衝突，加入第九份相容性補丁：只有通過原生 attempt archive 驗證的重試，才使用該 attempt 的獨立材質稽核快照子目錄；第一輪路徑及既有快照保留。新的三例及完整 380 項回歸通過。原 run 頂層仍為 seeded，既有 snapshot queue guard 拒絕，因此保存舊 halt，改用已允許且保留歷史的新 raw-image run。
+
+獨立覆核發現診斷工作把 CPU-only 報告當成啟動憑證，於派工前另加 HOLD 攔下。現在 readiness 必須收到完整 runtime schema，具備 host、mesh、Genesis、OmniPart 四組與三項 CPU collection 檢查，名稱唯一且統計相符；不能再用 orchestration report 單獨放行。補做四組 71 項實際環境／硬體檢查，383 項 CPU／回歸測試全通過，沒有失敗、錯誤或跳過。完整憑證共有 75 項 required checks：71 項 smoke、3 項 CPU collection 結果與 1 項拒絕 CPU-only 憑證的確認；檢查群組與內部測試案例是不同層級。
+
+20:48:09，`genesis_dragon_20261022_retryfix_af4645266949` 的正式 worker 由排程啟動，新 Codex thread 已開始。這次從原圖重跑完整流程，原 run 和先前產物保留；尚未宣稱新資產完成。來源、啟動與覆核證據見 [獨立覆核](repair_supervision_review_20261022.json)。

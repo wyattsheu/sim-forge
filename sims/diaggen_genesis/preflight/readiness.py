@@ -146,12 +146,25 @@ def passing_report(path: Path) -> dict:
     report = json.loads(path.read_text())
     if not isinstance(report, dict):
         raise ValueError("Full preflight report must be an object")
+    if (report.get('schema_version') != 'diaggen-full-runtime-preflight-v1'
+            or report.get('simulator') != 'Genesis'):
+        raise ValueError('A full runtime preflight summary is required; a CPU-only report cannot certify launches')
     checks = report.get("checks")
     if (str(report.get("overall_status", "")).lower() != "pass"
             or not isinstance(checks, list) or not checks
             or any(not isinstance(check, dict) or str(check.get("status", "")).lower() != "pass"
                    for check in checks)):
         raise ValueError("Full preflight report is incomplete or contains non-passing checks")
+    names = [check.get('name') for check in checks]
+    if not all(isinstance(name, str) and name for name in names) or len(names) != len(set(names)):
+        raise ValueError('Full runtime checks must have distinct nonempty names')
+    missing = {'host', 'mesh', 'genesis', 'omnipart'} - {name.split('/')[0] for name in names}
+    cpu_missing = {'namespace_unittest_suite', 'preflight_negative_controls',
+                   'source_and_test_inventory_unchanged'} - {name.split('/')[-1] for name in names}
+    if missing or cpu_missing:
+        raise ValueError('Full runtime preflight is missing required hardware/environment or CPU check families')
+    if report.get('counts') != {'pass': len(checks), 'fail': 0, 'skip': 0}:
+        raise ValueError('Full runtime preflight counts do not match its actual required checks')
     return {"path": str(path.resolve()), "sha256": sha256(path), "checks_passed": len(checks)}
 
 

@@ -1,5 +1,41 @@
 {
+  "schema_version": "diaggen-full-runtime-preflight-v1",
   "checked_at": "2026-10-22T20:47:08+08:00",
+  "overall_status": "pass",
+  "simulator": "Genesis",
+  "counts": {
+    "pass": 75,
+    "fail": 0,
+    "skip": 0
+  },
+  "optional_checks": [
+    {
+      "name": "host/optional_cmake",
+      "status": "skip",
+      "reason": "Not required by the installed precompiled runtime or validated Ninja JIT"
+    }
+  ],
+  "scope": "Fresh host, mesh, OmniPart and exact-GPU Genesis infrastructure probes plus 383 CPU tests and a strict full-runtime certificate gate. Independent review of the first scheduled repair.",
+  "limitations": [
+    "Synthetic hardware fixtures and CPU regression tests do not establish full generated-asset peak memory or final physical acceptance.",
+    "Known capybara spconv limitation and tongs revision-budget halt remain.",
+    "The old dragon native halt remains unchanged; the demonstrated compatibility fix admitted a separate guarded raw-image fresh run."
+  ],
+  "evidence_reuse": {
+    "hardware_checks_reused": 0,
+    "fresh_hardware_environment_checks": 71,
+    "actual_cpu_tests": {
+      "error": 0,
+      "expected_fail": 0,
+      "fail": 0,
+      "pass": 383,
+      "run": 383,
+      "skip": 0,
+      "unexpected_success": 0
+    },
+    "native_patch_count": 9,
+    "previous_orchestration_only_certificate_rejected": true
+  },
   "checks": [
     {
       "name": "host/nine_input_decode_hash_dimensions",
@@ -301,123 +337,5 @@
       "name": "launch_gate/rejects_orchestration_only_certificate",
       "status": "pass"
     }
-  ],
-  "counts": {
-    "fail": 0,
-    "pass": 75,
-    "skip": 0
-  },
-  "evidence_reuse": {
-    "actual_cpu_tests": {
-      "error": 0,
-      "expected_fail": 0,
-      "fail": 0,
-      "pass": 383,
-      "run": 383,
-      "skip": 0,
-      "unexpected_success": 0
-    },
-    "fresh_hardware_environment_checks": 71,
-    "hardware_checks_reused": 0,
-    "native_patch_count": 9,
-    "previous_orchestration_only_certificate_rejected": true
-  },
-  "incident_revalidation": {
-    "change": "Added the verified attempt-scoped namespace patch for copied material-audit source artifacts; first-attempt canonical path and collision guard remain.",
-    "checked_at": "2026-10-22T20:50:57+08:00",
-    "classification": "pipeline_runtime",
-    "fingerprint_comparison": {
-      "changed": {
-        "sources": [
-          "sims/diaggen_genesis/preflight/readiness.py",
-          "sims/diaggen_genesis/queue/repair_prompt.md",
-          "tools/diaggen/hag4r/agentic/runtime_tools/diagnostics.py",
-          "tools/diaggen_support/diagnostic_retry_snapshot_namespace.json",
-          "tools/diaggen_support/diagnostic_retry_snapshot_namespace.patch",
-          "tools/diaggen_support/native_patches.json"
-        ]
-      },
-      "unchanged_counts": {
-        "binaries": 6,
-        "environments": 5,
-        "inputs": 9,
-        "sources": 1046
-      }
-    },
-    "full_cpu_collection": {
-      "counts": {
-        "error": 0,
-        "expected_fail": 0,
-        "fail": 0,
-        "pass": 380,
-        "run": 380,
-        "skip": 0,
-        "unexpected_success": 0
-      },
-      "report": "tools/diaggen/outputs/preflight/20261022_202420_af4645266949/orchestration_final/report.json",
-      "report_sha256": "9b4f99a239916d9fc8fc00495857487d89125c4a9ef68d11a7716f1f1b20a1e5",
-      "status": "pass"
-    },
-    "incident_id": "20261022_202420_af4645266949",
-    "limitations": [
-      "The new run is in progress; no completion or Genesis acceptance is claimed."
-    ],
-    "queue": {
-      "attempts": 5,
-      "execution_mode": "fresh",
-      "job_id": "dragon",
-      "new_run_id": "genesis_dragon_20261022_retryfix_af4645266949",
-      "old_native_state_and_snapshot_unchanged": true,
-      "previous_run_id": "genesis_dragon_20261021",
-      "status": "running"
-    },
-    "readiness_certificate": {
-      "checks_passed": 75,
-      "path": "sims/diaggen_genesis/queue/runtime_preflight.json",
-      "sha256": "6b6bf846054a31c63e5337ebcf08e723d162f47ec465d8ad9a69b83a25e512d8",
-      "source": "current full runtime summary; previous orchestration-only report was rejected",
-      "status": "verified"
-    },
-    "reason": "A validated diagnostic retry reused the revision-level material-audit snapshot path and halted before episode creation.",
-    "status": "pass",
-    "targeted_regressions": [
-      {
-        "fail": 0,
-        "pass": 3,
-        "suite": "test_material_audit_retry_namespace.py"
-      },
-      {
-        "fail": 0,
-        "pass": 16,
-        "suite": "test_diagnostic_retry_reset.py"
-      },
-      {
-        "fail": 0,
-        "pass": 14,
-        "suite": "test_diagnostic_history_settlement.py"
-      },
-      {
-        "fail": 0,
-        "pass": 10,
-        "suite": "test_runtime_support_install.py"
-      }
-    ]
-  },
-  "latest_updated_at": "2026-10-22T20:50:57+08:00",
-  "limitations": [
-    "Synthetic hardware fixtures and CPU regression tests do not establish full generated-asset peak memory or final physical acceptance.",
-    "Known capybara spconv limitation and tongs revision-budget halt remain.",
-    "The old dragon native halt remains unchanged; the demonstrated compatibility fix admitted a separate guarded raw-image fresh run."
-  ],
-  "optional_checks": [
-    {
-      "name": "host/optional_cmake",
-      "reason": "Not required by the installed precompiled runtime or validated Ninja JIT",
-      "status": "skip"
-    }
-  ],
-  "overall_status": "pass",
-  "schema_version": "diaggen-full-runtime-preflight-v1",
-  "scope": "Fresh host, mesh, OmniPart and exact-GPU Genesis infrastructure probes plus 383 CPU tests and a strict full-runtime certificate gate. Independent review of the first scheduled repair.",
-  "simulator": "Genesis"
+  ]
 }

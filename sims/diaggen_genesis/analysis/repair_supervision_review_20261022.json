@@ -1,0 +1,19 @@
+{
+  "reviewed_at": "2026-10-22T12:47:55.910905+00:00",
+  "runtime_certificate_valid": true,
+  "fresh_runtime_checks_passed": 75,
+  "fresh_host_mesh_omnipart_genesis_checks": 71,
+  "actual_cpu_tests_passed": 383,
+  "cpu_failures": 0,
+  "cpu_errors": 0,
+  "cpu_skips": 0,
+  "orchestration_only_certificate_rejected": true,
+  "old_dragon_halt_preserved": true,
+  "new_dragon_run_id": "genesis_dragon_20261022_retryfix_af4645266949",
+  "queued_fresh_retry": true,
+  "review_hold_released": true,
+  "note": "Independent review corrected the first repair worker CPU-only certification; native snapshot namespace fix retained.",
+  "worker_started_at": "2026-10-22T20:48:09+08:00",
+  "worker_thread_started": true,
+  "current_dragon_status": "running"
+}
