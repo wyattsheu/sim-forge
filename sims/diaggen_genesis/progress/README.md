@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T18:25:37+08:00（Asia/Taipei）
+更新：2026-10-22T18:25:54+08:00（Asia/Taipei）
 
 共 9 件：等待 0、執行中 3、完成 4、失敗 2、取消 0。
 
@@ -277,6 +277,8 @@ Genesis 診斷 episode 數：2。
 ![sauce_keeper_ordered_mask_vis](media/sauce_keeper_ordered_mask_vis.png)
 
 ![sauce_keeper_segmentation_overlay](media/sauce_keeper_segmentation_overlay.png)
+
+![sauce_keeper_albedo](media/sauce_keeper_albedo.png)
 
 ![sauce_keeper_omnipart_top](media/sauce_keeper_omnipart_top.png)
 
