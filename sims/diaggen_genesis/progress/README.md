@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T17:43:31+08:00（Asia/Taipei）
+更新：2026-10-22T17:43:48+08:00（Asia/Taipei）
 
 共 9 件：等待 2、執行中 4、完成 2、失敗 1、取消 0。
 
@@ -41,7 +41,7 @@ Run：`genesis_baseball_cap_20261022_fresh3`；執行中。
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
-Genesis 診斷 episode 數：0。
+Genesis 診斷 episode 數：1。
 
 ![baseball_cap_cleaned_image](media/baseball_cap_cleaned_image.png)
 
