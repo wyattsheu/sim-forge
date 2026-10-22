@@ -2,10 +2,10 @@
   "schema_version": "diaggen-public-batch-progress-v1",
   "pipeline": "DiagGen",
   "simulator": "Genesis",
-  "phase": "failed",
+  "phase": "waiting_gpu",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T23:44:15+08:00",
+  "updated_at": "2026-10-22T23:49:50+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -13,10 +13,10 @@
     "max_parallel_jobs": 4
   },
   "counts": {
-    "queued": 0,
+    "queued": 3,
     "running": 0,
-    "success": 6,
-    "failed": 3,
+    "success": 5,
+    "failed": 1,
     "cancelled": 0,
     "unknown": 0,
     "total": 9
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-22T23:44:15+08:00",
+      "updated_at": "2026-10-22T23:49:50+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -215,84 +215,84 @@
       "schema_version": "diaggen-public-progress-v1",
       "pipeline": "DiagGen",
       "simulator": "Genesis",
-      "run_id": "genesis_kitchen_tongs_20261022_segmentation_retry1",
-      "phase": "failed",
-      "pipeline_status": "failed",
+      "run_id": "genesis_kitchen_tongs_20261022_native6",
+      "phase": "waiting_gpu",
+      "pipeline_status": "not_initialized",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
-      "active_revision": "revision_0001",
-      "created_at": "2026-10-22T06:03:34.261605+00:00",
-      "updated_at": "2026-10-22T23:44:15+08:00",
+      "active_revision": null,
+      "created_at": null,
+      "updated_at": "2026-10-22T23:49:50+08:00",
       "diagnostics": {
-        "enabled": true,
+        "enabled": null,
         "episode_count": 0,
-        "terminal_status": "success",
-        "recommendation": "revise",
+        "terminal_status": "not_available",
+        "recommendation": "not_available",
         "export_outcome": "not_exported"
       },
       "stages": [
         {
           "name": "image_cleanup",
           "label": "圖片清理",
-          "status": "reused",
-          "ledger_status": "reused",
-          "ok": true,
-          "started_at": "2026-10-22T09:17:33.203832+00:00",
-          "finished_at": "2026-10-22T09:17:33.216515+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T09:46:54.126435+00:00",
-          "finished_at": "2026-10-22T09:47:04.536109+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "omnipart_generate_parts",
           "label": "OmniPart 幾何生成",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T09:50:33.846975+00:00",
-          "finished_at": "2026-10-22T09:52:41.427186+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_gpt_staged_material_inference",
           "label": "材料推估",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T10:16:22.255072+00:00",
-          "finished_at": "2026-10-22T10:18:30.440075+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_assign_params_to_prims",
           "label": "材料參數配置",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T10:20:42.541408+00:00",
-          "finished_at": "2026-10-22T10:20:43.573011+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_combined_to_monolithic",
           "label": "體積網格處理",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T10:21:19.538587+00:00",
-          "finished_at": "2026-10-22T10:21:19.538587+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "genesis_live_diagnostic_loop",
           "label": "Genesis 物理診斷",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T10:23:23.787400+00:00",
-          "finished_at": "2026-10-22T10:31:52.936264+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_post_mesh_texture",
@@ -323,65 +323,9 @@
         },
         "meaning": "observation_only_not_retry_authorization"
       },
-      "media": [
-        {
-          "path": "media/kitchen_tongs_cleaned_image.png",
-          "bytes": 1056973,
-          "sha256": "47fee394794adda8173f40d91d7bed86c80315475d87859bf1d92d0e66dcca97"
-        },
-        {
-          "path": "media/kitchen_tongs_processed_white_bg_png.png",
-          "bytes": 30317,
-          "sha256": "80aed918bda76d0c1587809050b1449569fa3726c004593c7196bc03ac7015fc"
-        },
-        {
-          "path": "media/kitchen_tongs_processed_rgba.png",
-          "bytes": 40638,
-          "sha256": "8cf39bc0ef8611f453144db3323292f05f9dd2a79f5796c549cc321ed5b958dc"
-        },
-        {
-          "path": "media/kitchen_tongs_ordered_mask_vis.png",
-          "bytes": 1915,
-          "sha256": "8464b313b1de18336e35dd169f22ff22cc585c729630a8b1ee6c341254a9a046"
-        },
-        {
-          "path": "media/kitchen_tongs_segmentation_overlay.png",
-          "bytes": 27642,
-          "sha256": "7226fc8551d400ae2d27cf5d0da54655b1efcd5f94eddd9dfa9a6d4ef9ecdc39"
-        },
-        {
-          "path": "media/kitchen_tongs_omnipart_top.png",
-          "bytes": 7523,
-          "sha256": "131c633596d9b7c7428f5b302d3ca3ef9caf3aadcbcd5de766503255a89f7dc4"
-        },
-        {
-          "path": "media/kitchen_tongs_omnipart_bottom.png",
-          "bytes": 7221,
-          "sha256": "5dbe8a8ce0e47427cadb6fdb35e6caa70d1f66cd57f05a72936191aa7145fed9"
-        },
-        {
-          "path": "media/kitchen_tongs_omnipart_front.png",
-          "bytes": 6503,
-          "sha256": "9053a1fb2ffe203e533b90addaaad78b99e140fe3c0ed5fe4824a66a6345e0dc"
-        },
-        {
-          "path": "media/kitchen_tongs_omnipart_back.png",
-          "bytes": 5785,
-          "sha256": "234dc12189f718203fe8acc204b9ce3f30f4f7f761b6c3592ba7a0dcc21b635f"
-        },
-        {
-          "path": "media/kitchen_tongs_omnipart_left.png",
-          "bytes": 6961,
-          "sha256": "4ccda358645e6d99de7834a6c9b449b7d95c72390f107f0597feb72c46cd2bba"
-        },
-        {
-          "path": "media/kitchen_tongs_omnipart_right.png",
-          "bytes": 6758,
-          "sha256": "5d79094b439770233851be0bd58adf38f5a87f1e80616438ef55c37e0dd0bd13"
-        }
-      ],
+      "media": [],
       "id": "kitchen_tongs",
-      "status": "failed",
+      "status": "queued",
       "attempts": 4,
       "minimum_free_mib": 24576
     },
@@ -389,102 +333,102 @@
       "schema_version": "diaggen-public-progress-v1",
       "pipeline": "DiagGen",
       "simulator": "Genesis",
-      "run_id": "genesis_sneaker_20261022_clean_diagnostics1",
-      "phase": "success",
-      "pipeline_status": "success",
+      "run_id": "genesis_sneaker_20261022_native6",
+      "phase": "waiting_gpu",
+      "pipeline_status": "not_initialized",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
-      "active_revision": "revision_0001",
-      "created_at": "2026-10-22T09:14:45.699903+00:00",
-      "updated_at": "2026-10-22T23:44:15+08:00",
+      "active_revision": null,
+      "created_at": null,
+      "updated_at": "2026-10-22T23:49:50+08:00",
       "diagnostics": {
-        "enabled": true,
+        "enabled": null,
         "episode_count": 0,
-        "terminal_status": "success",
-        "recommendation": "revise",
-        "export_outcome": "exported_unaccepted"
+        "terminal_status": "not_available",
+        "recommendation": "not_available",
+        "export_outcome": "not_exported"
       },
       "stages": [
         {
           "name": "image_cleanup",
           "label": "圖片清理",
-          "status": "reused",
-          "ledger_status": "reused",
-          "ok": true,
-          "started_at": "2026-10-21T09:44:43.466370+00:00",
-          "finished_at": "2026-10-22T04:44:31.015032+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T09:48:10.956963+00:00",
-          "finished_at": "2026-10-22T09:50:24.083694+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "omnipart_generate_parts",
           "label": "OmniPart 幾何生成",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T09:54:49.966781+00:00",
-          "finished_at": "2026-10-22T10:02:53.297056+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_gpt_staged_material_inference",
           "label": "材料推估",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T10:04:40.996938+00:00",
-          "finished_at": "2026-10-22T10:08:31.138071+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_assign_params_to_prims",
           "label": "材料參數配置",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T10:10:56.890227+00:00",
-          "finished_at": "2026-10-22T10:10:58.170266+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_combined_to_monolithic",
           "label": "體積網格處理",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T10:11:54.736931+00:00",
-          "finished_at": "2026-10-22T10:11:54.736931+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "genesis_live_diagnostic_loop",
           "label": "Genesis 物理診斷",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T10:14:26.274243+00:00",
-          "finished_at": "2026-10-22T10:17:00.466648+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_post_mesh_texture",
           "label": "貼圖生成",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T10:18:14.565259+00:00",
-          "finished_at": "2026-10-22T10:18:47.557772+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_final_export_bundle",
           "label": "最終匯出",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T10:21:17.809710+00:00",
-          "finished_at": "2026-10-22T10:21:21.034718+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         }
       ],
       "health": {
@@ -497,70 +441,9 @@
         },
         "meaning": "observation_only_not_retry_authorization"
       },
-      "media": [
-        {
-          "path": "media/sneaker_cleaned_image.png",
-          "bytes": 2165814,
-          "sha256": "f6b03c7d6bd4e326741a69dd40a82f15cf398ecd4df3197ba4dc920ef504df93"
-        },
-        {
-          "path": "media/sneaker_processed_white_bg_png.png",
-          "bytes": 224061,
-          "sha256": "a0348613dd60c4e98db9b41f3267a16807c97249ad2ae64defd882589f1ef259"
-        },
-        {
-          "path": "media/sneaker_processed_rgba.png",
-          "bytes": 254767,
-          "sha256": "75721d2bd86d237487b43f6b3ffab71f692580ac7587741f750403be3b0f0bd6"
-        },
-        {
-          "path": "media/sneaker_ordered_mask_vis.png",
-          "bytes": 2170,
-          "sha256": "5b6dba887c0c0816c015c6f75c6cd349a93165451c499ddf9150c050ef525c54"
-        },
-        {
-          "path": "media/sneaker_segmentation_overlay.png",
-          "bytes": 194197,
-          "sha256": "7030a1443c7f35da2e81eb91cb906afd408338184fc9639859e407570eb17d72"
-        },
-        {
-          "path": "media/sneaker_albedo.png",
-          "bytes": 556188,
-          "sha256": "df2cb3e7b809f34014dd7c81504e4ae07f34878d18a9add34f13f3db5d1c1c4d"
-        },
-        {
-          "path": "media/sneaker_omnipart_top.png",
-          "bytes": 9239,
-          "sha256": "e3ea2fdf54121f55a0c1705d26dabf7bb2a7974043b302d1e9d14e12fbb68d8e"
-        },
-        {
-          "path": "media/sneaker_omnipart_bottom.png",
-          "bytes": 7391,
-          "sha256": "93f2af71b5a3abc3ff22fcdd8d32a65eff2db3d69628f993621fce073e6722f2"
-        },
-        {
-          "path": "media/sneaker_omnipart_front.png",
-          "bytes": 9291,
-          "sha256": "967dcbe1dea8b29bb25c9a04ae199066a80706bc6e6facd6e68d64df2118c407"
-        },
-        {
-          "path": "media/sneaker_omnipart_back.png",
-          "bytes": 10140,
-          "sha256": "c798e33dedbf4f3ed3fb7a8a2b4853bd987c20ba4271083a0bf8d7d33bb36559"
-        },
-        {
-          "path": "media/sneaker_omnipart_left.png",
-          "bytes": 7402,
-          "sha256": "79273217338d0edc05ecf070cd6a61080974f869eb0bd2963b9df7bbf3601e07"
-        },
-        {
-          "path": "media/sneaker_omnipart_right.png",
-          "bytes": 8261,
-          "sha256": "12a87a356e874b88fce0fe80515e88afacadbc81536bd7a12c5318e388953e25"
-        }
-      ],
+      "media": [],
       "id": "sneaker",
-      "status": "success",
+      "status": "queued",
       "attempts": 4,
       "minimum_free_mib": 24576
     },
@@ -575,7 +458,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-22T23:44:15+08:00",
+      "updated_at": "2026-10-22T23:49:50+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -764,7 +647,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-22T23:44:15+08:00",
+      "updated_at": "2026-10-22T23:49:50+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -953,7 +836,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-22T23:44:15+08:00",
+      "updated_at": "2026-10-22T23:49:50+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1135,84 +1018,84 @@
       "schema_version": "diaggen-public-progress-v1",
       "pipeline": "DiagGen",
       "simulator": "Genesis",
-      "run_id": "genesis_dragon_20261022_retryfix_af4645266949",
-      "phase": "failed",
-      "pipeline_status": "failed",
+      "run_id": "genesis_dragon_20261022_native6",
+      "phase": "waiting_gpu",
+      "pipeline_status": "not_initialized",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
-      "active_revision": "revision_0001",
-      "created_at": "2026-10-22T12:48:11.503190+00:00",
-      "updated_at": "2026-10-22T23:44:15+08:00",
+      "active_revision": null,
+      "created_at": null,
+      "updated_at": "2026-10-22T23:49:50+08:00",
       "diagnostics": {
-        "enabled": true,
+        "enabled": null,
         "episode_count": 0,
-        "terminal_status": "success",
-        "recommendation": "revise",
+        "terminal_status": "not_available",
+        "recommendation": "not_available",
         "export_outcome": "not_exported"
       },
       "stages": [
         {
           "name": "image_cleanup",
           "label": "圖片清理",
-          "status": "reused",
-          "ledger_status": "reused",
-          "ok": true,
-          "started_at": "2026-10-22T12:54:35.828391+00:00",
-          "finished_at": "2026-10-22T12:54:35.843046+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "reused",
-          "ledger_status": "reused",
-          "ok": true,
-          "started_at": "2026-10-22T12:57:24.659330+00:00",
-          "finished_at": "2026-10-22T12:58:42.445807+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "omnipart_generate_parts",
           "label": "OmniPart 幾何生成",
-          "status": "reused",
-          "ledger_status": "reused",
-          "ok": true,
-          "started_at": "2026-10-22T13:01:17.756791+00:00",
-          "finished_at": "2026-10-22T13:04:03.550952+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_gpt_staged_material_inference",
           "label": "材料推估",
-          "status": "reused",
-          "ledger_status": "reused",
-          "ok": true,
-          "started_at": "2026-10-22T13:06:24.304231+00:00",
-          "finished_at": "2026-10-22T13:10:12.258056+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_assign_params_to_prims",
           "label": "材料參數配置",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T13:38:00.889002+00:00",
-          "finished_at": "2026-10-22T13:38:01.815475+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_combined_to_monolithic",
           "label": "體積網格處理",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T13:38:26.455360+00:00",
-          "finished_at": "2026-10-22T13:39:39.722846+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "genesis_live_diagnostic_loop",
           "label": "Genesis 物理診斷",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T13:43:02.609395+00:00",
-          "finished_at": "2026-10-22T13:50:12.703841+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_post_mesh_texture",
@@ -1243,65 +1126,9 @@
         },
         "meaning": "observation_only_not_retry_authorization"
       },
-      "media": [
-        {
-          "path": "media/dragon_cleaned_image.png",
-          "bytes": 1209886,
-          "sha256": "7f11477353a235bf5b669d7c8ba80c1e2ac8b5b2dc82c026a65068955e0dc492"
-        },
-        {
-          "path": "media/dragon_processed_white_bg_png.png",
-          "bytes": 70538,
-          "sha256": "f0919320fe4cfaaab1d58862bf66facb9c53adc2b084b99b946075b44d399512"
-        },
-        {
-          "path": "media/dragon_processed_rgba.png",
-          "bytes": 88717,
-          "sha256": "96333ffbe432c6929a5aeef0de87fd9ead53dbb3060d9920d2efc5536498952f"
-        },
-        {
-          "path": "media/dragon_ordered_mask_vis.png",
-          "bytes": 2158,
-          "sha256": "23791a34b990c9bda42e3a96415963b7966acbc33e39efd11aed17c377637927"
-        },
-        {
-          "path": "media/dragon_segmentation_overlay.png",
-          "bytes": 61258,
-          "sha256": "f1ea2cc05dc8f1de4b2c798fd86573b54e1104a18cba63b893a02a62182b1a01"
-        },
-        {
-          "path": "media/dragon_omnipart_top.png",
-          "bytes": 8917,
-          "sha256": "202ee5e95ea6494aa2c50d59110d4cb8ecbedf20560450ff1e0bb97955116e72"
-        },
-        {
-          "path": "media/dragon_omnipart_bottom.png",
-          "bytes": 7531,
-          "sha256": "a81f17753c213a021278b9433de9610903fc4aa7cd5ff7c543da5aef627825c7"
-        },
-        {
-          "path": "media/dragon_omnipart_front.png",
-          "bytes": 10589,
-          "sha256": "769b44667b9ad6e37263084cc5f1f0e90b851d755493a206e152115123374efa"
-        },
-        {
-          "path": "media/dragon_omnipart_back.png",
-          "bytes": 8925,
-          "sha256": "fa9eb6cc5c286611edc410b6bedea0582a8fe21a4276c73687f8dd814eb2c8a4"
-        },
-        {
-          "path": "media/dragon_omnipart_left.png",
-          "bytes": 9725,
-          "sha256": "a2ab1cc6ec6bf9e26d5ebfb916dd10da22f91fd521709f46ddd6f6061028b66b"
-        },
-        {
-          "path": "media/dragon_omnipart_right.png",
-          "bytes": 9688,
-          "sha256": "7cc5e972fc1b4d7754014eb0bb921b9815d3110536b50e813deb4d9438f21936"
-        }
-      ],
+      "media": [],
       "id": "dragon",
-      "status": "failed",
+      "status": "queued",
       "attempts": 5,
       "minimum_free_mib": 24576
     },
@@ -1316,7 +1143,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T23:44:15+08:00",
+      "updated_at": "2026-10-22T23:49:50+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1460,7 +1287,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T23:44:15+08:00",
+      "updated_at": "2026-10-22T23:49:50+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1711,121 +1538,6 @@
       "sha256": "f6284b14c8d95ccbcaae92eb1129f5234b56408b0f6c84c5cdcfb270ea987964"
     },
     {
-      "path": "media/kitchen_tongs_cleaned_image.png",
-      "bytes": 1056973,
-      "sha256": "47fee394794adda8173f40d91d7bed86c80315475d87859bf1d92d0e66dcca97"
-    },
-    {
-      "path": "media/kitchen_tongs_processed_white_bg_png.png",
-      "bytes": 30317,
-      "sha256": "80aed918bda76d0c1587809050b1449569fa3726c004593c7196bc03ac7015fc"
-    },
-    {
-      "path": "media/kitchen_tongs_processed_rgba.png",
-      "bytes": 40638,
-      "sha256": "8cf39bc0ef8611f453144db3323292f05f9dd2a79f5796c549cc321ed5b958dc"
-    },
-    {
-      "path": "media/kitchen_tongs_ordered_mask_vis.png",
-      "bytes": 1915,
-      "sha256": "8464b313b1de18336e35dd169f22ff22cc585c729630a8b1ee6c341254a9a046"
-    },
-    {
-      "path": "media/kitchen_tongs_segmentation_overlay.png",
-      "bytes": 27642,
-      "sha256": "7226fc8551d400ae2d27cf5d0da54655b1efcd5f94eddd9dfa9a6d4ef9ecdc39"
-    },
-    {
-      "path": "media/kitchen_tongs_omnipart_top.png",
-      "bytes": 7523,
-      "sha256": "131c633596d9b7c7428f5b302d3ca3ef9caf3aadcbcd5de766503255a89f7dc4"
-    },
-    {
-      "path": "media/kitchen_tongs_omnipart_bottom.png",
-      "bytes": 7221,
-      "sha256": "5dbe8a8ce0e47427cadb6fdb35e6caa70d1f66cd57f05a72936191aa7145fed9"
-    },
-    {
-      "path": "media/kitchen_tongs_omnipart_front.png",
-      "bytes": 6503,
-      "sha256": "9053a1fb2ffe203e533b90addaaad78b99e140fe3c0ed5fe4824a66a6345e0dc"
-    },
-    {
-      "path": "media/kitchen_tongs_omnipart_back.png",
-      "bytes": 5785,
-      "sha256": "234dc12189f718203fe8acc204b9ce3f30f4f7f761b6c3592ba7a0dcc21b635f"
-    },
-    {
-      "path": "media/kitchen_tongs_omnipart_left.png",
-      "bytes": 6961,
-      "sha256": "4ccda358645e6d99de7834a6c9b449b7d95c72390f107f0597feb72c46cd2bba"
-    },
-    {
-      "path": "media/kitchen_tongs_omnipart_right.png",
-      "bytes": 6758,
-      "sha256": "5d79094b439770233851be0bd58adf38f5a87f1e80616438ef55c37e0dd0bd13"
-    },
-    {
-      "path": "media/sneaker_cleaned_image.png",
-      "bytes": 2165814,
-      "sha256": "f6b03c7d6bd4e326741a69dd40a82f15cf398ecd4df3197ba4dc920ef504df93"
-    },
-    {
-      "path": "media/sneaker_processed_white_bg_png.png",
-      "bytes": 224061,
-      "sha256": "a0348613dd60c4e98db9b41f3267a16807c97249ad2ae64defd882589f1ef259"
-    },
-    {
-      "path": "media/sneaker_processed_rgba.png",
-      "bytes": 254767,
-      "sha256": "75721d2bd86d237487b43f6b3ffab71f692580ac7587741f750403be3b0f0bd6"
-    },
-    {
-      "path": "media/sneaker_ordered_mask_vis.png",
-      "bytes": 2170,
-      "sha256": "5b6dba887c0c0816c015c6f75c6cd349a93165451c499ddf9150c050ef525c54"
-    },
-    {
-      "path": "media/sneaker_segmentation_overlay.png",
-      "bytes": 194197,
-      "sha256": "7030a1443c7f35da2e81eb91cb906afd408338184fc9639859e407570eb17d72"
-    },
-    {
-      "path": "media/sneaker_albedo.png",
-      "bytes": 556188,
-      "sha256": "df2cb3e7b809f34014dd7c81504e4ae07f34878d18a9add34f13f3db5d1c1c4d"
-    },
-    {
-      "path": "media/sneaker_omnipart_top.png",
-      "bytes": 9239,
-      "sha256": "e3ea2fdf54121f55a0c1705d26dabf7bb2a7974043b302d1e9d14e12fbb68d8e"
-    },
-    {
-      "path": "media/sneaker_omnipart_bottom.png",
-      "bytes": 7391,
-      "sha256": "93f2af71b5a3abc3ff22fcdd8d32a65eff2db3d69628f993621fce073e6722f2"
-    },
-    {
-      "path": "media/sneaker_omnipart_front.png",
-      "bytes": 9291,
-      "sha256": "967dcbe1dea8b29bb25c9a04ae199066a80706bc6e6facd6e68d64df2118c407"
-    },
-    {
-      "path": "media/sneaker_omnipart_back.png",
-      "bytes": 10140,
-      "sha256": "c798e33dedbf4f3ed3fb7a8a2b4853bd987c20ba4271083a0bf8d7d33bb36559"
-    },
-    {
-      "path": "media/sneaker_omnipart_left.png",
-      "bytes": 7402,
-      "sha256": "79273217338d0edc05ecf070cd6a61080974f869eb0bd2963b9df7bbf3601e07"
-    },
-    {
-      "path": "media/sneaker_omnipart_right.png",
-      "bytes": 8261,
-      "sha256": "12a87a356e874b88fce0fe80515e88afacadbc81536bd7a12c5318e388953e25"
-    },
-    {
       "path": "media/usb_hub_cleaned_image.png",
       "bytes": 1324164,
       "sha256": "e4264e42306c814048634899bc6fa1413bb1779905549bcfca29e1c6abadcb96"
@@ -2036,61 +1748,6 @@
       "sha256": "bc5711867789a1a269005f55817e491e014e4fb7c268a592ae752fbf7b23fcee"
     },
     {
-      "path": "media/dragon_cleaned_image.png",
-      "bytes": 1209886,
-      "sha256": "7f11477353a235bf5b669d7c8ba80c1e2ac8b5b2dc82c026a65068955e0dc492"
-    },
-    {
-      "path": "media/dragon_processed_white_bg_png.png",
-      "bytes": 70538,
-      "sha256": "f0919320fe4cfaaab1d58862bf66facb9c53adc2b084b99b946075b44d399512"
-    },
-    {
-      "path": "media/dragon_processed_rgba.png",
-      "bytes": 88717,
-      "sha256": "96333ffbe432c6929a5aeef0de87fd9ead53dbb3060d9920d2efc5536498952f"
-    },
-    {
-      "path": "media/dragon_ordered_mask_vis.png",
-      "bytes": 2158,
-      "sha256": "23791a34b990c9bda42e3a96415963b7966acbc33e39efd11aed17c377637927"
-    },
-    {
-      "path": "media/dragon_segmentation_overlay.png",
-      "bytes": 61258,
-      "sha256": "f1ea2cc05dc8f1de4b2c798fd86573b54e1104a18cba63b893a02a62182b1a01"
-    },
-    {
-      "path": "media/dragon_omnipart_top.png",
-      "bytes": 8917,
-      "sha256": "202ee5e95ea6494aa2c50d59110d4cb8ecbedf20560450ff1e0bb97955116e72"
-    },
-    {
-      "path": "media/dragon_omnipart_bottom.png",
-      "bytes": 7531,
-      "sha256": "a81f17753c213a021278b9433de9610903fc4aa7cd5ff7c543da5aef627825c7"
-    },
-    {
-      "path": "media/dragon_omnipart_front.png",
-      "bytes": 10589,
-      "sha256": "769b44667b9ad6e37263084cc5f1f0e90b851d755493a206e152115123374efa"
-    },
-    {
-      "path": "media/dragon_omnipart_back.png",
-      "bytes": 8925,
-      "sha256": "fa9eb6cc5c286611edc410b6bedea0582a8fe21a4276c73687f8dd814eb2c8a4"
-    },
-    {
-      "path": "media/dragon_omnipart_left.png",
-      "bytes": 9725,
-      "sha256": "a2ab1cc6ec6bf9e26d5ebfb916dd10da22f91fd521709f46ddd6f6061028b66b"
-    },
-    {
-      "path": "media/dragon_omnipart_right.png",
-      "bytes": 9688,
-      "sha256": "7cc5e972fc1b4d7754014eb0bb921b9815d3110536b50e813deb4d9438f21936"
-    },
-    {
       "path": "media/capybara_plush_toy_cleaned_image.png",
       "bytes": 2311951,
       "sha256": "94bffd6c88b772cd5c34fd16919e6edcd2ea6aa78011c2662ffa43dbe4089331"
@@ -2190,22 +1847,12 @@
     "enabled": true,
     "interval_seconds": 60,
     "max_resumes_per_run": 2,
-    "updated_at": "2026-10-22T23:44:03+08:00",
+    "updated_at": "2026-10-22T23:49:03+08:00",
     "jobs": [
       {
         "id": "baseball_cap",
         "run_id": "genesis_baseball_cap_20261022_fresh3",
         "outcome": "completed"
-      },
-      {
-        "id": "kitchen_tongs",
-        "run_id": "genesis_kitchen_tongs_20261022_segmentation_retry1",
-        "outcome": "unknown"
-      },
-      {
-        "id": "sneaker",
-        "run_id": "genesis_sneaker_20261022_clean_diagnostics1",
-        "outcome": "exported_unaccepted"
       },
       {
         "id": "usb_hub",
@@ -2221,11 +1868,6 @@
         "id": "sauce_keeper",
         "run_id": "genesis_sauce_keeper_20261022_clean_diagnostics2",
         "outcome": "completed"
-      },
-      {
-        "id": "dragon",
-        "run_id": "genesis_dragon_20261022_retryfix_af4645266949",
-        "outcome": "unknown"
       },
       {
         "id": "capybara_plush_toy",
@@ -2249,5 +1891,5 @@
     "classification": "native_business_halt",
     "outcome": "needs_attention"
   },
-  "signature": "4d08c58709f13f94917f5245e8c1c0df8da6a377961864896023a83c56c12ae9"
+  "signature": "2bcc277565cf57a5a2e577355cc693690ec5862b365bffcc5a3017d8666fd692"
 }
