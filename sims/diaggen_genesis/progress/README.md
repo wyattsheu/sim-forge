@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T21:04:19+08:00（Asia/Taipei）
+更新：2026-10-22T21:06:37+08:00（Asia/Taipei）
 
 共 9 件：等待 0、執行中 1、完成匯出 6、失敗 2、取消 0。
 
@@ -328,7 +328,7 @@ Run：`genesis_dragon_20261022_retryfix_af4645266949`；執行中。
 | 圖片清理 | success |
 | SAM3 分割 | success |
 | OmniPart 幾何生成 | success |
-| 材料推估 | pending |
+| 材料推估 | running |
 | 材料參數配置 | pending |
 | 體積網格處理 | pending |
 | Genesis 物理診斷 | pending |
