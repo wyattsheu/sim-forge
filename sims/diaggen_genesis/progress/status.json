@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-23T00:01:12+08:00",
+  "updated_at": "2026-10-23T00:03:00+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -13,8 +13,8 @@
     "max_parallel_jobs": 4
   },
   "counts": {
-    "queued": 2,
-    "running": 1,
+    "queued": 1,
+    "running": 2,
     "success": 5,
     "failed": 1,
     "cancelled": 0,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-23T00:01:12+08:00",
+      "updated_at": "2026-10-23T00:03:00+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -222,7 +222,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T16:01:05.614594+00:00",
-      "updated_at": "2026-10-23T00:01:12+08:00",
+      "updated_at": "2026-10-23T00:03:01+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -288,10 +288,10 @@
         {
           "name": "genesis_live_diagnostic_loop",
           "label": "Genesis 物理診斷",
-          "status": "pending",
-          "ledger_status": "pending",
+          "status": "running",
+          "ledger_status": "running",
           "ok": false,
-          "started_at": null,
+          "started_at": "2026-10-22T16:02:49.447767+00:00",
           "finished_at": null
         },
         {
@@ -390,13 +390,13 @@
       "pipeline": "DiagGen",
       "simulator": "Genesis",
       "run_id": "genesis_sneaker_20261022_native6",
-      "phase": "waiting_gpu",
+      "phase": "running",
       "pipeline_status": "not_initialized",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-23T00:01:12+08:00",
+      "updated_at": "2026-10-23T00:03:01+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -499,8 +499,8 @@
       },
       "media": [],
       "id": "sneaker",
-      "status": "queued",
-      "attempts": 4,
+      "status": "running",
+      "attempts": 5,
       "minimum_free_mib": 24576
     },
     {
@@ -514,7 +514,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-23T00:01:12+08:00",
+      "updated_at": "2026-10-23T00:03:01+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -703,7 +703,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-23T00:01:12+08:00",
+      "updated_at": "2026-10-23T00:03:01+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -892,7 +892,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-23T00:01:12+08:00",
+      "updated_at": "2026-10-23T00:03:01+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1081,7 +1081,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-23T00:01:12+08:00",
+      "updated_at": "2026-10-23T00:03:01+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1199,7 +1199,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-23T00:01:12+08:00",
+      "updated_at": "2026-10-23T00:03:01+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1343,7 +1343,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-23T00:01:12+08:00",
+      "updated_at": "2026-10-23T00:03:01+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1958,7 +1958,7 @@
     "enabled": true,
     "interval_seconds": 60,
     "max_resumes_per_run": 2,
-    "updated_at": "2026-10-23T00:01:01+08:00",
+    "updated_at": "2026-10-23T00:02:03+08:00",
     "jobs": [
       {
         "id": "baseball_cap",
@@ -2017,5 +2017,5 @@
     "classification": "dependency",
     "outcome": "needs_attention"
   },
-  "signature": "9005471f34f535a4c6e62f93195b8eb54ff2391401d76c534497f4d6c20e1840"
+  "signature": "99920f02dd175a4e7f618cbf9be4d10df7ad998b3238016de86820ef95adac54"
 }

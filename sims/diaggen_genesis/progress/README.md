@@ -2,9 +2,9 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-23T00:01:12+08:00（Asia/Taipei）
+更新：2026-10-23T00:03:00+08:00（Asia/Taipei）
 
-共 9 件：等待 2、執行中 1、完成匯出 5、失敗 1、取消 0。
+共 9 件：等待 1、執行中 2、完成匯出 5、失敗 1、取消 0。
 
 已完成匯出中：Genesis accept 5 件；仍需修正 0 件。
 
@@ -21,7 +21,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 |---|---|---|---|---|---|---|---|
 | baseball_cap | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
 | kitchen_tongs | running | seeded | revision_0000 | 24576 MiB | 6/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
-| sneaker | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
+| sneaker | running | not_initialized | 尚未初始化 | 24576 MiB | 0/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
 | usb_hub | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
 | sloth | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
 | sauce_keeper | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
@@ -106,7 +106,7 @@ Run：`genesis_kitchen_tongs_20261022_native6`；執行中。
 | 材料推估 | success |
 | 材料參數配置 | success |
 | 體積網格處理 | success |
-| Genesis 物理診斷 | pending |
+| Genesis 物理診斷 | running |
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
@@ -137,7 +137,7 @@ Genesis 診斷 episode 數：0；結果：尚未判定。
 
 ## sneaker
 
-Run：`genesis_sneaker_20261022_native6`；等待空閒 GPU。
+Run：`genesis_sneaker_20261022_native6`；執行中。
 
 | 階段 | 狀態 |
 |---|---|
