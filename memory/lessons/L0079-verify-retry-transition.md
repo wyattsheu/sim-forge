@@ -46,6 +46,8 @@ observed: 2026-10-22
 
 等待 owner lease 到期、只建立新 child 或只提高顯存，都不會修復這個確定性的狀態轉移錯誤。只驗證函式可匯入或批次 admission 通過，也沒有走到出錯的 successor 轉移。
 
+2026-10-22 補充：即使 archive/reset 與 fresh schema 已通過，也必須把磁碟副作用納入下一步驗證。球鞋與樹懶的 successor 清空材質登記後，上一輪的 `material_audit_authoritative/revision_0000/cleaned_source_image.png` 仍存在；實際登記函式拒絕同名快照，因此 `define_episode` 又失敗。`sims/diaggen_genesis/analysis/reproduce_retry_artifacts.py` 對保存狀態與臨時目錄重現兩次相同錯誤；以獨立 attempt 子目錄的候選函式測試，五個來源檔均可登記且雜湊相符，舊快照保留。這只證明 registration boundary 的局部改善，尚未部署，也未證明完整 episode／probe／terminal 成功；後續驗收必須包含其他舊 artifacts 不被覆寫。證據：`sims/diaggen_genesis/analysis/retry_artifact_reproduction.json`，本機原始快照 `tools/diaggen/outputs/preflight/stall_audit_20261022/`。
+
 ## 證據
 
 `tools/diaggen_support/diagnostic_retry_reset.{patch,json}`；`tools/diaggen_support/check_diagnostic_retry.py`；`sims/diaggen_genesis/tests/test_diagnostic_retry_reset.py`；本機 `tools/diaggen/outputs/preflight/diagnostic_retry_reset_baseline_20261022/{manifest,sneaker,sloth}.json`。16 項測試證明的是轉移修復與驗證契約，不能據此宣稱兩個物件已完成完整診斷或匯出。
