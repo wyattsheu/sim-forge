@@ -1,10 +1,10 @@
 {
   "schema_version": "diaggen-full-runtime-preflight-v1",
-  "checked_at": "2026-10-22T13:52:04+08:00",
+  "checked_at": "2026-10-22T15:28:24+08:00",
   "overall_status": "pass",
   "simulator": "Genesis",
   "counts": {
-    "pass": 81,
+    "pass": 82,
     "fail": 0,
     "skip": 0
   },
@@ -16,35 +16,39 @@
     }
   ],
   "evidence_reuse": {
-    "prior_report_sha256": "c11b03fc2e35849a8f9f4489eeddece786797e724c30d8715ad7a45651b8a075",
-    "unchanged_checks_reused": 77,
+    "unchanged_checks_reused": 78,
     "orchestration_checks_rerun": 3,
     "actual_cpu_tests": {
       "error": 0,
       "expected_fail": 0,
       "fail": 0,
-      "pass": 267,
-      "run": 267,
+      "pass": 290,
+      "run": 290,
       "skip": 0,
       "unexpected_success": 0
     },
-    "shared_gpu_snapshot_checks": 1,
+    "snapshot_admission_checks": 1,
     "reviewed_runtime_source_changes": [
-      "sims/diaggen_genesis/batch_plan.json",
-      "sims/diaggen_genesis/queue/batch_control.py",
-      "tools/diaggen_support/queue_gpu_sharing.json",
-      "tools/diaggen_support/queue_gpu_sharing.patch"
+      "sims/diaggen_genesis/preflight/probe_orchestration.py",
+      "sims/diaggen_genesis/preflight/readiness.py",
+      "sims/diaggen_genesis/queue/run_one.sh",
+      "tools/diaggen_support/diagnostic_credentials.js",
+      "tools/diaggen_support/diagnostic_credentials.md",
+      "tools/diaggen_support/queue_verified_diagnostics.json",
+      "tools/diaggen_support/queue_verified_diagnostics.patch"
     ],
-    "native_method_changed": false
+    "native_method_changed": false,
+    "note": "Exact native/input/environment/binary inventories unchanged; JS tests use mock MCP endpoints and do not establish production success."
   },
-  "scope": "External GPU queue admission change; all native runtime/weights/env inventories unchanged. Full CPU orchestration rerun; unchanged native GPU smoke reports explicitly reused.",
+  "scope": "Verified credential transport and mode-specific launcher; native sources and environment unchanged.",
   "limitations": [
     "Only curling iron is a completed production asset.",
     "No full-model peak VRAM measurement; large-tensor capybara fix awaits production validation.",
     "New diagnostic/snapshot production success is not established by preflight.",
     "LLM/imagegen access uses existing successful execution evidence; no new cloud call in preflight.",
     "Memory gates do not reserve GPU capacity.",
-    "Shared admission counts per-job minimum gates as conservative headroom; this does not reserve CUDA memory or establish full-model peak demand. Existing jobs are not migrated or restarted."
+    "Shared admission counts per-job minimum gates as conservative headroom; this does not reserve CUDA memory or establish full-model peak demand. Existing jobs are not migrated or restarted.",
+    "Opaque credentials are retained in the owning child tool store; full native MCP workflow still requires production validation."
   ],
   "components": [
     {
@@ -424,6 +428,336 @@
         }
       ],
       "evidence": "Production queue snapshot checked in temporary clone."
+    }
+  ],
+  "checks": [
+    {
+      "name": "host/nine_input_decode_hash_dimensions",
+      "status": "pass"
+    },
+    {
+      "name": "host/native_output_space_write_read",
+      "status": "pass"
+    },
+    {
+      "name": "host/python_hag4r",
+      "status": "pass"
+    },
+    {
+      "name": "host/python_hag4r_mesh",
+      "status": "pass"
+    },
+    {
+      "name": "host/python_hag4r_segmentation",
+      "status": "pass"
+    },
+    {
+      "name": "host/python_omnipart",
+      "status": "pass"
+    },
+    {
+      "name": "host/python_genesis",
+      "status": "pass"
+    },
+    {
+      "name": "host/hag4r_all_stage_runtime_imports",
+      "status": "pass"
+    },
+    {
+      "name": "host/sam3_cpu_runtime_imports",
+      "status": "pass"
+    },
+    {
+      "name": "host/sam3_checkpoint_cpu_mmap",
+      "status": "pass"
+    },
+    {
+      "name": "host/sam3_exr_actual_roundtrip",
+      "status": "pass"
+    },
+    {
+      "name": "host/command_conda",
+      "status": "pass"
+    },
+    {
+      "name": "host/command_codex",
+      "status": "pass"
+    },
+    {
+      "name": "host/command_git",
+      "status": "pass"
+    },
+    {
+      "name": "host/command_tmux",
+      "status": "pass"
+    },
+    {
+      "name": "host/command_ffmpeg",
+      "status": "pass"
+    },
+    {
+      "name": "host/command_ffprobe",
+      "status": "pass"
+    },
+    {
+      "name": "host/command_nvcc",
+      "status": "pass"
+    },
+    {
+      "name": "host/command_cpp",
+      "status": "pass"
+    },
+    {
+      "name": "host/private_xvfb_executable",
+      "status": "pass"
+    },
+    {
+      "name": "host/historical_codex_model_imagegen_subagent_evidence",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/mesh_runtime_dependencies",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/color_locked_material_fixture_and_negative_control",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/native_glb_load_and_metric_scaling",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/native_solid_and_hollow_voxelization",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/native_marching_cubes_and_meshlab_simplification",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/native_manifold_boolean_union",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/native_pytetwild_and_hard_tet_validation",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/native_tet_owner_material_assignment_and_npz",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/native_medit_serialization_and_scale_volume",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/native_invalid_tets_and_material_negative_controls",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/native_canonical_physical_export_contract",
+      "status": "pass"
+    },
+    {
+      "name": "mesh/native_four_material_pngs",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/dependency_imports",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/native_stage_imports",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/offline_weight_inventory",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/external_toolchain",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/ffmpeg_encode_decode",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/xatlas_exact_binding_and_glb",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/existing_usb_glb_and_appearance",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/cuda_identity_arithmetic",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/native_flash_attention_kernel",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/spconv_actual_convolution",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/torch_scatter_cuda",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/native_texture_uv_raster_and_sample",
+      "status": "pass"
+    },
+    {
+      "name": "omnipart/native_gaussian_rasterizer",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_genesis",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_genesis_live_server",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_genesis_live_visual_telemetry",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_genesis_ext_pyrender",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_genesis_utils_heterogeneous_materials",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_igl",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_numpy",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_scipy",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_torch",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_pyglet",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_OpenGL",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_imageio",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/import_imageio_ffmpeg",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/native_diagnostic_mp4_script",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/binary_ffmpeg",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/binary_ffprobe",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/gpu_memory_gate",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/private_xvfb",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/live_ready_handshake",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/negative_rpc_rejected",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/heterogeneous_fem_readback",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/cuda_fem_step_finite_motion",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/native_part_shaded_triptych",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/mp4_encode_decode",
+      "status": "pass"
+    },
+    {
+      "name": "genesis/live_server_clean_close",
+      "status": "pass"
+    },
+    {
+      "name": "completed_export/strict_accepted_export",
+      "status": "pass"
+    },
+    {
+      "name": "recovery_contracts/sneaker_native_recovery_contract",
+      "status": "pass"
+    },
+    {
+      "name": "recovery_contracts/sloth_native_recovery_contract",
+      "status": "pass"
+    },
+    {
+      "name": "recovery_contracts/usb_hub_native_recovery_contract",
+      "status": "pass"
+    },
+    {
+      "name": "recovery_contracts/sauce_keeper_native_recovery_contract",
+      "status": "pass"
+    },
+    {
+      "name": "spconv_native/tiny_native_implicit_numerical_parity",
+      "status": "pass"
+    },
+    {
+      "name": "gpu_sharing/actual_snapshot_admits_next_fresh_job",
+      "status": "pass"
+    },
+    {
+      "name": "namespace_unittest_suite",
+      "status": "pass"
+    },
+    {
+      "name": "preflight_negative_controls",
+      "status": "pass"
+    },
+    {
+      "name": "source_and_test_inventory_unchanged",
+      "status": "pass"
+    },
+    {
+      "name": "verified_diagnostics/sloth_clean_snapshot_admission",
+      "status": "pass"
     }
   ]
 }

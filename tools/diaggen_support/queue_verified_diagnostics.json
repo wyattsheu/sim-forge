@@ -1,0 +1,13 @@
+{
+  "schema_version": "diaggen-queue-verified-diagnostics-patch-v1",
+  "depends_on": "queue_recovery_modes",
+  "files": {
+    "sims/diaggen_genesis/queue/run_one.sh": {
+      "before_sha256": "4dce13cf532e45fa4b3a31d080b0f768defde7fbdc575d55b0737890a5c873a3",
+      "before_md5": "240c5c5500c457496a8a6660da3b2734",
+      "after_sha256": "15daa36fcb5cda0121f1368217a553c18011d3acb1cbcd1a3c14f6c5cfec7fc5"
+    }
+  },
+  "patch_sha256": "9c0af4d8af67ba05110d4404c9ae65a7f2380c2c7aa81b8a0f27b9e63a819185",
+  "contract": "Separate fresh/resume/snapshot instructions and retain native MCP credentials byte-for-byte in the owning child tool store; no native methods or acceptance conditions changed. Existing workers retain old open shell inode and old prompt; new workers alone use this source."
+}

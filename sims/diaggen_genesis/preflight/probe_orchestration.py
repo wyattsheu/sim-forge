@@ -55,7 +55,7 @@ def inventory():
     for directory, patterns in (
         (BASE / "queue", ("*.py", "*.sh")),
         (BASE / "preflight", ("*.py",)),
-        (WORKSPACE / "tools/diaggen_support", ("*.py", "*.sh", "*.patch", "*.json")),
+        (WORKSPACE / "tools/diaggen_support", ("*.py", "*.sh", "*.patch", "*.json", "*.js", "*.md")),
     ):
         for pattern in patterns:
             sources.update(directory.glob(pattern))

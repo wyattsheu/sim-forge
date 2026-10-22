@@ -1,0 +1,69 @@
+--- a/sims/diaggen_genesis/queue/run_one.sh
++++ b/sims/diaggen_genesis/queue/run_one.sh
+@@ -175,6 +175,33 @@
+         > "$DIAGGEN_JOB_QUEUE_DIR/initializer.json"
+ fi
+ 
++# Only describe metadata and recovery rules belonging to this execution mode.
++case "$EXECUTION_MODE" in
++    fresh)
++        MODE_CONTEXT="This is a fresh raw-image run. There is no resume.json or archived cleanup
++candidate to recover. Follow the owning cleanup skill's bounded original imagegen loop,
++including its two-attempt selection rule; preserve every actual validation verdict.
++Never import candidates or terminal records from a different run."
++        ;;
++    resume)
++        MODE_CONTEXT="This is an admitted same-run resume. Read
++$DIAGGEN_JOB_QUEUE_DIR/resume.json and resume_validation.json.
++Only if resume_validation.json reports existing_cleanup_candidates is cleanup still pending.
++Use its queue_history_directory and prior_child_last_message as historical evidence,
++then have the owning cleanup child freshly validate the original paired candidates
++against the frozen source. Follow the official exhausted-budget selection rule and
++preserve actual failed checks; never invent a pass. Do not call imagegen a third time.
++Successful cleanup and all successful upstream stages must be preserved."
++        ;;
++    diagnostics_snapshot)
++        MODE_CONTEXT="This is an independent diagnostics_snapshot run from the public native
++initializer. Read $DIAGGEN_JOB_QUEUE_DIR/snapshot_validation.json and initializer.json;
++there is no resume.json to read. The initializer preserved a completed upstream revision
++and created a clean diagnostic workspace. Keep its successful stage prefix, use one fresh
++diagnostic child, and consume native recommendation transitions and lawful repair reroutes."
++        ;;
++esac
++
+ cat > "$DIAGGEN_JOB_QUEUE_DIR/prompt.txt" <<EOF
+ Complete this one user-authorized DiagGen asset-generation run in native Genesis.
+ Read and use .agents/skills/run-diaggen-pipeline/SKILL.md; the initialized run is $RUN_ROOT.
+@@ -205,18 +232,22 @@
+ output quality. The guard is an observation, not a memory reservation or OOM guarantee.
+ For fresh image cleanup, stop after a passing Attempt 1; do not generate Attempt 2 after it
+ passes. For a resume with successful cleanup, skip all imagegen and cleanup registration.
+-If resume_validation.json reports existing_cleanup_candidates, cleanup is still pending.
+-Read $DIAGGEN_JOB_QUEUE_DIR/resume.json and its queue_history_directory and
+-prior_child_last_message; inspect the archived codex_events.jsonl and last_message.txt
+-as historical evidence, then inspect both existing attempt_01.png and attempt_02.png.
+-Delegate the owning image-cleanup child to perform the complete current visual validation
+-against the frozen source. Register the validated existing files through the stage CLI.
+-Do not call imagegen a third time, invent prior validation, or declare success from old prose.
+-For diagnostics_snapshot mode the public initializer has copied a completed upstream
+-revision into a new independent run. Preserve its successful stage prefix; diagnose with
+-a fresh child and use native recommendation transitions, including lawful repair reroutes.
++$MODE_CONTEXT
+ Genesis diagnostics stays exclusively on its authenticated MCP and child-owned lifecycle;
+ never use the stage bridge for diagnostic attach, probes, finalization, cleanup, or decisions.
++The diagnostic child must read $WORKSPACE/tools/diaggen_support/diagnostic_credentials.md
++and use its single-call JavaScript credential forwarder for every diagnostic MCP call.
++The child loads the exact file through functions.exec, retains its source in the child's
++private store, attaches exactly once, then obtains all authentication and live handles
++from that same private store. Never print, copy, transcribe, guess, or manually supply an
++owner_lease_token or live_session_handle. The parent never loads this private credential store.
++The forwarder changes argument transport only: all plans, episodes, probes, reflections,
++evidence, verdicts and terminal calls remain explicitly chosen by the owning child.
++If the child stops without a lawful native terminal, stop this orchestration promptly with
++the actual error and existing artifact paths. Do not spin through lease countdowns or spawn
++another diagnostic retry in this run. The interactive supervisor will inspect and repair
++that failure before authorizing a separate fresh child/run. Preserve all native ledgers;
++never force a business halt, close, lease deletion, takeover, or fabricated recommendation.
+ After successful diagnostic transition, texture, and final export, the parent must run:
+ $MESH_PYTHON $COMPLETION_VALIDATOR --run-root $RUN_ROOT --settle
+ This deterministic completion check must pass before reporting the full run successful.

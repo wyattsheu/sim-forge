@@ -109,7 +109,7 @@ def fingerprint(workspace: Path) -> dict:
                    (workspace / BASE / "preflight").glob("probe_*.py"))
     support = workspace / "tools/diaggen_support"
     helpers = [path for path in support.rglob("*")
-               if path.is_file() and path.suffix in {".py", ".sh", ".patch", ".json"}]
+               if path.is_file() and path.suffix in {".py", ".sh", ".patch", ".json", ".js", ".md"}]
     if not helpers:
         raise ValueError("DiagGen support sources are missing")
     sources.update(path.relative_to(workspace) for path in helpers)

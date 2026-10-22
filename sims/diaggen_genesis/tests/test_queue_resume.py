@@ -35,6 +35,11 @@ def temporary_patched_sources(destination):
     manifest = json.loads(MANIFEST_PATH.read_text())
     sharing = json.loads((PATCH_PATH.parent / "queue_gpu_sharing.json").read_text())
     sharing_files = sharing["files"]
+    verified = json.loads((PATCH_PATH.parent / "queue_verified_diagnostics.json").read_text())
+    verified_files = verified["files"]
+    verified_patch = (PATCH_PATH.parent / "queue_verified_diagnostics.patch").read_bytes()
+    if hashlib.sha256(verified_patch).hexdigest() != verified["patch_sha256"]:
+        raise AssertionError("Verified diagnostics patch digest changed")
     before_files = []
     for relative, record in manifest["files"].items():
         source = WORKSPACE / relative
@@ -44,6 +49,8 @@ def temporary_patched_sources(destination):
         allowed = [record["before_sha256"], record["after_sha256"], current_record["after_sha256"]]
         if relative in sharing_files:
             allowed.append(sharing_files[relative]["after_sha256"])
+        if relative in verified_files:
+            allowed.append(verified_files[relative]["after_sha256"])
         if actual not in allowed:
             raise AssertionError(f"Resume patch baseline changed; review/rebase required: {relative}")
         target = destination / relative
@@ -64,6 +71,8 @@ def temporary_patched_sources(destination):
         allowed = [record["after_sha256"], recovery["files"][relative]["after_sha256"]]
         if relative in sharing_files:
             allowed.append(sharing_files[relative]["after_sha256"])
+        if relative in verified_files:
+            allowed.append(verified_files[relative]["after_sha256"])
         if digest(destination / relative) not in allowed:
             raise AssertionError(f"Patched source digest differs: {relative}")
     selected = []
@@ -89,8 +98,19 @@ def temporary_patched_sources(destination):
     if selected:
         subprocess.run(["patch", "--batch", "--fuzz=0", "-p1"], input="".join(selected),
                        cwd=destination, check=True, capture_output=True, text=True)
+    selected = []
+    sections = ["--- a/" + item for item in verified_patch.decode().split("--- a/")[1:]]
+    for relative, record in verified_files.items():
+        actual = digest(destination / relative)
+        if actual == record["before_sha256"]:
+            selected.extend(item for item in sections if item.splitlines()[0][6:] == relative)
+        elif actual != record["after_sha256"]:
+            raise AssertionError("Verified diagnostics baseline changed: " + relative)
+    if selected:
+        subprocess.run(["patch", "--batch", "--fuzz=0", "-p1"], input="".join(selected),
+                       cwd=destination, check=True, capture_output=True, text=True)
     for relative in manifest["files"]:
-        expected = sharing_files.get(relative, recovery["files"][relative])["after_sha256"]
+        expected = verified_files.get(relative, sharing_files.get(relative, recovery["files"][relative]))["after_sha256"]
         if digest(destination / relative) != expected:
             raise AssertionError("Recovery integration digest differs: " + relative)
 
@@ -195,6 +215,30 @@ class SameRunResumeTests(unittest.TestCase):
 
     def queue_state(self):
         return json.loads(self.queue.path.read_text())
+
+    def test_generated_mode_context_only_requests_its_real_metadata(self):
+        source = (self.patched_root / SHELL_RELATIVE).read_text()
+        start = source.index('# Only describe metadata and recovery rules belonging to this execution mode.')
+        end = source.index('cat > "$DIAGGEN_JOB_QUEUE_DIR/prompt.txt" <<EOF', start)
+        snippet = source[start:end]
+        for mode in ("fresh", "resume", "diagnostics_snapshot"):
+            with self.subTest(mode=mode):
+                result = subprocess.run(["bash", "-c", snippet + '\nprintf "%s" "$MODE_CONTEXT"'],
+                                        env={**os.environ, "EXECUTION_MODE": mode,
+                                             "DIAGGEN_JOB_QUEUE_DIR": "/isolated/job"},
+                                        text=True, capture_output=True, check=True, timeout=5)
+                text = result.stdout
+                if mode == "resume":
+                    self.assertIn("/isolated/job/resume.json", text)
+                    self.assertIn("existing_cleanup_candidates", text)
+                else:
+                    self.assertNotIn("/isolated/job/resume.json", text)
+                    self.assertNotIn("existing_cleanup_candidates", text)
+                if mode == "diagnostics_snapshot":
+                    self.assertIn("/isolated/job/snapshot_validation.json", text)
+                    self.assertIn("clean diagnostic workspace", text)
+                if mode == "fresh":
+                    self.assertIn("Never import candidates", text)
 
     def resume(self, identifier="resume_01"):
         with patch.object(self.batch.os, "kill", side_effect=ProcessLookupError):
