@@ -21,6 +21,8 @@
 
 上述兩件 operational retry 不會因單純重新排隊就保證恢復，尚未再盲目重排；USB Hub 的 business halt 亦未改成成功。中午兩張 GPU 已有可用顯存，當前停止原因是流程失敗。前述 190 項測試通過並未涵蓋這兩個夜間暴露的診斷 retry 問題。
 
+唯讀重現已確認目前阻擋球鞋、樹懶 attach 的共同原因：`archive_and_reset_diagnostic_execution_attempt` 清空下一次執行的計畫，卻保留多筆 grounding measurement；fresh validator 只容許最多一筆。兩件分別保留 3／10 筆，因此在記憶體被判為「沒有 v2 plan 的非 fresh 狀態」，而尚未寫回的磁碟仍有舊 plan。對原 ledger 的歷史 coverage 驗證均成功，先前歷史 close 修補仍有效。重現僅操作 deepcopy，正式 state 雜湊未變；此 reset/fresh 契約仍待修復與測試，沒有直接刪除計畫或證據來繞過。
+
 ## 2026-10-21 晚間：首件完整匯出與流程修復
 
 **電捲棒已完成 9 個階段並歸檔**：`runs/genesis_curling_iron_20261021_exr_retry1/`。獨立驗證確認 16 個 canonical 匯出檔、1,178 個頂點、4,171 個四面體、兩種材料標籤與單一面連通區；原生物理契約、外觀 GLB、外觀與物理綁定、來源及匯出 SHA256 均通過。兩支診斷 MP4 分別為 31／43 幀、10 fps（3.1／4.3 秒）。這代表生成與診斷流程通過，實物物性仍須測量對照。
