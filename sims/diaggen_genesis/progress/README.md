@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-23T01:03:25+08:00（Asia/Taipei）
+更新：2026-10-23T01:04:15+08:00（Asia/Taipei）
 
 共 9 件：等待 0、執行中 1、完成匯出 6、失敗 2、取消 0。
 
@@ -40,7 +40,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | sloth | completed |
 | sauce_keeper | completed |
 | dragon | business_halt |
-| capybara_plush_toy | queued |
+| capybara_plush_toy | running |
 | curling_iron | completed |
 
 故障診斷工作：finished；分類 native_business_halt；結果 needs_attention。
