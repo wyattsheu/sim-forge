@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-23T01:11:26+08:00",
+  "updated_at": "2026-10-23T01:11:45+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-23T01:11:26+08:00",
+      "updated_at": "2026-10-23T01:11:45+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -222,7 +222,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T16:01:05.614594+00:00",
-      "updated_at": "2026-10-23T01:11:26+08:00",
+      "updated_at": "2026-10-23T01:11:45+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -411,7 +411,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T16:03:07.162969+00:00",
-      "updated_at": "2026-10-23T01:11:26+08:00",
+      "updated_at": "2026-10-23T01:11:45+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -585,7 +585,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-23T01:11:26+08:00",
+      "updated_at": "2026-10-23T01:11:45+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -774,7 +774,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-23T01:11:26+08:00",
+      "updated_at": "2026-10-23T01:11:45+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -963,7 +963,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-23T01:11:26+08:00",
+      "updated_at": "2026-10-23T01:11:45+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1152,7 +1152,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T16:18:45.488388+00:00",
-      "updated_at": "2026-10-23T01:11:26+08:00",
+      "updated_at": "2026-10-23T01:11:45+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
@@ -1326,7 +1326,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T17:03:25.448128+00:00",
-      "updated_at": "2026-10-23T01:11:26+08:00",
+      "updated_at": "2026-10-23T01:11:45+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1347,11 +1347,11 @@
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "running",
-          "ledger_status": "pending",
-          "ok": false,
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
           "started_at": "2026-10-22T17:11:17.608152+00:00",
-          "finished_at": null
+          "finished_at": "2026-10-22T17:11:37.309367+00:00"
         },
         {
           "name": "omnipart_generate_parts",
@@ -1442,6 +1442,16 @@
           "path": "media/capybara_plush_toy_processed_rgba.png",
           "bytes": 373880,
           "sha256": "930ea9cc0efd2fa3548bcb00c1268d60cdfcba26375f35987a7cc345408eead2"
+        },
+        {
+          "path": "media/capybara_plush_toy_ordered_mask_vis.png",
+          "bytes": 2347,
+          "sha256": "5a63d95be6021ca616760dea25f9fec59c9745e38c7e8b195216935c59ab6d78"
+        },
+        {
+          "path": "media/capybara_plush_toy_segmentation_overlay.png",
+          "bytes": 279531,
+          "sha256": "1f504581cc21a51c5547b75708d447d07fb10081f029c9a3c6bd41325a16b3ec"
         }
       ],
       "id": "capybara_plush_toy",
@@ -1460,7 +1470,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-23T01:11:26+08:00",
+      "updated_at": "2026-10-23T01:11:45+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -2116,6 +2126,16 @@
       "sha256": "930ea9cc0efd2fa3548bcb00c1268d60cdfcba26375f35987a7cc345408eead2"
     },
     {
+      "path": "media/capybara_plush_toy_ordered_mask_vis.png",
+      "bytes": 2347,
+      "sha256": "5a63d95be6021ca616760dea25f9fec59c9745e38c7e8b195216935c59ab6d78"
+    },
+    {
+      "path": "media/capybara_plush_toy_segmentation_overlay.png",
+      "bytes": 279531,
+      "sha256": "1f504581cc21a51c5547b75708d447d07fb10081f029c9a3c6bd41325a16b3ec"
+    },
+    {
       "path": "media/curling_iron_cleaned_image.png",
       "bytes": 1248008,
       "sha256": "b90f604fe533cb7ea1e9cbfc8fda0759705a9ae129c708e258f244cec325a02a"
@@ -2249,5 +2269,5 @@
     "classification": "native_business_halt",
     "outcome": "needs_attention"
   },
-  "signature": "6001c18520060321198bacd7824fc62d7139da3ea63a51ba75c196cdb525ca65"
+  "signature": "c39998a15608e5c4b34a025e8d6083ceabb14c68513f13de55ae75c70c7ac860"
 }
