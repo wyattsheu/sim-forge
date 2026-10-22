@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-23T00:19:10+08:00",
+  "updated_at": "2026-10-23T00:20:12+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-23T00:19:10+08:00",
+      "updated_at": "2026-10-23T00:20:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -222,7 +222,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T16:01:05.614594+00:00",
-      "updated_at": "2026-10-23T00:19:10+08:00",
+      "updated_at": "2026-10-23T00:20:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
@@ -396,10 +396,10 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T16:03:07.162969+00:00",
-      "updated_at": "2026-10-23T00:19:10+08:00",
+      "updated_at": "2026-10-23T00:20:13+08:00",
       "diagnostics": {
         "enabled": true,
-        "episode_count": 1,
+        "episode_count": 2,
         "terminal_status": "not_available",
         "recommendation": "not_available",
         "export_outcome": "not_exported"
@@ -490,7 +490,7 @@
       "health": {
         "warnings": [],
         "diagnostic_counters": {
-          "episodes": 1,
+          "episodes": 2,
           "tool_results": 10,
           "diagnostic_probe_attempts": 1,
           "region_settlements": 1
@@ -570,7 +570,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-23T00:19:10+08:00",
+      "updated_at": "2026-10-23T00:20:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -759,7 +759,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-23T00:19:10+08:00",
+      "updated_at": "2026-10-23T00:20:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -948,7 +948,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-23T00:19:10+08:00",
+      "updated_at": "2026-10-23T00:20:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1137,7 +1137,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T16:18:45.488388+00:00",
-      "updated_at": "2026-10-23T00:19:10+08:00",
+      "updated_at": "2026-10-23T00:20:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1311,7 +1311,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-23T00:19:10+08:00",
+      "updated_at": "2026-10-23T00:20:13+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1429,7 +1429,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-23T00:19:10+08:00",
+      "updated_at": "2026-10-23T00:20:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -2129,7 +2129,7 @@
     "enabled": true,
     "interval_seconds": 60,
     "max_resumes_per_run": 2,
-    "updated_at": "2026-10-23T00:19:03+08:00",
+    "updated_at": "2026-10-23T00:20:03+08:00",
     "jobs": [
       {
         "id": "baseball_cap",
@@ -2188,5 +2188,5 @@
     "classification": "dependency",
     "outcome": "needs_attention"
   },
-  "signature": "b32accac9d9d1d5c76484f5310fd155a661e4b9693505b7c9d7e02faf23bc690"
+  "signature": "cd04f13b06663a8d1041ab5db151658068ca81e0cf4d4a6211854334bf3f556a"
 }
