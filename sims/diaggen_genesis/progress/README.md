@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-23T02:57:42+08:00（Asia/Taipei）
+更新：2026-10-23T02:58:30+08:00（Asia/Taipei）
 
 共 9 件：等待 1、執行中 2、完成匯出 6、失敗 0、取消 0。
 
@@ -168,6 +168,8 @@ Genesis 診斷 episode 數：2；結果：accept，待完成匯出。
 ![sneaker_ordered_mask_vis](media/sneaker_ordered_mask_vis.png)
 
 ![sneaker_segmentation_overlay](media/sneaker_segmentation_overlay.png)
+
+![sneaker_albedo](media/sneaker_albedo.png)
 
 ![sneaker_omnipart_top](media/sneaker_omnipart_top.png)
 

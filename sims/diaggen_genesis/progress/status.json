@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-23T02:57:42+08:00",
+  "updated_at": "2026-10-23T02:58:30+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-23T02:57:42+08:00",
+      "updated_at": "2026-10-23T02:58:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -222,7 +222,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T16:01:05.614594+00:00",
-      "updated_at": "2026-10-23T02:57:42+08:00",
+      "updated_at": "2026-10-23T02:58:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -411,7 +411,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T18:33:27.681672+00:00",
-      "updated_at": "2026-10-23T02:57:42+08:00",
+      "updated_at": "2026-10-23T02:58:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -539,6 +539,11 @@
           "sha256": "f61d25b8cc7e6b1ca159bdc37b362e173ffac1410199559e86886de1907de496"
         },
         {
+          "path": "media/sneaker_albedo.png",
+          "bytes": 541527,
+          "sha256": "fbc8833a062405412888117e7e8264bbab5e02cf812f08e23392609226854417"
+        },
+        {
           "path": "media/sneaker_omnipart_top.png",
           "bytes": 11255,
           "sha256": "8a1f9fbc024009e7df343b6a96464ac0e4acfe57d1938f46ee92d3545fcebcfa"
@@ -595,7 +600,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-23T02:57:42+08:00",
+      "updated_at": "2026-10-23T02:58:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -784,7 +789,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-23T02:57:42+08:00",
+      "updated_at": "2026-10-23T02:58:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -973,7 +978,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-23T02:57:42+08:00",
+      "updated_at": "2026-10-23T02:58:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1162,7 +1167,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-23T02:57:42+08:00",
+      "updated_at": "2026-10-23T02:58:30+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1280,7 +1285,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T17:03:25.448128+00:00",
-      "updated_at": "2026-10-23T02:57:42+08:00",
+      "updated_at": "2026-10-23T02:58:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1424,7 +1429,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-23T02:57:42+08:00",
+      "updated_at": "2026-10-23T02:58:30+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1768,6 +1773,11 @@
       "path": "media/sneaker_segmentation_overlay.png",
       "bytes": 194543,
       "sha256": "f61d25b8cc7e6b1ca159bdc37b362e173ffac1410199559e86886de1907de496"
+    },
+    {
+      "path": "media/sneaker_albedo.png",
+      "bytes": 541527,
+      "sha256": "fbc8833a062405412888117e7e8264bbab5e02cf812f08e23392609226854417"
     },
     {
       "path": "media/sneaker_omnipart_top.png",
@@ -2119,7 +2129,7 @@
     "enabled": true,
     "interval_seconds": 60,
     "max_resumes_per_run": 2,
-    "updated_at": "2026-10-23T02:57:03+08:00",
+    "updated_at": "2026-10-23T02:58:03+08:00",
     "jobs": [
       {
         "id": "baseball_cap",
@@ -2178,5 +2188,5 @@
     "classification": "native_business_halt",
     "outcome": "needs_attention"
   },
-  "signature": "cff28e6d60366631b9a336b8ab7c4e826c3782870e71c5f3315b19c3d3d910bd"
+  "signature": "8fc539ed2ff19457519a91bd08d0c45f715fdec9034e2143379d930105b72d6f"
 }
