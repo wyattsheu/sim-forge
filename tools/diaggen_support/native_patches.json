@@ -1,0 +1,12 @@
+{
+  "schema_version": "diaggen-native-patch-series-v1",
+  "patches": [
+    "strict_material_coverage",
+    "diagnostic_history_settlement",
+    "diagnostic_retry_reset",
+    "segmentation_raw_prediction_guard",
+    "anchor_preview_recovery",
+    "anchor_preview_index",
+    "snapshot_export_inputs"
+  ]
+}

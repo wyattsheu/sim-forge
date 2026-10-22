@@ -1,0 +1,23 @@
+{
+  "schema_version": "diaggen-queue-recovery-modes-patch-v1",
+  "depends_on": "resume_queue",
+  "files": {
+    "sims/diaggen_genesis/queue/batch_control.py": {
+      "before_sha256": "8ce4d37e3192f6d39444269f27149e27c98a0156421e521966bfd4de37782674",
+      "before_md5": "6be7c6159f9dac55dd852d69b60331b4",
+      "after_sha256": "e3dcd021bcb807aa67556d9ecec406467f3a058e1fb88cda1da03339449f0db5"
+    },
+    "sims/diaggen_genesis/queue/run_one.sh": {
+      "before_sha256": "1b969183e35e94acaf5d5ca2acab488642961936444848b36f06446d13106c71",
+      "before_md5": "89b8c4f6fec1ceef80035ba80ba4e8fe",
+      "after_sha256": "4dce13cf532e45fa4b3a31d080b0f768defde7fbdc575d55b0737890a5c873a3"
+    },
+    "tools/diaggen_support/validate_completed_export.py": {
+      "before_sha256": "87f8422961a0276f3ae357c48c4d97ced482da194c77b924f8c895c1d7f074e5",
+      "before_md5": "f036327c9afa60a663318a25926715df",
+      "after_sha256": "4bf42747b2ee39c7138cc35bdc3ccecf1c2cb84d42e2a37469369592d099f900"
+    }
+  },
+  "patch_sha256": "9759e20b59ceedaec2e886d487e9ad486a078b465ca563cc3d97213942b61ad5",
+  "policy": "Queue-only recovery admission and shell initializer selection. Never mutates source native run state. Apply only while owned workers are stopped."
+}

@@ -1,0 +1,11 @@
+{
+  "schema_version": "diaggen-verified-native-patch-v1",
+  "native_commit": "3d2d3779613b9253109f63e1ff345b11c9097b70",
+  "target": ".agents/skills/run-diaggen-pipeline/genesis-diagnostics/SKILL.md",
+  "before_sha256": "d9ec82c160a003f6fb0894e5122c22440e197213d5ced6736e9f51066b84a9c6",
+  "before_md5": "24492372bdb760b474fa3c6fd6f20b59",
+  "after_sha256": "0b2347d5b3875cf79e67ab798b3e68b5ab20c9a7a6da117db5cdfaa707580b0f",
+  "patch_sha256": "891e257f2f60b2dc4579c668fd2ae72180ae7cb21928e0468f0a27b8242c4d30",
+  "contract": "Consume the compile and current preview returned by successful target revision without rebuilding the original box. Document existing original-base relative edits. Preserve credentials, semantic reflection gates, all edit limits, three setup trials and strict accept.",
+  "application_state": "requires_quiescent_runtime"
+}

@@ -9,9 +9,26 @@
 - 8 張官方 demo 圖片擷取自影片的輸入照片區，解析度受影片限制，未放大；另外 1 張水豚玩偶照片由使用者提供。總覽圖片只包含 8 張官方擷取圖。
 - 模型權重、第三方環境與完整工作檔保留在伺服器。此目錄的程式負責等待、整理和進度發布；實際 pipeline 由原專案的 Codex skill 執行。
 
+## 2026-10-22：修復後重新執行
+
+已安裝可重現補丁、恢復 tmux 佇列，八件未完成工作均已重新排程。12:31 查核為 **電捲棒 1 件完成、水豚與 USB Hub 2 件執行中、其餘 6 件排隊**。這是啟動狀態，新的完整資產成功數仍以 [即時進度](progress/) 為準。
+
+| 問題 | 已驗證修正與安排 |
+| --- | --- |
+| 球鞋／樹懶重試無法 attach | 把逐次量測與所屬執行一起歸檔並清空，保留 immutable context；原 fresh／ownership／計畫不可改寫驗證維持不變。兩個真實失敗快照都已通過修復後 successor 檢查，沿原 run、原 GPU 續跑。 |
+| USB Hub／醬料盒固定點反覆失敗 | 修正 SKILL 中「修改後重新 compile」會丟掉修改的指令；直接使用 revise 回傳的新 compile 與預覽。說明相對原始框的編輯語意與幾何 hint 限制，保留三次試驗上限及語意反思。由舊網格建立新的診斷 snapshot run，舊 halt 不變。 |
+| Snapshot 最後匯出可能缺檔 | 官方 initializer 更換 output tag 時漏複製四張材質檢查圖；補上 byte-identical 複製與來源雜湊。兩個真實 public initializer 測試的必需輸入、六項輔助檔、路徑與 lineage 驗證皆通過。 |
+| 水豚 spconv int32 assertion | 新 run 使用[官方 OmniPart app](https://github.com/HKU-MMLab/OmniPart/blob/main/app.py)的 `SPCONV_ALGO=native`，保留 48 GiB 門檻與原模型品質。小型 GPU 解析解與 backend 對照通過，完整模型是否避開大張量錯誤仍由本輪驗證。 |
+| 料理夾空 SAM3 預測被誤收 | 原生 wrapper 現在檢查實際 NPZ 遮罩、框、分數及保留下來的 SAM3 證據；補洞不能單獨當分割成功。失敗可在既有嘗試預算內重寫概念提示，再用新 run 執行。 |
+| 龍與棒球帽清理註冊 | 龍續用既有兩張圖與原 imagegen 呼叫證據，由新 child 重做完整視覺驗證後註冊，禁止第三張；棒球帽用新 run，遇到第一張通過即停止生成。 |
+
+啟動前的必要檢查共 **80 項通過**：重跑主機 21 項及 Genesis 25 項，沿用未變更的網格／OmniPart kernel 25 項，再加測試收集、真實電捲棒匯出、四件原生恢復契約及小型 spconv Native 對照。其內部實際執行 **256 個 CPU／回歸測試，0 fail、0 error、0 skip**，並比對執行前後來源雜湊；80 與 256 是不同層級，不能相加。未宣稱完整水豚峰值顯存或新診斷結果已通過。
+
+`tools/diaggen_support/native_patches.json` 是七份原生補丁的安裝順序。`bash tools/setup_diaggen_runtime_support.sh` 先在暫存副本逆序還原及順序重放每條補丁鏈，核對所有中間 SHA256，全部通過才以原子寫入安裝；未知來源、竄改與 fuzz 都會拒絕。只在 DiagGen 工作停止時執行。八件舊失敗、日誌與歸檔保留在 history；Python 僅做確定性工具及外部工作記帳，pipeline 仍由 GPT-6 Luna Max Codex 與同模型子代理執行。
+
 ## 2026-10-22：夜間續跑結果
 
-截至中午查核，**1 件完成、8 件失敗、0 件執行中、0 件排隊**。佇列於 02:39 結束；GitHub 進度發布仍在背景執行。電捲棒仍是唯一完整通過診斷、貼圖和匯出的資產。
+12:06 查核時，**1 件完成、8 件失敗、0 件執行中、0 件排隊**。前一輪佇列於 02:39 結束；GitHub 進度發布仍在背景執行。當時電捲棒是唯一完整通過診斷、貼圖和匯出的資產。
 
 | 夜間續跑 | 本輪實際進展與停止原因 |
 | --- | --- |

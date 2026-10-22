@@ -1,0 +1,73 @@
+--- a/hag4r/agentic/runtime_tools/stage_tools.py
++++ b/hag4r/agentic/runtime_tools/stage_tools.py
+@@ -695,6 +695,44 @@
+     )
+     save_state(state, run_root)
+     return result
++def _segmentation_evidence_error(manifest: dict[str, Any], manifest_path: Path) -> str:
++    """Require actual SAM3 predictions and retained evidence; fill alone is not segmentation."""
++    import numpy as np
++
++    raw_value = manifest.get("sam3_raw_npz_path")
++    if not isinstance(raw_value, str) or not raw_value.strip():
++        return "segmentation manifest is missing the raw SAM3 prediction path"
++    raw_path = Path(raw_value).expanduser().resolve()
++    if not raw_path.is_relative_to(manifest_path.parent.resolve()) or not raw_path.is_file():
++        return "raw SAM3 predictions are missing or outside the segmentation bundle"
++    try:
++        with np.load(raw_path, allow_pickle=False) as raw:
++            masks, boxes, scores = raw["masks"], raw["boxes_xyxy"], raw["scores"]
++        if masks.ndim not in (3, 4) or (masks.ndim == 4 and masks.shape[1] != 1):
++            return "raw SAM3 masks have invalid dimensions"
++        count = int(masks.shape[0])
++        if count <= 0:
++            return "SAM3 returned zero raw masks; foreground-fill fallback is not segmentation evidence"
++        if boxes.shape != (count, 4) or scores.shape != (count,):
++            return "raw SAM3 masks, boxes, and scores have inconsistent shapes"
++        if masks.dtype != np.bool_ or not np.any(masks) or not np.isfinite(boxes).all() or not np.isfinite(scores).all():
++            return "raw SAM3 predictions are empty or invalid"
++        if manifest.get("sam3_pre_postprocess_mask_count") != count or manifest.get("sam3_pre_postprocess_zero_masks") is not False:
++            return "SAM3 raw prediction count disagrees with the segmentation manifest"
++        parts = manifest.get("parts")
++        if not isinstance(parts, list) or not parts:
++            return "segmentation manifest is missing processed part evidence"
++        evidence_count = sum(1 for part in parts if isinstance(part, dict) and part.get("is_segmentation_evidence") is True)
++        summary = manifest.get("postprocess_summary", {})
++        if not isinstance(summary, dict) or summary.get("final_segmentation_evidence_part_count") != evidence_count or evidence_count <= 0:
++            return "no SAM3-derived part survived postprocessing; foreground-fill fallback alone is not evidence"
++        if manifest.get("final_part_count", manifest.get("part_count")) != len(parts):
++            return "processed part count disagrees with the segmentation manifest"
++    except (OSError, ValueError, KeyError, TypeError) as exc:
++        return f"raw SAM3 prediction evidence is invalid: {exc}"
++    return ""
++
++
+ def run_sam3_omnipart_2d_segmentation_stage(
+     run_root: str,
+     sam3_prompt: str,
+@@ -737,7 +775,8 @@
+         }
+         metrics = dict(result.metrics)
+         metrics.update(attempt)
+-        if final_part_count <= SEGMENTATION_MAX_FINAL_PARTS:
++        evidence_error = _segmentation_evidence_error(manifest, manifest_path)
++        if 1 <= final_part_count <= SEGMENTATION_MAX_FINAL_PARTS and not evidence_error:
+             _record_segmentation_attempt(
+                 run_root,
+                 attempt={**attempt, "status": "accepted"},
+@@ -755,10 +794,11 @@
+             )
+         retryable = attempt_index < int(max_attempts)
+         status = "retry_required" if retryable else "max_attempts_exhausted"
+-        message = (
+-            f"segmentation final_part_count={final_part_count} exceeds cap "
+-            f"{SEGMENTATION_MAX_FINAL_PARTS} on attempt {attempt_index}/{int(max_attempts)}"
+-        )
++        failure_reason = evidence_error or (
++            f"segmentation final_part_count={final_part_count} is outside the supported range "
++            f"1..{SEGMENTATION_MAX_FINAL_PARTS}"
++        )
++        message = f"{failure_reason} on attempt {attempt_index}/{int(max_attempts)}"
+         _record_segmentation_attempt(
+             run_root,
+             attempt={**attempt, "status": status},

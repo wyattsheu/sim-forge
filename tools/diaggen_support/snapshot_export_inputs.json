@@ -1,0 +1,11 @@
+{
+  "schema_version": "diaggen-verified-native-patch-v1",
+  "native_commit": "3d2d3779613b9253109f63e1ff345b11c9097b70",
+  "target": "hag4r/agentic/runtime_state.py",
+  "before_sha256": "158ebba20724198d12eafc8e5beb1e74c954c843159bbb2fe6827b5775e25077",
+  "before_md5": "57f68d948538855b36866543010ecd3a",
+  "after_sha256": "22a687366647968f7ed7de58f00b21a4055d98e8cbcf76c52b48cd58d7346e40",
+  "patch_sha256": "613d430488f1e3186cc228a13f5b7c20f2ca5744bfd2ac338611c45caef584eb",
+  "contract": "For a new reroute-and-export diagnostics snapshot, require the four existing source parameter renders, copy each byte-identically under the new output tag, and retain source/destination hashes in external lineage. Preserve all mesh/material inputs and prior diagnostic terminals.",
+  "application_state": "requires_quiescent_runtime"
+}

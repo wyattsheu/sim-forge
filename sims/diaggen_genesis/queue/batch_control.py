@@ -121,6 +121,21 @@ def parse_gpu_csv(value):
     return sorted(records, key=lambda record: (-record["free_mib"], record["index"]))
 
 
+def native_recovery_preflight(root, *, state_path=None, snapshot_dir=None):
+    """Use native dependencies in their own process; all checks are read only."""
+    command = [str(root / ".conda/hag4r/bin/python"),
+               str(root.parent / "diaggen_support/check_diagnostic_retry.py"),
+               "--diaggen-root", str(root)]
+    command += ["--state-json", str(state_path)] if state_path is not None else ["--snapshot-dir", str(snapshot_dir)]
+    result = subprocess.run(command, capture_output=True, text=True, timeout=60)
+    if result.returncode:
+        raise ValueError("Native recovery preflight failed: " + result.stderr.strip()[:1200])
+    report = json.loads(result.stdout)
+    if not isinstance(report, dict) or report.get("valid") is not True:
+        raise ValueError("Native recovery preflight did not establish validity")
+    return report
+
+
 class Queue:
     def __init__(self, base=None, *, gpu_query=None):
         self.base = Path(base).resolve() if base is not None else Path(__file__).resolve().parent.parent
@@ -164,13 +179,18 @@ class Queue:
         if "scheduling_note" in job and (not isinstance(job["scheduling_note"], str) or not REASON.fullmatch(job["scheduling_note"])):
             raise ValueError("Scheduling note must be a short lowercase enum")
 
-        if "execution_mode" in job and job["execution_mode"] not in ("fresh", "resume"):
+        if "execution_mode" in job and job["execution_mode"] not in ("fresh", "resume", "diagnostics_snapshot"):
             raise ValueError("Invalid job execution mode")
         if job.get("execution_mode") == "resume":
             validate_identifier(job.get("resume_id"))
             validate_gpu_uuid(job.get("resume_gpu_uuid"))
             if not isinstance(job.get("resume_state_sha256"), str) or not re.fullmatch(r"[a-f0-9]{64}", job["resume_state_sha256"]):
                 raise ValueError("Invalid resume state digest")
+        if job.get("execution_mode") == "diagnostics_snapshot":
+            validate_identifier(job.get("snapshot_source_run_id"))
+            for key in ("snapshot_state_sha256", "snapshot_source_state_sha256"):
+                if not isinstance(job.get(key), str) or not re.fullmatch(r"[a-f0-9]{64}", job[key]):
+                    raise ValueError("Invalid diagnostic snapshot digest")
 
     def _validate_jobs(self, jobs, *, dynamic=False):
         if not isinstance(jobs, list):
@@ -327,7 +347,7 @@ class Queue:
             self._save(batch)
 
     def info(self, job_id, field):
-        if field not in ("input", "run_id", "gpu_uuid", "status", "minimum_free_mib", "execution_mode", "resume_id", "resume_frozen_input"):
+        if field not in ("input", "run_id", "gpu_uuid", "status", "minimum_free_mib", "execution_mode", "resume_id", "resume_frozen_input", "diagnostics_snapshot_dir", "diagnostics_snapshot_input"):
             raise ValueError("Unsupported job info field")
         with self._locked():
             batch = self._load()
@@ -382,7 +402,7 @@ class Queue:
                 job["reason"] = reason
             self._save(batch)
 
-    def retry(self, job_id, new_run_id, reason):
+    def retry(self, job_id, new_run_id, reason, *, diagnostics_snapshot=False):
         """Archive failed launcher logs and explicitly queue a fresh native run."""
         validate_identifier(new_run_id)
         if not isinstance(reason, str) or not REASON.fullmatch(reason):
@@ -394,6 +414,7 @@ class Queue:
             job = self._job(batch, job_id)
             if job["status"] != "failed":
                 raise ValueError("Only a failed job can be retried")
+            snapshot_details = self._snapshot_details(job) if diagnostics_snapshot else None
             previous_run_id = job["run_id"]
             used_run_ids = {entry["run_id"] for entry in batch["jobs"]}
             for entry in batch["jobs"]:
@@ -403,6 +424,8 @@ class Queue:
                 used_run_ids.update(item.get("run_id") for item in history)
             if new_run_id in used_run_ids:
                 raise ValueError("Retry requires a new unique run identifier")
+            if (self.base.parents[1] / "tools/diaggen/outputs/agentic_asset_refinement" / new_run_id).exists():
+                raise ValueError("Retry requires an unused native run root")
             runner_pid = job.get("runner_pid")
             if runner_pid is not None:
                 if type(runner_pid) is not int or runner_pid <= 0:
@@ -442,6 +465,11 @@ class Queue:
                        started_at=None, finished_at=None, attempts_history=history, execution_mode="fresh")
             for field in ("resume_id", "resume_gpu_uuid", "resume_state_sha256", "resume_frozen_input", "resume_reason"):
                 job.pop(field, None)
+            for field in ("diagnostics_snapshot_dir", "diagnostics_snapshot_input", "snapshot_state_sha256", "snapshot_source_state_sha256", "snapshot_source_run_id"):
+                job.pop(field, None)
+            if snapshot_details is not None:
+                job.update(execution_mode="diagnostics_snapshot", **snapshot_details)
+                mapping.update(snapshot_details)
             job.pop("reason", None)
             # All queue operations honor batch.lock, so this rename cannot collide
             # with another retry. Native output and its completed archive stay put.
@@ -455,6 +483,62 @@ class Queue:
             # The batch file is the commit point; this derived view can be rebuilt.
             atomic_json(self.directory / "status.json", self._summary(batch))
             return mapping
+
+    def _snapshot_details(self, job, *, check_digest=False):
+        root = self.base.parents[1] / "tools" / "diaggen"
+        source_id = job["snapshot_source_run_id"] if check_digest else job["run_id"]
+        source_root = root / "outputs/agentic_asset_refinement" / source_id
+        source_state = source_root / "state.json"
+        if source_root.is_symlink() or source_state.is_symlink() or not source_state.is_file():
+            raise ValueError("Snapshot recovery needs a safe failed source state")
+        raw = source_state.read_bytes()
+        state = json.loads(raw)
+        if (state.get("status") != "failed" or state.get("run_root") != str(source_root)
+                or state.get("diagnostics", {}).get("terminal", {}).get("business_outcome", {}).get("status") != "business_halt"):
+            raise ValueError("Snapshot recovery requires a preserved diagnostic business halt")
+        ownership = [state]
+        ownership_path = Path(str(state.get("paths", {}).get("sim_diagnostics_dir", ""))) / "runtime_ownership.json"
+        if ownership_path.is_file():
+            if ownership_path.is_symlink() or not ownership_path.resolve().is_relative_to(source_root.resolve()):
+                raise ValueError("Snapshot diagnostic ownership record is unsafe")
+            ownership.append(json.loads(ownership_path.read_text()))
+        for ledger in ownership:
+            for key, field, closed in (
+                ("diagnostic_runtime_attachments", "status", ("completed", "failed", "expired", "superseded", "halted")),
+                ("diagnostic_runtime_sessions", "lifecycle_state", ("closed", "closed_failed")),
+            ):
+                records = ledger.get(key, [])
+                if not isinstance(records, list) or any(not isinstance(record, dict) or record.get(field) not in closed for record in records):
+                    raise ValueError("Snapshot source diagnostic ownership is still active or malformed")
+        revision = state.get("active_revision")
+        if not isinstance(revision, str) or not IDENTIFIER.fullmatch(revision):
+            raise ValueError("Snapshot source has no valid active revision")
+        snapshot = source_root / "revisions" / revision
+        if snapshot.is_symlink() or not snapshot.is_dir() or not snapshot.resolve().is_relative_to(source_root.resolve()):
+            raise ValueError("Snapshot revision directory is missing or unsafe")
+        frozen = Path(str(state.get("inputs", {}).get("source_image", "")))
+        if (not frozen.is_absolute() or frozen.is_symlink() or not frozen.is_file()
+                or not frozen.resolve().is_relative_to((root / "outputs/inputs").resolve())
+                or hashlib.sha256(frozen.read_bytes()).hexdigest() != job.get("input_sha256")):
+            raise ValueError("Snapshot source frozen input is missing or changed")
+        report = native_recovery_preflight(root, snapshot_dir=snapshot)
+        details = {"snapshot_source_run_id": source_id, "diagnostics_snapshot_dir": str(snapshot),
+                   "diagnostics_snapshot_input": str(frozen),
+                   "snapshot_source_state_sha256": hashlib.sha256(raw).hexdigest(),
+                   "snapshot_state_sha256": report["snapshot_state_sha256"]}
+        if check_digest and any(job.get(key) != value for key, value in details.items()):
+            raise ValueError("Diagnostic snapshot changed after admission")
+        return details
+
+    def diagnostics_snapshot(self, job_id, new_run_id, reason):
+        return self.retry(job_id, new_run_id, reason, diagnostics_snapshot=True)
+
+    def validate_snapshot(self, job_id):
+        with self._locked():
+            job = self._job(self._load(), job_id)
+            if job.get("execution_mode") != "diagnostics_snapshot" or job.get("status") not in ("queued", "running"):
+                raise ValueError("Job is not an admitted diagnostics snapshot recovery")
+            return self._snapshot_details(job, check_digest=True)
 
 
     @staticmethod
@@ -531,12 +615,27 @@ class Queue:
                 if stage.get("status") == "pending_retry" and (unfinished or name != "genesis_live_diagnostic_loop"):
                     raise ValueError("Only the next diagnostic stage may be pending_retry")
                 unfinished.append(name)
-        if (not completed or completed[0] != "image_cleanup" or not unfinished
+        cleanup_candidates = []
+        if not completed and unfinished and unfinished[0] == "image_cleanup":
+            # A stopped cleanup child may leave two bounded, unregistered images.
+            # Their visual validation must be redone by a fresh owning child.
+            revision = state.get("active_revision")
+            if not isinstance(revision, str) or not IDENTIFIER.fullmatch(revision):
+                raise ValueError("Pending cleanup recovery needs a valid revision")
+            for index in (1, 2):
+                candidate = run_root / "revisions" / revision / "image_cleanup" / f"attempt_{index:02d}.png"
+                if (candidate.is_symlink() or not candidate.is_file() or candidate.stat().st_size <= 0
+                        or not candidate.resolve().is_relative_to(run_root.resolve())):
+                    raise ValueError("Pending cleanup recovery requires two existing bounded candidates")
+                cleanup_candidates.append(str(candidate))
+        if ((completed and completed[0] != "image_cleanup") or (not completed and not cleanup_candidates) or not unfinished
                 or state.get("completed_global_stage_sequence") != completed):
             raise ValueError("Resume requires an intact successful cleanup prefix and unfinished stages")
         runtime = state.get("stage_runtime", {})
         if not isinstance(runtime, dict) or any(isinstance(record, dict) and record.get("terminal", {}).get("status") == "halted" for record in runtime.values()):
             raise ValueError("Resume cannot erase a halted stage terminal")
+        if cleanup_candidates and any(isinstance(record, dict) and record.get("terminal") is not None for record in runtime.values()):
+            raise ValueError("Pending cleanup recovery must have no existing stage terminal")
         if "sam3_omnipart_2d_segmentation" in completed:
             paths = state.get("paths", {})
             for key, count_key in (("segmentation_manifest_path", "sam3_pre_postprocess_mask_count"), ("sam3_raw_metadata_path", "mask_count")):
@@ -573,10 +672,13 @@ class Queue:
                 records = ledger.get(key, [])
                 if not isinstance(records, list) or any(not isinstance(record, dict) or record.get(field) not in closed for record in records):
                     raise ValueError("Diagnostic ownership is still active or malformed")
+        if stages[unfinished[0]].get("status") == "pending_retry":
+            native_recovery_preflight(root, state_path=state_path)
         return {"run_root": str(run_root), "run_id": job["run_id"], "gpu_uuid": gpu,
                 "frozen_input": str(frozen), "input_sha256": job["input_sha256"],
                 "state_sha256": digest, "completed_stage_prefix": completed,
-                "diagnostic_operational_retry": stages[unfinished[0]].get("status") == "pending_retry"}
+                "diagnostic_operational_retry": stages[unfinished[0]].get("status") == "pending_retry",
+                "existing_cleanup_candidates": cleanup_candidates}
 
     def validate_resume(self, job_id):
         with self._locked():
@@ -613,6 +715,7 @@ class Queue:
                 raise ValueError("Original input provenance record is missing")
             mapping = {"job_id": job_id, "run_id": job["run_id"], "resume_id": resume_id, "resume_reason": reason,
                        "queue_history_directory": str(destination.relative_to(self.directory)), **details}
+            mapping["prior_child_last_message"] = str(destination / "last_message.txt")
             previous = dict(job)
             history = list(previous.pop("attempts_history", []))
             previous.update(requeued_at=now(), resume_reason=reason, queue_history_directory=mapping["queue_history_directory"])
@@ -701,6 +804,10 @@ def main(argv=None):
         print(json.dumps(queue.resume(*rest), ensure_ascii=False))
     elif command == "validate-resume" and len(rest) == 1:
         print(json.dumps(queue.validate_resume(*rest), ensure_ascii=False))
+    elif command == "diagnostics-snapshot" and len(rest) == 3:
+        print(json.dumps(queue.diagnostics_snapshot(*rest), ensure_ascii=False))
+    elif command == "validate-snapshot" and len(rest) == 1:
+        print(json.dumps(queue.validate_snapshot(*rest), ensure_ascii=False))
     elif command == "summary" and not rest:
         print(json.dumps(queue.summary(), ensure_ascii=False))
     elif command == "done" and not rest:

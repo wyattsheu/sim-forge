@@ -53,7 +53,7 @@ batch bind "$JOB_ID" "$$"
 DIAGGEN_QUEUE_RUN_ID="$(batch info "$JOB_ID" run_id)"
 export DIAGGEN_QUEUE_RUN_ID
 EXECUTION_MODE="$(batch info "$JOB_ID" execution_mode)"
-[[ "$EXECUTION_MODE" == fresh || "$EXECUTION_MODE" == resume ]] || exit 2
+[[ "$EXECUTION_MODE" == fresh || "$EXECUTION_MODE" == resume || "$EXECUTION_MODE" == diagnostics_snapshot ]] || exit 2
 if ((REQUEST_RESUME)) && [[ "$EXECUTION_MODE" != resume ]]; then
     printf '%s\n' "--resume requires Queue.resume admission metadata" >&2
     exit 2
@@ -63,6 +63,10 @@ CUDA_VISIBLE_DEVICES="$(batch info "$JOB_ID" gpu_uuid)"
 export CUDA_VISIBLE_DEVICES
 DIAGGEN_JOB_MINIMUM_FREE_MIB="$(batch info "$JOB_ID" minimum_free_mib)"
 export DIAGGEN_JOB_MINIMUM_FREE_MIB
+if [[ "$JOB_ID" == capybara_plush_toy ]]; then
+    # Official OmniPart app backend; preserves model, precision and resolution.
+    export SPCONV_ALGO=native
+fi
 SOURCE_IMAGE="$(batch info "$JOB_ID" input)"
 [[ "$SOURCE_IMAGE" = /* ]] || SOURCE_IMAGE="$BASE/$SOURCE_IMAGE"
 export DIAGGEN_JOB_QUEUE_DIR="$ROOT_QUEUE/jobs/$JOB_ID"
@@ -82,6 +86,9 @@ elif [[ -e "$DIAGGEN_JOB_QUEUE_DIR/STARTED" || -e "$DIAGGEN_JOB_QUEUE_DIR/RESUME
     state failed "Refusing to overwrite an existing run"
     finish_job failed duplicate_run
     exit 0
+fi
+if [[ "$EXECUTION_MODE" == diagnostics_snapshot ]]; then
+    batch validate-snapshot "$JOB_ID" > "$DIAGGEN_JOB_QUEUE_DIR/snapshot_validation.json"
 fi
 if ! "$PYTHON" "$BASE/preflight/readiness.py" verify --certificate "$ROOT_QUEUE/runtime_preflight.json" \
     > "$DIAGGEN_JOB_QUEUE_DIR/runtime_preflight.json" 2> "$DIAGGEN_JOB_QUEUE_DIR/runtime_preflight.stderr.log"; then
@@ -143,6 +150,18 @@ if [[ "$EXECUTION_MODE" == resume ]]; then
     # rerun the initializer, reopen terminals, or recreate successful stages.
     FROZEN_INPUT="$(batch info "$JOB_ID" resume_frozen_input)"
     batch validate-resume "$JOB_ID" > "$DIAGGEN_JOB_QUEUE_DIR/resume_validation.json"
+elif [[ "$EXECUTION_MODE" == diagnostics_snapshot ]]; then
+    batch validate-snapshot "$JOB_ID" > "$DIAGGEN_JOB_QUEUE_DIR/snapshot_validation.json"
+    SNAPSHOT_DIR="$(batch info "$JOB_ID" diagnostics_snapshot_dir)"
+    FROZEN_INPUT="$(batch info "$JOB_ID" diagnostics_snapshot_input)"
+    printf '%s\n' "$FROZEN_INPUT" > "$DIAGGEN_JOB_QUEUE_DIR/selected_input.txt"
+    "$PYTHON" -m hag4r.agentic.run_diaggen_pipeline \
+        --diagnostics_revision_snapshot_dir "$SNAPSHOT_DIR" \
+        --diagnostics-reroute-and-export --require-new-run-root \
+        --run_id "$DIAGGEN_QUEUE_RUN_ID" --output_tag "$DIAGGEN_QUEUE_RUN_ID" \
+        --run_root outputs/agentic_asset_refinement \
+        --config configs/config_genesis_diagnostics_enabled.yaml \
+        > "$DIAGGEN_JOB_QUEUE_DIR/initializer.json"
 else
     mkdir -p outputs/inputs
     FROZEN_INPUT="$DIAGGEN_ROOT/outputs/inputs/${DIAGGEN_QUEUE_RUN_ID}.${SOURCE_IMAGE##*.}"
@@ -161,7 +180,7 @@ Complete this one user-authorized DiagGen asset-generation run in native Genesis
 Read and use .agents/skills/run-diaggen-pipeline/SKILL.md; the initialized run is $RUN_ROOT.
 Execution mode is $EXECUTION_MODE. Read the durable state before selecting any stage. Preserve
 successful upstream stages and their terminal records; never initialize another run, repeat
-image cleanup, or regenerate upstream artifacts for a resume. A diagnostic operational retry
+successful image cleanup, or regenerate upstream artifacts for a resume. A diagnostic operational retry
 always needs a freshly spawned diagnostic child and fresh agent_invocation_id; it must attach
 through MCP first and never reuse any prior token, attachment, session handle, or live episode.
 You are the Codex orchestrator. Read state.json and delegate each pending stage to a child reading
@@ -186,6 +205,16 @@ a guard path. Wait on the bound GPU when memory is insufficient; never switch GP
 output quality. The guard is an observation, not a memory reservation or OOM guarantee.
 For fresh image cleanup, stop after a passing Attempt 1; do not generate Attempt 2 after it
 passes. For a resume with successful cleanup, skip all imagegen and cleanup registration.
+If resume_validation.json reports existing_cleanup_candidates, cleanup is still pending.
+Read $DIAGGEN_JOB_QUEUE_DIR/resume.json and its queue_history_directory and
+prior_child_last_message; inspect the archived codex_events.jsonl and last_message.txt
+as historical evidence, then inspect both existing attempt_01.png and attempt_02.png.
+Delegate the owning image-cleanup child to perform the complete current visual validation
+against the frozen source. Register the validated existing files through the stage CLI.
+Do not call imagegen a third time, invent prior validation, or declare success from old prose.
+For diagnostics_snapshot mode the public initializer has copied a completed upstream
+revision into a new independent run. Preserve its successful stage prefix; diagnose with
+a fresh child and use native recommendation transitions, including lawful repair reroutes.
 Genesis diagnostics stays exclusively on its authenticated MCP and child-owned lifecycle;
 never use the stage bridge for diagnostic attach, probes, finalization, cleanup, or decisions.
 After successful diagnostic transition, texture, and final export, the parent must run:

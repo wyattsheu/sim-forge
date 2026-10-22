@@ -1,0 +1,12 @@
+{
+  "schema_version": "diaggen-verified-native-patch-v1",
+  "target": "hag4r/agentic/runtime_tools/stage_tools.py",
+  "before_sha256": "f51c1ed4b9e47102c9bc77ea908fc259c71ecd39f001e15a30dcced76e4e77ad",
+  "after_sha256": "e5fa1424e2bbb42c78c0b5e03d56072fe36584b45744d1375e29208676154922",
+  "patch_sha256": "1ba034a26ad930c83787e0a446d3cfb1a4034daab3b92666126aef35593ebaf8",
+  "reason": "Reject fallback-only SAM3 success and allow bounded agent-authored retry before submission. No production ledger is changed.",
+  "upstream_reference": "https://github.com/diaggen/diaggen/blob/master/hag4r/tools/segmentation.py",
+  "regression_test": "sims/diaggen_genesis/tests/test_segmentation_evidence.py",
+  "native_commit": "3d2d3779613b9253109f63e1ff345b11c9097b70",
+  "contract": "Require nonempty valid raw SAM3 predictions and at least one retained SAM3-derived part. Foreground fill may supplement real masks; it cannot independently pass. Retry remains bounded by the existing stage budget."
+}

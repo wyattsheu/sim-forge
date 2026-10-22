@@ -15,7 +15,9 @@ fi
 python3 - "$TOOLS_DIR" <<'PY'
 import hashlib
 import json
+import os
 from pathlib import Path
+import re
 import subprocess
 import sys
 import tempfile
@@ -24,8 +26,14 @@ tools = Path(sys.argv[1])
 support = tools / "diaggen_support"
 native = tools / "diaggen"
 digest = lambda path: hashlib.sha256(path.read_bytes()).hexdigest()
-plans = []
-for name in ("strict_material_coverage", "diagnostic_history_settlement"):
+series = json.loads((support / "native_patches.json").read_text())
+names = series.get("patches")
+if (series.get("schema_version") != "diaggen-native-patch-series-v1"
+        or not isinstance(names, list) or not names or len(names) != len(set(names))
+        or any(not isinstance(name, str) or not re.fullmatch(r"[a-z][a-z0-9_]+", name) for name in names)):
+    raise SystemExit("Invalid verified native patch series")
+chains = {}
+for name in names:
     manifest = json.loads((support / f"{name}.json").read_text())
     patch = support / f"{name}.patch"
     target = native / manifest["target"]
@@ -35,32 +43,68 @@ for name in ("strict_material_coverage", "diagnostic_history_settlement"):
         raise SystemExit(f"Verified patch target escapes the native source tree: {name}")
     if digest(patch) != manifest["patch_sha256"]:
         raise SystemExit(f"Verified patch hash differs: {name}")
-    current = digest(target)
-    if current not in {manifest["before_sha256"], manifest["after_sha256"]}:
-        raise SystemExit(f"Native source changed; review upstream before applying patch: {name}")
-    args = ["patch", "--batch", "--forward", "--fuzz=0", "-p1", "--input", str(patch)]
-    if current == manifest["before_sha256"]:
-        # Validate every candidate before changing either native source. This
-        # also verifies the declared after-hash without trusting patch output.
-        with tempfile.TemporaryDirectory(prefix="diaggen-support-check-") as folder:
-            candidate = Path(folder) / manifest["target"]
-            candidate.parent.mkdir(parents=True)
-            candidate.write_bytes(target.read_bytes())
-            subprocess.run(args + ["--dry-run"], cwd=folder, check=True)
-            subprocess.run(args, cwd=folder, check=True)
-            if digest(candidate) != manifest["after_sha256"]:
-                raise SystemExit(f"Native patch candidate verification failed: {name}")
-    plans.append((name, manifest, patch, target, current, args))
+    chain = chains.setdefault(manifest["target"], [])
+    if chain and chain[-1][1]["after_sha256"] != manifest["before_sha256"]:
+        raise SystemExit(f"Verified patch chain is discontinuous: {name}")
+    chain.append((name, manifest, patch))
 
-for name, manifest, patch, target, current, args in plans:
-    if digest(patch) != manifest["patch_sha256"] or digest(target) != current:
-        raise SystemExit(f"Native source or patch changed during verification: {name}")
-    if current == manifest["before_sha256"]:
-        subprocess.run(args + ["--dry-run"], cwd=native, check=True)
-        subprocess.run(args, cwd=native, check=True)
-    if digest(target) != manifest["after_sha256"]:
-        raise SystemExit(f"Native patch verification failed: {name}")
-    print(f"Verified native patch: {name}")
+plans = []
+# Reconstruct each known source from its declared pristine baseline, then
+# replay the complete chain in a disposable copy. No native file changes
+# until every source, every intermediate hash, and every patch is verified.
+with tempfile.TemporaryDirectory(prefix="diaggen-support-check-") as folder:
+    for relative, chain in chains.items():
+        target = native / relative
+        initial = target.read_bytes()
+        current = digest(target)
+        known = [chain[0][1]["before_sha256"], *[item[1]["after_sha256"] for item in chain]]
+        if current not in known or len(known) != len(set(known)):
+            raise SystemExit(f"Native source changed; review upstream before applying patch: {relative}")
+        position = known.index(current)
+        candidate = Path(folder) / relative
+        candidate.parent.mkdir(parents=True, exist_ok=True)
+        candidate.write_bytes(initial)
+
+        def apply_one(item, reverse=False):
+            name, manifest, patch = item
+            command = ["patch", "--batch", "--fuzz=0", "-p1", "--input", str(patch),
+                       "--reverse" if reverse else "--forward"]
+            subprocess.run(command + ["--dry-run"], cwd=folder, check=True, capture_output=True)
+            subprocess.run(command, cwd=folder, check=True, capture_output=True)
+            expected = manifest["before_sha256"] if reverse else manifest["after_sha256"]
+            if digest(candidate) != expected:
+                raise SystemExit(f"Native patch candidate verification failed: {name}")
+
+        for item in reversed(chain[:position]):
+            apply_one(item, reverse=True)
+        for item in chain:
+            apply_one(item)
+        plans.append((target, initial, candidate.read_bytes(), current))
+
+    # All verified candidates exist before the first native mutation.
+    for chain in chains.values():
+        for name, manifest, patch in chain:
+            if digest(patch) != manifest["patch_sha256"]:
+                raise SystemExit(f"Verified patch changed during validation: {name}")
+    for target, initial, updated, current in plans:
+        if digest(target) != current:
+            raise SystemExit(f"Native source changed during validation: {target.name}")
+    for target, initial, updated, current in plans:
+        if initial != updated:
+            fd, temporary = tempfile.mkstemp(prefix=".diaggen-support-", dir=target.parent)
+            try:
+                with os.fdopen(fd, "wb") as stream:
+                    stream.write(updated)
+                    stream.flush()
+                    os.fsync(stream.fileno())
+                os.chmod(temporary, target.stat().st_mode & 0o777)
+                os.replace(temporary, target)
+            finally:
+                if os.path.exists(temporary):
+                    os.unlink(temporary)
+        if digest(target) != hashlib.sha256(updated).hexdigest():
+            raise SystemExit(f"Installed native source verification failed: {target.name}")
+        print(f"Verified native patch chain: {target.relative_to(native)}")
 PY
 if [[ ! -e "$TARGET" && ! -L "$TARGET" ]]; then
     ln -s "$(realpath --relative-to="$(dirname "$TARGET")" "$SOURCE")" "$TARGET"

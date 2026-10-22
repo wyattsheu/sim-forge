@@ -1,0 +1,24 @@
+--- a/hag4r/agentic/runtime_tools/diagnostics.py
++++ b/hag4r/agentic/runtime_tools/diagnostics.py
+@@ -397,13 +397,19 @@
+         "removed_route_projection",
+     }
+ )
+-_DIAGNOSTIC_ATTEMPT_ARCHIVED_LIST_KEYS = _FRESH_UNPLANNED_EMPTY_LIST_KEYS | frozenset({"runtime_owned_events"})
++# Per-call measurement histories belong to their execution attempt, just like
++# the runtime-owned events that attest them. Keep the immutable grounding
++# context, but archive and clear these histories before validating a successor.
++_DIAGNOSTIC_ATTEMPT_ARCHIVED_LIST_KEYS = (
++    _FRESH_UNPLANNED_EMPTY_LIST_KEYS
++    | _FRESH_UNPLANNED_READONLY_MEASUREMENT_KEYS
++    | frozenset({"runtime_owned_events"})
++)
+ _DIAGNOSTIC_ATTEMPT_ARCHIVED_MAP_KEYS = _FRESH_UNPLANNED_EMPTY_MAP_KEYS
+ _DIAGNOSTIC_ATTEMPT_ARCHIVED_NONE_KEYS = _FRESH_UNPLANNED_NONE_KEYS
+ _DIAGNOSTIC_ATTEMPT_PRESERVED_KEYS = (
+     _FRESH_UNPLANNED_CONFIG_KEYS
+     | _FRESH_UNPLANNED_READONLY_INPUT_KEYS
+-    | _FRESH_UNPLANNED_READONLY_MEASUREMENT_KEYS
+ )
+ _DIAGNOSTIC_ATTEMPT_METADATA_KEYS = frozenset(
+     {"diagnostic_attempt_archives", "active_diagnostic_attempt_id"}

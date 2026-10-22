@@ -124,6 +124,28 @@ class CompletedExportTests(unittest.TestCase):
         self.assertEqual(self.state_path.read_bytes(), before)
         self.native.assert_called_once_with(self.root, self.export)
 
+    def test_complete_reroute_and_export_snapshot_is_eligible(self):
+        self.state.update(run_mode="post_mesh_processing_diagnostics",
+                          diagnostics_reroute_and_export=True, diagnostics_stage_only=False)
+        self.save()
+        self.assertTrue(self.validate()["valid"])
+
+    def test_stage_only_or_implicit_snapshot_mode_is_not_eligible(self):
+        for reroute, stage_only in ((False, False), (True, True), (True, None), (None, False)):
+            self.state.update(run_mode="post_mesh_processing_diagnostics",
+                              diagnostics_reroute_and_export=reroute, diagnostics_stage_only=stage_only)
+            self.save()
+            with self.subTest(reroute=reroute, stage_only=stage_only), self.assertRaisesRegex(ValueError, "snapshot skill runs"):
+                self.validate()
+
+    def test_snapshot_still_requires_all_nine_completed_stages(self):
+        self.state.update(run_mode="post_mesh_processing_diagnostics",
+                          diagnostics_reroute_and_export=True, diagnostics_stage_only=False)
+        self.state["completed_global_stage_sequence"] = list(MODULE.STAGES[6:])
+        self.save()
+        with self.assertRaisesRegex(ValueError, "incomplete or unordered"):
+            self.validate()
+
     def test_missing_export_file_is_rejected(self):
         (self.export / "final_mesh.mesh").unlink()
         with self.assertRaisesRegex(ValueError, "inventory"):

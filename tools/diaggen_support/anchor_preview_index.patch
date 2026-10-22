@@ -1,0 +1,11 @@
+--- a/.agents/skills/run-diaggen-pipeline/genesis-diagnostics/SKILL.md
++++ b/.agents/skills/run-diaggen-pipeline/genesis-diagnostics/SKILL.md
+@@ -84,7 +84,7 @@
+ 
+ Any ID, name, semantics/geometry-role, plan-role, or cross-role disagreement is
+ `mismatched`, never `matched`. It permits only a bounded same-target
+-revision -> recompile -> current preview -> recheck cycle. Once such a mismatch
++revision -> returned new compile/current preview -> recheck cycle. A successful target revision already compiles and renders the edited target; retain its returned compile ID instead of calling the initial compile tool again. Once such a mismatch
+ is recorded, until the triple and role check passes, do not submit `matched`,
+ `define_episode`, apply or dispatch a compiled probe, or call `simulate`. A
+ semantic mismatch is not an overlap exception and cannot be converted into one.

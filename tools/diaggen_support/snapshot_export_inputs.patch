@@ -1,0 +1,52 @@
+--- a/hag4r/agentic/runtime_state.py
++++ b/hag4r/agentic/runtime_state.py
+@@ -1899,6 +1899,34 @@
+         os.replace(temporary, target)
+     finally:
+         temporary.unlink(missing_ok=True)
++
++
++def _copy_snapshot_parameter_renders(
++    *,
++    snapshot_state: RuntimeState,
++    paths: Mapping[str, Any],
++    output_tag: str,
++) -> dict[str, dict[str, Any]]:
++    """Keep required export QA renders byte-identical when a snapshot tag changes."""
++    source_tag = str(snapshot_state.get("output_tag") or "")
++    if not source_tag:
++        raise ValueError("exportable diagnostics snapshot must record output_tag")
++    source_dir = Path(str(snapshot_state["paths"]["monolithic_params_path"])).parent
++    destination_dir = Path(str(paths["monolithic_params_path"])).parent
++    sources = {
++        suffix: source_dir / f"{source_tag}_{suffix}.png"
++        for suffix in ("target_E", "target_density", "target_part", "source_part")
++    }
++    missing = [str(source) for source in sources.values() if not source.is_file()]
++    if missing:
++        raise FileNotFoundError("exportable diagnostics snapshot is missing parameter render(s): " + ", ".join(missing))
++    lineage: dict[str, dict[str, Any]] = {}
++    for suffix, source in sources.items():
++        destination = destination_dir / f"{output_tag}_{suffix}.png"
++        _copy_file_atomic(source, destination)
++        key = f"diagnostics_snapshot_parameter_render_{suffix}"
++        lineage[key] = _copied_file_lineage_record(source, destination, role=key)
++    return lineage
+ 
+ 
+ def _copy_prefix_artifacts(
+@@ -3627,6 +3655,14 @@
+                 role=f"diagnostics_snapshot_{key}",
+             )
+         )
++    if diagnostics_reroute_and_export:
++        snapshot_input_lineage.update(
++            _copy_snapshot_parameter_renders(
++                snapshot_state=snapshot_state,
++                paths=paths,
++                output_tag=resolved_output_tag,
++            )
++        )
+     post_mesh_texture_dir = Path(str(paths["post_mesh_texture_dir"]))
+     shutil.rmtree(post_mesh_texture_dir, ignore_errors=True)
+     inputs = {

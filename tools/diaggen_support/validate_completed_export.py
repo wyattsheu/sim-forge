@@ -141,8 +141,13 @@ def validate_completed_export(run_root: Path, *, diaggen_root: Path | None = Non
     state = read_object(state_path)
     require(state.get("schema_version") == "2026-07-skill-suite-runtime-state-v2", "Unsupported native state schema")
     require(state.get("run_root") == str(run), "State run_root mismatch")
-    require(state.get("runtime_kind") == "codex_skill" and state.get("run_mode") == "full_image",
-            "Only native full-image skill runs can be settled")
+    export_mode = state.get("run_mode") == "full_image" or (
+        state.get("run_mode") == "post_mesh_processing_diagnostics"
+        and state.get("diagnostics_reroute_and_export") is True
+        and state.get("diagnostics_stage_only") is False
+    )
+    require(state.get("runtime_kind") == "codex_skill" and export_mode,
+            "Only native full-image or reroute-and-export snapshot skill runs can be settled")
     require(state.get("status") in {"running", "success"}, "Run status is not eligible for successful completion")
     require(state.get("planned_global_stage_sequence") == list(STAGES), "Planned stage sequence mismatch")
     require(state.get("completed_global_stage_sequence") == list(STAGES), "Completed stage sequence is incomplete or unordered")

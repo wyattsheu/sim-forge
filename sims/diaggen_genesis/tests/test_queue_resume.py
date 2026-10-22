@@ -37,7 +37,9 @@ def temporary_patched_sources(destination):
     for relative, record in manifest["files"].items():
         source = WORKSPACE / relative
         actual = digest(source)
-        if actual not in (record["before_sha256"], record["after_sha256"]):
+        recovery = json.loads((PATCH_PATH.parent / "queue_recovery_modes.json").read_text())
+        current_record = recovery["files"][relative]
+        if actual not in (record["before_sha256"], record["after_sha256"], current_record["after_sha256"]):
             raise AssertionError(f"Resume patch baseline changed; review/rebase required: {relative}")
         target = destination / relative
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -54,8 +56,22 @@ def temporary_patched_sources(destination):
         if result.returncode:
             raise AssertionError(result.stdout + result.stderr)
     for relative, record in manifest["files"].items():
-        if digest(destination / relative) != record["after_sha256"]:
+        if digest(destination / relative) not in (record["after_sha256"], recovery["files"][relative]["after_sha256"]):
             raise AssertionError(f"Patched source digest differs: {relative}")
+    selected = []
+    recovery_text = (PATCH_PATH.parent / "queue_recovery_modes.patch").read_text()
+    sections = ["--- a/" + item for item in recovery_text.split("--- a/")[1:]]
+    for relative, record in recovery["files"].items():
+        if relative not in manifest["files"]:
+            continue
+        if digest(destination / relative) == record["before_sha256"]:
+            selected.extend(item for item in sections if item.splitlines()[0][6:] == relative)
+    if selected:
+        subprocess.run(["patch", "--batch", "--fuzz=0", "-p1"], input="".join(selected),
+                       cwd=destination, check=True, capture_output=True, text=True)
+    for relative in manifest["files"]:
+        if digest(destination / relative) != recovery["files"][relative]["after_sha256"]:
+            raise AssertionError("Recovery integration digest differs: " + relative)
 
 
 class SameRunResumeTests(unittest.TestCase):
@@ -96,6 +112,10 @@ class SameRunResumeTests(unittest.TestCase):
                                "input": "inputs/demo_gallery/object.png", "input_sha256": digest(self.frozen)}]}
         (self.base / "batch_plan.json").write_text(json.dumps(self.plan))
         self.queue = self.batch.Queue(self.base, gpu_query=lambda: GPU_CSV)
+        self.native_preflight = patch.object(self.batch, "native_recovery_preflight", return_value={
+            "valid": True, "snapshot_state_sha256": "a" * 64,
+        }).start()
+        self.addCleanup(patch.stopall)
         self.queue.init()
         self.assertEqual(self.queue.claim(GPU), "object_0")
         self.queue.bind("object_0", 99999999)
@@ -132,6 +152,7 @@ class SameRunResumeTests(unittest.TestCase):
                  "run_root": str(self.run_root), "repo_root": str(self.native), "run_mode": "full_image",
                  "runtime_kind": "codex_skill", "status": "seeded", "inputs": {"source_image": str(self.frozen)},
                  "paths": paths, "planned_global_stage_sequence": list(STAGES), "stages": stages,
+                 "active_revision": "revision_0000",
                  "completed_global_stage_sequence": STAGES[:prefix], "stage_runtime": {},
                  "worker_isolation": {"gpu_binding": {"effective_cuda_visible_devices": GPU}},
                  "diagnostics": {"enabled": True}}
@@ -283,6 +304,149 @@ class SameRunResumeTests(unittest.TestCase):
         self.assertTrue(mapping["diagnostic_operational_retry"])
         self.assertEqual(mapping["completed_stage_prefix"], STAGES[:6])
         self.assertEqual(self.queue_state()["jobs"][0]["run_id"], self.run_id)
+        self.native_preflight.assert_called_once_with(self.native, state_path=self.run_root / "state.json")
+
+    def test_diagnostic_retry_fails_admission_when_actual_successor_schema_would_fail(self):
+        self.state = self.native_state(6, diagnostic_retry=True)
+        self.save_native()
+        before = (self.run_root / "state.json").read_bytes()
+        self.native_preflight.side_effect = ValueError("native successor schema rejected")
+        with self.assertRaisesRegex(ValueError, "native successor schema rejected"):
+            self.resume()
+        self.assertEqual((self.run_root / "state.json").read_bytes(), before)
+        self.assertEqual(self.queue_state()["jobs"][0]["status"], "failed")
+
+    def test_pending_cleanup_with_two_candidates_can_resume_without_new_imagegen(self):
+        self.state = self.native_state(0)
+        cleanup = self.run_root / "revisions/revision_0000/image_cleanup"
+        cleanup.mkdir()
+        for index in (1, 2):
+            (cleanup / f"attempt_{index:02d}.png").write_bytes(b"existing candidate")
+        self.save_native()
+        mapping = self.resume()
+        self.assertEqual(mapping["completed_stage_prefix"], [])
+        self.assertEqual(len(mapping["existing_cleanup_candidates"]), 2)
+        self.assertIn("last_message.txt", mapping["prior_child_last_message"])
+        self.native_preflight.assert_not_called()
+
+    def test_pending_cleanup_missing_empty_or_symlink_candidate_is_rejected(self):
+        self.state = self.native_state(0)
+        cleanup = self.run_root / "revisions/revision_0000/image_cleanup"
+        cleanup.mkdir()
+        first, second = cleanup / "attempt_01.png", cleanup / "attempt_02.png"
+        first.write_bytes(b"existing")
+        self.save_native()
+        for kind in ("missing", "empty", "symlink"):
+            second.unlink(missing_ok=True)
+            if kind == "empty": second.touch()
+            if kind == "symlink": second.symlink_to(first)
+            with self.subTest(kind=kind), self.assertRaisesRegex(ValueError, "two existing bounded candidates"):
+                self.resume()
+
+    def test_pending_cleanup_existing_terminal_cannot_be_erased(self):
+        self.state = self.native_state(0)
+        cleanup = self.run_root / "revisions/revision_0000/image_cleanup"
+        cleanup.mkdir()
+        for index in (1, 2):
+            (cleanup / f"attempt_{index:02d}.png").write_bytes(b"existing candidate")
+        self.state["stage_runtime"] = {"image_cleanup": {"terminal": {"status": "pending_validation"}}}
+        self.save_native()
+        with self.assertRaisesRegex(ValueError, "no existing stage terminal"):
+            self.resume()
+
+    def make_business_halt_snapshot(self):
+        self.state = self.native_state(6)
+        self.state["status"] = "failed"
+        self.state["diagnostics"]["terminal"] = {"business_outcome": {"status": "business_halt"}}
+        self.save_native()
+        snapshot = self.run_root / "revisions/revision_0000"
+        (snapshot / "state.json").write_text(json.dumps(self.state))
+        self.native_preflight.return_value = {"valid": True, "snapshot_state_sha256": digest(snapshot / "state.json")}
+        return snapshot
+
+    def snapshot_retry(self, new_run_id="genesis_object_0_snapshot_retry"):
+        with patch.object(self.batch.os, "kill", side_effect=ProcessLookupError):
+            return self.queue.diagnostics_snapshot("object_0", new_run_id, "grounded_setup_retry")
+
+    def test_snapshot_creates_new_run_preserves_halt_and_logs_and_can_claim_any_gpu(self):
+        snapshot = self.make_business_halt_snapshot()
+        before = (self.run_root / "state.json").read_bytes()
+        mapping = self.snapshot_retry()
+        job = self.queue_state()["jobs"][0]
+        self.assertEqual(job["execution_mode"], "diagnostics_snapshot")
+        self.assertEqual(job["snapshot_source_run_id"], self.run_id)
+        self.assertEqual(job["diagnostics_snapshot_dir"], str(snapshot))
+        self.assertEqual(job["snapshot_state_sha256"], digest(snapshot / "state.json"))
+        self.assertEqual((self.run_root / "state.json").read_bytes(), before)
+        self.assertEqual(job["attempts"], 1)
+        self.assertEqual(len(job["attempts_history"]), 1)
+        archived = self.base / "queue" / mapping["queue_logs_to"]
+        self.assertEqual((archived / "launcher.log").read_text(), "original failed launcher\n")
+        self.queue.validate_snapshot("object_0")
+        self.hold.unlink()
+        self.assertEqual(self.queue.candidates(), [OTHER_GPU, GPU])
+        self.assertEqual(self.queue.claim(OTHER_GPU), "object_0")
+        self.assertEqual(self.queue.info("object_0", "gpu_uuid"), OTHER_GPU)
+
+    def test_snapshot_admission_requires_business_halt_and_native_appearance_preflight(self):
+        self.make_business_halt_snapshot()
+        self.native_preflight.side_effect = ValueError("appearance evidence missing")
+        before = self.queue.path.read_bytes()
+        with self.assertRaisesRegex(ValueError, "appearance evidence missing"):
+            self.snapshot_retry()
+        self.assertEqual(self.queue.path.read_bytes(), before)
+        self.native_preflight.side_effect = None
+        self.state["diagnostics"]["terminal"]["business_outcome"]["status"] = "recommendation_valid"
+        self.save_native()
+        with self.assertRaisesRegex(ValueError, "business halt"):
+            self.snapshot_retry()
+
+    def test_snapshot_rejects_open_ownership_but_preserves_terminal_halted_owner(self):
+        self.make_business_halt_snapshot()
+        self.state["diagnostic_runtime_attachments"] = [{"status": "halted"}]
+        self.state["diagnostic_runtime_sessions"] = [{"lifecycle_state": "bound"}]
+        self.save_native()
+        with self.assertRaisesRegex(ValueError, "ownership is still active"):
+            self.snapshot_retry()
+        self.state["diagnostic_runtime_sessions"][0]["lifecycle_state"] = "closed"
+        self.save_native()
+        mapping = self.snapshot_retry()
+        self.assertEqual(mapping["snapshot_source_run_id"], self.run_id)
+
+    def test_snapshot_launch_revalidation_detects_changed_source_state(self):
+        self.make_business_halt_snapshot()
+        self.snapshot_retry()
+        self.state["unrelated_audit_change"] = True
+        self.save_native()
+        with self.assertRaisesRegex(ValueError, "changed after admission"):
+            self.queue.validate_snapshot("object_0")
+
+    def test_snapshot_requires_hold_dead_runner_and_unused_run_root(self):
+        self.make_business_halt_snapshot()
+        self.hold.unlink()
+        with self.assertRaisesRegex(ValueError, "HOLD"):
+            self.snapshot_retry()
+        self.hold.touch()
+        with patch.object(self.batch.os, "kill", return_value=None), self.assertRaisesRegex(ValueError, "alive"):
+            self.queue.diagnostics_snapshot("object_0", "new_run", "grounded_setup_retry")
+        existing = self.native / "outputs/agentic_asset_refinement/new_run"
+        existing.mkdir()
+        with self.assertRaisesRegex(ValueError, "unused native run root"):
+            self.snapshot_retry("new_run")
+
+    def test_snapshot_queue_commit_failure_restores_failed_logs(self):
+        self.make_business_halt_snapshot()
+        before = self.queue.path.read_bytes()
+        original_write = self.batch.atomic_json
+        def fail_at_commit(path, value):
+            if Path(path) == self.queue.path:
+                raise OSError("synthetic snapshot commit failure")
+            return original_write(path, value)
+        with patch.object(self.batch, "atomic_json", side_effect=fail_at_commit):
+            with self.assertRaisesRegex(OSError, "snapshot commit failure"):
+                self.snapshot_retry()
+        self.assertEqual(self.queue.path.read_bytes(), before)
+        self.assertEqual((self.job_directory / "launcher.log").read_text(), "original failed launcher\n")
 
     def test_diagnostic_retry_rejects_business_decisions_or_incomplete_cleanup(self):
         self.state = self.native_state(6, diagnostic_retry=True)
@@ -375,15 +539,22 @@ class SameRunResumeTests(unittest.TestCase):
         text = (self.patched_root / SHELL_RELATIVE).read_text()
         self.assertIn('MESH_PYTHON="$DIAGGEN_ROOT/.conda/hag4r_mesh/bin/python"', text)
         self.assertIn('batch validate-resume "$JOB_ID"', text)
-        branch = text.split('if [[ "$EXECUTION_MODE" == resume ]]; then\n    # The queue verified', 1)[1].split("\nelse\n", 1)[0]
+        branch = text.split('if [[ "$EXECUTION_MODE" == resume ]]; then\n    # The queue verified', 1)[1].split("\nelif ", 1)[0]
         self.assertNotIn("cp --", branch)
         self.assertNotIn("run_diaggen_pipeline", branch)
         self.assertIn("stage_tool.py", text)
         self.assertIn("completion_rc == 0", text)
+        self.assertIn("export SPCONV_ALGO=native", text)
+        self.assertIn("--diagnostics-reroute-and-export --require-new-run-root", text)
+        self.assertIn("Do not call imagegen a third time", text)
 
-    def run_stubbed_resume_shell(self, *, completion_failure=False):
+    def run_stubbed_resume_shell(self, *, completion_failure=False, snapshot=False):
         """Execute the real patched shell using fake external engines, never Codex/GPU."""
-        self.resume()
+        if snapshot:
+            snapshot_dir = self.make_business_halt_snapshot()
+            self.snapshot_retry()
+        else:
+            self.resume()
         self.hold.unlink()
         self.assertEqual(self.queue.claim(GPU), "object_0")
         queue_directory = self.base / "queue"
@@ -399,12 +570,20 @@ case "$1" in
   *validate_completed_export.py)
     printf '%s\\n' '{"synthetic_completion_check":true}'
     exit "${DIAGGEN_TEST_COMPLETION_RC:-0}";;
+  *check_diagnostic_retry.py)
+    printf '{"valid":true,"snapshot_state_sha256":"%s"}\\n' "$DIAGGEN_TEST_SNAPSHOT_SHA"
+    exit 0;;
   *support.py)
     if [[ "$2" == archive ]]; then
       printf '%s\\n' "archive" >> "$DIAGGEN_TEST_CALLS"
       exit 0
     fi;;
   -m)
+    if [[ "${DIAGGEN_TEST_SNAPSHOT_MODE:-0}" == 1 ]]; then
+      printf 'initializer %s\\n' "$*" >> "$DIAGGEN_TEST_CALLS"
+      printf '%s\\n' '{"synthetic_initializer":true}'
+      exit 0
+    fi
     printf '%s\\n' "forbidden_native_initializer" >> "$DIAGGEN_TEST_CALLS"
     exit 77;;
 esac
@@ -423,22 +602,38 @@ exec PYTHON "$@"
         calls = self.workspace / "external_calls.txt"
         environment.update(DIAGGEN_TEST_CALLS=str(calls),
                            DIAGGEN_TEST_COMPLETION_RC="1" if completion_failure else "0")
+        if snapshot:
+            environment.update(DIAGGEN_TEST_SNAPSHOT_MODE="1",
+                               DIAGGEN_TEST_SNAPSHOT_SHA=digest(snapshot_dir / "state.json"))
         # An exported Bash function takes precedence over all executable search
         # paths that the production shell prepends. The real Codex cannot start.
         environment["BASH_FUNC_codex%%"] = '''() { cat > "$DIAGGEN_JOB_QUEUE_DIR/synthetic_codex_prompt.txt"; printf '%s\\n' '{"synthetic_codex":true}'; }'''
         state_before = (self.run_root / "state.json").read_bytes()
         frozen_before = self.frozen.read_bytes()
-        result = subprocess.run(["bash", str(queue_directory / "run_one.sh"), "--resume", "object_0"],
+        arguments = ["bash", str(queue_directory / "run_one.sh")]
+        if not snapshot:
+            arguments.append("--resume")
+        result = subprocess.run(arguments + ["object_0"],
                                 env=environment, capture_output=True, timeout=15)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual((self.run_root / "state.json").read_bytes(), state_before)
         self.assertEqual(self.frozen.read_bytes(), frozen_before)
-        self.assertEqual(calls.read_text().splitlines(), ["archive"])
-        self.assertFalse((self.job_directory / "initializer.json").exists())
-        self.assertFalse((self.job_directory / "STARTED").exists())
-        self.assertTrue((self.job_directory / "RESUMED").is_file())
+        if snapshot:
+            external = calls.read_text().splitlines()
+            self.assertEqual(len(external), 2)
+            self.assertIn("--diagnostics_revision_snapshot_dir " + str(snapshot_dir), external[0])
+            self.assertIn("--diagnostics-reroute-and-export --require-new-run-root", external[0])
+            self.assertNotIn("--source_image", external[0])
+            self.assertEqual(external[1], "archive")
+            self.assertTrue((self.job_directory / "initializer.json").is_file())
+            self.assertTrue((self.job_directory / "STARTED").is_file())
+        else:
+            self.assertEqual(calls.read_text().splitlines(), ["archive"])
+            self.assertFalse((self.job_directory / "initializer.json").exists())
+            self.assertFalse((self.job_directory / "STARTED").exists())
+            self.assertTrue((self.job_directory / "RESUMED").is_file())
         prompt = (self.job_directory / "synthetic_codex_prompt.txt").read_text()
-        self.assertIn("Execution mode is resume", prompt)
+        self.assertIn("Execution mode is " + ("diagnostics_snapshot" if snapshot else "resume"), prompt)
         self.assertIn("stage_tool.py TOOL_NAME --input-json", prompt)
         self.assertIn("hag4r_mesh/bin/python", prompt)
         return self.queue_state()["jobs"][0]
@@ -447,6 +642,12 @@ exec PYTHON "$@"
         job = self.run_stubbed_resume_shell()
         self.assertEqual(job["status"], "success")
         self.assertEqual(job["run_id"], self.run_id)
+
+    def test_real_snapshot_shell_uses_public_snapshot_initializer_and_preserves_old_halt(self):
+        job = self.run_stubbed_resume_shell(snapshot=True)
+        self.assertEqual(job["status"], "success")
+        self.assertEqual(job["run_id"], "genesis_object_0_snapshot_retry")
+        self.assertEqual(job["snapshot_source_run_id"], self.run_id)
 
     def test_real_resume_shell_rejects_completion_failure_despite_codex_and_archive_zero(self):
         job = self.run_stubbed_resume_shell(completion_failure=True)

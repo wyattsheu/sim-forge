@@ -25,6 +25,24 @@ def load_verified_module(*, baseline=False):
     patch = (SUPPORT / "diagnostic_history_settlement.patch").read_bytes()
     if hashlib.sha256(patch).hexdigest() != manifest["patch_sha256"]:
         raise AssertionError("verified patch digest changed")
+    # Later verified fixes share this source. Restore this test's exact
+    # historical baseline in a disposable copy, never in the native checkout.
+    followup_path = SUPPORT / "diagnostic_retry_reset.json"
+    if followup_path.is_file():
+        followup = json.loads(followup_path.read_text())
+        if hashlib.sha256(source).hexdigest() == followup["after_sha256"]:
+            if followup["target"] != manifest["target"] or followup["before_sha256"] != manifest["after_sha256"]:
+                raise AssertionError("historical regression patch chain is discontinuous")
+            followup_patch = (SUPPORT / "diagnostic_retry_reset.patch").read_bytes()
+            if hashlib.sha256(followup_patch).hexdigest() != followup["patch_sha256"]:
+                raise AssertionError("follow-up patch digest changed")
+            with tempfile.TemporaryDirectory() as folder:
+                target = Path(folder) / manifest["target"]
+                target.parent.mkdir(parents=True)
+                target.write_bytes(source)
+                subprocess.run(["patch", "--batch", "--fuzz=0", "-p1", "--reverse"],
+                               input=followup_patch, cwd=folder, check=True, capture_output=True)
+                source = target.read_bytes()
     digest = hashlib.sha256(source).hexdigest()
     expected = manifest["before_sha256"] if baseline else manifest["after_sha256"]
     if digest not in {manifest["before_sha256"], manifest["after_sha256"]}:

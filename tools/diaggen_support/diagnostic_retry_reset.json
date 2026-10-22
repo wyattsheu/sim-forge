@@ -1,0 +1,12 @@
+{
+  "schema_version": "diaggen-verified-native-patch-v1",
+  "native_commit": "3d2d3779613b9253109f63e1ff345b11c9097b70",
+  "target": "hag4r/agentic/runtime_tools/diagnostics.py",
+  "before_sha256": "880efa3e0dcdfb4457c3c0f80ff62682c405e8506f539e434c5adcf6e7ab8a61",
+  "before_md5": "bdf16e0e0906f6c71a95dfeca2a2d862",
+  "after_sha256": "4db3f9e625a48fbe415e20df3417353cdc9bc1c3b42db13f0ac994e03f204412",
+  "patch_sha256": "28d670a8c6ba09c2345bccee8d764724fb5c76a911c935a46820f31d27f8c255",
+  "depends_on": "diagnostic_history_settlement",
+  "contract": "Server-owned typed transport recovery archives and clears per-call geometry and grounding measurement histories together with their runtime events. Immutable grounding context, archive provenance, ownership ledgers, fresh-state validation, immutable plan and one-region/one-episode gates are preserved.",
+  "application_state": "requires_quiescent_runtime"
+}
