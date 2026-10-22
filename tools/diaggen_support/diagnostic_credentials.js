@@ -109,9 +109,12 @@
     async call(name, args = {}) {
       if (name === "attach_diagnostic_run") throw new Error("Use the one-time attach method");
       if (!args || typeof args !== "object" || Array.isArray(args)) throw new Error("Arguments must be one object");
-      if (["run_root", "agent_invocation_id", "owner_lease_token", "attachment_id", "live_session_handle"]
-          .some(key => Object.prototype.hasOwnProperty.call(args, key))) {
-        throw new Error("Do not supply or transcribe authentication/session fields");
+      const suppliedIdentityKeys = ["run_root", "agent_invocation_id", "owner_lease_token", "attachment_id", "live_session_handle"]
+        .filter(key => Object.prototype.hasOwnProperty.call(args, key));
+      if (suppliedIdentityKeys.length) {
+        throw new Error("Do not supply or transcribe authentication/session fields: " + suppliedIdentityKeys.join(", ") +
+          ". No native request was sent. Remove these top-level keys; the forwarder supplies them. " +
+          "Ordinary evidence fields such as evidence.next_action are allowed. This is a local argument check, not a native authentication failure or approval denial.");
       }
       const record = getBinding();
       const request = {...args, ...record.auth};

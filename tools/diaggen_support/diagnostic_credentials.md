@@ -51,6 +51,22 @@ the helper supplies the original values. A newly created live session handle is
 retained from that native response. Plans, scene/model payloads, episode IDs,
 probe intents, evidence and recommendations remain authored by this child.
 
+The identity fields remain omitted for evidence submission, too:
+
+```javascript
+const result = await client.call("record_diagnostic_evidence", {evidence});
+client.show(result);
+```
+
+Construct `evidence` using the actual native schema and observed artifact refs.
+If this helper rejects caller-supplied identity keys, no native request was sent;
+remove only the listed top-level keys and submit the ordinary arguments through
+the same authenticated client. Do not reattach. This local argument error is not
+a native authentication failure or an approval denial. It does not reject an
+ordinary nested field such as `evidence.next_action`; do not blame that field or
+alter the evidence to satisfy the transport. An actual approval denial still
+stops the affected action as described above.
+
 Use `client.show(result)` to display the original text and images; do not replace
 it with a custom parser or a fabricated status summary. The forwarder preserves native text/image blocks and makes either MCP `result`
 or `content` envelopes available under `result.content`. Do not write a custom

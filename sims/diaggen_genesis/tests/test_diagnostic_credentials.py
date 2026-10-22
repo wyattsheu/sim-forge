@@ -89,6 +89,20 @@ class CredentialForwarderTests(unittest.TestCase):
           const fresh=setup(); await assert.rejects(fresh.client().call('compute_part_grounding_context',{}),/No usable/);
           assert.equal(fresh.calls.length,0);""")
 
+    def test_evidence_payload_is_forwarded_unchanged_after_local_identity_argument_correction(self):
+        self.run_js("""const s=setup(); await s.client().attach('/native/outputs/run','fresh-id');
+          const evidence={schema_version:'hag4r-genesis-vlm-reflection-v2',phase:'post_probe',
+            episode_id:'episode_0001',next_action:'close_genesis_live_session',
+            artifact_refs:[{kind:'tool_result',ref:'tool_result:10',note:'Actual observed result'}]};
+          await assert.rejects(s.client().call('record_diagnostic_evidence',{
+            run_root:s.auth.run_root,agent_invocation_id:s.auth.agent_invocation_id,evidence}),
+            /fields: run_root, agent_invocation_id.*No native request was sent/);
+          assert.equal(s.calls.length,1);
+          await s.client().call('record_diagnostic_evidence',{evidence});
+          assert.equal(s.calls.length,2);assert.deepEqual(s.calls[1].args.evidence,evidence);
+          assert.equal(s.calls[1].args.owner_lease_token,s.auth.owner_lease_token);
+          assert(!Object.hasOwn(s.calls[1].args,'live_session_handle'));""")
+
     def test_live_handle_is_retained_without_transcription(self):
         self.run_js("""const s=setup(); await s.client().attach('/native/outputs/run','fresh-id');
           await assert.rejects(s.client().call('inspect_genesis_runtime_logs',{}),/no retained/);

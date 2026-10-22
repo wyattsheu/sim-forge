@@ -74,3 +74,14 @@ USB 的一次 attach 實際未成立，child 卻忽略回應後輸出成功訊�
 目前完整 CPU／回歸為 **302 項通過，0 fail／error／skip**。啟動憑證 **85 項通過**，新增樹懶正式成功產物核對；沿用的原生／環境證據都經來源、輸入與 binary inventory 比對，不能把這個數量當作其他物件成功。
 
 修正已接續安排球鞋乾淨診斷快照、醬料盒新診斷、料理夾同 run 候選重驗，以及棒球帽 fresh run。每件是否完成仍依自己的 native terminal、產物與驗收判定；水豚的 spconv 大張量限制與龍的候選原始 metadata 缺口仍須獨立處理。
+
+
+## 17:00 USB 證據參數誤判與 17:14 批次恢復
+
+USB `clean_diagnostics2` 的 cable 探測、放開與沉降已完成，session 也已關閉，但子代理在 `client.call("record_diagnostic_evidence", ...)` 內又手填了 `run_root` 與 `agent_invocation_id`。轉送器正確在發送前拒絕；後續子代理誤把錯誤歸因於普通的 `evidence.next_action`，因此沒有提交必要證據。這次不是 MCP 認證失敗，也不是自動審查拒絕，沒有放寬原生 evidence schema。
+
+新增錯誤訊息會列出確切的冗餘欄位名稱，明示尚未送出 native request，要求移除頂層身份欄位、仍由同一 client 轉送；普通的巢狀 evidence 不變。使用真實 JS 來源的回歸測試重現拒絕，再證明 `{evidence}` 原封不動轉送成功。完整 **303 項 CPU 測試通過，0 fail／error／skip**；85 項憑證通過。原生程式、輸入、環境與 binary inventory 完全未變，只有 JS 錯誤訊息及說明更新。舊 child／session 由原生 shutdown 清理，USB `genesis_usb_hub_20261022_clean_diagnostics3` 重新由原始成功六階段快照排隊。
+
+上一批全部進入 terminal 後，watcher 於 17:00 正常退出，後來新排的工作尚未被 claim。17:14 已重新啟動原 tmux watcher；棒球帽、料理夾、球鞋均已真正啟動，醬料盒及 USB 等待本批次 GPU 名額與顯存。完成數仍是電捲棒、樹懶兩件。
+
+Dragon 的原始 cleanup 子代理紀錄也已找到：兩次真實 built-in imagegen 呼叫、完整 prompt、工具回報的原始圖路徑，且兩張候選逐 byte 雜湊均與 generator 原檔一致。這只恢復生成來源，沒有偽造驗證或描述。已將私人來源證據放入歷史並連結到新的 same-run resume metadata；owning cleanup child 仍須重看原圖與兩張候選，確認完整配對資料，依原規則選擇或保留真正的 stage halt，不得生成第三張。

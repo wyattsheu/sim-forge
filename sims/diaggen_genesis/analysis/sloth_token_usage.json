@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "generated_at": "2026-10-22T09:07:49.348474+00:00",
-  "scope": "One queue attempt: parent and recursively spawned descendant model requests.",
+  "scope": "Successful sloth diagnostics-snapshot attempt only: parent, diagnostics, texture and export descendants; six completed upstream stages reused, so this is not a raw-image full-generation token total.",
   "excludes": [
     "Earlier attempts and retries outside this parent thread family",
     "Interactive debugging outside this parent thread family",

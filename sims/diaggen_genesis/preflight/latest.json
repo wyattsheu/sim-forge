@@ -1,6 +1,6 @@
 {
   "schema_version": "diaggen-full-runtime-preflight-v1",
-  "checked_at": "2026-10-22T17:04:08+08:00",
+  "checked_at": "2026-10-22T17:17:18+08:00",
   "overall_status": "pass",
   "simulator": "Genesis",
   "counts": {
@@ -16,35 +16,33 @@
     }
   ],
   "evidence_reuse": {
-    "unchanged_checks_reused": 81,
+    "unchanged_checks_reused": 82,
     "orchestration_checks_rerun": 3,
     "actual_cpu_tests": {
       "error": 0,
       "expected_fail": 0,
       "fail": 0,
-      "pass": 302,
-      "run": 302,
+      "pass": 303,
+      "run": 303,
       "skip": 0,
       "unexpected_success": 0
     },
     "new_production_success": "genesis_sloth_20261022_clean_diagnostics3",
     "native_sources_changed": false,
     "reviewed_runtime_source_changes": [
-      "sims/diaggen_genesis/queue/run_one.sh",
-      "tools/diaggen_support/diagnostic_credentials.md",
-      "tools/diaggen_support/queue_verified_diagnostics.json",
-      "tools/diaggen_support/queue_verified_diagnostics.patch"
+      "tools/diaggen_support/diagnostic_credentials.js",
+      "tools/diaggen_support/diagnostic_credentials.md"
     ]
   },
-  "scope": "Verified credential transport and mode-specific launcher; native sources and environment unchanged.",
+  "scope": "Exact native credential forwarding with explicit local argument correction; native code, inputs, environments and binaries unchanged.",
   "limitations": [
-    "Curling iron and sloth are completed production assets; other jobs may still fail.",
+    "Only curling iron is a completed production asset.",
     "No full-model peak VRAM measurement; large-tensor capybara fix awaits production validation.",
-    "New diagnostic/snapshot production success is not established by preflight.",
     "LLM/imagegen access uses existing successful execution evidence; no new cloud call in preflight.",
     "Memory gates do not reserve GPU capacity.",
     "Shared admission counts per-job minimum gates as conservative headroom; this does not reserve CUDA memory or establish full-model peak demand. Existing jobs are not migrated or restarted.",
-    "Opaque credentials are retained in the owning child tool store; full native MCP workflow still requires production validation."
+    "Sloth completed the actual strict native workflow; the latest argument-error wording is covered by 303 CPU tests and awaits another production attempt.",
+    "Other remaining inputs can still fail; the full capybara tensor limitation remains unresolved."
   ],
   "components": [
     {
