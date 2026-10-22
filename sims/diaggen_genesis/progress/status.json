@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-23T00:35:09+08:00",
+  "updated_at": "2026-10-23T00:35:27+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-23T00:35:09+08:00",
+      "updated_at": "2026-10-23T00:35:27+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -222,7 +222,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T16:01:05.614594+00:00",
-      "updated_at": "2026-10-23T00:35:09+08:00",
+      "updated_at": "2026-10-23T00:35:27+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -411,7 +411,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T16:03:07.162969+00:00",
-      "updated_at": "2026-10-23T00:35:09+08:00",
+      "updated_at": "2026-10-23T00:35:27+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -585,7 +585,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-23T00:35:09+08:00",
+      "updated_at": "2026-10-23T00:35:27+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -774,7 +774,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-23T00:35:09+08:00",
+      "updated_at": "2026-10-23T00:35:27+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -963,7 +963,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-23T00:35:09+08:00",
+      "updated_at": "2026-10-23T00:35:27+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1152,11 +1152,11 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T16:18:45.488388+00:00",
-      "updated_at": "2026-10-23T00:35:09+08:00",
+      "updated_at": "2026-10-23T00:35:27+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
-        "terminal_status": "not_available",
+        "terminal_status": "halted",
         "recommendation": "not_available",
         "export_outcome": "not_exported"
       },
@@ -1218,11 +1218,11 @@
         {
           "name": "genesis_live_diagnostic_loop",
           "label": "Genesis 物理診斷",
-          "status": "running",
-          "ledger_status": "running",
+          "status": "failed",
+          "ledger_status": "failed",
           "ok": false,
           "started_at": "2026-10-22T16:23:04.409983+00:00",
-          "finished_at": null
+          "finished_at": "2026-10-22T16:35:24.131727+00:00"
         },
         {
           "name": "hag4r_post_mesh_texture",
@@ -1326,7 +1326,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-23T00:35:09+08:00",
+      "updated_at": "2026-10-23T00:35:27+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1444,7 +1444,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-23T00:35:09+08:00",
+      "updated_at": "2026-10-23T00:35:27+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -2218,5 +2218,5 @@
     "classification": "dependency",
     "outcome": "needs_attention"
   },
-  "signature": "c9d1f25fac8608dfe86ef742f94fda5172fcb8b955255c7bef731d90d94c44f3"
+  "signature": "8e62d3db2c1ae49783f13d482745782e6e9947d1356826b521dd1fe02e695d0d"
 }
