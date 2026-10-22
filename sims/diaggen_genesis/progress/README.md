@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T18:00:36+08:00（Asia/Taipei）
+更新：2026-10-22T18:01:09+08:00（Asia/Taipei）
 
 共 9 件：等待 1、執行中 3、完成 3、失敗 2、取消 0。
 
@@ -15,7 +15,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 
 | 物件 | 排程狀態 | Runtime | Revision | 顯存門檻 | 已完成階段 | 健康提示 |
 |---|---|---|---|---|---|---|
-| baseball_cap | running | running | revision_0000 | 24576 MiB | 7/9 | 未偵測到上述異常（非成功保證） |
+| baseball_cap | running | running | revision_0000 | 24576 MiB | 8/9 | 未偵測到上述異常（非成功保證） |
 | kitchen_tongs | failed | running | revision_0001 | 24576 MiB | 3/9 | 未偵測到上述異常（非成功保證） |
 | sneaker | running | running | revision_0001 | 24576 MiB | 2/9 | 未偵測到上述異常（非成功保證） |
 | usb_hub | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
@@ -38,7 +38,7 @@ Run：`genesis_baseball_cap_20261022_fresh3`；執行中。
 | 材料參數配置 | success |
 | 體積網格處理 | success |
 | Genesis 物理診斷 | success |
-| 貼圖生成 | running |
+| 貼圖生成 | success |
 | 最終匯出 | pending |
 
 Genesis 診斷 episode 數：2。
@@ -52,6 +52,8 @@ Genesis 診斷 episode 數：2。
 ![baseball_cap_ordered_mask_vis](media/baseball_cap_ordered_mask_vis.png)
 
 ![baseball_cap_segmentation_overlay](media/baseball_cap_segmentation_overlay.png)
+
+![baseball_cap_albedo](media/baseball_cap_albedo.png)
 
 ![baseball_cap_omnipart_top](media/baseball_cap_omnipart_top.png)
 
