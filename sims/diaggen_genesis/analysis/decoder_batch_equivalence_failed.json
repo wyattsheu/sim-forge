@@ -1,0 +1,22 @@
+{
+  "schema_version": "diaggen-decoder-batch-equivalence-experiment-v1",
+  "production_sources_modified": false,
+  "production_inputs_modified": false,
+  "scope": "Small two-member batch experiment using actual pretrained native decoders; not full-size capybara inference or a completed asset.",
+  "float_feature_comparison": {
+    "rtol": 0.001,
+    "atol": 1e-05
+  },
+  "mesh_vertex_comparison": {
+    "rtol": 1e-05,
+    "atol": 1e-06
+  },
+  "device_name": "NVIDIA RTX PRO 6000 Blackwell Max-Q Workstation Edition",
+  "results": [],
+  "status": "fail",
+  "error": "AssertionError: Tensor-likes are not close!\n\nMismatched elements: 212842 / 349056 (61.0%)\nGreatest absolute difference: 0.07965576648712158 at index (1389, 52) (up to 1e-05 allowed)\nGreatest relative difference: 712.8887329101562 at index (1807, 28) (up to 0.001 allowed)",
+  "elapsed_seconds": 4.9009354980662465,
+  "experiment_source_sha256": "4c07d4935ca86d9e92563b752cbc9e2f73c739c754398ed6e0dd67d181bf1252",
+  "observed_scope": "First mesh-decoder comparison, seed 42, actual cached pretrained weights loaded with strict=True; sparse coordinates equal, final decoder features failed the declared tolerance. Gaussian/RF and second seed were not reached. Mesh geometry equivalence was not evaluated after the feature failure.",
+  "deployment": "Not deployed. No native source, checkpoint, precision, resolution, production input or acceptance gate changed."
+}
