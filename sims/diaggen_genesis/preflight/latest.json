@@ -1,10 +1,10 @@
 {
   "schema_version": "diaggen-full-runtime-preflight-v1",
-  "checked_at": "2026-10-22T17:17:18+08:00",
+  "checked_at": "2026-10-22T17:25:50+08:00",
   "overall_status": "pass",
   "simulator": "Genesis",
   "counts": {
-    "pass": 85,
+    "pass": 86,
     "fail": 0,
     "skip": 0
   },
@@ -16,8 +16,8 @@
     }
   ],
   "evidence_reuse": {
-    "unchanged_checks_reused": 82,
-    "orchestration_checks_rerun": 3,
+    "unchanged_checks_reused": 85,
+    "orchestration_checks_rerun": 0,
     "actual_cpu_tests": {
       "error": 0,
       "expected_fail": 0,
@@ -30,11 +30,11 @@
     "new_production_success": "genesis_sloth_20261022_clean_diagnostics3",
     "native_sources_changed": false,
     "reviewed_runtime_source_changes": [
-      "tools/diaggen_support/diagnostic_credentials.js",
-      "tools/diaggen_support/diagnostic_credentials.md"
-    ]
+      "sims/diaggen_genesis/batch_plan.json"
+    ],
+    "actual_cpu_tests_reused_unchanged_code": true
   },
-  "scope": "Exact native credential forwarding with explicit local argument correction; native code, inputs, environments and binaries unchanged.",
+  "scope": "Shared-GPU policy permits up to three workers per GPU within unchanged four-worker global cap, exact GPU bindings and summed memory gates.",
   "limitations": [
     "Only curling iron is a completed production asset.",
     "No full-model peak VRAM measurement; large-tensor capybara fix awaits production validation.",

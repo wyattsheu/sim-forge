@@ -106,7 +106,7 @@
 
 ## 背景執行
 
-`queue/wait_and_run.sh` 在伺服器的 `tmux` session `diaggen-genesis-wait` 執行。每 **15 秒**檢查顯存，只要某張 GPU 至少有 **24576 MiB（24 GiB）** 可用就可啟動；允許和既有運算工作共用，不要求 GPU 利用率低或完全閒置。每張 GPU 同時最多一個本批次工作，整批最多兩個工作並行。水豚曾在 OmniPart mesh decoder 發生 OOM，下一次單獨改用 **49152 MiB（48 GiB）** 試跑；其餘仍為 24 GiB。進入 OmniPart 前，該階段子代理還必須在原綁定 GPU 上重新等待相同門檻。顯存檢查不會保留容量，無法保證其他程序稍後不增加用量。
+`queue/wait_and_run.sh` 在伺服器的 `tmux` session `diaggen-genesis-wait` 執行。每 **15 秒**檢查顯存，只要某張 GPU 至少有 **24576 MiB（24 GiB）** 可用就可啟動；允許和既有運算工作共用，不要求 GPU 利用率低或完全閒置。每張 GPU 同時最多三個本批次工作，整批最多四個工作並行；共用時會以既有工作加新工作之門檻總和核對目前空閒顯存。水豚曾在 OmniPart mesh decoder 發生 OOM，下一次單獨改用 **49152 MiB（48 GiB）** 試跑；其餘仍為 24 GiB。進入 OmniPart 前，該階段子代理還必須在原綁定 GPU 上重新等待相同門檻。顯存檢查不會保留容量，無法保證其他程序稍後不增加用量。
 
 24 GiB 是尚未量測 OmniPart 實際峰值前的積極試跑門檻，不能保證避免記憶體不足。失敗會如實保留紀錄，不覆蓋既有 run。修復共通環境問題後，可明確安排新 run ID 重試；舊 run 與日誌會保留。SSH 斷線不影響 tmux；伺服器重開機會中斷。
 

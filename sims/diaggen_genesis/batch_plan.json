@@ -10,9 +10,9 @@
     "allow_compute_sharing": true,
     "check_interval_seconds": 15,
     "max_parallel_jobs": 4,
-    "max_jobs_per_gpu": 2
+    "max_jobs_per_gpu": 3
   },
-  "memory_threshold_basis": "Default 24 GiB is an experimental entry threshold. After an OmniPart mesh-decoder OOM, capybara uses a higher unmeasured 48 GiB trial; each run must recheck its own threshold immediately before OmniPart. Checks do not reserve memory. Shared-GPU admission additionally budgets the sum of existing and new jobs minimum thresholds against currently free VRAM; each GPU admits at most two jobs. This is conservative bookkeeping, not a hardware memory reservation.",
+  "memory_threshold_basis": "Default 24 GiB is an experimental entry threshold. After an OmniPart mesh-decoder OOM, capybara uses a higher unmeasured 48 GiB trial; each run must recheck its own threshold immediately before OmniPart. Checks do not reserve memory. Shared-GPU admission additionally budgets the sum of existing and new jobs minimum thresholds against currently free VRAM; each GPU admits at most three jobs. This is conservative bookkeeping, not a hardware memory reservation.",
   "jobs": [
     {
       "id": "usb_hub",

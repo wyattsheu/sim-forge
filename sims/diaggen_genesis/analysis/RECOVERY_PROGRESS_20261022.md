@@ -85,3 +85,10 @@ USB `clean_diagnostics2` 的 cable 探測、放開與沉降已完成，session �
 上一批全部進入 terminal 後，watcher 於 17:00 正常退出，後來新排的工作尚未被 claim。17:14 已重新啟動原 tmux watcher；棒球帽、料理夾、球鞋均已真正啟動，醬料盒及 USB 等待本批次 GPU 名額與顯存。完成數仍是電捲棒、樹懶兩件。
 
 Dragon 的原始 cleanup 子代理紀錄也已找到：兩次真實 built-in imagegen 呼叫、完整 prompt、工具回報的原始圖路徑，且兩張候選逐 byte 雜湊均與 generator 原檔一致。這只恢復生成來源，沒有偽造驗證或描述。已將私人來源證據放入歷史並連結到新的 same-run resume metadata；owning cleanup child 仍須重看原圖與兩張候選，確認完整配對資料，依原規則選擇或保留真正的 stage halt，不得生成第三張。
+
+
+## 17:25 顯卡共用名額
+
+依既有「有空就塞」要求，外部排程設定允許每張 GPU 最多三件、整批仍最多四件，不改 native、模型、精度或 24 GiB 門檻。三件的最低合計 73728 MiB 才准進場，73727 MiB 拒絕；已有三件時即使大量空閒也拒絕第四件。實際 admission 函式與當下 GPU 快照均已驗證。當時 GPU 0 因 OmniPart 載入後只剩 62155 MiB，第三件仍須等顯存，未假稱已啟動。
+
+啟動憑證增加為 **86 項通過**。只有 `batch_plan.json` 設定改變，所有程式、輸入、環境與 binary inventory 均未改；303 項 CPU 測試證據來自前一輪相同程式，這次另跑上述排程邊界與真實快照核對。這是排程記帳，無法保留 CUDA 顯存。
