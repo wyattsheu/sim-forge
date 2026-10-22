@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T17:50:38+08:00（Asia/Taipei）
+更新：2026-10-22T17:50:55+08:00（Asia/Taipei）
 
 共 9 件：等待 1、執行中 4、完成 3、失敗 1、取消 0。
 
@@ -20,7 +20,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | sneaker | running | running | revision_0001 | 24576 MiB | 2/9 | 未偵測到上述異常（非成功保證） |
 | usb_hub | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
 | sloth | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
-| sauce_keeper | running | not_initialized | 尚未初始化 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
+| sauce_keeper | running | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
 | dragon | queued | seeded | revision_0000 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
 | capybara_plush_toy | failed | seeded | revision_0000 | 49152 MiB | 2/9 | 未偵測到上述異常（非成功保證） |
 | curling_iron | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
@@ -224,17 +224,39 @@ Run：`genesis_sauce_keeper_20261022_clean_diagnostics2`；執行中。
 
 | 階段 | 狀態 |
 |---|---|
-| 圖片清理 | pending |
-| SAM3 分割 | pending |
-| OmniPart 幾何生成 | pending |
-| 材料推估 | pending |
-| 材料參數配置 | pending |
-| 體積網格處理 | pending |
+| 圖片清理 | success |
+| SAM3 分割 | success |
+| OmniPart 幾何生成 | success |
+| 材料推估 | success |
+| 材料參數配置 | success |
+| 體積網格處理 | success |
 | Genesis 物理診斷 | pending |
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
 Genesis 診斷 episode 數：0。
+
+![sauce_keeper_cleaned_image](media/sauce_keeper_cleaned_image.png)
+
+![sauce_keeper_processed_white_bg_png](media/sauce_keeper_processed_white_bg_png.png)
+
+![sauce_keeper_processed_rgba](media/sauce_keeper_processed_rgba.png)
+
+![sauce_keeper_ordered_mask_vis](media/sauce_keeper_ordered_mask_vis.png)
+
+![sauce_keeper_segmentation_overlay](media/sauce_keeper_segmentation_overlay.png)
+
+![sauce_keeper_omnipart_top](media/sauce_keeper_omnipart_top.png)
+
+![sauce_keeper_omnipart_bottom](media/sauce_keeper_omnipart_bottom.png)
+
+![sauce_keeper_omnipart_front](media/sauce_keeper_omnipart_front.png)
+
+![sauce_keeper_omnipart_back](media/sauce_keeper_omnipart_back.png)
+
+![sauce_keeper_omnipart_left](media/sauce_keeper_omnipart_left.png)
+
+![sauce_keeper_omnipart_right](media/sauce_keeper_omnipart_right.png)
 
 
 ## dragon
