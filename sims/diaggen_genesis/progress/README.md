@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-23T00:34:51+08:00（Asia/Taipei）
+更新：2026-10-23T00:35:09+08:00（Asia/Taipei）
 
 共 9 件：等待 1、執行中 2、完成匯出 6、失敗 0、取消 0。
 
@@ -34,7 +34,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | 物件 | 自動監看結果 |
 |---|---|
 | baseball_cap | completed |
-| kitchen_tongs | running |
+| kitchen_tongs | completed |
 | sneaker | running |
 | usb_hub | completed |
 | sloth | completed |
@@ -153,7 +153,7 @@ Run：`genesis_sneaker_20261022_native6`；執行中。
 | 材料推估 | success |
 | 材料參數配置 | success |
 | 體積網格處理 | success |
-| Genesis 物理診斷 | running |
+| Genesis 物理診斷 | failed |
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
