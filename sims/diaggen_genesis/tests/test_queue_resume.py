@@ -33,13 +33,18 @@ def digest(path):
 
 def temporary_patched_sources(destination):
     manifest = json.loads(MANIFEST_PATH.read_text())
+    sharing = json.loads((PATCH_PATH.parent / "queue_gpu_sharing.json").read_text())
+    sharing_files = sharing["files"]
     before_files = []
     for relative, record in manifest["files"].items():
         source = WORKSPACE / relative
         actual = digest(source)
         recovery = json.loads((PATCH_PATH.parent / "queue_recovery_modes.json").read_text())
         current_record = recovery["files"][relative]
-        if actual not in (record["before_sha256"], record["after_sha256"], current_record["after_sha256"]):
+        allowed = [record["before_sha256"], record["after_sha256"], current_record["after_sha256"]]
+        if relative in sharing_files:
+            allowed.append(sharing_files[relative]["after_sha256"])
+        if actual not in allowed:
             raise AssertionError(f"Resume patch baseline changed; review/rebase required: {relative}")
         target = destination / relative
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -56,7 +61,10 @@ def temporary_patched_sources(destination):
         if result.returncode:
             raise AssertionError(result.stdout + result.stderr)
     for relative, record in manifest["files"].items():
-        if digest(destination / relative) not in (record["after_sha256"], recovery["files"][relative]["after_sha256"]):
+        allowed = [record["after_sha256"], recovery["files"][relative]["after_sha256"]]
+        if relative in sharing_files:
+            allowed.append(sharing_files[relative]["after_sha256"])
+        if digest(destination / relative) not in allowed:
             raise AssertionError(f"Patched source digest differs: {relative}")
     selected = []
     recovery_text = (PATCH_PATH.parent / "queue_recovery_modes.patch").read_text()
@@ -69,8 +77,21 @@ def temporary_patched_sources(destination):
     if selected:
         subprocess.run(["patch", "--batch", "--fuzz=0", "-p1"], input="".join(selected),
                        cwd=destination, check=True, capture_output=True, text=True)
+    sharing_text = (PATCH_PATH.parent / "queue_gpu_sharing.patch").read_text()
+    sections = ["--- a/" + item for item in sharing_text.split("--- a/")[1:]]
+    selected = []
+    for relative, record in sharing_files.items():
+        actual = digest(destination / relative)
+        if actual == record["before_sha256"]:
+            selected.extend(item for item in sections if item.splitlines()[0][6:] == relative)
+        elif actual != record["after_sha256"]:
+            raise AssertionError("GPU sharing baseline changed: " + relative)
+    if selected:
+        subprocess.run(["patch", "--batch", "--fuzz=0", "-p1"], input="".join(selected),
+                       cwd=destination, check=True, capture_output=True, text=True)
     for relative in manifest["files"]:
-        if digest(destination / relative) != recovery["files"][relative]["after_sha256"]:
+        expected = sharing_files.get(relative, recovery["files"][relative])["after_sha256"]
+        if digest(destination / relative) != expected:
             raise AssertionError("Recovery integration digest differs: " + relative)
 
 

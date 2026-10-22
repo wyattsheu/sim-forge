@@ -1,0 +1,11 @@
+{
+  "schema_version": "diaggen-external-queue-gpu-sharing-patch-v1",
+  "native_pipeline_changed": false,
+  "files": {
+    "sims/diaggen_genesis/queue/batch_control.py": {
+      "before_sha256": "e3dcd021bcb807aa67556d9ecec406467f3a058e1fb88cda1da03339449f0db5",
+      "after_sha256": "894ed2d47e4224e7b2d0fa61e1d8c9a046fe790cec13570ed8d725b6dd94e05f"
+    }
+  },
+  "purpose": "Allow multiple jobs per GPU with lock-protected conservative admission headroom; preserve exact resume GPU binding."
+}

@@ -1,10 +1,10 @@
 {
   "schema_version": "diaggen-full-runtime-preflight-v1",
-  "checked_at": "2026-10-22T12:26:38+08:00",
+  "checked_at": "2026-10-22T13:52:04+08:00",
   "overall_status": "pass",
   "simulator": "Genesis",
   "counts": {
-    "pass": 80,
+    "pass": 81,
     "fail": 0,
     "skip": 0
   },
@@ -16,18 +16,35 @@
     }
   ],
   "evidence_reuse": {
-    "mesh_and_base_omnipart": "25 unchanged mesh/kernel baseline checks reused",
-    "host_and_genesis": "46 checks rerun after seven-patch installation",
-    "orchestration": "256 actual CPU tests, no failures/errors/skips, unchanged source/test inventory",
-    "recovery_contracts": "Actual four failed production states checked read-only; no ledger writes",
-    "spconv_native": "8-voxel backend analytical/parity GPU test; full-model fix remains unproven"
+    "prior_report_sha256": "c11b03fc2e35849a8f9f4489eeddece786797e724c30d8715ad7a45651b8a075",
+    "unchanged_checks_reused": 77,
+    "orchestration_checks_rerun": 3,
+    "actual_cpu_tests": {
+      "error": 0,
+      "expected_fail": 0,
+      "fail": 0,
+      "pass": 267,
+      "run": 267,
+      "skip": 0,
+      "unexpected_success": 0
+    },
+    "shared_gpu_snapshot_checks": 1,
+    "reviewed_runtime_source_changes": [
+      "sims/diaggen_genesis/batch_plan.json",
+      "sims/diaggen_genesis/queue/batch_control.py",
+      "tools/diaggen_support/queue_gpu_sharing.json",
+      "tools/diaggen_support/queue_gpu_sharing.patch"
+    ],
+    "native_method_changed": false
   },
+  "scope": "External GPU queue admission change; all native runtime/weights/env inventories unchanged. Full CPU orchestration rerun; unchanged native GPU smoke reports explicitly reused.",
   "limitations": [
     "Only curling iron is a completed production asset.",
     "No full-model peak VRAM measurement; large-tensor capybara fix awaits production validation.",
     "New diagnostic/snapshot production success is not established by preflight.",
     "LLM/imagegen access uses existing successful execution evidence; no new cloud call in preflight.",
-    "Memory gates do not reserve GPU capacity."
+    "Memory gates do not reserve GPU capacity.",
+    "Shared admission counts per-job minimum gates as conservative headroom; this does not reserve CUDA memory or establish full-model peak demand. Existing jobs are not migrated or restarted."
   ],
   "components": [
     {
@@ -117,7 +134,8 @@
           "name": "host/historical_codex_model_imagegen_subagent_evidence",
           "status": "pass"
         }
-      ]
+      ],
+      "evidence": "Reused; corresponding native runtime, inputs, environments and binaries match prior certificate."
     },
     {
       "name": "mesh",
@@ -170,7 +188,8 @@
           "name": "mesh/native_four_material_pngs",
           "status": "pass"
         }
-      ]
+      ],
+      "evidence": "Reused; corresponding native runtime, inputs, environments and binaries match prior certificate."
     },
     {
       "name": "omnipart",
@@ -227,7 +246,8 @@
           "name": "omnipart/native_gaussian_rasterizer",
           "status": "pass"
         }
-      ]
+      ],
+      "evidence": "Reused; corresponding native runtime, inputs, environments and binaries match prior certificate."
     },
     {
       "name": "genesis",
@@ -332,7 +352,8 @@
           "name": "genesis/live_server_clean_close",
           "status": "pass"
         }
-      ]
+      ],
+      "evidence": "Reused; corresponding native runtime, inputs, environments and binaries match prior certificate."
     },
     {
       "name": "orchestration",
@@ -349,7 +370,8 @@
           "name": "orchestration/source_and_test_inventory_unchanged",
           "status": "pass"
         }
-      ]
+      ],
+      "evidence": "Rerun after external queue admission change; 267 actual CPU tests."
     },
     {
       "name": "completed_export",
@@ -358,7 +380,8 @@
           "name": "completed_export/strict_accepted_export",
           "status": "pass"
         }
-      ]
+      ],
+      "evidence": "Reused; corresponding native runtime, inputs, environments and binaries match prior certificate."
     },
     {
       "name": "recovery_contracts",
@@ -379,7 +402,8 @@
           "name": "recovery_contracts/sauce_keeper_native_recovery_contract",
           "status": "pass"
         }
-      ]
+      ],
+      "evidence": "Reused; corresponding native runtime, inputs, environments and binaries match prior certificate."
     },
     {
       "name": "spconv_native",
@@ -388,60 +412,18 @@
           "name": "spconv_native/tiny_native_implicit_numerical_parity",
           "status": "pass"
         }
-      ]
-    }
-  ],
-  "regression_test_counts": {
-    "error": 0,
-    "expected_fail": 0,
-    "fail": 0,
-    "pass": 256,
-    "run": 256,
-    "skip": 0,
-    "unexpected_success": 0
-  },
-  "completed_asset": {
-    "id": "curling_iron",
-    "run_id": "genesis_curling_iron_20261021_exr_retry1",
-    "artifact_count": 16,
-    "mesh_validation": {
-      "appearance_schema": "hag4r-post-mesh-texture-visual-v1",
-      "face_connected_components": 1,
-      "material_labels": [
-        0,
-        1
       ],
-      "native_appearance_valid": true,
-      "native_tet_valid": true,
-      "physical_contract": {
-        "metric_mesh_scaling": {
-          "scale_factor": 0.3495781862257746,
-          "schema_version": "hag4r-metric-max-dimension-scaling-v1",
-          "target_max_dimension_m": 0.35
-        },
-        "params": {
-          "keys": [
-            "part_E_nu",
-            "part_colors",
-            "part_density",
-            "part_indices",
-            "part_volume_fill_mode_codes",
-            "tet_E_nu",
-            "tet_density",
-            "tet_part_labels"
-          ],
-          "tet_count": 4171
-        },
-        "volume_topology": {
-          "schema_version": "hag4r-volume-topology-v3",
-          "tet_budget_status": "within_budget",
-          "tet_count": 4171,
-          "volume_topology": "mixed",
-          "warnings": []
+      "evidence": "Reused; corresponding native runtime, inputs, environments and binaries match prior certificate."
+    },
+    {
+      "name": "gpu_sharing",
+      "checks": [
+        {
+          "name": "gpu_sharing/actual_snapshot_admits_next_fresh_job",
+          "status": "pass"
         }
-      },
-      "point_count": 1178,
-      "tet_count": 4171
+      ],
+      "evidence": "Production queue snapshot checked in temporary clone."
     }
-  }
+  ]
 }

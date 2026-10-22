@@ -1,0 +1,74 @@
+--- a/sims/diaggen_genesis/queue/batch_control.py
++++ b/sims/diaggen_genesis/queue/batch_control.py
+@@ -27,6 +27,7 @@
+     "allow_compute_sharing": True,
+     "check_interval_seconds": 15,
+     "max_parallel_jobs": 2,
++    "max_jobs_per_gpu": 1,
+ }
+ IDENTIFIER = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,127}\Z")
+ GPU_UUID = re.compile(r"GPU-[A-Za-z0-9-]+\Z")
+@@ -72,7 +73,7 @@
+         raise ValueError("GPU policy must be an object")
+     policy = dict(DEFAULT_POLICY)
+     policy.update(value)
+-    for key in ("minimum_free_mib", "check_interval_seconds", "max_parallel_jobs"):
++    for key in ("minimum_free_mib", "check_interval_seconds", "max_parallel_jobs", "max_jobs_per_gpu"):
+         if type(policy[key]) is not int or policy[key] <= 0:
+             raise ValueError("GPU policy integer must be positive")
+     if policy["allow_compute_sharing"] is not True:
+@@ -87,6 +88,22 @@
+ 
+ def effective_minimum_free_mib(policy, job):
+     return max(policy["minimum_free_mib"], job.get("minimum_free_mib", 0))
++
++
++def gpu_accepts_job(policy, active, job, gpu):
++    """Budget unallocated demand before allowing another job on a busy GPU.
++
++    Existing memory use is already reflected by NVIDIA. Counting each admitted
++    job's gate again deliberately leaves headroom for agents that have not yet
++    loaded their models. This is admission bookkeeping, not a CUDA reservation.
++    """
++    assigned = [entry for entry in active if entry["gpu_uuid"] == gpu["uuid"]]
++    if len(assigned) >= policy["max_jobs_per_gpu"] or not job_accepts_gpu(job, gpu["uuid"]):
++        return False
++    budget = effective_minimum_free_mib(policy, job)
++    if policy["max_jobs_per_gpu"] > 1:
++        budget += sum(effective_minimum_free_mib(policy, entry) for entry in assigned)
++    return gpu["free_mib"] >= budget
+ 
+ 
+ def query_gpu_csv():
+@@ -294,11 +311,10 @@
+             queued = [job for job in batch["jobs"] if job["status"] == "queued"]
+             if len(active) >= batch["policy"]["max_parallel_jobs"] or not queued:
+                 return []
+-            used = {job["gpu_uuid"] for job in active}
+             records = parse_gpu_csv(self.gpu_query())
+             return [record["uuid"] for record in records
+-                    if record["uuid"] not in used and any(
+-                        job_accepts_gpu(job, record["uuid"]) and record["free_mib"] >= effective_minimum_free_mib(batch["policy"], job)
++                    if any(
++                        gpu_accepts_job(batch["policy"], active, job, record)
+                         for job in queued)]
+ 
+     def claim(self, gpu_uuid):
+@@ -309,7 +325,7 @@
+                 return None
+             batch = self._load()
+             active = [job for job in batch["jobs"] if job["status"] == "running"]
+-            if len(active) >= batch["policy"]["max_parallel_jobs"] or any(job["gpu_uuid"] == gpu_uuid for job in active):
++            if len(active) >= batch["policy"]["max_parallel_jobs"]:
+                 return None
+             queued = [job for job in batch["jobs"] if job["status"] == "queued"]
+             if not queued:
+@@ -318,7 +334,7 @@
+             gpu = next((record for record in records if record["uuid"] == gpu_uuid), None)
+             if gpu is None:
+                 return None
+-            selected = next((job for job in queued if job_accepts_gpu(job, gpu_uuid) and gpu["free_mib"] >= effective_minimum_free_mib(batch["policy"], job)), None)
++            selected = next((job for job in queued if gpu_accepts_job(batch["policy"], active, job, gpu)), None)
+             if selected is None:
+                 return None
+             selected.update(status="running", gpu_uuid=gpu_uuid, runner_pid=None,
