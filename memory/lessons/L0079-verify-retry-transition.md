@@ -48,6 +48,10 @@ observed: 2026-10-22
 
 2026-10-22 補充：即使 archive/reset 與 fresh schema 已通過，也必須把磁碟副作用納入下一步驗證。球鞋與樹懶的 successor 清空材質登記後，上一輪的 `material_audit_authoritative/revision_0000/cleaned_source_image.png` 仍存在；實際登記函式拒絕同名快照，因此 `define_episode` 又失敗。`sims/diaggen_genesis/analysis/reproduce_retry_artifacts.py` 對保存狀態與臨時目錄重現兩次相同錯誤；以獨立 attempt 子目錄的候選函式測試，五個來源檔均可登記且雜湊相符，舊快照保留。這只證明 registration boundary 的局部改善，尚未部署，也未證明完整 episode／probe／terminal 成功；後續驗收必須包含其他舊 artifacts 不被覆寫。證據：`sims/diaggen_genesis/analysis/retry_artifact_reproduction.json`，本機原始快照 `tools/diaggen/outputs/preflight/stall_audit_20261022/`。
 
+同日後續正式恢復改用官方獨立 diagnostics snapshot 入口，保留六個成功上游階段與舊失敗 run。又發現 client／SKILL 邊界必須一併驗證：原生 `revise_diagnostic_probe_target` 已自動 compile 並記錄 preview，文件卻要求再次 preview；同一 compile 出現兩份預覽時，下一步 reflection 正確拒絕。`test_probe_preview_contract.py` 執行實際原生函式本體，重現舊順序失敗，驗證直接使用 revise 回傳的唯一 preview 可通過該邊界；`probe_preview_recovery.patch` 只修正 SKILL，保留原生唯一性與重疊檢查。另以 `diagnostic_credentials.js` 原樣保留 native-issued token／handle，正規化 MCP 的 result／content 封裝並保存原生識別碼；避免模型抄錯一個字元、漏讀回應後猜 ID，或把私有工具回應中的 session ID 誤當成必須中止的事件。
+
+完整正向證據：`genesis_sloth_20261022_clean_diagnostics3` 於 2026-10-22 16:18:53–16:49:42 完成診斷快照後綴，兩個 qualifying probes 的 selected-part fraction 為 0.9166666666666666／1.0，兩區皆 `coverage_complete`、兩 session 關閉、原生 strict accept、貼圖與匯出及完成驗證全部成功。9 個 stage 均成功、16 個匯出產物、4912 vertices／21133 tets／五材料標籤，歸檔在 `sims/diaggen_genesis/runs/genesis_sloth_20261022_clean_diagnostics3/`；公開核對見 `sims/diaggen_genesis/analysis/sloth_completed_validation.json`。這才是完整成功證據；300／301／302 項 CPU 測試的通過數不能代替正式產物。
+
 ## 證據
 
 `tools/diaggen_support/diagnostic_retry_reset.{patch,json}`；`tools/diaggen_support/check_diagnostic_retry.py`；`sims/diaggen_genesis/tests/test_diagnostic_retry_reset.py`；本機 `tools/diaggen/outputs/preflight/diagnostic_retry_reset_baseline_20261022/{manifest,sneaker,sloth}.json`。16 項測試證明的是轉移修復與驗證契約，不能據此宣稱兩個物件已完成完整診斷或匯出。
