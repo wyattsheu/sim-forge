@@ -1,10 +1,10 @@
 {
   "schema_version": "diaggen-full-runtime-preflight-v1",
-  "checked_at": "2026-10-22T23:51:41+08:00",
+  "checked_at": "2026-10-23T00:16:26+08:00",
   "overall_status": "pass",
   "simulator": "Genesis",
   "counts": {
-    "pass": 81,
+    "pass": 84,
     "fail": 0,
     "skip": 0
   },
@@ -15,38 +15,38 @@
       "reason": "Not required by the installed precompiled runtime or validated Ninja JIT"
     }
   ],
-  "scope": "Official native snapshot continuation and version-budget forwarding; 430 fresh CPU regressions and real read-only native preflight/admission on three production snapshots. Unchanged native/environment/binary/input qualification reused.",
+  "scope": "433 fresh CPU tests, literal official-user-hints forwarding, and three actual isolated native SAM3 concept executions; unchanged native/environment/binary/input hardware qualification and prior snapshot admissions reused. No new strict asset accept claimed.",
   "limitations": [
-    "User-authorized new native experiments use max_runs=6 instead of the default two; this setting change is recorded and old failed/unaccepted native results remain intact.",
-    "Admission, native appearance/snapshot preflight and CPU regressions do not establish a new strict Genesis accept.",
-    "Hardware checks were reused after exact native source, environment, binary and qualification-input inventory comparison; they were not rerun.",
-    "Capybara full-size spconv int32 failure remains unresolved and requires isolated backend/kernel compatibility research."
+    "Chosen output has four final regions: three SAM3 evidence regions and one foreground-fill fallback; fallback provenance remains explicit.",
+    "Reducing unnecessary same-material fragmentation may reduce sparse part complexity but does not establish that the int32 issue is fixed.",
+    "The new pipeline must freshly validate its own cleanup and segmentation. Prior candidates are not imported into its stage ledger.",
+    "No unsupported backend, model-weight conversion, assertion bypass, reduced precision/resolution or physical acceptance relaxation was deployed.",
+    "The existing hardware qualification was reused after exact source/environment/binary/input fingerprint comparison; those full smoke suites were not rerun."
   ],
   "evidence_reuse": {
     "hardware_checks_reused": 71,
-    "fresh_hardware_environment_checks": 0,
-    "prior_full_report_sha256": "14d593de0eafebe398a3d2b9dae16845c5868695833bc41e99db1588339aef43",
+    "fresh_full_hardware_environment_checks": 0,
+    "actual_native_sam3_concept_variants": 3,
+    "prior_full_report_sha256": "a08f58d6560e61074bdb5f9e24b73e4a694491a56b02c34b21befbc2f4828b53",
     "unchanged": [
-      "all native tracked source",
-      "five environments",
-      "required executable inventories",
+      "all native tracked sources",
+      "five environment inventories",
+      "required executables",
       "nine qualification inputs"
     ],
     "actual_cpu_tests": {
       "error": 0,
       "expected_fail": 0,
       "fail": 0,
-      "pass": 430,
-      "run": 430,
+      "pass": 433,
+      "run": 433,
       "skip": 0,
       "unexpected_success": 0
     },
     "native_patch_count": 9,
     "changed_external_sources": [
       "sims/diaggen_genesis/queue/batch_control.py",
-      "sims/diaggen_genesis/queue/client.py",
       "sims/diaggen_genesis/queue/image_intake.py",
-      "sims/diaggen_genesis/queue/monitor.py",
       "sims/diaggen_genesis/queue/repair_control.py",
       "sims/diaggen_genesis/queue/repair_prompt.md",
       "sims/diaggen_genesis/queue/run_one.sh",
@@ -352,18 +352,6 @@
       "status": "pass"
     },
     {
-      "name": "orchestration/namespace_unittest_suite",
-      "status": "pass"
-    },
-    {
-      "name": "orchestration/preflight_negative_controls",
-      "status": "pass"
-    },
-    {
-      "name": "orchestration/source_and_test_inventory_unchanged",
-      "status": "pass"
-    },
-    {
       "name": "continuation/dragon_native_snapshot_admission",
       "status": "pass"
     },
@@ -377,6 +365,30 @@
     },
     {
       "name": "continuation/old_native_state_hashes_and_budgets_preserved",
+      "status": "pass"
+    },
+    {
+      "name": "orchestration/namespace_unittest_suite",
+      "status": "pass"
+    },
+    {
+      "name": "orchestration/preflight_negative_controls",
+      "status": "pass"
+    },
+    {
+      "name": "orchestration/source_and_test_inventory_unchanged",
+      "status": "pass"
+    },
+    {
+      "name": "native_user_hints/literal_initializer_argument_no_shell_execution",
+      "status": "pass"
+    },
+    {
+      "name": "native_concepts/three_actual_default_sam3_variants",
+      "status": "pass"
+    },
+    {
+      "name": "native_concepts/old_state_preserved_after_new_admission",
       "status": "pass"
     }
   ]

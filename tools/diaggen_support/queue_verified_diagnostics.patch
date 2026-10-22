@@ -1,15 +1,16 @@
 --- a/sims/diaggen_genesis/queue/run_one.sh
 +++ b/sims/diaggen_genesis/queue/run_one.sh
-@@ -53,6 +53,8 @@
+@@ -53,6 +53,9 @@
  DIAGGEN_QUEUE_RUN_ID="$(batch info "$JOB_ID" run_id)"
  export DIAGGEN_QUEUE_RUN_ID
  EXECUTION_MODE="$(batch info "$JOB_ID" execution_mode)"
 +NATIVE_DIAGNOSTICS_MAX_RUNS="$(batch info "$JOB_ID" sim_diagnostics_max_runs)"
++NATIVE_USER_HINTS="$(batch info "$JOB_ID" user_hints)"
 +[[ "$NATIVE_DIAGNOSTICS_MAX_RUNS" =~ ^[1-9][0-9]*$ ]] || exit 2
  [[ "$EXECUTION_MODE" == fresh || "$EXECUTION_MODE" == resume || "$EXECUTION_MODE" == diagnostics_snapshot ]] || exit 2
  if ((REQUEST_RESUME)) && [[ "$EXECUTION_MODE" != resume ]]; then
      printf '%s\n' "--resume requires Queue.resume admission metadata" >&2
-@@ -72,6 +74,7 @@
+@@ -72,6 +75,7 @@
  export DIAGGEN_JOB_QUEUE_DIR="$ROOT_QUEUE/jobs/$JOB_ID"
  export DIAGGEN_WATCHER_PID=$$
  mkdir -p "$DIAGGEN_JOB_QUEUE_DIR"
@@ -17,7 +18,7 @@
  exec >> "$DIAGGEN_JOB_QUEUE_DIR/launcher.log" 2>&1
  
  RUN_ROOT="$DIAGGEN_ROOT/outputs/agentic_asset_refinement/$DIAGGEN_QUEUE_RUN_ID"
-@@ -158,6 +161,7 @@
+@@ -158,6 +162,7 @@
      "$PYTHON" -m hag4r.agentic.run_diaggen_pipeline \
          --diagnostics_revision_snapshot_dir "$SNAPSHOT_DIR" \
          --diagnostics-reroute-and-export --require-new-run-root \
@@ -25,7 +26,7 @@
          --run_id "$DIAGGEN_QUEUE_RUN_ID" --output_tag "$DIAGGEN_QUEUE_RUN_ID" \
          --run_root outputs/agentic_asset_refinement \
          --config configs/config_genesis_diagnostics_enabled.yaml \
-@@ -165,15 +169,53 @@
+@@ -165,15 +170,57 @@
  else
      mkdir -p outputs/inputs
      FROZEN_INPUT="$DIAGGEN_ROOT/outputs/inputs/${DIAGGEN_QUEUE_RUN_ID}.${SOURCE_IMAGE##*.}"
@@ -34,6 +35,7 @@
      printf '%s\n' "$FROZEN_INPUT" > "$DIAGGEN_JOB_QUEUE_DIR/selected_input.txt"
      "$PYTHON" -m hag4r.agentic.run_diaggen_pipeline \
          --source_image "$FROZEN_INPUT" --run_id "$DIAGGEN_QUEUE_RUN_ID" \
++        --user_hints "$NATIVE_USER_HINTS" \
 +        --sim-diagnostics-max-runs "$NATIVE_DIAGNOSTICS_MAX_RUNS" \
          --output_tag "$DIAGGEN_QUEUE_RUN_ID" \
          --run_root outputs/agentic_asset_refinement \
@@ -48,6 +50,9 @@
 +candidate to recover. Follow the owning cleanup skill's bounded original imagegen loop,
 +including its two-attempt selection rule; preserve every actual validation verdict.
 +Never import candidates or terminal records from a different run."
++        MODE_CONTEXT+=" Read inputs.user_hints from the initialized state as source-grounded
++user context and pass relevant observations to the owning stage agents. Follow each
++native skill's concept authoring and validation rules; hints are not evidence of success."
 +        ;;
 +    resume)
 +        MODE_CONTEXT="This is an admitted same-run resume. Read
@@ -80,7 +85,7 @@
  
  cat > "$DIAGGEN_JOB_QUEUE_DIR/prompt.txt" <<EOF
  Complete this one user-authorized DiagGen asset-generation run in native Genesis.
-@@ -205,22 +247,48 @@
+@@ -205,22 +252,48 @@
  output quality. The guard is an observation, not a memory reservation or OOM guarantee.
  For fresh image cleanup, stop after a passing Attempt 1; do not generate Attempt 2 after it
  passes. For a resume with successful cleanup, skip all imagegen and cleanup registration.
@@ -175,13 +180,18 @@
  class Queue:
      def __init__(self, base=None, *, gpu_query=None):
          self.base = Path(base).resolve() if base is not None else Path(__file__).resolve().parent.parent
-@@ -193,6 +219,20 @@
+@@ -193,6 +219,25 @@
              raise ValueError("Invalid input SHA256")
          if "minimum_free_mib" in job and (type(job["minimum_free_mib"]) is not int or job["minimum_free_mib"] <= 0):
              raise ValueError("Job minimum free memory must be a positive integer")
 +        if 'sim_diagnostics_max_runs' in job and (type(job['sim_diagnostics_max_runs']) is not int
 +                                                  or job['sim_diagnostics_max_runs'] < 1):
 +            raise ValueError('Diagnostic version budget must be a positive integer')
++        if 'user_hints' in job and (not isinstance(job['user_hints'], str)
++                                    or len(job['user_hints']) > 16384 or '\x00' in job['user_hints']):
++            raise ValueError('Native user hints must be text of at most 16384 characters')
++        if 'autonomous_native_repair' in job and type(job['autonomous_native_repair']) is not bool:
++            raise ValueError('Native repair authorization must be a boolean')
 +        continuation = job.get('diagnostic_continuation')
 +        if continuation is not None:
 +            if not isinstance(continuation, dict) or continuation.get('schema_version') != 'diaggen-native-continuation-v1':
@@ -196,25 +206,27 @@
          if "scheduling_note" in job and (not isinstance(job["scheduling_note"], str) or not REASON.fullmatch(job["scheduling_note"])):
              raise ValueError("Scheduling note must be a short lowercase enum")
  
-@@ -363,7 +403,7 @@
+@@ -363,7 +408,7 @@
              self._save(batch)
  
      def info(self, job_id, field):
 -        if field not in ("input", "run_id", "gpu_uuid", "status", "minimum_free_mib", "execution_mode", "resume_id", "resume_frozen_input", "diagnostics_snapshot_dir", "diagnostics_snapshot_input"):
-+        if field not in ("input", "run_id", "gpu_uuid", "status", "minimum_free_mib", "execution_mode", "resume_id", "resume_frozen_input", "diagnostics_snapshot_dir", "diagnostics_snapshot_input", "sim_diagnostics_max_runs", "diagnostic_continuation"):
++        if field not in ("input", "run_id", "gpu_uuid", "status", "minimum_free_mib", "execution_mode", "resume_id", "resume_frozen_input", "diagnostics_snapshot_dir", "diagnostics_snapshot_input", "sim_diagnostics_max_runs", "diagnostic_continuation", "user_hints"):
              raise ValueError("Unsupported job info field")
          with self._locked():
              batch = self._load()
-@@ -372,6 +412,8 @@
+@@ -372,6 +417,10 @@
                  return job.get(field, "fresh")
              if field == "minimum_free_mib":
                  return effective_minimum_free_mib(batch["policy"], job)
 +            if field == 'sim_diagnostics_max_runs':
 +                return job.get(field, 2)
++            if field == 'user_hints':
++                return job.get(field, '')
              return job.get(field)
  
      def policy(self, field):
-@@ -418,7 +460,60 @@
+@@ -418,7 +467,60 @@
                  job["reason"] = reason
              self._save(batch)
  
@@ -276,7 +288,7 @@
          """Archive failed launcher logs and explicitly queue a fresh native run."""
          validate_identifier(new_run_id)
          if not isinstance(reason, str) or not REASON.fullmatch(reason):
-@@ -428,9 +523,39 @@
+@@ -428,9 +530,39 @@
                  raise ValueError("Retry requires queue/HOLD until repair is reviewed")
              batch = self._load()
              job = self._job(batch, job_id)
@@ -318,7 +330,7 @@
              previous_run_id = job["run_id"]
              used_run_ids = {entry["run_id"] for entry in batch["jobs"]}
              for entry in batch["jobs"]:
-@@ -486,6 +611,11 @@
+@@ -486,6 +618,11 @@
              if snapshot_details is not None:
                  job.update(execution_mode="diagnostics_snapshot", **snapshot_details)
                  mapping.update(snapshot_details)
@@ -330,7 +342,7 @@
              job.pop("reason", None)
              # All queue operations honor batch.lock, so this rename cannot collide
              # with another retry. Native output and its completed archive stay put.
-@@ -500,18 +630,8 @@
+@@ -500,18 +637,8 @@
              atomic_json(self.directory / "status.json", self._summary(batch))
              return mapping
  
@@ -351,7 +363,7 @@
          ownership = [state]
          ownership_path = Path(str(state.get("paths", {}).get("sim_diagnostics_dir", ""))) / "runtime_ownership.json"
          if ownership_path.is_file():
-@@ -526,6 +646,34 @@
+@@ -526,6 +653,34 @@
                  records = ledger.get(key, [])
                  if not isinstance(records, list) or any(not isinstance(record, dict) or record.get(field) not in closed for record in records):
                      raise ValueError("Snapshot source diagnostic ownership is still active or malformed")
@@ -386,7 +398,7 @@
          revision = state.get("active_revision")
          if not isinstance(revision, str) or not IDENTIFIER.fullmatch(revision):
              raise ValueError("Snapshot source has no valid active revision")
-@@ -549,6 +697,13 @@
+@@ -549,6 +704,13 @@
      def diagnostics_snapshot(self, job_id, new_run_id, reason):
          return self.retry(job_id, new_run_id, reason, diagnostics_snapshot=True)
  
@@ -400,7 +412,7 @@
      def validate_snapshot(self, job_id):
          with self._locked():
              job = self._job(self._load(), job_id)
-@@ -582,9 +737,13 @@
+@@ -582,9 +744,13 @@
          if check_digest and digest != job.get("resume_state_sha256"):
              raise ValueError("Native state changed after resume admission")
          state = json.loads(state_bytes)
@@ -415,7 +427,7 @@
                  or state.get("runtime_kind") != "codex_skill" or state.get("status") not in ("seeded", "running", "failed")
                  or state.get("diagnostics", {}).get("enabled") is not True):
              raise ValueError("Native state is incompatible with same-run Genesis resume")
-@@ -612,7 +771,12 @@
+@@ -612,7 +778,12 @@
              stage = stages[name]
              if not isinstance(stage, dict):
                  raise ValueError("Invalid native stage record")
@@ -429,7 +441,7 @@
                  if unfinished:
                      raise ValueError("Successful native stages must form a prefix")
                  expected = stage.get("artifacts", {}).get("expected")
-@@ -624,6 +788,9 @@
+@@ -624,6 +795,9 @@
                          if (not path.is_absolute() or path.is_symlink() or not path.is_file() or path.stat().st_size <= 0
                                  or not path.resolve().is_relative_to(run_root.resolve())):
                              raise ValueError("A required upstream artifact is missing or unsafe")
@@ -439,7 +451,7 @@
                  completed.append(name)
              else:
                  if stage.get("ok") is not False or stage.get("status") not in ("pending", "pending_retry"):
-@@ -806,7 +973,7 @@
+@@ -806,7 +980,7 @@
      elif command == "info" and len(rest) == 2:
          value = queue.info(*rest)
          if value is not None:
@@ -448,7 +460,7 @@
      elif command == "policy" and len(rest) == 1:
          value = queue.policy(rest[0])
          print(str(value).lower() if isinstance(value, bool) else value)
-@@ -822,6 +989,10 @@
+@@ -822,6 +996,10 @@
          print(json.dumps(queue.validate_resume(*rest), ensure_ascii=False))
      elif command == "diagnostics-snapshot" and len(rest) == 3:
          print(json.dumps(queue.diagnostics_snapshot(*rest), ensure_ascii=False))

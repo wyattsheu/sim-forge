@@ -302,6 +302,15 @@ class RepairTests(unittest.TestCase):
         request = repair.object_file(self.q / 'repair_jobs' / request_id / 'request.json')
         self.assertEqual(request['incident']['kind'], 'exported_unaccepted')
 
+    def test_authorized_fresh_native_experiment_can_continue_after_its_budget(self):
+        self.job['autonomous_native_repair'] = True
+        repair.atomic_json(self.q / 'batch.json', self.batch)
+        self.observed['jobs'][0]['outcome'] = 'native_revision_budget_exhausted'
+        self.refresh()
+        request_id = self.prepare()
+        request = repair.object_file(self.q / 'repair_jobs' / request_id / 'request.json')
+        self.assertEqual(request['incident']['kind'], 'native_revision_budget_exhausted')
+
     def test_operator_request_reopens_baseline_without_erasing_previous_counter(self):
         self.job['id'] = 'capybara_plush_toy'
         self.observed['jobs'][0].update(id=self.job['id'], outcome='stage_failed')

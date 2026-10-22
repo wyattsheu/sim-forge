@@ -1,5 +1,13 @@
 # 伺服器排程與自動監看
 
+## 2026-10-23：水豚的原生語義分割實驗
+
+官方替代後端的 CPU 稽核確認直接切換 TorchSparse 會漏載六份卷積權重，因此未部署後端切換。本次另沿用原生 segmentation skill 的「合併重複同材質部位」指引，在隔離目錄對同一清理圖執行三組 SAM3 concepts。`capybara stuffed toy; dark brown muzzle; green backpack` 產生三份真正 SAM3 證據，後處理為四個區域（含一個保留的 foreground-fill fallback）；相較原五區域，腳掌合併回絨毛身體，綠色配件有自己的 SAM3 遮罩。原生模型、解析度、精度、分數與面積門檻均未變，舊 state 雜湊未變。
+
+使用者授權的水豚新 raw-image 實驗使用官方 `--user_hints` 傳遞這些有影像依據的觀察，讓新的 owning agents 重新清理／分割／生成；不跨 run 匯入舊 cleanup candidate，不把隔離輸出登記成正式 stage success。`genesis_capybara_plush_toy_20261023_native_coarse6` 設定官方診斷版本上限 6，並明確允許後續原生修復調查。此假說尚未證明能避開 full-size int32 錯誤，更不代表已通過 Genesis。若仍失敗，保留新證據並調查，而非略過 kernel 檢查。見 [原生語義實驗](capybara_native_concepts_20261023.json)。
+
+外部 worker 的 source 以原子替換部署，已啟動的 Bash worker 保留原 inode／prompt；native source 與正式環境不變。433 項 CPU／回歸測試通過，包含自由文字 hints 以單一 literal argument 傳入官方 initializer，字串中的 `$()` 或反引號不會被 shell 執行。`autonomous_native_repair=true` 的原生新實驗在版本用盡／未通過匯出時，也會交回既有調查程序。依使用者持續自動修復的要求，新提交的圖片也帶此授權；第一次仍使用官方預設兩版本（或使用者指定值），之後由調查程序檢查原因及合法接續條件，不能直接把失敗改為通過。
+
 ## 2026-10-22：使用官方參數繼續修復
 
 使用者要求依原 Repo 現有功能繼續嘗試完成。官方 initializer 已支援 `--sim-diagnostics-max-runs`，預設 2，表示初始版本與一個修正版。本次龍、料理夾與球鞋的新實驗改用 **6 個版本**，接受條件、模型、精度及 Genesis 診斷保持不變；這是官方參數的實驗設定差異，不是重寫舊 run 的預算或結果。

@@ -138,6 +138,7 @@ class Intake:
                            'runner_pid': None, 'attempts': 0, 'started_at': None, 'finished_at': None,
                            'execution_mode': 'fresh', 'submitted_at': now(),
                            'sim_diagnostics_max_runs': diagnostic_runs,
+                           'autonomous_native_repair': True,
                            'submission': {key: record[key] for key in
                                           ('format', 'width', 'height', 'size_bytes')}}
                     batch['jobs'].append(job)

@@ -222,6 +222,11 @@ class Queue:
         if 'sim_diagnostics_max_runs' in job and (type(job['sim_diagnostics_max_runs']) is not int
                                                   or job['sim_diagnostics_max_runs'] < 1):
             raise ValueError('Diagnostic version budget must be a positive integer')
+        if 'user_hints' in job and (not isinstance(job['user_hints'], str)
+                                    or len(job['user_hints']) > 16384 or '\x00' in job['user_hints']):
+            raise ValueError('Native user hints must be text of at most 16384 characters')
+        if 'autonomous_native_repair' in job and type(job['autonomous_native_repair']) is not bool:
+            raise ValueError('Native repair authorization must be a boolean')
         continuation = job.get('diagnostic_continuation')
         if continuation is not None:
             if not isinstance(continuation, dict) or continuation.get('schema_version') != 'diaggen-native-continuation-v1':
@@ -403,7 +408,7 @@ class Queue:
             self._save(batch)
 
     def info(self, job_id, field):
-        if field not in ("input", "run_id", "gpu_uuid", "status", "minimum_free_mib", "execution_mode", "resume_id", "resume_frozen_input", "diagnostics_snapshot_dir", "diagnostics_snapshot_input", "sim_diagnostics_max_runs", "diagnostic_continuation"):
+        if field not in ("input", "run_id", "gpu_uuid", "status", "minimum_free_mib", "execution_mode", "resume_id", "resume_frozen_input", "diagnostics_snapshot_dir", "diagnostics_snapshot_input", "sim_diagnostics_max_runs", "diagnostic_continuation", "user_hints"):
             raise ValueError("Unsupported job info field")
         with self._locked():
             batch = self._load()
@@ -414,6 +419,8 @@ class Queue:
                 return effective_minimum_free_mib(batch["policy"], job)
             if field == 'sim_diagnostics_max_runs':
                 return job.get(field, 2)
+            if field == 'user_hints':
+                return job.get(field, '')
             return job.get(field)
 
     def policy(self, field):

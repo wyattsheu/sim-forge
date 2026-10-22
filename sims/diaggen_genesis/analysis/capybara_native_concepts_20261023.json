@@ -1,0 +1,175 @@
+{
+  "schema_version": "diaggen-native-concept-experiment-v1",
+  "checked_at": "2026-10-23T00:16:26+08:00",
+  "native_code_changed": false,
+  "production_environment_changed": false,
+  "source_native_state_unchanged": true,
+  "pipeline_model": "gpt-6-luna",
+  "reasoning_effort": "max",
+  "native_diagnostic_max_runs": 6,
+  "scope": "Native SAM3 experiments and explicit new raw-image admission; full-size OmniPart decoding and Genesis acceptance are pending.",
+  "actual_cpu_tests": {
+    "error": 0,
+    "expected_fail": 0,
+    "fail": 0,
+    "pass": 433,
+    "run": 433,
+    "skip": 0,
+    "unexpected_success": 0
+  },
+  "official_capabilities_used": [
+    "SAM3 concept phrases and default native postprocessing",
+    "Native skill guidance to merge repeated same-material regions",
+    "Public --user_hints raw-image initializer option",
+    "Public --sim-diagnostics-max-runs option"
+  ],
+  "previous_native_part_count": 5,
+  "selected_variant": {
+    "name": "coarse_backpack_regions",
+    "prompt": "capybara stuffed toy; dark brown muzzle; green backpack",
+    "final_part_count": 4,
+    "postprocess_summary": {
+      "final_part_count": 4,
+      "final_segmentation_evidence_part_count": 3,
+      "foreground_fill_fallback_part_count": 1,
+      "foreground_fill_fallback_used": true,
+      "post_sam3_score_threshold": 0.0,
+      "sam3_masks_kept_after_postprocess_count": 3,
+      "sam3_masks_rejected_after_postprocess_count": 0,
+      "sam3_pre_postprocess_mask_count": 3,
+      "sam3_pre_postprocess_zero_masks": false,
+      "score_threshold_scope": "post_sam3_mask_score_filter_only"
+    },
+    "raw_masks": [
+      {
+        "concept": "capybara stuffed toy",
+        "area_px": 132882,
+        "kept": true
+      },
+      {
+        "concept": "green backpack",
+        "area_px": 13830,
+        "kept": true
+      },
+      {
+        "concept": "dark brown muzzle",
+        "area_px": 12075,
+        "kept": true
+      }
+    ],
+    "overlay": "/mnt/HDD4/wyattsheu/ITRI/sim-forge/tools/diaggen/outputs/preflight/capybara_native_concepts_20261023/coarse_backpack_regions/coarse_backpack_regions_segmentation_overlay.png",
+    "manifest": "/mnt/HDD4/wyattsheu/ITRI/sim-forge/tools/diaggen/outputs/preflight/capybara_native_concepts_20261023/coarse_backpack_regions/segmentation_manifest.json"
+  },
+  "all_native_sam3_variants": [
+    {
+      "name": "coarse_plush_regions",
+      "prompt": "capybara plush body including head legs paws and ears; dark brown fabric muzzle; green fabric scarf and leaves",
+      "final_part_count": 3,
+      "postprocess_summary": {
+        "final_part_count": 3,
+        "final_segmentation_evidence_part_count": 2,
+        "foreground_fill_fallback_part_count": 1,
+        "foreground_fill_fallback_used": true,
+        "post_sam3_score_threshold": 0.0,
+        "sam3_masks_kept_after_postprocess_count": 2,
+        "sam3_masks_rejected_after_postprocess_count": 0,
+        "sam3_pre_postprocess_mask_count": 2,
+        "sam3_pre_postprocess_zero_masks": false,
+        "score_threshold_scope": "post_sam3_mask_score_filter_only"
+      },
+      "raw_masks": [
+        {
+          "concept": "capybara plush body",
+          "area_px": 131112,
+          "kept": true
+        },
+        {
+          "concept": "dark brown fabric muzzle",
+          "area_px": 12072,
+          "kept": true
+        }
+      ],
+      "overlay": "/mnt/HDD4/wyattsheu/ITRI/sim-forge/tools/diaggen/outputs/preflight/capybara_native_concepts_20261023/coarse_plush_regions/coarse_plush_regions_segmentation_overlay.png",
+      "manifest": "/mnt/HDD4/wyattsheu/ITRI/sim-forge/tools/diaggen/outputs/preflight/capybara_native_concepts_20261023/coarse_plush_regions/segmentation_manifest.json"
+    },
+    {
+      "name": "coarse_material_regions",
+      "prompt": "brown stuffed animal; dark brown snout; green cloth wrap",
+      "final_part_count": 3,
+      "postprocess_summary": {
+        "final_part_count": 3,
+        "final_segmentation_evidence_part_count": 2,
+        "foreground_fill_fallback_part_count": 1,
+        "foreground_fill_fallback_used": true,
+        "post_sam3_score_threshold": 0.0,
+        "sam3_masks_kept_after_postprocess_count": 2,
+        "sam3_masks_rejected_after_postprocess_count": 0,
+        "sam3_pre_postprocess_mask_count": 2,
+        "sam3_pre_postprocess_zero_masks": false,
+        "score_threshold_scope": "post_sam3_mask_score_filter_only"
+      },
+      "raw_masks": [
+        {
+          "concept": "brown stuffed animal",
+          "area_px": 131823,
+          "kept": true
+        },
+        {
+          "concept": "dark brown snout",
+          "area_px": 12067,
+          "kept": true
+        }
+      ],
+      "overlay": "/mnt/HDD4/wyattsheu/ITRI/sim-forge/tools/diaggen/outputs/preflight/capybara_native_concepts_20261023/coarse_material_regions/coarse_material_regions_segmentation_overlay.png",
+      "manifest": "/mnt/HDD4/wyattsheu/ITRI/sim-forge/tools/diaggen/outputs/preflight/capybara_native_concepts_20261023/coarse_material_regions/segmentation_manifest.json"
+    },
+    {
+      "name": "coarse_backpack_regions",
+      "prompt": "capybara stuffed toy; dark brown muzzle; green backpack",
+      "final_part_count": 4,
+      "postprocess_summary": {
+        "final_part_count": 4,
+        "final_segmentation_evidence_part_count": 3,
+        "foreground_fill_fallback_part_count": 1,
+        "foreground_fill_fallback_used": true,
+        "post_sam3_score_threshold": 0.0,
+        "sam3_masks_kept_after_postprocess_count": 3,
+        "sam3_masks_rejected_after_postprocess_count": 0,
+        "sam3_pre_postprocess_mask_count": 3,
+        "sam3_pre_postprocess_zero_masks": false,
+        "score_threshold_scope": "post_sam3_mask_score_filter_only"
+      },
+      "raw_masks": [
+        {
+          "concept": "capybara stuffed toy",
+          "area_px": 132882,
+          "kept": true
+        },
+        {
+          "concept": "green backpack",
+          "area_px": 13830,
+          "kept": true
+        },
+        {
+          "concept": "dark brown muzzle",
+          "area_px": 12075,
+          "kept": true
+        }
+      ],
+      "overlay": "/mnt/HDD4/wyattsheu/ITRI/sim-forge/tools/diaggen/outputs/preflight/capybara_native_concepts_20261023/coarse_backpack_regions/coarse_backpack_regions_segmentation_overlay.png",
+      "manifest": "/mnt/HDD4/wyattsheu/ITRI/sim-forge/tools/diaggen/outputs/preflight/capybara_native_concepts_20261023/coarse_backpack_regions/segmentation_manifest.json"
+    }
+  ],
+  "original_failed_run_id": "genesis_capybara_plush_toy_20261022_native_retry3",
+  "new_run_id": "genesis_capybara_plush_toy_20261023_native_coarse6",
+  "new_mode": "fresh_raw_image",
+  "prior_native_state_sha256": "3a4380130040ab3ba2fd6690416acf5a2b5dff590dafce107bc675d4cf820ebc",
+  "source_study_report_sha256": "9aff77f70d983df7252df11f49b0f6c65b8baf3c727d94d460fab5aa11e51c0c",
+  "initial_report_collection_error": "A missing top-level result key was corrected by reading the already-written canonical manifest; the first failed report log and generated outputs were retained.",
+  "limits": [
+    "Chosen output has four final regions: three SAM3 evidence regions and one foreground-fill fallback; fallback provenance remains explicit.",
+    "Reducing unnecessary same-material fragmentation may reduce sparse part complexity but does not establish that the int32 issue is fixed.",
+    "The new pipeline must freshly validate its own cleanup and segmentation. Prior candidates are not imported into its stage ledger.",
+    "No unsupported backend, model-weight conversion, assertion bypass, reduced precision/resolution or physical acceptance relaxation was deployed."
+  ]
+}

@@ -129,7 +129,7 @@ class RepairControl:
         for job in batch['jobs']:
             observation = index.get((job['id'], job['run_id']), {})
             outcome = observation.get('outcome')
-            continuing = bool(job.get('diagnostic_continuation'))
+            continuing = bool(job.get('diagnostic_continuation')) or job.get('autonomous_native_repair') is True
             if job['status'] == 'cancelled' or (job['status'] == 'success'
                                                and not (continuing and outcome == 'exported_unaccepted')):
                 continue

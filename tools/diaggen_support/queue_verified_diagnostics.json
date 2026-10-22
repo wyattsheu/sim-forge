@@ -5,14 +5,14 @@
     "sims/diaggen_genesis/queue/run_one.sh": {
       "before_sha256": "4dce13cf532e45fa4b3a31d080b0f768defde7fbdc575d55b0737890a5c873a3",
       "before_md5": "240c5c5500c457496a8a6660da3b2734",
-      "after_sha256": "f7f7a70692a34ff947289753cf19647b0b98104b6b5ab92ecaceb00a8cd20505"
+      "after_sha256": "df56e9005d5f78b6c1d2adb92c4bb2a0236e6d15861a903d12adf92e46024e4f"
     },
     "sims/diaggen_genesis/queue/batch_control.py": {
       "before_sha256": "894ed2d47e4224e7b2d0fa61e1d8c9a046fe790cec13570ed8d725b6dd94e05f",
       "before_md5": "6227da8e4d19edcbbe5a85d00f780398",
-      "after_sha256": "62f01a02bb869c5ffcc301fa796b0fef5e34060cc094fd54cc52d9af013d5261"
+      "after_sha256": "04c22cc17efe5d61f3d47aac8997153fecac8e1d72ba73d89bd6ef0184b9f2c6"
     }
   },
-  "patch_sha256": "33db740f02532b438215f61a1a9018f9ade07218de69b40542888572dc9f7a7b",
+  "patch_sha256": "88a1b9f588ef0cd47a4b5a9fb41094e40dd4c3030d1386e9f1858166a6cbeb6e",
   "contract": "Separate fresh/resume/snapshot instructions and retain native MCP credentials byte-for-byte in the owning child tool store; no native methods or acceptance conditions changed. Existing workers retain old open shell inode and old prompt; new workers alone use this source. Origin retry is explicit, requires a dead failed worker with closed native ownership, unchanged previously admitted origin and no accepted current revision; preserves all old runs. After each newly created diagnostic repair, parent explicitly invokes guarded existing native stage-terminal recovery before replacement stages; never clears current-revision terminals or live ownership. Same-run repair resumes recognize native reused prefix stages only with exact repair-route provenance and active-revision artifact paths; opt-in exporting snapshot repair runs are eligible, stage-only snapshots remain excluded. Fresh raw-image launches additionally decode and hash-check each queue input and publish an immutable native copy before initialization; submitted images do not alter the nine-image runtime qualification fixture. User-authorized continuation experiments pass the official diagnostic version budget into a new public snapshot run, preserve old native budgets and all archives, and require unchanged parent/origin hashes, closed ownership and native snapshot preflight; strict-accepted assets remain ineligible."
 }

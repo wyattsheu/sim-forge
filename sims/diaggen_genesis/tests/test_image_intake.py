@@ -48,6 +48,7 @@ class IntakeTests(unittest.TestCase):
         self.assertEqual(frozen.read_bytes(), self.source.read_bytes())
         self.assertEqual(frozen.stat().st_mode & 0o222, 0)
         self.assertEqual(job['submission']['width'], 24)
+        self.assertTrue(job['autonomous_native_repair'])
         self.assertEqual(self.queue.claim('GPU-fixture'), result['id'])
         self.assertTrue(result['results_directory'].startswith(str(self.base / 'runs')))
 
@@ -140,6 +141,17 @@ class IntakeTests(unittest.TestCase):
         self.assertEqual(self.jobs()[0]['sim_diagnostics_max_runs'], 6)
         with self.assertRaises(ValueError):
             self.intake.submit([self.source], diagnostic_runs=0)
+
+    def test_native_hints_and_repair_authorization_validate_before_admission(self):
+        self.intake.submit([self.source])
+        original = self.jobs()[0]
+        for field, values in (('user_hints', (None, 3, 'bad\x00hint', 'x' * 16385)),
+                              ('autonomous_native_repair', (1, 'true', None))):
+            for value in values:
+                with self.subTest(field=field, value=repr(value)[:25]), self.assertRaises(ValueError):
+                    self.queue._validate_job({**original, field: value})
+        self.queue._validate_job({**original, 'user_hints': 'plush body; green backpack',
+                                  'autonomous_native_repair': True})
 
     def test_batch_limit_rejects_whole_invocation(self):
         with patch.object(image_intake, 'MAX_JOBS', 0):

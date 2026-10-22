@@ -54,6 +54,7 @@ DIAGGEN_QUEUE_RUN_ID="$(batch info "$JOB_ID" run_id)"
 export DIAGGEN_QUEUE_RUN_ID
 EXECUTION_MODE="$(batch info "$JOB_ID" execution_mode)"
 NATIVE_DIAGNOSTICS_MAX_RUNS="$(batch info "$JOB_ID" sim_diagnostics_max_runs)"
+NATIVE_USER_HINTS="$(batch info "$JOB_ID" user_hints)"
 [[ "$NATIVE_DIAGNOSTICS_MAX_RUNS" =~ ^[1-9][0-9]*$ ]] || exit 2
 [[ "$EXECUTION_MODE" == fresh || "$EXECUTION_MODE" == resume || "$EXECUTION_MODE" == diagnostics_snapshot ]] || exit 2
 if ((REQUEST_RESUME)) && [[ "$EXECUTION_MODE" != resume ]]; then
@@ -173,6 +174,7 @@ else
     printf '%s\n' "$FROZEN_INPUT" > "$DIAGGEN_JOB_QUEUE_DIR/selected_input.txt"
     "$PYTHON" -m hag4r.agentic.run_diaggen_pipeline \
         --source_image "$FROZEN_INPUT" --run_id "$DIAGGEN_QUEUE_RUN_ID" \
+        --user_hints "$NATIVE_USER_HINTS" \
         --sim-diagnostics-max-runs "$NATIVE_DIAGNOSTICS_MAX_RUNS" \
         --output_tag "$DIAGGEN_QUEUE_RUN_ID" \
         --run_root outputs/agentic_asset_refinement \
@@ -187,6 +189,9 @@ case "$EXECUTION_MODE" in
 candidate to recover. Follow the owning cleanup skill's bounded original imagegen loop,
 including its two-attempt selection rule; preserve every actual validation verdict.
 Never import candidates or terminal records from a different run."
+        MODE_CONTEXT+=" Read inputs.user_hints from the initialized state as source-grounded
+user context and pass relevant observations to the owning stage agents. Follow each
+native skill's concept authoring and validation rules; hints are not evidence of success."
         ;;
     resume)
         MODE_CONTEXT="This is an admitted same-run resume. Read

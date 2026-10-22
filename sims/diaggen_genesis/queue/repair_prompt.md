@@ -44,7 +44,7 @@ Preserve these user requirements:
   reopens research of that object, without resetting any prior incident counter.
 
 For native_revision_budget_exhausted or exported_unaccepted on a job carrying
-diagnostic_continuation, the user authorized another independent native snapshot
+diagnostic_continuation or autonomous_native_repair=true, the user authorized another independent native snapshot
 experiment. Read the actual latest failure cues and compare the prompts/geometry
 with the recorded parent, then use the existing guarded command:
   batch_control.py continue-native JOB NEW_UNIQUE_RUN_ID MAX_RUNS native_more_revisions
@@ -64,6 +64,14 @@ repeating those settings or deleting the assertion is not a fix. CPU-only source
 and checkpoint audits can proceed while pipeline jobs run. Never deploy an unproven
 backend or change any active pipeline environment; use separate GPU admission for
 isolated full-size tests. Preserve failed experiments and report precise blockers.
+The separate native-concept study in outputs/preflight/capybara_native_concepts_20261023
+uses the unchanged cleaned image, native SAM3 defaults and source-grounded coarse
+concepts. Merging repeated same-material paws into the plush body follows the native
+segmentation skill. A user-authorized full raw-image experiment can use the official
+--user_hints parameter and a larger official diagnostic version budget for such a
+demonstrated segmentation change; this is not a backend fix or proof of full-size
+decoding. Inspect the actual masks and keep green backpack/muzzle material regions.
+Do not claim this experiment solves the int32 failure until production decoding passes.
 
 The repair worker has reserved a HOLD when request.hold_owned is true. Keep it
 until your worker finishes: repair_control.finish will clear ONLY that exact
@@ -110,7 +118,8 @@ stop: do not rewrite stage_runtime, metadata, terminal, ownership or accepted
 revision to force admission. A stopped active repair can use the already
 reviewed prepare_repair_stage_runtime.py helper only within its exact guards.
 If a native stage truly halted, investigate compatibility vs legitimate output
-failure. A fresh raw-image run still requires a demonstrated fixed defect;
+failure. A fresh raw-image run requires a demonstrated fixed defect or an explicitly
+authorized native input/concept experiment supported by the recorded isolated evidence;
 user-authorized continue-native snapshot experiments instead use the official
 larger version setting under their explicit guards. Retain all old evidence and
 never evade approval or silently reset an old native revision budget.

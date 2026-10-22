@@ -629,6 +629,36 @@ class SameRunResumeTests(unittest.TestCase):
     def test_native_budget_default_remains_two_for_unchanged_jobs(self):
         self.assertEqual(self.queue.info('object_0', 'sim_diagnostics_max_runs'), 2)
 
+    def test_fresh_shell_passes_native_user_hints_as_one_literal_argument(self):
+        text = (self.patched_root / SHELL_RELATIVE).read_text()
+        branch = text.split('else\n    mkdir -p outputs/inputs\n', 1)[1].split('\nfi\n', 1)[0]
+        arguments = self.workspace / 'captured_initializer_args.json'
+        marker = self.workspace / 'must_not_be_executed'
+        hints = f'plush body; green backpack; $(touch {marker}) `touch {marker}`\nretain source identity'
+        environment = dict(os.environ, PYTHON='capture', ROOT_QUEUE=str(self.base / 'queue'),
+            DIAGGEN_ROOT=str(self.native), DIAGGEN_QUEUE_RUN_ID='fresh_native_hints', JOB_ID='object_0',
+            DIAGGEN_JOB_QUEUE_DIR=str(self.job_directory), SOURCE_IMAGE=str(self.source),
+            NATIVE_USER_HINTS=hints, NATIVE_DIAGNOSTICS_MAX_RUNS='6',
+            CAPTURE_PYTHON=sys.executable, CAPTURE_ARGS=str(arguments))
+        script = '''set -euo pipefail
+capture() {
+ if [[ "$1" == -m ]]; then
+  "$CAPTURE_PYTHON" -c 'import json,os,sys; open(os.environ["CAPTURE_ARGS"],"w").write(json.dumps(sys.argv[1:]))' "$@"
+  printf '{}\\n'
+ else
+  cp -- "$SOURCE_IMAGE" "$4"
+ fi
+}
+mkdir -p outputs/inputs
+''' + branch
+        result = subprocess.run(['bash', '-c', script], cwd=self.native, env=environment,
+                                capture_output=True, text=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        values = json.loads(arguments.read_text())
+        self.assertEqual(values[values.index('--user_hints') + 1], hints)
+        self.assertEqual(values[values.index('--sim-diagnostics-max-runs') + 1], '6')
+        self.assertFalse(marker.exists())
+
     def test_snapshot_creates_new_run_preserves_halt_and_logs_and_can_claim_any_gpu(self):
         snapshot = self.make_business_halt_snapshot()
         before = (self.run_root / "state.json").read_bytes()

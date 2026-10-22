@@ -4,6 +4,8 @@
 
 使用 DiagGen 內附的 **Genesis 1.2.0**，開啟 Genesis 診斷，排程 9 張圖片的完整生成流程。
 
+**10/23 繼續嘗試：** 料理夾與球鞋的新原生快照實驗已啟動，實際 state 確認 `max_runs=6`；龍等待 GPU。水豚另以原生 SAM3 的同材質合併指引做隔離實驗，已取得身體／口鼻／綠色背包三份真實遮罩，保留後處理的第四個 fallback 區域；新 raw-image 工作使用官方 `--user_hints` 與六版本設定排程，尚未證明完整解碼成功。433 項回歸通過，無 native source／正式環境變更。見 [語義實驗與限制](analysis/capybara_native_concepts_20261023.json)、[後端權重稽核](analysis/incident_20261022_235219_ff1b8ecd0a10.md) 及 [即時進度](progress/)。
+
 **繼續修復：** 使用者授權優先沿用原 Repo 功能，龍、料理夾與球鞋以通過原生預檢的 full-image snapshot 另開實驗，使用官方 `--sim-diagnostics-max-runs 6`，由原階段 agents 接續診斷／修正；舊預算、失敗／未通過匯出紀錄保留。430 項 CPU／回歸測試通過，含實際 shell 傳遞官方參數的隔離引擎測試。此為重新派工，不代表已通過物理驗收；新工作以 [progress](progress/) 為準。詳見 [接續驗證](analysis/native_continuation_20261022.json) 與 [排程政策](analysis/AUTOMATION.md)。
 
 **2026-10-22 23:28 查核：** 這批已無執行或等待中的生成工作：5 件 strict accept 並匯出、球鞋 1 件 exported_unaccepted、龍／料理夾／水豚 3 件停止。龍的狹窄連接未接上，金屬鑰匙圈部件被 component resolution 丟棄；料理夾與球鞋有關鍵區域分割不清；水豚仍為 spconv 大張量 int32 限制。前兩件的 revision budget 是停止條件，並不是完整的根因說明；本次查看了實際 recommendation、raw SAM3 來源與既有 backend 實驗，沒有改寫結果或重置預算。逐件證據、可行修復方向與未驗證處見 [停止原因覆核](analysis/terminal_root_causes_20261022.json)。
