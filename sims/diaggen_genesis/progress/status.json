@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T17:50:02+08:00",
+  "updated_at": "2026-10-22T17:50:20+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -14,8 +14,8 @@
   },
   "counts": {
     "queued": 2,
-    "running": 4,
-    "success": 2,
+    "running": 3,
+    "success": 3,
     "failed": 1,
     "cancelled": 0,
     "unknown": 0,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-22T17:50:02+08:00",
+      "updated_at": "2026-10-22T17:50:20+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -126,7 +126,7 @@
         "warnings": [],
         "diagnostic_counters": {
           "episodes": 2,
-          "tool_results": 10,
+          "tool_results": 12,
           "diagnostic_probe_attempts": 1,
           "region_settlements": 1
         },
@@ -205,7 +205,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T06:03:34.261605+00:00",
-      "updated_at": "2026-10-22T17:50:02+08:00",
+      "updated_at": "2026-10-22T17:50:20+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -347,7 +347,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T09:14:45.699903+00:00",
-      "updated_at": "2026-10-22T17:50:02+08:00",
+      "updated_at": "2026-10-22T17:50:20+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -483,13 +483,13 @@
       "pipeline": "DiagGen",
       "simulator": "Genesis",
       "run_id": "genesis_usb_hub_20261022_clean_diagnostics3",
-      "phase": "running",
-      "pipeline_status": "running",
+      "phase": "success",
+      "pipeline_status": "success",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-22T17:50:02+08:00",
+      "updated_at": "2026-10-22T17:50:20+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -661,7 +661,7 @@
         }
       ],
       "id": "usb_hub",
-      "status": "running",
+      "status": "success",
       "attempts": 8,
       "minimum_free_mib": 24576
     },
@@ -676,7 +676,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-22T17:50:02+08:00",
+      "updated_at": "2026-10-22T17:50:20+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -863,7 +863,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-22T17:50:02+08:00",
+      "updated_at": "2026-10-22T17:50:20+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -979,7 +979,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-22T17:50:02+08:00",
+      "updated_at": "2026-10-22T17:50:20+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1095,7 +1095,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T17:50:02+08:00",
+      "updated_at": "2026-10-22T17:50:20+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1237,7 +1237,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T17:50:02+08:00",
+      "updated_at": "2026-10-22T17:50:20+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1756,5 +1756,5 @@
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "bb64963fab2dea9b355bb52abe717d35ee39159f0e0e302c6746cbcd6e5ab68f"
+  "signature": "37ee8027283511d92a889a62a2569d32514afdd131413f9c8aba3b4047cddea8"
 }
