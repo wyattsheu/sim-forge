@@ -2,7 +2,7 @@
 
 狀態：**執行失敗**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T21:51:33+08:00（Asia/Taipei）
+更新：2026-10-22T21:52:06+08:00（Asia/Taipei）
 
 共 9 件：等待 0、執行中 0、完成匯出 6、失敗 3、取消 0。
 
@@ -39,7 +39,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | usb_hub | completed |
 | sloth | completed |
 | sauce_keeper | completed |
-| dragon | running |
+| dragon | business_halt |
 | capybara_plush_toy | stage_failed |
 | curling_iron | completed |
 
