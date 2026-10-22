@@ -1,6 +1,6 @@
 # DiagGen / Genesis 實驗
 
-[最新進度](progress/) · [執行環境預檢](preflight/latest.json) · [官方圖片總覽](demo_inputs_preview.jpg) · [圖片來源紀錄](demo_image_sources.json) · [排程清單](batch_plan.json)
+[最新進度](progress/) · [卡住原因與改善驗證](analysis/STALL_AUDIT_20261022.md) · [執行環境預檢](preflight/latest.json) · [官方圖片總覽](demo_inputs_preview.jpg) · [圖片來源紀錄](demo_image_sources.json) · [排程清單](batch_plan.json)
 
 使用 DiagGen 內附的 **Genesis 1.2.0**，開啟 Genesis 診斷，排程 9 張圖片的完整生成流程。
 

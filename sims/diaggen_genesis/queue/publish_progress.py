@@ -17,7 +17,7 @@ import re
 import subprocess
 import tempfile
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
 
@@ -53,6 +53,72 @@ MAX_MEDIA_BYTES = 50 * 1024 * 1024
 MAX_LEDGER_BYTES = 64 * 1024 * 1024
 IDENTIFIER = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,95}\Z")
 MODEL_NAMES = frozenset({"gpt-6-luna", "gpt-5.6-luna"})
+HEALTH_LABELS = {
+    "audit_snapshot_collision": "重試材質快照與磁碟既有檔案衝突",
+    "diagnostic_idle_review": "診斷紀錄逾 15 分鐘未更新，需檢查",
+    "diagnostic_cleanup_due": "診斷鎖已到期，等待原生清理／接續",
+    "diagnostic_timestamp_invalid": "診斷時間資料不完整，無法判斷等待狀態",
+    "audit_path_invalid": "診斷快照路徑不合法，無法檢查",
+}
+
+
+def runtime_health(state, run_root, phase, *, observed_at=None):
+    """Read-only warning signals, never a terminal verdict or retry permission.
+
+    Publish controlled codes/counters only. A stale ledger can mean a long model
+    turn: it is a review signal, not proof of a dead worker. No credentials,
+    attachment identifiers, raw errors, or lease timestamps leave this function.
+    """
+    observed_at = observed_at or datetime.now(timezone.utc)
+    diagnostics = object_value(state.get("diagnostics"))
+    warnings = []
+    counters = {name: len(diagnostics[name]) if isinstance(diagnostics.get(name), list) else 0
+                for name in ("episodes", "tool_results", "diagnostic_probe_attempts", "region_settlements")}
+    revision = identifier(state.get("active_revision"))
+    registrations = diagnostics.get("source_semantic_material_artifact_registrations", [])
+    registered = isinstance(registrations, list) and any(
+        isinstance(item, dict) and item.get("active_revision_id") == revision for item in registrations)
+    workspace = object_value(state.get("paths")).get("diagnostic_workspace_dir")
+    if revision and revision not in {".", ".."} and workspace and not registered:
+        try:
+            path = Path(workspace)
+            if not path.is_absolute() or not inside(path.resolve(), run_root.resolve()):
+                raise ValueError("invalid workspace")
+            directory = path / "material_audit_authoritative" / revision
+            if not inside(directory.resolve(), run_root.resolve()):
+                raise ValueError("invalid audit directory")
+            # Exact authoritative names; never read arbitrary files or contents.
+            if any(candidate.exists() for pattern in (
+                "cleaned_source_image.*", "raw_source_image.*",
+                "material_inference_payload.*", "object_description.*",
+            ) for candidate in directory.glob(pattern)):
+                warnings.append("audit_snapshot_collision")
+        except (OSError, TypeError, ValueError, RuntimeError):
+            warnings.append("audit_path_invalid")
+    if phase == "running" and not diagnostics.get("terminal"):
+        attachments = state.get("diagnostic_runtime_attachments", [])
+        active = [entry for entry in attachments if isinstance(entry, dict) and entry.get("status") == "attached"] \
+            if isinstance(attachments, list) else []
+        if active:
+            lease = object_value(active[-1].get("owner_lease"))
+            try:
+                updated = datetime.fromisoformat(state["updated_at"].replace("Z", "+00:00"))
+                expiry = datetime.fromisoformat(lease["expires_at"].replace("Z", "+00:00"))
+                if updated.tzinfo is None or expiry.tzinfo is None:
+                    raise ValueError("timezone required")
+                if expiry <= observed_at:
+                    warnings.append("diagnostic_cleanup_due")
+                elif (observed_at - updated).total_seconds() >= 900 and lease.get("in_flight_count") == 0:
+                    warnings.append("diagnostic_idle_review")
+            except (KeyError, AttributeError, TypeError, ValueError):
+                warnings.append("diagnostic_timestamp_invalid")
+    return {"warnings": sorted(set(warnings)), "diagnostic_counters": counters,
+            "meaning": "observation_only_not_retry_authorization"}
+
+
+def health_label(snapshot):
+    codes = object_value(snapshot.get("health")).get("warnings", [])
+    return "；".join(HEALTH_LABELS[code] for code in codes if code in HEALTH_LABELS) or "未偵測到上述異常（非成功保證）"
 
 
 def now():
@@ -200,6 +266,7 @@ def build_run_snapshot(workspace, queued, *, media_prefix="", media_budget=None)
             "terminal_status": enum(terminal.get("status"), {"success", "failed", "retryable", "halted", "pending"}, "not_available"),
         },
         "stages": [],
+        "health": runtime_health(state, run_root, phase),
     }
     stages = object_value(state.get("stages"))
     for name, label in zip(STAGES, STAGE_LABELS):
@@ -319,10 +386,11 @@ def render_batch_readme(snapshot):
              f"GPU 可用記憶體門檻：{policy['minimum_free_mib']} MiB；最多同時 {policy['max_parallel_jobs']} 件；排程每 {policy['check_interval_seconds']} 秒檢查。  ",
              f"允許與既有運算共用 GPU：{'是' if policy['allow_compute_sharing'] is True else '否' if policy['allow_compute_sharing'] is False else '未知'}。", "",
              "只在排程狀態、階段、revision 或預覽成果改變時更新。等待期間不重複提交。", "",
-             "| 物件 | 排程狀態 | Runtime | Revision | 顯存門檻 | 已完成階段 |", "|---|---|---|---|---|---|"]
+             "診斷健康提示是唯讀觀察，不會解除鎖、重排或改寫成功／失敗。久未更新也可能是較長的模型推理，需配合紀錄判讀。", "",
+             "| 物件 | 排程狀態 | Runtime | Revision | 顯存門檻 | 已完成階段 | 健康提示 |", "|---|---|---|---|---|---|---|"]
     for job in snapshot["jobs"]:
         completed = sum(stage["ok"] for stage in job["stages"])
-        lines.append(f"| {job['id']} | {job['status']} | {job['pipeline_status']} | {job['active_revision'] or '尚未初始化'} | {job['minimum_free_mib']} MiB | {completed}/{len(STAGES)} |")
+        lines.append(f"| {job['id']} | {job['status']} | {job['pipeline_status']} | {job['active_revision'] or '尚未初始化'} | {job['minimum_free_mib']} MiB | {completed}/{len(STAGES)} | {health_label(job)} |")
     for job in snapshot["jobs"]:
         lines += ["", f"## {job['id']}", "", f"Run：`{job['run_id']}`；{PHASE_LABELS[job['phase']]}。", "",
                   "| 階段 | 狀態 |", "|---|---|"]
@@ -351,7 +419,7 @@ def render_readme(snapshot):
              "| 階段 | 狀態 |", "|---|---|"]
     for stage in snapshot["stages"]:
         lines.append(f"| {stage['label']} | {stage['status']} |")
-    lines += ["", f"Genesis 診斷 episode 數：{snapshot['diagnostics']['episode_count']}。",
+    lines += ["", f"健康提示：{health_label(snapshot)}。", "", f"Genesis 診斷 episode 數：{snapshot['diagnostics']['episode_count']}。",
               "", "失敗細節與完整執行紀錄保留在伺服器。", ""]
     for media in snapshot["media"]:
         path = media["path"]

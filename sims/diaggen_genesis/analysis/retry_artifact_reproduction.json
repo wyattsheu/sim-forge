@@ -1,0 +1,28 @@
+{
+  "schema_version": "diaggen-stall-reproduction-v1",
+  "results": [
+    {
+      "run_id": "genesis_sneaker_20261021",
+      "state_sha256": "1fe428747786a4cbdec2a23f6857d1005ba779ee8a5e7de15e3b7f9acb58951a",
+      "baseline_error": "material audit registration snapshot path already exists: cleaned_source_image",
+      "candidate_registration_artifact_count": 5,
+      "candidate_source_hashes_match": true,
+      "previous_evidence_preserved": true,
+      "production_sources_and_state_modified": false,
+      "candidate_deployed": false,
+      "scope": "temporary registration boundary only; full define_episode, simulation and acceptance untested"
+    },
+    {
+      "run_id": "genesis_sloth_20261021",
+      "state_sha256": "8f73f974cbff2bffcbd4908edc798a143fc63618830d5eab1820060ac5edebc8",
+      "baseline_error": "material audit registration snapshot path already exists: cleaned_source_image",
+      "candidate_registration_artifact_count": 5,
+      "candidate_source_hashes_match": true,
+      "previous_evidence_preserved": true,
+      "production_sources_and_state_modified": false,
+      "candidate_deployed": false,
+      "scope": "temporary registration boundary only; full define_episode, simulation and acceptance untested"
+    }
+  ],
+  "native_commit": "3d2d3779613b9253109f63e1ff345b11c9097b70"
+}
