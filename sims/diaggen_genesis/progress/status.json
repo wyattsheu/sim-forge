@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T17:32:18+08:00",
+  "updated_at": "2026-10-22T17:32:35+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-22T17:32:18+08:00",
+      "updated_at": "2026-10-22T17:32:35+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -205,7 +205,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T06:03:34.261605+00:00",
-      "updated_at": "2026-10-22T17:32:18+08:00",
+      "updated_at": "2026-10-22T17:32:35+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -260,11 +260,11 @@
         {
           "name": "hag4r_combined_to_monolithic",
           "label": "體積網格處理",
-          "status": "pending",
-          "ledger_status": "pending",
-          "ok": false,
-          "started_at": null,
-          "finished_at": null
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
+          "started_at": "2026-10-22T09:32:31.823082+00:00",
+          "finished_at": "2026-10-22T09:32:31.823082+00:00"
         },
         {
           "name": "genesis_live_diagnostic_loop",
@@ -377,7 +377,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:45.699903+00:00",
-      "updated_at": "2026-10-22T17:32:18+08:00",
+      "updated_at": "2026-10-22T17:32:35+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -470,7 +470,7 @@
         "warnings": [],
         "diagnostic_counters": {
           "episodes": 2,
-          "tool_results": 11,
+          "tool_results": 13,
           "diagnostic_probe_attempts": 1,
           "region_settlements": 1
         },
@@ -549,7 +549,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-22T17:32:18+08:00",
+      "updated_at": "2026-10-22T17:32:35+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
@@ -642,7 +642,7 @@
         "warnings": [],
         "diagnostic_counters": {
           "episodes": 1,
-          "tool_results": 5,
+          "tool_results": 6,
           "diagnostic_probe_attempts": 0,
           "region_settlements": 0
         },
@@ -721,7 +721,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-22T17:32:18+08:00",
+      "updated_at": "2026-10-22T17:32:35+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -908,7 +908,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-22T17:32:18+08:00",
+      "updated_at": "2026-10-22T17:32:35+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1024,7 +1024,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-22T17:32:18+08:00",
+      "updated_at": "2026-10-22T17:32:35+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1140,7 +1140,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T17:32:18+08:00",
+      "updated_at": "2026-10-22T17:32:35+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1282,7 +1282,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T17:32:18+08:00",
+      "updated_at": "2026-10-22T17:32:35+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1846,5 +1846,5 @@
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "7bfae985538636202393779d5596b85355364bff5ac869eea5221413f9cea222"
+  "signature": "00e0419e4fd5d9c9f6e7288bbeb6c32b29d74e11731843e72a221a28410bd915"
 }
