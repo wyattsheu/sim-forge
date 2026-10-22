@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T17:20:40+08:00（Asia/Taipei）
+更新：2026-10-22T17:20:57+08:00（Asia/Taipei）
 
 共 9 件：等待 3、執行中 3、完成 2、失敗 1、取消 0。
 
@@ -16,7 +16,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | 物件 | 排程狀態 | Runtime | Revision | 顯存門檻 | 已完成階段 | 健康提示 |
 |---|---|---|---|---|---|---|
 | baseball_cap | running | seeded | revision_0000 | 24576 MiB | 1/9 | 未偵測到上述異常（非成功保證） |
-| kitchen_tongs | running | seeded | revision_0000 | 24576 MiB | 1/9 | 未偵測到上述異常（非成功保證） |
+| kitchen_tongs | running | seeded | revision_0000 | 24576 MiB | 2/9 | 未偵測到上述異常（非成功保證） |
 | sneaker | running | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
 | usb_hub | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
 | sloth | success | success | revision_0000 | 24576 MiB | 9/9 | 未偵測到上述異常（非成功保證） |
@@ -53,7 +53,7 @@ Run：`genesis_kitchen_tongs_20261022_segmentation_retry1`；執行中。
 | 階段 | 狀態 |
 |---|---|
 | 圖片清理 | success |
-| SAM3 分割 | failed |
+| SAM3 分割 | success |
 | OmniPart 幾何生成 | pending |
 | 材料推估 | pending |
 | 材料參數配置 | pending |
