@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T17:44:57+08:00",
+  "updated_at": "2026-10-22T17:46:00+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-22T17:44:57+08:00",
+      "updated_at": "2026-10-22T17:46:00+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
@@ -200,23 +200,23 @@
       "simulator": "Genesis",
       "run_id": "genesis_kitchen_tongs_20261022_segmentation_retry1",
       "phase": "running",
-      "pipeline_status": "seeded",
+      "pipeline_status": "running",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
-      "active_revision": "revision_0000",
+      "active_revision": "revision_0001",
       "created_at": "2026-10-22T06:03:34.261605+00:00",
-      "updated_at": "2026-10-22T17:44:57+08:00",
+      "updated_at": "2026-10-22T17:46:00+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
-        "terminal_status": "success"
+        "terminal_status": "not_available"
       },
       "stages": [
         {
           "name": "image_cleanup",
           "label": "圖片清理",
-          "status": "success",
-          "ledger_status": "success",
+          "status": "pending",
+          "ledger_status": "pending",
           "ok": true,
           "started_at": "2026-10-22T09:17:33.203832+00:00",
           "finished_at": "2026-10-22T09:17:33.216515+00:00"
@@ -224,56 +224,56 @@
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T09:19:37.613110+00:00",
-          "finished_at": "2026-10-22T09:20:56.858589+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "omnipart_generate_parts",
           "label": "OmniPart 幾何生成",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T09:23:27.076114+00:00",
-          "finished_at": "2026-10-22T09:25:46.938568+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_gpt_staged_material_inference",
           "label": "材料推估",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T09:27:02.260350+00:00",
-          "finished_at": "2026-10-22T09:30:00.207603+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_assign_params_to_prims",
           "label": "材料參數配置",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T09:32:03.951937+00:00",
-          "finished_at": "2026-10-22T09:32:04.903395+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_combined_to_monolithic",
           "label": "體積網格處理",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T09:32:31.823082+00:00",
-          "finished_at": "2026-10-22T09:32:31.823082+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "genesis_live_diagnostic_loop",
           "label": "Genesis 物理診斷",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T09:35:50.081625+00:00",
-          "finished_at": "2026-10-22T09:44:56.541748+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_post_mesh_texture",
@@ -309,56 +309,6 @@
           "path": "media/kitchen_tongs_cleaned_image.png",
           "bytes": 1056973,
           "sha256": "47fee394794adda8173f40d91d7bed86c80315475d87859bf1d92d0e66dcca97"
-        },
-        {
-          "path": "media/kitchen_tongs_processed_white_bg_png.png",
-          "bytes": 30317,
-          "sha256": "80aed918bda76d0c1587809050b1449569fa3726c004593c7196bc03ac7015fc"
-        },
-        {
-          "path": "media/kitchen_tongs_processed_rgba.png",
-          "bytes": 40638,
-          "sha256": "8cf39bc0ef8611f453144db3323292f05f9dd2a79f5796c549cc321ed5b958dc"
-        },
-        {
-          "path": "media/kitchen_tongs_ordered_mask_vis.png",
-          "bytes": 1919,
-          "sha256": "488a03421fd99f1ad105328cb152874b24c1473aa976777acfaceb4761374dca"
-        },
-        {
-          "path": "media/kitchen_tongs_segmentation_overlay.png",
-          "bytes": 27547,
-          "sha256": "080a0a53520bf77aa0c87fc75c0d8a9a4c7a1493e024f845ccc00d6edcef8796"
-        },
-        {
-          "path": "media/kitchen_tongs_omnipart_top.png",
-          "bytes": 7599,
-          "sha256": "9d77b2b18723fbd3c7a8fea1c260625fb05aab475624aeb970c605532667397f"
-        },
-        {
-          "path": "media/kitchen_tongs_omnipart_bottom.png",
-          "bytes": 7235,
-          "sha256": "01602de1f36f926b5a938b6d9a1a47f14ee8e8fa34dd2c69a03ad529776fa7f1"
-        },
-        {
-          "path": "media/kitchen_tongs_omnipart_front.png",
-          "bytes": 6538,
-          "sha256": "94d31b94b0b0f4cca98db6740e5a0a82f0cabcd8b677c0fbca83ad893dd436d2"
-        },
-        {
-          "path": "media/kitchen_tongs_omnipart_back.png",
-          "bytes": 5764,
-          "sha256": "4f23787ce87f00f0558e8475df752145bf1fea46a93f289fa220109912416f2b"
-        },
-        {
-          "path": "media/kitchen_tongs_omnipart_left.png",
-          "bytes": 6999,
-          "sha256": "8c253f685a65cdcdfaad873051e6c29cce729e30f29ae911160b394908a2fad6"
-        },
-        {
-          "path": "media/kitchen_tongs_omnipart_right.png",
-          "bytes": 6844,
-          "sha256": "096c387b5da08896d2e1f6d354fed19d9c27076952180e1c3a1efa54dbd16c95"
         }
       ],
       "id": "kitchen_tongs",
@@ -377,11 +327,11 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:45.699903+00:00",
-      "updated_at": "2026-10-22T17:44:57+08:00",
+      "updated_at": "2026-10-22T17:46:00+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
-        "terminal_status": "not_available"
+        "terminal_status": "success"
       },
       "stages": [
         {
@@ -441,11 +391,11 @@
         {
           "name": "genesis_live_diagnostic_loop",
           "label": "Genesis 物理診斷",
-          "status": "running",
-          "ledger_status": "running",
-          "ok": false,
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
           "started_at": "2026-10-22T09:16:18.382002+00:00",
-          "finished_at": null
+          "finished_at": "2026-10-22T09:45:50.112965+00:00"
         },
         {
           "name": "hag4r_post_mesh_texture",
@@ -549,7 +499,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-22T17:44:57+08:00",
+      "updated_at": "2026-10-22T17:46:00+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -736,7 +686,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-22T17:44:57+08:00",
+      "updated_at": "2026-10-22T17:46:00+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -923,7 +873,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-22T17:44:57+08:00",
+      "updated_at": "2026-10-22T17:46:00+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1039,7 +989,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-22T17:44:57+08:00",
+      "updated_at": "2026-10-22T17:46:00+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1155,7 +1105,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T17:44:57+08:00",
+      "updated_at": "2026-10-22T17:46:00+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1297,7 +1247,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T17:44:57+08:00",
+      "updated_at": "2026-10-22T17:46:00+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1534,56 +1484,6 @@
       "path": "media/kitchen_tongs_cleaned_image.png",
       "bytes": 1056973,
       "sha256": "47fee394794adda8173f40d91d7bed86c80315475d87859bf1d92d0e66dcca97"
-    },
-    {
-      "path": "media/kitchen_tongs_processed_white_bg_png.png",
-      "bytes": 30317,
-      "sha256": "80aed918bda76d0c1587809050b1449569fa3726c004593c7196bc03ac7015fc"
-    },
-    {
-      "path": "media/kitchen_tongs_processed_rgba.png",
-      "bytes": 40638,
-      "sha256": "8cf39bc0ef8611f453144db3323292f05f9dd2a79f5796c549cc321ed5b958dc"
-    },
-    {
-      "path": "media/kitchen_tongs_ordered_mask_vis.png",
-      "bytes": 1919,
-      "sha256": "488a03421fd99f1ad105328cb152874b24c1473aa976777acfaceb4761374dca"
-    },
-    {
-      "path": "media/kitchen_tongs_segmentation_overlay.png",
-      "bytes": 27547,
-      "sha256": "080a0a53520bf77aa0c87fc75c0d8a9a4c7a1493e024f845ccc00d6edcef8796"
-    },
-    {
-      "path": "media/kitchen_tongs_omnipart_top.png",
-      "bytes": 7599,
-      "sha256": "9d77b2b18723fbd3c7a8fea1c260625fb05aab475624aeb970c605532667397f"
-    },
-    {
-      "path": "media/kitchen_tongs_omnipart_bottom.png",
-      "bytes": 7235,
-      "sha256": "01602de1f36f926b5a938b6d9a1a47f14ee8e8fa34dd2c69a03ad529776fa7f1"
-    },
-    {
-      "path": "media/kitchen_tongs_omnipart_front.png",
-      "bytes": 6538,
-      "sha256": "94d31b94b0b0f4cca98db6740e5a0a82f0cabcd8b677c0fbca83ad893dd436d2"
-    },
-    {
-      "path": "media/kitchen_tongs_omnipart_back.png",
-      "bytes": 5764,
-      "sha256": "4f23787ce87f00f0558e8475df752145bf1fea46a93f289fa220109912416f2b"
-    },
-    {
-      "path": "media/kitchen_tongs_omnipart_left.png",
-      "bytes": 6999,
-      "sha256": "8c253f685a65cdcdfaad873051e6c29cce729e30f29ae911160b394908a2fad6"
-    },
-    {
-      "path": "media/kitchen_tongs_omnipart_right.png",
-      "bytes": 6844,
-      "sha256": "096c387b5da08896d2e1f6d354fed19d9c27076952180e1c3a1efa54dbd16c95"
     },
     {
       "path": "media/sneaker_cleaned_image.png",
@@ -1876,5 +1776,5 @@
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "baf6983610a327e70c1eaa7d109daa8554e09b3fb57765c0cd7a3b0b0d9d3120"
+  "signature": "adc2f8b0a328337b666efd289a52d739019e247cccf1f882ad8adf983c0a10d5"
 }
