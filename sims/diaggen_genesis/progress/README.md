@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T17:22:17+08:00（Asia/Taipei）
+更新：2026-10-22T17:23:34+08:00（Asia/Taipei）
 
 共 9 件：等待 3、執行中 3、完成 2、失敗 1、取消 0。
 
@@ -62,7 +62,7 @@ Run：`genesis_kitchen_tongs_20261022_segmentation_retry1`；執行中。
 |---|---|
 | 圖片清理 | success |
 | SAM3 分割 | success |
-| OmniPart 幾何生成 | pending |
+| OmniPart 幾何生成 | running |
 | 材料推估 | pending |
 | 材料參數配置 | pending |
 | 體積網格處理 | pending |
