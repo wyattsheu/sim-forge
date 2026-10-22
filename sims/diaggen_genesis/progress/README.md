@@ -2,9 +2,9 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T14:11:19+08:00（Asia/Taipei）
+更新：2026-10-22T14:11:36+08:00（Asia/Taipei）
 
-共 9 件：等待 2、執行中 3、完成 1、失敗 3、取消 0。
+共 9 件：等待 1、執行中 4、完成 1、失敗 3、取消 0。
 
 GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢查。  
 允許與既有運算共用 GPU：是。
@@ -17,7 +17,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | kitchen_tongs | failed | seeded | revision_0000 | 24576 MiB | 0/9 |
 | sneaker | running | seeded | revision_0000 | 24576 MiB | 6/9 |
 | usb_hub | running | seeded | revision_0000 | 24576 MiB | 6/9 |
-| sloth | queued | seeded | revision_0000 | 24576 MiB | 6/9 |
+| sloth | running | seeded | revision_0000 | 24576 MiB | 6/9 |
 | sauce_keeper | running | seeded | revision_0000 | 24576 MiB | 6/9 |
 | dragon | queued | seeded | revision_0000 | 24576 MiB | 0/9 |
 | capybara_plush_toy | failed | seeded | revision_0000 | 49152 MiB | 2/9 |
@@ -145,7 +145,7 @@ Genesis 診斷 episode 數：1。
 
 ## sloth
 
-Run：`genesis_sloth_20261021`；等待空閒 GPU。
+Run：`genesis_sloth_20261021`；執行中。
 
 | 階段 | 狀態 |
 |---|---|
