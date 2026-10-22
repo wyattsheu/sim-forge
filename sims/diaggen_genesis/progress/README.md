@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T17:30:19+08:00（Asia/Taipei）
+更新：2026-10-22T17:30:36+08:00（Asia/Taipei）
 
 共 9 件：等待 2、執行中 4、完成 2、失敗 1、取消 0。
 
@@ -15,7 +15,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 
 | 物件 | 排程狀態 | Runtime | Revision | 顯存門檻 | 已完成階段 | 健康提示 |
 |---|---|---|---|---|---|---|
-| baseball_cap | running | seeded | revision_0000 | 24576 MiB | 2/9 | 未偵測到上述異常（非成功保證） |
+| baseball_cap | running | seeded | revision_0000 | 24576 MiB | 3/9 | 未偵測到上述異常（非成功保證） |
 | kitchen_tongs | running | seeded | revision_0000 | 24576 MiB | 4/9 | 未偵測到上述異常（非成功保證） |
 | sneaker | running | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
 | usb_hub | running | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
@@ -33,7 +33,7 @@ Run：`genesis_baseball_cap_20261022_fresh3`；執行中。
 |---|---|
 | 圖片清理 | success |
 | SAM3 分割 | success |
-| OmniPart 幾何生成 | running |
+| OmniPart 幾何生成 | success |
 | 材料推估 | pending |
 | 材料參數配置 | pending |
 | 體積網格處理 | pending |
@@ -52,6 +52,18 @@ Genesis 診斷 episode 數：0。
 ![baseball_cap_ordered_mask_vis](media/baseball_cap_ordered_mask_vis.png)
 
 ![baseball_cap_segmentation_overlay](media/baseball_cap_segmentation_overlay.png)
+
+![baseball_cap_omnipart_top](media/baseball_cap_omnipart_top.png)
+
+![baseball_cap_omnipart_bottom](media/baseball_cap_omnipart_bottom.png)
+
+![baseball_cap_omnipart_front](media/baseball_cap_omnipart_front.png)
+
+![baseball_cap_omnipart_back](media/baseball_cap_omnipart_back.png)
+
+![baseball_cap_omnipart_left](media/baseball_cap_omnipart_left.png)
+
+![baseball_cap_omnipart_right](media/baseball_cap_omnipart_right.png)
 
 
 ## kitchen_tongs
