@@ -2,9 +2,9 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T15:27:58+08:00（Asia/Taipei）
+更新：2026-10-22T15:28:15+08:00（Asia/Taipei）
 
-共 9 件：等待 2、執行中 2、完成 1、失敗 4、取消 0。
+共 9 件：等待 1、執行中 3、完成 1、失敗 4、取消 0。
 
 GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢查。  
 允許與既有運算共用 GPU：是。
@@ -19,7 +19,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | kitchen_tongs | failed | seeded | revision_0000 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
 | sneaker | failed | failed | revision_0000 | 24576 MiB | 6/9 | 重試材質快照與磁碟既有檔案衝突 |
 | usb_hub | running | seeded | revision_0000 | 24576 MiB | 6/9 | 未偵測到上述異常（非成功保證） |
-| sloth | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
+| sloth | running | not_initialized | 尚未初始化 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
 | sauce_keeper | running | seeded | revision_0000 | 24576 MiB | 6/9 | 診斷紀錄逾 15 分鐘未更新，需檢查 |
 | dragon | queued | seeded | revision_0000 | 24576 MiB | 0/9 | 未偵測到上述異常（非成功保證） |
 | capybara_plush_toy | failed | seeded | revision_0000 | 49152 MiB | 2/9 | 未偵測到上述異常（非成功保證） |
@@ -147,7 +147,7 @@ Genesis 診斷 episode 數：3。
 
 ## sloth
 
-Run：`genesis_sloth_20261022_clean_diagnostics1`；等待空閒 GPU。
+Run：`genesis_sloth_20261022_clean_diagnostics1`；執行中。
 
 | 階段 | 狀態 |
 |---|---|
