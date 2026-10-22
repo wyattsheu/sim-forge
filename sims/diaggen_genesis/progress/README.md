@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T18:14:30+08:00（Asia/Taipei）
+更新：2026-10-22T18:16:55+08:00（Asia/Taipei）
 
 共 9 件：等待 1、執行中 3、完成 4、失敗 1、取消 0。
 
@@ -81,7 +81,7 @@ Run：`genesis_kitchen_tongs_20261022_segmentation_retry1`；執行中。
 | 圖片清理 | pending |
 | SAM3 分割 | success |
 | OmniPart 幾何生成 | success |
-| 材料推估 | pending |
+| 材料推估 | running |
 | 材料參數配置 | pending |
 | 體積網格處理 | pending |
 | Genesis 物理診斷 | pending |
@@ -264,7 +264,7 @@ Run：`genesis_sauce_keeper_20261022_clean_diagnostics2`；執行中。
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
-Genesis 診斷 episode 數：1。
+Genesis 診斷 episode 數：2。
 
 ![sauce_keeper_cleaned_image](media/sauce_keeper_cleaned_image.png)
 
