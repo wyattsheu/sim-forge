@@ -1,0 +1,168 @@
+{
+  "schema_version": "diaggen-terminal-root-cause-review-v1",
+  "reviewed_at": "2026-10-22T23:29:23+08:00",
+  "scope": "Read-only terminal recommendation, raw segmentation and prior backend experiment review. No production source, state, model, resolution, precision, acceptance gate or revision budget changed; no new generation, GPU probe or CPU regression run.",
+  "pinned_diaggen_commit": "3d2d3779613b9253109f63e1ff345b11c9097b70",
+  "upstream_master_matches_pinned": true,
+  "revision_budget_meaning": "For the halted full-image runs, max_runs=2 means the initial revision plus one repair. The budget is the stop condition; underlying segmentation/connectivity defects remain.",
+  "queue_reason_caveat": "Dragon launcher_error is a coarse outer worker exit label, downstream of a valid native revision_budget_exhausted transition; it does not establish a scheduler crash.",
+  "jobs": [
+    {
+      "id": "kitchen_tongs",
+      "run_id": "genesis_kitchen_tongs_20261022_segmentation_retry1",
+      "queue_status": "failed",
+      "cause": "SAM3 does not isolate the rounded U-shaped spring-return region, so the diagnostic cannot compile a localized return anchor while leaving the tips free.",
+      "observations": [
+        "The semicolon-separated prompt is correctly parsed and executed as three separate concepts; this is not a prompt-delimiter bug.",
+        "The return-bend concept has no raw predicted mask. The arms and grip-ridge concepts yield two large almost-overlapping masks; final postprocessing retains one evidence region.",
+        "Revision 1 still merges the return and arms; both diagnostic summaries contain zero episodes."
+      ],
+      "next_validation": [
+        "Validate native SAM3 concept prompts against the unchanged cleaned image and inspect the actual masks before downstream generation.",
+        "Keep the spring return semantically local while retaining physical continuity with the arms; verify the requested three regions in the output.",
+        "A clearer source image is a separate input experiment; success cannot be guaranteed by changing a prompt alone."
+      ],
+      "fix_status": "No new repair deployed; the native segmentation calls were valid but their output remains inadequate.",
+      "native_transition": {
+        "transition_action": "halt",
+        "failure_kind": "revision_budget_exhausted",
+        "halt_reason": "diagnostic revision budget exhausted: prior_revision_count=1, max_runs=2"
+      },
+      "evidence": [
+        {
+          "path": "tools/diaggen/outputs/agentic_asset_refinement/genesis_kitchen_tongs_20261022_segmentation_retry1/revisions/revision_0000/sim_diagnostics/diagnostic_summary.json",
+          "sha256": "37f0185d490b631095657ec2811fdb262c52a2c904f060fff9e0a426942292e9",
+          "episode_count": 0,
+          "recommendation": "revise",
+          "route": "segmentation",
+          "diagnostic_cues": [
+            "Current SAM3 segmentation used the prompt “one-piece spring kitchen tongs” and yielded final_part_count=1; downstream grounding has two canonical regions, spring_tong_frame (part 0) and integral_grip_ridges (part 1). The rounded U-shaped spring return is still grouped with both long arms, and the planned return anchor compiled to distal tips or midspan with a broad_semantic_local_anchor warning. Refine the segmentation to expose the rounded U-shaped return as its own spring-return/joint region, keep the two arms together as the one-piece spring-frame region, and preserve the raised grip-ridge strip as a separate textured-contact region; target three semantic regions while preserving the return's physical continuity with the arms. Expected result: the return can be anchored locally while leaving the distal tips and ridge strip available as probe targets."
+          ]
+        },
+        {
+          "path": "tools/diaggen/outputs/agentic_asset_refinement/genesis_kitchen_tongs_20261022_segmentation_retry1/revisions/revision_0001/sim_diagnostics/diagnostic_summary.json",
+          "sha256": "e88b2599d189dfb7c1b04e3ff8fabc86da7a2f310d273db021f562162fc202cb",
+          "episode_count": 0,
+          "recommendation": "revise",
+          "route": "segmentation",
+          "diagnostic_cues": [
+            "The active SAM3 prompt `rounded U-shaped spring return bend; paired long arms of one-piece spring tong frame; continuous raised inner grip-ridge strip` produced `final_part_count=1` (two masks retained after SAM3 and no foreground-fill fallback). The dark-gray lower rounded U-shaped return is merged with the two long arms; current canonical part 0 `continuous_spring_frame` covers both arms and the return, while part 1 `integral_grip_rib_detail` identifies the repeated raised inner ridge strip. Refine the concepts and boundaries so the lower U-return/spring joint is exposed as its own local semantic region, keep both long arms together as one continuous spring-frame region, and keep the repeated inner grip-rib strip separate. Clarify the return-bend concept so the broad one-piece-frame concept does not absorb it; do not split the physical connection between the return and arms. Target three semantic regions. The expected result is a localized return anchor that leaves the free tips and ridge contact available for independent probing."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sneaker",
+      "run_id": "genesis_sneaker_20261022_clean_diagnostics1",
+      "queue_status": "success",
+      "cause": "The strap and stitched forefoot edge are merged into the broad upper-shell segmentation, preventing reliable part-specific diagnostic targeting.",
+      "observations": [
+        "Revision 0 recorded three probe-purity fractions 0.457, 0.254 and 0.314, each below the existing 0.50 condition.",
+        "Revision 1 has five final parts but three raw SAM3 masks and one foreground-fill fallback; its strap/edge separation remains inadequate.",
+        "The snapshot policy allowed final-revise export with accepted_revision null. Revision 1 has no new live episode."
+      ],
+      "next_validation": [
+        "Inspect and improve native SAM3 masks for instep strap, stitched edge and adjacent upper regions.",
+        "Regenerate affected downstream stages only in a separately admitted faithful experiment and rerun genuine Genesis diagnostics.",
+        "Preserve exported_unaccepted until a new strict native accept and independent export validation exist."
+      ],
+      "fix_status": "An export exists, but segmentation repair and physical acceptance remain unverified.",
+      "native_transition": {
+        "transition_action": "post_mesh_texture",
+        "diagnostic_export_policy": "export_after_revision_budget_revise"
+      },
+      "evidence": [
+        {
+          "path": "tools/diaggen/outputs/agentic_asset_refinement/genesis_sneaker_20261022_clean_diagnostics1/revisions/revision_0000/sim_diagnostics/diagnostic_summary.json",
+          "sha256": "82155301768cd0af2cf83a8075844b9bb9c4a2e428b6c71bba3acee9fcd85edc",
+          "episode_count": 2,
+          "recommendation": "revise",
+          "route": "segmentation",
+          "diagnostic_cues": [
+            "Stitched upper-shell part 1 (large tan coated-fabric and synthetic-leather shell) has no reliably isolated distal forefoot edge-band patch in the current part segmentation: three bounded attempts captured only 0.457, 0.254, and 0.314 of the selected shell, all below the 0.50 threshold. Refine the visible boundary and semantic concepts around the distal upper-shell/forefoot junction so a contiguous shell edge-band patch remains assigned to the upper shell while the woven forefoot panel and side-perimeter trim remain separate. The expected result is a clearer part boundary and a shell patch that can pass the existing probe-purity validation under the unchanged diagnostic policy."
+          ]
+        },
+        {
+          "path": "tools/diaggen/outputs/agentic_asset_refinement/genesis_sneaker_20261022_clean_diagnostics1/revisions/revision_0001/sim_diagnostics/diagnostic_summary.json",
+          "sha256": "68b1048d4ea7e3dc0aed4162cbcde978bd88a2c3ad80421b0b4d4ffe6a6966f3",
+          "episode_count": 0,
+          "recommendation": "revise",
+          "route": "segmentation",
+          "diagnostic_cues": [
+            "Current revision_0001 has a five-part segmentation bundle with only three raw SAM3 masks and one foreground-fill fallback; the broad upper-shell region (indexed part 1) still merges the visible tan hook-and-loop strap crossing the instep and the curved tan stitched toe/forefoot edge band with adjacent brown woven-mesh upper areas. The current prompt already names those features separately, but the output does not isolate them. Refine the segmentation concepts to explicitly separate the strap from the tongue and surrounding upper, and the curved stitched forefoot rim from the brown woven-mesh toe panel; keep the dark outsole, faded aqua side-perimeter trim, heel pull tab, and woven-mesh panel distinct. The expected result is contiguous, separately groundable masks for the instep strap and stitched forefoot edge band so downstream diagnostics can target each without grabbing the broad upper."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dragon",
+      "run_id": "genesis_dragon_20261022_retryfix_af4645266949",
+      "queue_status": "failed",
+      "cause": "The narrow connector between dragon body and keychain hardware is not represented as a connected tetra assembly. Native max-volume component resolution drops hardware labels 4 and 5; revision 1 still asks for segmentation repair.",
+      "observations": [
+        "Revision 0 diagnosed two tetra components and a reported 1.681 mm component gap; raising body fidelity was attempted through the native mesh-processing route.",
+        "Revision 1 still contains separate body labels 0-3 and hardware labels 4-5; the recommendation changes to segmentation to preserve the source-visible narrow gold connector.",
+        "Both current-run diagnostic summaries contain zero episodes. No measured force/deformation failure is established by this run."
+      ],
+      "next_validation": [
+        "Inspect the existing original/cleaned image and connector mask before any new expensive 3D run.",
+        "Use the native segmentation repair to retain the narrow connector and six semantic parts, then inspect generated geometry connectivity.",
+        "Require one connected final tetra assembly with labels 0-5 preserved; do not add an invented bridge or silently accept dropped hardware."
+      ],
+      "fix_status": "No repair deployed; upstream generation/segmentation hypothesis requires validation.",
+      "native_transition": {
+        "transition_action": "halt",
+        "failure_kind": "revision_budget_exhausted",
+        "halt_reason": "diagnostic revision budget exhausted: prior_revision_count=1, max_runs=2"
+      },
+      "evidence": [
+        {
+          "path": "tools/diaggen/outputs/agentic_asset_refinement/genesis_dragon_20261022_retryfix_af4645266949/revisions/revision_0000/sim_diagnostics/diagnostic_summary.json",
+          "sha256": "16cfbf536565e7d31119d49c5662b69be12527498704dd7a80edd17c8d8fd147",
+          "episode_count": 0,
+          "recommendation": "revise",
+          "route": "mesh_processing",
+          "diagnostic_cues": [
+            "Part 0 dragon_figure_body is currently medium fidelity; parts 4 round_keyring_loop and 5 upper_keychain_clasp are high. At target_max_dimension_m=0.10 m, per-part volumetric meshing produced two face-connected tetra components: the component with labels 0–3 was selected, while the separate hardware component with labels 4–5, 1.681 mm from the main component, was dropped by max-volume resolution. Raise part 0 from medium to high; keep parts 1–5 fidelities and target_max_dimension_m=0.10 m unchanged. The source shows a narrow attachment at the body crown to the linked hardware, so higher body fidelity may preserve that contact at the current scale. Expected validated output: one connected tetra component with labels 0–5 present and no dropped material labels while retaining the source-grounded object scale."
+          ]
+        },
+        {
+          "path": "tools/diaggen/outputs/agentic_asset_refinement/genesis_dragon_20261022_retryfix_af4645266949/revisions/revision_0001/sim_diagnostics/diagnostic_summary.json",
+          "sha256": "af3943b1df4298ce62eff10bc3eb3667fda6b2adb38e8e42be820fb7b0672ea0",
+          "episode_count": 0,
+          "recommendation": "revise",
+          "route": "segmentation",
+          "diagnostic_cues": [
+            "The source shows the narrow gold keychain connector reaching the crown of the molded dragon body (canonical part 0, dragon_figure_body) and joining the keyring/clasp hardware (parts 4 round_keyring_loop and 5 upper_keychain_clasp). In revision_0001, the pre-resolution tetra mesh has two components: labels 0–3 in the main body assembly and labels 4–5 in the hardware component; the maximum-volume resolver drops component 1, and post-serialization expects labels 0–5 but retains only 0–3. The current SAM3 prompt has six final parts, with five segmentation-evidence parts and one foreground-fill fallback, and describes only “gold linked keyring hardware.” Revise the concept and mask boundary to explicitly preserve the narrow lower gold connector through its source-visible contact with the top center of the dragon head, while keeping the molded body and metal hardware as distinct semantic regions and retaining the separate ring and clasp regions. Keep the six-part target. Rebuild the monolithic mesh and verify that one connected tetra component retains material labels 0–5 after serialization."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "capybara_plush_toy",
+      "run_id": "genesis_capybara_plush_toy_20261022_native_retry3",
+      "queue_status": "failed",
+      "cause": "OmniPart mesh decoding exceeds the spconv/cumm int32 byte-addressed tensor guard.",
+      "observations": [
+        "Observed tensor shape [6874752,192] on fp16 has 2639904768 bytes, greater than 2147483647.",
+        "The failed attempt had 65296 MiB free against a 49152 MiB admission gate and was already using the official native spconv algorithm.",
+        "An earlier isolated per-batch-member decoder experiment failed its declared numerical feature tolerance and was not deployed."
+      ],
+      "next_validation": [
+        "Test a supported backend or verified upstream fix in an isolated environment. OmniPart exposes torchsparse, but compatibility is not established.",
+        "Require complete pretrained-weight mapping, successful full-size tensor computation and actual capybara output validation before production adoption.",
+        "More VRAM, a stronger reasoning model or deleting the assertion alone does not establish a fix."
+      ],
+      "fix_status": "No faithful full-size repair validated; production backend and quality settings remain unchanged.",
+      "native_transition": {},
+      "evidence": []
+    }
+  ],
+  "upstream_sources": [
+    "https://github.com/diaggen/diaggen/blob/master/.agents/skills/run-diaggen-pipeline/SKILL.md",
+    "https://github.com/traveller59/spconv/issues/706",
+    "https://github.com/traveller59/spconv/issues/656",
+    "https://github.com/HKU-MMLab/OmniPart/blob/main/modules/part_synthesis/modules/sparse/__init__.py",
+    "https://github.com/HKU-MMLab/OmniPart/blob/main/modules/part_synthesis/models/__init__.py"
+  ]
+}
