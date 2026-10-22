@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T18:54:59+08:00",
+  "updated_at": "2026-10-22T19:04:31+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-22T18:54:59+08:00",
+      "updated_at": "2026-10-22T19:04:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -222,7 +222,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T06:03:34.261605+00:00",
-      "updated_at": "2026-10-22T18:54:59+08:00",
+      "updated_at": "2026-10-22T19:04:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -396,7 +396,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0001",
       "created_at": "2026-10-22T09:14:45.699903+00:00",
-      "updated_at": "2026-10-22T18:54:59+08:00",
+      "updated_at": "2026-10-22T19:04:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -575,7 +575,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-22T18:55:00+08:00",
+      "updated_at": "2026-10-22T19:04:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -764,7 +764,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-22T18:55:00+08:00",
+      "updated_at": "2026-10-22T19:04:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -953,7 +953,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-22T18:55:00+08:00",
+      "updated_at": "2026-10-22T19:04:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1142,7 +1142,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-22T18:55:00+08:00",
+      "updated_at": "2026-10-22T19:04:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1208,10 +1208,10 @@
         {
           "name": "genesis_live_diagnostic_loop",
           "label": "Genesis 物理診斷",
-          "status": "pending",
-          "ledger_status": "pending",
+          "status": "running",
+          "ledger_status": "running",
           "ok": false,
-          "started_at": null,
+          "started_at": "2026-10-22T10:56:13.664697+00:00",
           "finished_at": null
         },
         {
@@ -1316,7 +1316,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T18:55:00+08:00",
+      "updated_at": "2026-10-22T19:04:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1460,7 +1460,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T18:55:00+08:00",
+      "updated_at": "2026-10-22T19:04:31+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -2186,5 +2186,58 @@
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "1476439a277a8019c66c19421faa4eef8e3728bf065781e1f32c1ed6ea4cf624"
+  "automation": {
+    "enabled": true,
+    "interval_seconds": 60,
+    "max_resumes_per_run": 2,
+    "updated_at": "2026-10-22T19:04:31+08:00",
+    "jobs": [
+      {
+        "id": "baseball_cap",
+        "run_id": "genesis_baseball_cap_20261022_fresh3",
+        "outcome": "completed"
+      },
+      {
+        "id": "kitchen_tongs",
+        "run_id": "genesis_kitchen_tongs_20261022_segmentation_retry1",
+        "outcome": "business_halt"
+      },
+      {
+        "id": "sneaker",
+        "run_id": "genesis_sneaker_20261022_clean_diagnostics1",
+        "outcome": "exported_unaccepted"
+      },
+      {
+        "id": "usb_hub",
+        "run_id": "genesis_usb_hub_20261022_clean_diagnostics3",
+        "outcome": "completed"
+      },
+      {
+        "id": "sloth",
+        "run_id": "genesis_sloth_20261022_clean_diagnostics3",
+        "outcome": "completed"
+      },
+      {
+        "id": "sauce_keeper",
+        "run_id": "genesis_sauce_keeper_20261022_clean_diagnostics2",
+        "outcome": "completed"
+      },
+      {
+        "id": "dragon",
+        "run_id": "genesis_dragon_20261021",
+        "outcome": "running"
+      },
+      {
+        "id": "capybara_plush_toy",
+        "run_id": "genesis_capybara_plush_toy_20261022_native_retry3",
+        "outcome": "stage_failed"
+      },
+      {
+        "id": "curling_iron",
+        "run_id": "genesis_curling_iron_20261021_exr_retry1",
+        "outcome": "completed"
+      }
+    ]
+  },
+  "signature": "c51d207f1ade8b226421c9aa4aeabe21550b7782b980accd6598a715c91c9120"
 }

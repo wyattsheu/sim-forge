@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T18:54:59+08:00（Asia/Taipei）
+更新：2026-10-22T19:04:31+08:00（Asia/Taipei）
 
 共 9 件：等待 0、執行中 1、完成匯出 6、失敗 2、取消 0。
 
@@ -28,6 +28,20 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | dragon | running | seeded | revision_0000 | 24576 MiB | 6/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
 | capybara_plush_toy | failed | seeded | revision_0000 | 49152 MiB | 2/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
 | curling_iron | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
+
+伺服器自動監看：啟用；每 60 秒檢查，原 run 最多自動續跑 2 次。
+
+| 物件 | 自動監看結果 |
+|---|---|
+| baseball_cap | completed |
+| kitchen_tongs | business_halt |
+| sneaker | exported_unaccepted |
+| usb_hub | completed |
+| sloth | completed |
+| sauce_keeper | completed |
+| dragon | running |
+| capybara_plush_toy | stage_failed |
+| curling_iron | completed |
 
 ## baseball_cap
 
@@ -313,7 +327,7 @@ Run：`genesis_dragon_20261021`；執行中。
 | 材料推估 | success |
 | 材料參數配置 | success |
 | 體積網格處理 | success |
-| Genesis 物理診斷 | pending |
+| Genesis 物理診斷 | running |
 | 貼圖生成 | pending |
 | 最終匯出 | pending |
 
