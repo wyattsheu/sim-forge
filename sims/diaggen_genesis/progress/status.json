@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-22T14:21:06+08:00",
+  "updated_at": "2026-10-22T14:49:32+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T05:52:10.698856+00:00",
-      "updated_at": "2026-10-22T14:21:06+08:00",
+      "updated_at": "2026-10-22T14:49:32+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -139,7 +139,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T06:03:34.261605+00:00",
-      "updated_at": "2026-10-22T14:21:06+08:00",
+      "updated_at": "2026-10-22T14:49:32+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -245,7 +245,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:39:46.288097+00:00",
-      "updated_at": "2026-10-22T14:21:06+08:00",
+      "updated_at": "2026-10-22T14:49:32+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -407,7 +407,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:30:09.878929+00:00",
-      "updated_at": "2026-10-22T14:21:06+08:00",
+      "updated_at": "2026-10-22T14:49:32+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
@@ -471,11 +471,11 @@
         {
           "name": "genesis_live_diagnostic_loop",
           "label": "Genesis 物理診斷",
-          "status": "running",
-          "ledger_status": "running",
+          "status": "pending_retry",
+          "ledger_status": "pending_retry",
           "ok": false,
           "started_at": "2026-10-22T04:33:10.358349+00:00",
-          "finished_at": null
+          "finished_at": "2026-10-22T06:49:29.999669+00:00"
         },
         {
           "name": "hag4r_post_mesh_texture",
@@ -569,7 +569,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T09:26:08.183115+00:00",
-      "updated_at": "2026-10-22T14:21:06+08:00",
+      "updated_at": "2026-10-22T14:49:32+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -731,7 +731,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T06:10:30.888187+00:00",
-      "updated_at": "2026-10-22T14:21:06+08:00",
+      "updated_at": "2026-10-22T14:49:32+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 1,
@@ -893,7 +893,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T08:33:49.924351+00:00",
-      "updated_at": "2026-10-22T14:21:06+08:00",
+      "updated_at": "2026-10-22T14:49:32+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -999,7 +999,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T04:27:02.196628+00:00",
-      "updated_at": "2026-10-22T14:21:06+08:00",
+      "updated_at": "2026-10-22T14:49:32+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1131,7 +1131,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-22T14:21:06+08:00",
+      "updated_at": "2026-10-22T14:49:32+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1615,5 +1615,5 @@
       "sha256": "39ab26a51507cb36822964980a972d0be09a9ba9ed01befab104a2fb3616a400"
     }
   ],
-  "signature": "579c705bb9a16bb6c375404b3ef4ed20346e24fcf0ad8212b08db90d51e86648"
+  "signature": "fc2bda829baa795253dc2c5bce7335d6245cfd7f766f81289aca009922228b13"
 }
