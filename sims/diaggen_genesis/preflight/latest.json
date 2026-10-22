@@ -1,30 +1,5 @@
 {
-  "schema_version": "diaggen-full-runtime-preflight-v1",
-  "checked_at": "2026-10-22T12:23:51.466357+00:00",
-  "overall_status": "pass",
-  "simulator": "Genesis",
-  "counts": {
-    "pass": 98,
-    "fail": 0,
-    "skip": 0
-  },
-  "optional_checks": [
-    {
-      "name": "host/optional_cmake",
-      "status": "skip",
-      "reason": "Not required by the installed precompiled runtime or validated Ninja JIT"
-    }
-  ],
-  "scope": "Complete disabled diagnostic MCP transport for the incident worker, plus a guarded explicit retry after proven pre-model configuration failure; native runtime untouched.",
-  "limitations": [
-    "Five production assets have strict Genesis accept; sneaker is an exported_unaccepted native snapshot result with revise, not a physics acceptance.",
-    "Capybara spconv int32 limitation and kitchen-tongs native revision budget remain unresolved.",
-    "No full-model peak VRAM measurement; admission does not reserve GPU memory.",
-    "Hardware checks are reused only where native sources, inputs, environments and binaries match the prior certificate.",
-    "Watchdog does not repair business halts, failed native stages, exhausted revision budgets or the capybara spconv limitation; unknown active processes prevent automatic resume.",
-    "The investigator is admitted only for new failures and cannot guarantee a faithful fix; real business halts and automatic-review rejections are preserved. Real Codex incident execution is a separate deployment observation.",
-    "This incident revalidation is CPU-only; it does not claim the queued Dragon run has started, completed, or passed native acceptance."
-  ],
+  "checked_at": "2026-10-22T20:47:08+08:00",
   "checks": [
     {
       "name": "host/nine_input_decode_hash_dimensions",
@@ -311,173 +286,51 @@
       "status": "pass"
     },
     {
-      "name": "completed_export/strict_accepted_export",
+      "name": "orchestration/namespace_unittest_suite",
       "status": "pass"
     },
     {
-      "name": "recovery_contracts/sneaker_native_recovery_contract",
+      "name": "orchestration/preflight_negative_controls",
       "status": "pass"
     },
     {
-      "name": "recovery_contracts/sloth_native_recovery_contract",
+      "name": "orchestration/source_and_test_inventory_unchanged",
       "status": "pass"
     },
     {
-      "name": "recovery_contracts/usb_hub_native_recovery_contract",
-      "status": "pass"
-    },
-    {
-      "name": "recovery_contracts/sauce_keeper_native_recovery_contract",
-      "status": "pass"
-    },
-    {
-      "name": "spconv_native/tiny_native_implicit_numerical_parity",
-      "status": "pass"
-    },
-    {
-      "name": "gpu_sharing/actual_snapshot_admits_next_fresh_job",
-      "status": "pass"
-    },
-    {
-      "name": "verified_diagnostics/sloth_clean_snapshot_admission",
-      "status": "pass"
-    },
-    {
-      "name": "verified_diagnostics/closed_failed_snapshot_origin_retry",
-      "status": "pass"
-    },
-    {
-      "name": "probe_preview_contract/native_revision_preview_uniqueness",
-      "status": "pass"
-    },
-    {
-      "name": "completed_export/sloth_actual_strict_accepted_export",
-      "status": "pass"
-    },
-    {
-      "name": "gpu_sharing/three_worker_memory_boundary_and_actual_snapshot_preview",
-      "status": "pass"
-    },
-    {
-      "name": "namespace_unittest_suite",
-      "status": "pass"
-    },
-    {
-      "name": "preflight_negative_controls",
-      "status": "pass"
-    },
-    {
-      "name": "source_and_test_inventory_unchanged",
-      "status": "pass"
-    },
-    {
-      "name": "repair_stage_runtime/existing_native_recovery_with_immutable_base",
-      "status": "pass"
-    },
-    {
-      "name": "completed_export/usb_actual_strict_accepted_export",
-      "status": "pass"
-    },
-    {
-      "name": "completed_export/baseball_cap_actual_strict_accepted_export",
-      "status": "pass"
-    },
-    {
-      "name": "repair_resume/native_reused_prefix_and_opt_in_snapshot_contract",
-      "status": "pass"
-    },
-    {
-      "name": "sauce_keeper_actual_export",
-      "status": "pass"
-    },
-    {
-      "name": "sneaker_native_final_revise_export",
-      "status": "pass"
-    },
-    {
-      "name": "server_monitor/systemd_unit_validation",
-      "status": "pass"
-    },
-    {
-      "name": "server_monitor/exact_native_profiler_exclusion",
-      "status": "pass"
-    },
-    {
-      "name": "server_monitor/dragon_native_readonly_resume_admission",
-      "status": "pass"
-    },
-    {
-      "name": "server_supervision/four_systemd_units_valid",
-      "status": "pass"
-    },
-    {
-      "name": "server_supervision/actual_dragon_incident_detection",
-      "status": "pass"
-    },
-    {
-      "name": "server_supervision/real_cli_disabled_transport_parser",
+      "name": "launch_gate/rejects_orchestration_only_certificate",
       "status": "pass"
     }
   ],
+  "counts": {
+    "fail": 0,
+    "pass": 75,
+    "skip": 0
+  },
   "evidence_reuse": {
-    "unchanged_checks_reused": 94,
     "actual_cpu_tests": {
       "error": 0,
       "expected_fail": 0,
       "fail": 0,
-      "pass": 377,
-      "run": 377,
+      "pass": 383,
+      "run": 383,
       "skip": 0,
       "unexpected_success": 0
     },
-    "changed_sources": [
-      "sims/diaggen_genesis/queue/repair_control.py",
-      "sims/diaggen_genesis/queue/run_repair.sh"
-    ],
-    "native_sources_changed": false,
-    "completed_production_assets": [
-      "curling_iron",
-      "sloth",
-      "usb_hub",
-      "baseball_cap",
-      "sauce_keeper"
-    ],
-    "unaccepted_exports": [
-      "sneaker"
-    ],
-    "current_incident": {
-      "incident_id": "20261022_202420_af4645266949",
-      "changed_fingerprint_entries": {
-        "binaries": [],
-        "environments": [],
-        "inputs": [],
-        "sources": [
-          "tools/diaggen/hag4r/agentic/runtime_tools/diagnostics.py",
-          "tools/diaggen_support/diagnostic_retry_snapshot_namespace.json",
-          "tools/diaggen_support/diagnostic_retry_snapshot_namespace.patch",
-          "tools/diaggen_support/native_patches.json"
-        ]
-      },
-      "unchanged_fingerprint_counts": {
-        "binaries": 6,
-        "environments": 5,
-        "inputs": 9
-      },
-      "hardware_evidence_reuse_basis": "Prior hardware results are reused only for the unchanged physical probe dependencies: all planned inputs, environments, binaries, and mesh/FEM/Genesis/OmniPart implementation sources match; the changed native source is limited to diagnostic artifact registration, which was revalidated by the current CPU suite."
-    }
+    "fresh_hardware_environment_checks": 71,
+    "hardware_checks_reused": 0,
+    "native_patch_count": 9,
+    "previous_orchestration_only_certificate_rejected": true
   },
-  "last_full_runtime_probe_at": "2026-10-22T12:23:51.466357+00:00",
-  "latest_updated_at": "2026-10-22T20:39:47+08:00",
   "incident_revalidation": {
-    "change": "Attempt-scoped source snapshots for validated successor diagnostic attempts; first-attempt path and immutable collision guard retained.",
-    "checked_at": "2026-10-22T20:39:47+08:00",
+    "change": "Added the verified attempt-scoped namespace patch for copied material-audit source artifacts; first-attempt canonical path and collision guard remain.",
+    "checked_at": "2026-10-22T20:50:57+08:00",
     "classification": "pipeline_runtime",
     "fingerprint_comparison": {
       "changed": {
-        "binaries": [],
-        "environments": [],
-        "inputs": [],
         "sources": [
+          "sims/diaggen_genesis/preflight/readiness.py",
+          "sims/diaggen_genesis/queue/repair_prompt.md",
           "tools/diaggen/hag4r/agentic/runtime_tools/diagnostics.py",
           "tools/diaggen_support/diagnostic_retry_snapshot_namespace.json",
           "tools/diaggen_support/diagnostic_retry_snapshot_namespace.patch",
@@ -487,7 +340,8 @@
       "unchanged_counts": {
         "binaries": 6,
         "environments": 5,
-        "inputs": 9
+        "inputs": 9,
+        "sources": 1046
       }
     },
     "full_cpu_collection": {
@@ -506,25 +360,25 @@
     },
     "incident_id": "20261022_202420_af4645266949",
     "limitations": [
-      "The new run had not started or completed at inspection time.",
-      "No full Genesis diagnostic episode or acceptance result is claimed."
+      "The new run is in progress; no completion or Genesis acceptance is claimed."
     ],
     "queue": {
-      "attempts": 4,
+      "attempts": 5,
       "execution_mode": "fresh",
       "job_id": "dragon",
       "new_run_id": "genesis_dragon_20261022_retryfix_af4645266949",
       "old_native_state_and_snapshot_unchanged": true,
       "previous_run_id": "genesis_dragon_20261021",
-      "status_at_inspection": "queued"
+      "status": "running"
     },
     "readiness_certificate": {
-      "checks_passed": 3,
+      "checks_passed": 75,
       "path": "sims/diaggen_genesis/queue/runtime_preflight.json",
-      "sha256": "7dde812c57626afd61f40ee870138be44a858fa2ad55cc7d57238f79522affb3",
+      "sha256": "6b6bf846054a31c63e5337ebcf08e723d162f47ec465d8ad9a69b83a25e512d8",
+      "source": "current full runtime summary; previous orchestration-only report was rejected",
       "status": "verified"
     },
-    "reason": "A validated diagnostic retry reused the revision-level snapshot path and halted before episode creation.",
+    "reason": "A validated diagnostic retry reused the revision-level material-audit snapshot path and halted before episode creation.",
     "status": "pass",
     "targeted_regressions": [
       {
@@ -548,5 +402,22 @@
         "suite": "test_runtime_support_install.py"
       }
     ]
-  }
+  },
+  "latest_updated_at": "2026-10-22T20:50:57+08:00",
+  "limitations": [
+    "Synthetic hardware fixtures and CPU regression tests do not establish full generated-asset peak memory or final physical acceptance.",
+    "Known capybara spconv limitation and tongs revision-budget halt remain.",
+    "The old dragon native halt remains unchanged; the demonstrated compatibility fix admitted a separate guarded raw-image fresh run."
+  ],
+  "optional_checks": [
+    {
+      "name": "host/optional_cmake",
+      "reason": "Not required by the installed precompiled runtime or validated Ninja JIT",
+      "status": "skip"
+    }
+  ],
+  "overall_status": "pass",
+  "schema_version": "diaggen-full-runtime-preflight-v1",
+  "scope": "Fresh host, mesh, OmniPart and exact-GPU Genesis infrastructure probes plus 383 CPU tests and a strict full-runtime certificate gate. Independent review of the first scheduled repair.",
+  "simulator": "Genesis"
 }
