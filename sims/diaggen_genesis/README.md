@@ -4,7 +4,7 @@
 
 使用 DiagGen 內附的 **Genesis 1.2.0**，開啟 Genesis 診斷，排程 9 張圖片的完整生成流程。
 
-**2026-10-22 16:49 樹懶已完整成功**：九階段紀錄成功、Genesis strict accept、貼圖與 16 個匯出產物驗證通過，並有兩段診斷影片。目前已完成電捲棒與樹懶；其他工作依 [最新進度](progress/) 為準。見 [成品驗收](analysis/sloth_completed_validation.json) 與 [恢復及修補紀錄](analysis/RECOVERY_PROGRESS_20261022.md)。
+**2026-10-22 18:05 已完整完成 4／9 件：電捲棒、樹懶、USB Hub、棒球帽。** 棒球帽這次從原圖一路完成九階段、Genesis strict accept、貼圖與 16 個匯出產物，完整嘗試耗時 50 分 49 秒；另有兩段診斷影片與獨立驗收。其他工作依 [最新進度](progress/) 為準。見 [棒球帽驗收](analysis/baseball_cap_completed_validation.json)、[USB 驗收](analysis/usb_hub_completed_validation.json)、[樹懶驗收](analysis/sloth_completed_validation.json) 與 [恢復及修補紀錄](analysis/RECOVERY_PROGRESS_20261022.md)。
 
 - 生成與診斷：**GPT-6 Luna，Max reasoning**；各階段子代理沿用相同設定。
 - 論文對應設定為 GPT-5.6 Luna、Max；本次依要求改用同系列新版，並保留差異紀錄。

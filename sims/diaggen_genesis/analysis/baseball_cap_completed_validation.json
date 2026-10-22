@@ -1,0 +1,98 @@
+{
+  "run_id": "genesis_baseball_cap_20261022_fresh3",
+  "accepted_revision": "revision_0000",
+  "all_native_stages_successful": true,
+  "strict_genesis_accept": true,
+  "valid": true,
+  "artifact_count": 16,
+  "artifact_sha256": {
+    "appearance/albedo.png": "e3728aec6ebffc143124dacf7b14f2ebdc8a30f23cb49eab9834fc902a6e925f",
+    "appearance/post_mesh_texture_request.json": "3d5444c8ae70779cdb183d3c3ca6aba25e37f37927b26ee57516b46ae8ba06dc",
+    "appearance/qa/confidence.png": "e25bd456e7533490d554b69d885e246466f79a6d93a36363ef028c265fde2f1b",
+    "appearance/qa/fill_provenance.png": "41cebae68ea329da399454c291a9bb692baed9c22da65ebed04c23cd16ca1964",
+    "appearance/qa/observed_coverage.png": "5b457ae7bb969c8f6f081ef3263aa558006571af2474ebd6a05909f8ba566974",
+    "appearance/qa/report.json": "97db19afdb020afae21f36f3d604bff8ac4104653f2b1e6eefbdbd6c18e80342",
+    "appearance/qa/rest_pose_render.png": "53f4c2bffe67045fe04f19c99633e94813e80051aad93f3f02a62cd9ec0038c1",
+    "appearance/visual_manifest.json": "43321d8670b40fdfac80bd56d2586f001632b5366a3487a81bd918696b228957",
+    "appearance/visual_mesh.glb": "0ad0d8755185762e685fc1e12870ef3932b958f95e731663910f7f047efc28af",
+    "appearance/visual_to_physics.npz": "0b3db8deb2d9b8c335f17b86982ee44490aabc7b05b0bb7c4ea32272e5d8eeb4",
+    "final_mesh.mesh": "b8e184f825daabf8f1f48799b306b841a54c0b2c2361336ed6f0457e85d18a56",
+    "heterogeneous_params.npz": "69efd636897c2db6e97945a8189b6e75c46668b15c98028a4ddf26cca9f4c529",
+    "inferred_params.json": "fafdc32b0fbc314cfbb634b516d5d400af31833ad5aa2d6de19566c5963fbbc4",
+    "metric_mesh_scaling.json": "9ea920f97bba5829714c9fcd08af7b953960873632fc4e754f28b462ca13c593",
+    "volume_topology.json": "bd4245fcf10f0e244a7991c2a4e85d7abef94cd708a82a04ae09060ebcc25ba6"
+  },
+  "manifest_sha256": "10857d0c10e1754460d2166c5d7dc1b35ff033051b755431cb27f01e48a22f6d",
+  "native_validation": {
+    "appearance_schema": "hag4r-post-mesh-texture-visual-v1",
+    "face_connected_components": 1,
+    "material_labels": [
+      0,
+      1,
+      2
+    ],
+    "native_appearance_valid": true,
+    "native_tet_valid": true,
+    "physical_contract": {
+      "metric_mesh_scaling": {
+        "scale_factor": 0.2497317394370952,
+        "schema_version": "hag4r-metric-max-dimension-scaling-v1",
+        "target_max_dimension_m": 0.25
+      },
+      "params": {
+        "keys": [
+          "part_E_nu",
+          "part_colors",
+          "part_density",
+          "part_indices",
+          "part_volume_fill_mode_codes",
+          "tet_E_nu",
+          "tet_density",
+          "tet_part_labels"
+        ],
+        "tet_count": 22287
+      },
+      "volume_topology": {
+        "schema_version": "hag4r-volume-topology-v3",
+        "tet_budget_status": "within_budget",
+        "tet_count": 22287,
+        "volume_topology": "hollow",
+        "warnings": []
+      }
+    },
+    "point_count": 6405,
+    "tet_count": 22287
+  },
+  "state_sha256": "10b76fb884fa1a4f22af1869cdde880c064f1033d68a65e583450b9cb77e30c5",
+  "schema_version": "diaggen-completed-export-validation-v1",
+  "started_at": "2026-10-22T17:14:36+08:00",
+  "finished_at": "2026-10-22T18:05:25+08:00",
+  "successful_attempt_seconds": 3049,
+  "timing_scope": "Successful fresh raw-image attempt, including launch checks, bounded image cleanup, SAM3, OmniPart, material inference, mesh, Genesis, texture, export, validation and archive. Earlier failed attempts excluded.",
+  "videos": [
+    {
+      "name": "episode_0001_part_segmentation_triptych_10fps.mp4",
+      "sha256": "4dfb849dc8203262b3fa5dc1b2ad5f98e74935f574881f61e00d22bb437304e4",
+      "stream": {
+        "codec_name": "h264",
+        "width": 2304,
+        "height": 768,
+        "r_frame_rate": "10/1",
+        "nb_frames": "36"
+      },
+      "duration_seconds": 3.6
+    },
+    {
+      "name": "episode_0002_part_segmentation_triptych_10fps.mp4",
+      "sha256": "f6284b14c8d95ccbcaae92eb1129f5234b56408b0f6c84c5cdcfb270ea987964",
+      "stream": {
+        "codec_name": "h264",
+        "width": 2304,
+        "height": 768,
+        "r_frame_rate": "10/1",
+        "nb_frames": "36"
+      },
+      "duration_seconds": 3.6
+    }
+  ]
+}

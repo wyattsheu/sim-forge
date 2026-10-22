@@ -1,0 +1,44 @@
+{
+  "schema_version": "diaggen-completed-attempt-timing-v1",
+  "successful_assets": [
+    {
+      "asset": "baseball_cap",
+      "run_id": "genesis_baseball_cap_20261022_fresh3",
+      "started_at": "2026-10-22T17:14:36+08:00",
+      "finished_at": "2026-10-22T18:05:25+08:00",
+      "seconds": 3049,
+      "scope": "fresh_raw_image"
+    },
+    {
+      "asset": "usb_hub",
+      "run_id": "genesis_usb_hub_20261022_clean_diagnostics3",
+      "started_at": "2026-10-22T17:26:00+08:00",
+      "finished_at": "2026-10-22T17:50:18+08:00",
+      "seconds": 1458,
+      "scope": "diagnostics_snapshot_suffix"
+    },
+    {
+      "asset": "sloth",
+      "run_id": "genesis_sloth_20261022_clean_diagnostics3",
+      "started_at": "2026-10-22T16:18:53+08:00",
+      "finished_at": "2026-10-22T16:49:42+08:00",
+      "seconds": 1849,
+      "scope": "diagnostics_snapshot_suffix"
+    },
+    {
+      "asset": "curling_iron",
+      "run_id": "genesis_curling_iron_20261021_exr_retry1",
+      "started_at": "2026-10-21T14:55:20+08:00",
+      "finished_at": "2026-10-21T16:11:47+08:00",
+      "seconds": 4587,
+      "scope": "fresh_raw_image"
+    }
+  ],
+  "fresh_raw_image_sample_count": 2,
+  "fresh_raw_image_mean_seconds": 3818.0,
+  "notes": [
+    "Successful attempt only; excludes earlier failed attempts and queue waiting.",
+    "Snapshot suffix times reuse six upstream stages and are not full-generation times.",
+    "Two fresh samples are observations on this shared machine, not a per-object time guarantee."
+  ]
+}

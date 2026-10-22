@@ -1,10 +1,10 @@
 {
   "schema_version": "diaggen-full-runtime-preflight-v1",
-  "checked_at": "2026-10-22T17:25:50+08:00",
+  "checked_at": "2026-10-22T18:12:18+08:00",
   "overall_status": "pass",
   "simulator": "Genesis",
   "counts": {
-    "pass": 86,
+    "pass": 90,
     "fail": 0,
     "skip": 0
   },
@@ -16,33 +16,43 @@
     }
   ],
   "evidence_reuse": {
-    "unchanged_checks_reused": 85,
-    "orchestration_checks_rerun": 0,
+    "unchanged_checks_reused": 83,
+    "orchestration_checks_rerun": 3,
     "actual_cpu_tests": {
       "error": 0,
       "expected_fail": 0,
       "fail": 0,
-      "pass": 303,
-      "run": 303,
+      "pass": 320,
+      "run": 320,
       "skip": 0,
       "unexpected_success": 0
     },
-    "new_production_success": "genesis_sloth_20261022_clean_diagnostics3",
+    "new_production_success": "genesis_usb_hub_20261022_clean_diagnostics3",
     "native_sources_changed": false,
     "reviewed_runtime_source_changes": [
-      "sims/diaggen_genesis/batch_plan.json"
+      "sims/diaggen_genesis/queue/batch_control.py",
+      "sims/diaggen_genesis/queue/run_one.sh",
+      "tools/diaggen_support/prepare_repair_stage_runtime.py",
+      "tools/diaggen_support/queue_verified_diagnostics.json",
+      "tools/diaggen_support/queue_verified_diagnostics.patch"
     ],
-    "actual_cpu_tests_reused_unchanged_code": true
+    "actual_cpu_tests_reused_unchanged_code": false,
+    "completed_production_assets": [
+      "curling_iron",
+      "sloth",
+      "usb_hub",
+      "baseball_cap"
+    ]
   },
-  "scope": "Shared-GPU policy permits up to three workers per GPU within unchanged four-worker global cap, exact GPU bindings and summed memory gates.",
+  "scope": "Guarded invocation of existing native revision-terminal recovery; recognize native reused prefix and exporting snapshot repairs with provenance; independent successful USB and full raw-image baseball-cap exports. Native source and environment unchanged.",
   "limitations": [
     "Only curling iron is a completed production asset.",
     "No full-model peak VRAM measurement; large-tensor capybara fix awaits production validation.",
     "LLM/imagegen access uses existing successful execution evidence; no new cloud call in preflight.",
     "Memory gates do not reserve GPU capacity.",
     "Shared admission counts per-job minimum gates as conservative headroom; this does not reserve CUDA memory or establish full-model peak demand. Existing jobs are not migrated or restarted.",
-    "Sloth completed the actual strict native workflow; the latest argument-error wording is covered by 303 CPU tests and awaits another production attempt.",
-    "Other remaining inputs can still fail; the full capybara tensor limitation remains unresolved."
+    "Other remaining inputs can still fail; the full capybara tensor limitation remains unresolved.",
+    "Existing active workers retain their original prompts. Newly launched workers prepare new repairs before replacement stages; recovered generated artifacts require their owning-stage submissions. Remaining inputs may still fail; capybara int32 limitation remains unresolved."
   ],
   "components": [
     {

@@ -1,4 +1,5 @@
 """Apply the reviewed resume patch to temporary copies; never edit production."""
+from copy import deepcopy
 import hashlib
 import importlib.util
 import json
@@ -212,6 +213,77 @@ class SameRunResumeTests(unittest.TestCase):
 
     def save_native(self):
         (self.run_root / "state.json").write_text(json.dumps(self.state))
+
+    def make_repair_prefix(self, *, snapshot=False):
+        self.state["active_revision"] = "revision_0001"
+        self.state["route_state"] = {"active_repair_revision": {
+            "route": "segmentation", "base_revision": "revision_0000", "new_revision": "revision_0001",
+            "copied_stage_prefix": ["image_cleanup"],
+        }}
+        self.state["revisions"] = {
+            "revision_0000": {"status": "superseded", "superseded_by": "revision_0001"},
+            "revision_0001": {"status": "active", "base_revision": "revision_0000", "rerun_route": "segmentation",
+                              "copied_stage_prefix": ["image_cleanup"]},
+        }
+        stage = self.state["stages"]["image_cleanup"]
+        stage.update(status="reused", stats={"reused_from_revision": "revision_0000"},
+                     outputs={"reused_from_revision": "revision_0000"})
+        original = Path(stage["artifacts"]["expected"][0]["path"])
+        target = self.run_root / "revisions/revision_0001" / original.name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(original.read_bytes())
+        stage["artifacts"]["expected"][0]["path"] = str(target)
+        if snapshot:
+            self.state.update(run_mode="post_mesh_processing_diagnostics",
+                              diagnostics_reroute_and_export=True, diagnostics_stage_only=False)
+        self.save_native()
+
+    def test_native_reused_prefix_resumes_without_rewriting_copied_artifacts(self):
+        self.make_repair_prefix()
+        before = (self.run_root / "state.json").read_bytes()
+        mapping = self.resume()
+        self.assertEqual(mapping["completed_stage_prefix"], STAGES[:2])
+        self.assertEqual(before, (self.run_root / "state.json").read_bytes())
+
+    def test_reused_marker_without_repair_provenance_is_rejected(self):
+        self.state["stages"]["image_cleanup"]["status"] = "reused"
+        self.save_native()
+        with self.assertRaisesRegex(ValueError, "verified native repair-prefix"):
+            self.resume()
+
+    def test_reused_marker_cannot_extend_beyond_native_copied_prefix(self):
+        self.make_repair_prefix()
+        self.state["stages"]["sam3_omnipart_2d_segmentation"]["status"] = "reused"
+        self.save_native()
+        with self.assertRaisesRegex(ValueError, "verified native repair-prefix"):
+            self.resume()
+
+    def test_reused_provenance_and_active_artifact_scope_must_match(self):
+        self.make_repair_prefix()
+        original = deepcopy(self.state)
+        for mode in ("wrong_base", "wrong_prefix", "old_artifact_path"):
+            self.state = deepcopy(original)
+            if mode == "wrong_base":
+                self.state["stages"]["image_cleanup"]["outputs"]["reused_from_revision"] = "revision_0005"
+            elif mode == "wrong_prefix":
+                self.state["revisions"]["revision_0001"]["copied_stage_prefix"].append(STAGES[1])
+            else:
+                self.state["stages"]["image_cleanup"]["artifacts"]["expected"][0]["path"] = str(self.run_root / "revisions/revision_0000/evidence_0.json")
+            self.save_native()
+            with self.subTest(mode=mode), self.assertRaisesRegex(ValueError, "repair-prefix|active repair revision"):
+                self.resume()
+
+    def test_opt_in_exporting_snapshot_repair_can_resume(self):
+        self.make_repair_prefix(snapshot=True)
+        self.assertEqual(self.resume()["completed_stage_prefix"], STAGES[:2])
+
+    def test_stage_only_or_non_exporting_snapshot_stays_ineligible(self):
+        self.make_repair_prefix(snapshot=True)
+        for reroute, stage_only in ((False, False), (True, True), (True, None)):
+            self.state.update(diagnostics_reroute_and_export=reroute, diagnostics_stage_only=stage_only)
+            self.save_native()
+            with self.subTest(reroute=reroute, stage_only=stage_only), self.assertRaisesRegex(ValueError, "incompatible"):
+                self.resume()
 
     def queue_state(self):
         return json.loads(self.queue.path.read_text())
@@ -754,6 +826,11 @@ exec PYTHON "$@"
         self.assertIn("These restrictions apply only to Genesis diagnostics", prompt)
         self.assertIn("stage agents may call their documented native halt_*_stage", prompt)
         self.assertIn("The forwarder is authorized to inject that original value", prompt)
+        self.assertIn("prepare_repair_stage_runtime.py --run-root", prompt)
+        self.assertIn("BEFORE delegating its first replacement stage", prompt)
+        if not snapshot:
+            self.assertIn("revalidate_existing_repair_stage_skills", prompt)
+            self.assertIn("Do not regenerate successful outputs", prompt)
         self.assertIn("stage_tool.py TOOL_NAME --input-json", prompt)
         self.assertIn("hag4r_mesh/bin/python", prompt)
         return self.queue_state()["jobs"][0]

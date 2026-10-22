@@ -1,0 +1,98 @@
+{
+  "run_id": "genesis_usb_hub_20261022_clean_diagnostics3",
+  "accepted_revision": "revision_0000",
+  "all_native_stages_successful": true,
+  "strict_genesis_accept": true,
+  "valid": true,
+  "artifact_count": 16,
+  "artifact_sha256": {
+    "appearance/albedo.png": "9e08b7e1260521f0df02335b57f9ccfaa034a56ed1e701de0b02d88f3b980d8a",
+    "appearance/post_mesh_texture_request.json": "4e67b53f7b03a8ede7e5f52d29dabbf77c016997f032ac372f093e9753a3365d",
+    "appearance/qa/confidence.png": "c55147b4f9d1e15d91eda5ab03a03253118e74fa6f2280abdc929828a2ff5069",
+    "appearance/qa/fill_provenance.png": "033ed862848f989d962cc8bb754dd91cc9d71b82095d066d293274e333b1259b",
+    "appearance/qa/observed_coverage.png": "874f0a24b6011ad27b9273e02f4b6f22b464da42ef1c4d6187f41354895a99c5",
+    "appearance/qa/report.json": "cfd260924cf56847973fb08def23dfd2ca3968a4461a7172a7ae25c2adfa9304",
+    "appearance/qa/rest_pose_render.png": "ee7539eda1c72745aef7e5f3227c1bbf27d97ae2259d85df9ce145bc4ee8ba6f",
+    "appearance/visual_manifest.json": "cb779f3124c5af38ba53760d9454fb3fdd533ab6e2467075d3230f4647fb67a5",
+    "appearance/visual_mesh.glb": "0f0e75b267106c917c2293724f426ecaae32821bebf512faf998da99a12fb6ce",
+    "appearance/visual_to_physics.npz": "ad09d009b21e5f1f1d35392e396d90a8c6ad35ef4c13c2fd85d43b53166c1d03",
+    "final_mesh.mesh": "d65a01830fb337f03f0675ddd19a14ceeba068286ea8b0667c7db0d2063f2f99",
+    "heterogeneous_params.npz": "2b4b8e0c1212623e179ac08c4bf3202b6ffc2827875d4235a7eb8632b9740db8",
+    "inferred_params.json": "a40206390d52ed6acfd72e1cb0f96de5e0d5b041a17bd8b6c1160945f4918dbf",
+    "metric_mesh_scaling.json": "17c53809e14063a736fed4f8243631774953ce22f970c4f74e8ee26b017f6335",
+    "volume_topology.json": "f7ea27e2af8ee80a6ab6d7965cf4e9c279b0cf345d54b644eb65a55fc7e69ce2"
+  },
+  "manifest_sha256": "1208d5283efec6e872a1d0d8d608001ee1fdf44786e7eb0e292e049b271346e7",
+  "native_validation": {
+    "appearance_schema": "hag4r-post-mesh-texture-visual-v1",
+    "face_connected_components": 1,
+    "material_labels": [
+      0,
+      1,
+      2
+    ],
+    "native_appearance_valid": true,
+    "native_tet_valid": true,
+    "physical_contract": {
+      "metric_mesh_scaling": {
+        "scale_factor": 0.13000263070423151,
+        "schema_version": "hag4r-metric-max-dimension-scaling-v1",
+        "target_max_dimension_m": 0.13
+      },
+      "params": {
+        "keys": [
+          "part_E_nu",
+          "part_colors",
+          "part_density",
+          "part_indices",
+          "part_volume_fill_mode_codes",
+          "tet_E_nu",
+          "tet_density",
+          "tet_part_labels"
+        ],
+        "tet_count": 5174
+      },
+      "volume_topology": {
+        "schema_version": "hag4r-volume-topology-v3",
+        "tet_budget_status": "within_budget",
+        "tet_count": 5174,
+        "volume_topology": "mixed",
+        "warnings": []
+      }
+    },
+    "point_count": 1417,
+    "tet_count": 5174
+  },
+  "state_sha256": "ec6539a5fa7399ee7b8f0e70b89815d65992a96e30712f0f614b9f933dcb2ef2",
+  "schema_version": "diaggen-completed-export-validation-v1",
+  "started_at": "2026-10-22T17:26:00+08:00",
+  "finished_at": "2026-10-22T17:50:18+08:00",
+  "successful_attempt_seconds": 1458,
+  "timing_scope": "Successful diagnostics-snapshot suffix only; six upstream stages reused, not raw-image full generation. Includes launch checks, diagnostics, texture, export, completion validation and archive.",
+  "videos": [
+    {
+      "name": "episode_0001_part_segmentation_triptych_10fps.mp4",
+      "sha256": "a948c3c3ee4d0797a130d130979e06fdbaf4b58a6866ff62fc2fdb8e5341424e",
+      "stream": {
+        "codec_name": "h264",
+        "width": 2304,
+        "height": 768,
+        "r_frame_rate": "10/1",
+        "nb_frames": "24"
+      },
+      "duration_seconds": 2.4
+    },
+    {
+      "name": "episode_0002_part_segmentation_triptych_10fps.mp4",
+      "sha256": "05136fff284266544a73c71d2e9851f239570d65cedb1e7ae57f67daceb8ae50",
+      "stream": {
+        "codec_name": "h264",
+        "width": 2304,
+        "height": 768,
+        "r_frame_rate": "10/1",
+        "nb_frames": "25"
+      },
+      "duration_seconds": 2.5
+    }
+  ]
+}

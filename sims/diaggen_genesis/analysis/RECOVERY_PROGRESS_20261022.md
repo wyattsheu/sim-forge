@@ -92,3 +92,36 @@ Dragon 的原始 cleanup 子代理紀錄也已找到：兩次真實 built-in ima
 依既有「有空就塞」要求，外部排程設定允許每張 GPU 最多三件、整批仍最多四件，不改 native、模型、精度或 24 GiB 門檻。三件的最低合計 73728 MiB 才准進場，73727 MiB 拒絕；已有三件時即使大量空閒也拒絕第四件。實際 admission 函式與當下 GPU 快照均已驗證。當時 GPU 0 因 OmniPart 載入後只剩 62155 MiB，第三件仍須等顯存，未假稱已啟動。
 
 啟動憑證增加為 **86 項通過**。只有 `batch_plan.json` 設定改變，所有程式、輸入、環境與 binary inventory 均未改；303 項 CPU 測試證據來自前一輪相同程式，這次另跑上述排程邊界與真實快照核對。這是排程記帳，無法保留 CUDA 顯存。
+
+
+## USB Hub 於 17:50:18 完整成功
+
+`genesis_usb_hub_20261022_clean_diagnostics3` 於 17:26:00 啟動，17:50:18 完整成功，共 **24 分 18 秒**。這是重用六個成功上游階段的 diagnostics-snapshot 後綴時間，不是原圖完整生成耗時。
+
+- 九階段成功；兩個區域均 `coverage_complete`，兩次合格探測的 selected-part fraction 均為 1.0。原生 strict accept，session 正常關閉，parent 套用 accept，再完成貼圖及匯出。
+- completion validator 與額外唯讀驗收皆通過，最終 state SHA-256 相同。1417 個頂點、5174 個四面體，材料標籤 0／1／2，一個 face-connected component，16 個 canonical 檔案。物理／視覺綁定與貼圖驗證均有效。
+- 兩段 H.264 影片均為 2304×768、10 fps，長度 2.4 秒及 2.5 秒。完整成品與 670 檔 trace 歸檔於 `sims/diaggen_genesis/runs/genesis_usb_hub_20261022_clean_diagnostics3/`；核心成品在其中 `asset/`。
+- [公開驗收](usb_hub_completed_validation.json) 與 [成功這次模型用量](usb_hub_token_usage.json) 不含先前失敗嘗試、互動除錯、imagegen 額外費用或 GPU 計算費用。
+
+現在已完成三件。棒球帽正在 Genesis 診斷；球鞋與料理夾依原生 revise／transition 建立 `revision_0001`，分別處理 shell 邊界、U 形回彎的分割修復，沒有修改覆蓋或探測門檻。醬料盒與 Dragon 繼續由同一 tmux queue 安排。水豚的 int32 限制仍未修復；隔離的分批解碼候選未通過比較，沒有部署。
+
+
+## 棒球帽於 18:05:25 完整成功
+
+`genesis_baseball_cap_20261022_fresh3` 於 17:14:36 從原圖啟動，18:05:25 全流程成功，**50 分 49 秒**。這次包含新生成的 cleanup、SAM3、OmniPart、材料推論與網格，後續兩個區域完整覆蓋、原生 strict accept、貼圖及匯出；不是上游快照後綴。
+
+completion validator 與獨立唯讀驗收都通過：6405 個頂點、22287 個四面體、材料標籤 0／1／2、一個 face-connected component、16 個 canonical 檔案；空心體積拓撲，目標最大尺寸 0.25 m。兩段 H.264 診斷影片均為 2304×768、10 fps、3.6 秒。完整成品在 `sims/diaggen_genesis/runs/genesis_baseball_cap_20261022_fresh3/asset/`。
+
+見 [棒球帽驗收](baseball_cap_completed_validation.json) 與 [這次完整嘗試的模型用量](baseball_cap_token_usage.json)。[USB 完整取景預覽](media/usb_hub_full_asset_preview.png)／[棒球帽完整取景預覽](media/baseball_cap_full_asset_preview.png) 由既有 GLB 與貼圖另行渲染；軟體 renderer、留白邊界與來源雜湊均有 JSON 證明。原生 QA 截圖、GLB、貼圖及物理資產均未修改，這些額外預覽不是新的物理驗收。
+
+## 修復版本的既有提交紀錄與官方恢復函式
+
+料理夾進入 `revision_0001` 後，分割及 OmniPart 成功生成，獨立 submit 卻被 `stage ... already terminalized` 拒絕。唯讀比對證實四筆衝突 terminal 都逐欄等於 immutable revision_0000 snapshot，時間也早於 revision_0001 建立時間。官方已有 `reset_active_revision_stage_runtime_terminals`，但目前 reroute 沒有自動呼叫；本輪 **沒有修改 native Python**。
+
+新增 `tools/diaggen_support/prepare_repair_stage_runtime.py` 只保護並呼叫這一個既有函式：要求真正的相鄰修復版本、已關閉的診斷 owner、未 accepted/exported，且所有受影響 terminal 都與 base 一致並早於新版本。拒絕刪除新版本 terminal、halt、活躍診斷或已完成資產。實際已在停止的料理夾 worker 上使用；四筆舊提交恢復，base snapshot SHA-256 維持 `28df487a7fe824f43b9eb10f341334f27c9c703584afad712dc3fea6c2c3c1c4`，第二版已生成產物與 stage 紀錄均保留。見 [恢復驗證](native_repair_stage_runtime_recovery.json)。
+
+另一個外部佇列問題是原先只認 `success`，官方複用階段實際標成 `reused`。現在只在 active repair、相鄰 base、原生 route 的 copied prefix、兩份 reused_from_revision 與 active-revision 產物位置皆相符時接受。也支援官方明確 opt-in 的 reroute-and-export snapshot 修復續跑，仍拒絕 stage-only snapshot；未修改原生狀態來迎合佇列。
+
+新 parent 在每次建立修復版本後、委派 replacement stage 前，明確執行上述原生函式保護入口。料理夾已重新排隊：先由 segmentation／OmniPart owning agents 重驗現有輸出、保留「U 回彎仍與兩臂合併」的限制並補正式 submit 或真正需要的 halt，再處理後續材料與網格；不重做成功生成，也不假稱三區目標已達成。
+
+最後完整收集 **320 項 CPU 測試通過，0 fail／error／skip**，其中 11 項實際 native terminal recovery 測試、6 項 copied-prefix／snapshot admission 控制。啟動憑證 **90 項通過**，納入 USB／棒球帽的實際成功驗收與料理夾的恢復、admission 證據。已比對 native code、輸入、環境與 binary inventory 均未變；HOLD 已解除。舊活躍 worker 保留原 prompt，新的 worker 才會先準備 repair terminal。

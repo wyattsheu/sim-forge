@@ -191,6 +191,11 @@ Use its queue_history_directory and prior_child_last_message as historical evide
 then have the owning cleanup child freshly validate the original paired candidates
 against the frozen source. Follow the official exhausted-budget selection rule and
 preserve actual failed checks; never invent a pass. Do not call imagegen a third time.
+If resume.json lists revalidate_existing_repair_stage_skills, first delegate each listed
+owning stage to recheck its existing generated artifacts and submit its missing current
+revision terminal explicitly. Do not regenerate successful outputs. Preserve real failed
+checks and repair-brief limitations; if the owning skill requires halt, report it and stop.
+Continue later pending stages only after these missing owning-stage submissions succeed.
 Successful cleanup and all successful upstream stages must be preserved."
         ;;
     diagnostics_snapshot)
@@ -259,6 +264,14 @@ These restrictions apply only to Genesis diagnostics: never fabricate a diagnost
 business halt, close, lease deletion, takeover, or recommendation. Owning non-diagnostic
 stage agents may call their documented native halt_*_stage tools when their real inputs
 or outputs fail the owning skill's checks; preserve the actual reason and stage budget.
+After a native diagnostic transition returns reroute and creates a new repair revision,
+BEFORE delegating its first replacement stage, the parent must explicitly run:
+$PYTHON $WORKSPACE/tools/diaggen_support/prepare_repair_stage_runtime.py --run-root $RUN_ROOT --apply
+This invokes the existing native reset_active_revision_stage_runtime_terminals helper
+only after proving each affected terminal is an unchanged submission from the immutable
+base revision. It preserves the base snapshot and copied prefix. Never manually delete
+state fields, remove a current-revision terminal, or use this during live diagnostics.
+Stop on a recovery validation error. This bookkeeping step does not rerun any stage.
 After successful diagnostic transition, texture, and final export, the parent must run:
 $MESH_PYTHON $COMPLETION_VALIDATOR --run-root $RUN_ROOT --settle
 This deterministic completion check must pass before reporting the full run successful.

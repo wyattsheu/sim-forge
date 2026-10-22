@@ -1,0 +1,15 @@
+{
+  "presentation_only": true,
+  "source_asset_unchanged": true,
+  "source_glb_sha256": "0f0e75b267106c917c2293724f426ecaae32821bebf512faf998da99a12fb6ce",
+  "source_albedo_sha256": "9e08b7e1260521f0df02335b57f9ccfaa034a56ed1e701de0b02d88f3b980d8a",
+  "preview_sha256": "c1cbb613fd389ad9031a1a48e278938c4705017a2460b093017bd033caec3c0d",
+  "vertices": 1282,
+  "faces": 1796,
+  "image_size": [
+    768,
+    768
+  ],
+  "empty_image_border": true,
+  "renderer": "llvmpipe (LLVM 20.1.2, 256 bits)"
+}

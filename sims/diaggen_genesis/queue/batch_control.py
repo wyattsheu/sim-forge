@@ -153,6 +153,32 @@ def native_recovery_preflight(root, *, state_path=None, snapshot_dir=None):
     return report
 
 
+def verified_repair_prefix(state):
+    """Recognize only native copied prefixes with matching repair provenance."""
+    repair = state.get("route_state", {}).get("active_repair_revision")
+    if repair is None:
+        return None
+    prefixes = {
+        "segmentation": ["image_cleanup"],
+        "material_inference": ["image_cleanup", "sam3_omnipart_2d_segmentation", "omnipart_generate_parts"],
+        "mesh_processing": ["image_cleanup", "sam3_omnipart_2d_segmentation", "omnipart_generate_parts", "hag4r_gpt_staged_material_inference"],
+    }
+    if not isinstance(repair, dict) or repair.get("route") not in prefixes:
+        raise ValueError("Unsupported native repair-prefix metadata")
+    active, base = state.get("active_revision"), repair.get("base_revision")
+    metadata = state.get("revisions", {}).get(active, {})
+    expected = prefixes[repair["route"]]
+    if (not isinstance(base, str) or not re.fullmatch(r"revision_[0-9]{4}", base)
+            or active != f"revision_{int(base.removeprefix('revision_')) + 1:04d}"
+            or repair.get("new_revision") != active or repair.get("copied_stage_prefix") != expected
+            or metadata.get("status") != "active" or metadata.get("base_revision") != base
+            or metadata.get("rerun_route") != repair["route"] or metadata.get("copied_stage_prefix") != expected
+            or state.get("revisions", {}).get(base, {}).get("status") != "superseded"
+            or state["revisions"][base].get("superseded_by") != active):
+        raise ValueError("Native repair-prefix provenance mismatch")
+    return {"base_revision": base, "revision": active, "copied_stage_prefix": expected}
+
+
 class Queue:
     def __init__(self, base=None, *, gpu_query=None):
         self.base = Path(base).resolve() if base is not None else Path(__file__).resolve().parent.parent
@@ -610,9 +636,13 @@ class Queue:
         if check_digest and digest != job.get("resume_state_sha256"):
             raise ValueError("Native state changed after resume admission")
         state = json.loads(state_bytes)
+        repair_prefix = verified_repair_prefix(state) if isinstance(state, dict) else None
+        export_repair_snapshot = (isinstance(state, dict) and state.get("run_mode") == "post_mesh_processing_diagnostics"
+                                 and state.get("diagnostics_reroute_and_export") is True
+                                 and state.get("diagnostics_stage_only") is False and repair_prefix is not None)
         if (not isinstance(state, dict) or state.get("schema_version") != "2026-07-skill-suite-runtime-state-v2"
                 or state.get("run_id") != job["run_id"] or state.get("run_root") != str(run_root)
-                or state.get("repo_root") != str(root) or state.get("run_mode") != "full_image"
+                or state.get("repo_root") != str(root) or not (state.get("run_mode") == "full_image" or export_repair_snapshot)
                 or state.get("runtime_kind") != "codex_skill" or state.get("status") not in ("seeded", "running", "failed")
                 or state.get("diagnostics", {}).get("enabled") is not True):
             raise ValueError("Native state is incompatible with same-run Genesis resume")
@@ -640,7 +670,12 @@ class Queue:
             stage = stages[name]
             if not isinstance(stage, dict):
                 raise ValueError("Invalid native stage record")
-            if stage.get("status") == "success" and stage.get("ok") is True:
+            if stage.get("status") in ("success", "reused") and stage.get("ok") is True:
+                if stage.get("status") == "reused":
+                    if (repair_prefix is None or name not in repair_prefix["copied_stage_prefix"]
+                            or stage.get("stats", {}).get("reused_from_revision") != repair_prefix["base_revision"]
+                            or stage.get("outputs", {}).get("reused_from_revision") != repair_prefix["base_revision"]):
+                        raise ValueError("Reused stage lacks verified native repair-prefix provenance")
                 if unfinished:
                     raise ValueError("Successful native stages must form a prefix")
                 expected = stage.get("artifacts", {}).get("expected")
@@ -652,6 +687,9 @@ class Queue:
                         if (not path.is_absolute() or path.is_symlink() or not path.is_file() or path.stat().st_size <= 0
                                 or not path.resolve().is_relative_to(run_root.resolve())):
                             raise ValueError("A required upstream artifact is missing or unsafe")
+                        if (stage.get("status") == "reused" and not path.is_relative_to(
+                                run_root / "revisions" / repair_prefix["revision"])):
+                            raise ValueError("Reused artifact is not scoped to its active repair revision")
                 completed.append(name)
             else:
                 if stage.get("ok") is not False or stage.get("status") not in ("pending", "pending_retry"):

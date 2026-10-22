@@ -1,6 +1,6 @@
 --- a/sims/diaggen_genesis/queue/run_one.sh
 +++ b/sims/diaggen_genesis/queue/run_one.sh
-@@ -175,6 +175,33 @@
+@@ -175,6 +175,38 @@
          > "$DIAGGEN_JOB_QUEUE_DIR/initializer.json"
  fi
  
@@ -20,6 +20,11 @@
 +then have the owning cleanup child freshly validate the original paired candidates
 +against the frozen source. Follow the official exhausted-budget selection rule and
 +preserve actual failed checks; never invent a pass. Do not call imagegen a third time.
++If resume.json lists revalidate_existing_repair_stage_skills, first delegate each listed
++owning stage to recheck its existing generated artifacts and submit its missing current
++revision terminal explicitly. Do not regenerate successful outputs. Preserve real failed
++checks and repair-brief limitations; if the owning skill requires halt, report it and stop.
++Continue later pending stages only after these missing owning-stage submissions succeed.
 +Successful cleanup and all successful upstream stages must be preserved."
 +        ;;
 +    diagnostics_snapshot)
@@ -34,7 +39,7 @@
  cat > "$DIAGGEN_JOB_QUEUE_DIR/prompt.txt" <<EOF
  Complete this one user-authorized DiagGen asset-generation run in native Genesis.
  Read and use .agents/skills/run-diaggen-pipeline/SKILL.md; the initialized run is $RUN_ROOT.
-@@ -205,18 +232,33 @@
+@@ -205,18 +237,41 @@
  output quality. The guard is an observation, not a memory reservation or OOM guarantee.
  For fresh image cleanup, stop after a passing Attempt 1; do not generate Attempt 2 after it
  passes. For a resume with successful cleanup, skip all imagegen and cleanup registration.
@@ -75,12 +80,53 @@
 +business halt, close, lease deletion, takeover, or recommendation. Owning non-diagnostic
 +stage agents may call their documented native halt_*_stage tools when their real inputs
 +or outputs fail the owning skill's checks; preserve the actual reason and stage budget.
++After a native diagnostic transition returns reroute and creates a new repair revision,
++BEFORE delegating its first replacement stage, the parent must explicitly run:
++$PYTHON $WORKSPACE/tools/diaggen_support/prepare_repair_stage_runtime.py --run-root $RUN_ROOT --apply
++This invokes the existing native reset_active_revision_stage_runtime_terminals helper
++only after proving each affected terminal is an unchanged submission from the immutable
++base revision. It preserves the base snapshot and copied prefix. Never manually delete
++state fields, remove a current-revision terminal, or use this during live diagnostics.
++Stop on a recovery validation error. This bookkeeping step does not rerun any stage.
  After successful diagnostic transition, texture, and final export, the parent must run:
  $MESH_PYTHON $COMPLETION_VALIDATOR --run-root $RUN_ROOT --settle
  This deterministic completion check must pass before reporting the full run successful.
 --- a/sims/diaggen_genesis/queue/batch_control.py
 +++ b/sims/diaggen_genesis/queue/batch_control.py
-@@ -418,7 +418,7 @@
+@@ -151,6 +151,32 @@
+     if not isinstance(report, dict) or report.get("valid") is not True:
+         raise ValueError("Native recovery preflight did not establish validity")
+     return report
++
++
++def verified_repair_prefix(state):
++    """Recognize only native copied prefixes with matching repair provenance."""
++    repair = state.get("route_state", {}).get("active_repair_revision")
++    if repair is None:
++        return None
++    prefixes = {
++        "segmentation": ["image_cleanup"],
++        "material_inference": ["image_cleanup", "sam3_omnipart_2d_segmentation", "omnipart_generate_parts"],
++        "mesh_processing": ["image_cleanup", "sam3_omnipart_2d_segmentation", "omnipart_generate_parts", "hag4r_gpt_staged_material_inference"],
++    }
++    if not isinstance(repair, dict) or repair.get("route") not in prefixes:
++        raise ValueError("Unsupported native repair-prefix metadata")
++    active, base = state.get("active_revision"), repair.get("base_revision")
++    metadata = state.get("revisions", {}).get(active, {})
++    expected = prefixes[repair["route"]]
++    if (not isinstance(base, str) or not re.fullmatch(r"revision_[0-9]{4}", base)
++            or active != f"revision_{int(base.removeprefix('revision_')) + 1:04d}"
++            or repair.get("new_revision") != active or repair.get("copied_stage_prefix") != expected
++            or metadata.get("status") != "active" or metadata.get("base_revision") != base
++            or metadata.get("rerun_route") != repair["route"] or metadata.get("copied_stage_prefix") != expected
++            or state.get("revisions", {}).get(base, {}).get("status") != "superseded"
++            or state["revisions"][base].get("superseded_by") != active):
++        raise ValueError("Native repair-prefix provenance mismatch")
++    return {"base_revision": base, "revision": active, "copied_stage_prefix": expected}
+ 
+ 
+ class Queue:
+@@ -418,7 +444,7 @@
                  job["reason"] = reason
              self._save(batch)
  
@@ -89,7 +135,7 @@
          """Archive failed launcher logs and explicitly queue a fresh native run."""
          validate_identifier(new_run_id)
          if not isinstance(reason, str) or not REASON.fullmatch(reason):
-@@ -430,7 +430,28 @@
+@@ -430,7 +456,28 @@
              job = self._job(batch, job_id)
              if job["status"] != "failed":
                  raise ValueError("Only a failed job can be retried")
@@ -119,7 +165,7 @@
              previous_run_id = job["run_id"]
              used_run_ids = {entry["run_id"] for entry in batch["jobs"]}
              for entry in batch["jobs"]:
-@@ -500,18 +521,8 @@
+@@ -500,18 +547,8 @@
              atomic_json(self.directory / "status.json", self._summary(batch))
              return mapping
  
@@ -140,7 +186,7 @@
          ownership = [state]
          ownership_path = Path(str(state.get("paths", {}).get("sim_diagnostics_dir", ""))) / "runtime_ownership.json"
          if ownership_path.is_file():
-@@ -526,6 +537,20 @@
+@@ -526,6 +563,20 @@
                  records = ledger.get(key, [])
                  if not isinstance(records, list) or any(not isinstance(record, dict) or record.get(field) not in closed for record in records):
                      raise ValueError("Snapshot source diagnostic ownership is still active or malformed")
@@ -161,17 +207,56 @@
          revision = state.get("active_revision")
          if not isinstance(revision, str) or not IDENTIFIER.fullmatch(revision):
              raise ValueError("Snapshot source has no valid active revision")
-@@ -548,6 +573,9 @@
- 
+@@ -549,6 +600,9 @@
      def diagnostics_snapshot(self, job_id, new_run_id, reason):
          return self.retry(job_id, new_run_id, reason, diagnostics_snapshot=True)
-+
+ 
 +    def diagnostics_snapshot_origin(self, job_id, new_run_id, reason):
 +        return self.retry(job_id, new_run_id, reason, diagnostics_snapshot=True, reuse_snapshot_origin=True)
- 
++
      def validate_snapshot(self, job_id):
          with self._locked():
-@@ -822,6 +850,8 @@
+             job = self._job(self._load(), job_id)
+@@ -582,9 +636,13 @@
+         if check_digest and digest != job.get("resume_state_sha256"):
+             raise ValueError("Native state changed after resume admission")
+         state = json.loads(state_bytes)
++        repair_prefix = verified_repair_prefix(state) if isinstance(state, dict) else None
++        export_repair_snapshot = (isinstance(state, dict) and state.get("run_mode") == "post_mesh_processing_diagnostics"
++                                 and state.get("diagnostics_reroute_and_export") is True
++                                 and state.get("diagnostics_stage_only") is False and repair_prefix is not None)
+         if (not isinstance(state, dict) or state.get("schema_version") != "2026-07-skill-suite-runtime-state-v2"
+                 or state.get("run_id") != job["run_id"] or state.get("run_root") != str(run_root)
+-                or state.get("repo_root") != str(root) or state.get("run_mode") != "full_image"
++                or state.get("repo_root") != str(root) or not (state.get("run_mode") == "full_image" or export_repair_snapshot)
+                 or state.get("runtime_kind") != "codex_skill" or state.get("status") not in ("seeded", "running", "failed")
+                 or state.get("diagnostics", {}).get("enabled") is not True):
+             raise ValueError("Native state is incompatible with same-run Genesis resume")
+@@ -612,7 +670,12 @@
+             stage = stages[name]
+             if not isinstance(stage, dict):
+                 raise ValueError("Invalid native stage record")
+-            if stage.get("status") == "success" and stage.get("ok") is True:
++            if stage.get("status") in ("success", "reused") and stage.get("ok") is True:
++                if stage.get("status") == "reused":
++                    if (repair_prefix is None or name not in repair_prefix["copied_stage_prefix"]
++                            or stage.get("stats", {}).get("reused_from_revision") != repair_prefix["base_revision"]
++                            or stage.get("outputs", {}).get("reused_from_revision") != repair_prefix["base_revision"]):
++                        raise ValueError("Reused stage lacks verified native repair-prefix provenance")
+                 if unfinished:
+                     raise ValueError("Successful native stages must form a prefix")
+                 expected = stage.get("artifacts", {}).get("expected")
+@@ -624,6 +687,9 @@
+                         if (not path.is_absolute() or path.is_symlink() or not path.is_file() or path.stat().st_size <= 0
+                                 or not path.resolve().is_relative_to(run_root.resolve())):
+                             raise ValueError("A required upstream artifact is missing or unsafe")
++                        if (stage.get("status") == "reused" and not path.is_relative_to(
++                                run_root / "revisions" / repair_prefix["revision"])):
++                            raise ValueError("Reused artifact is not scoped to its active repair revision")
+                 completed.append(name)
+             else:
+                 if stage.get("ok") is not False or stage.get("status") not in ("pending", "pending_retry"):
+@@ -822,6 +888,8 @@
          print(json.dumps(queue.validate_resume(*rest), ensure_ascii=False))
      elif command == "diagnostics-snapshot" and len(rest) == 3:
          print(json.dumps(queue.diagnostics_snapshot(*rest), ensure_ascii=False))

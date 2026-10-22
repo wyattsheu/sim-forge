@@ -1,0 +1,176 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-10-22T10:10:54.469426+00:00",
+  "scope": "One queue attempt: parent and recursively spawned descendant model requests.",
+  "excludes": [
+    "Earlier attempts and retries outside this parent thread family",
+    "Interactive debugging outside this parent thread family",
+    "Separate image-generation tool charges",
+    "Local GPU computation"
+  ],
+  "method": "Sum unique own-thread token_usage_record.usage by (thread_id, response_id), including compaction.",
+  "subset_notes": [
+    "cached_input_tokens is already included in input_tokens",
+    "reasoning_output_tokens is already included in output_tokens"
+  ],
+  "parent_turn_completed_observed": true,
+  "thread_count": 9,
+  "request_count": 416,
+  "usage": {
+    "input_tokens": 24470042,
+    "cached_input_tokens": 23717248,
+    "cache_write_input_tokens": 0,
+    "output_tokens": 202295,
+    "reasoning_output_tokens": 120331,
+    "total_tokens": 24672337
+  },
+  "uncached_input_tokens": 752794,
+  "input_cache_hit_percent": 96.92361,
+  "threads": [
+    {
+      "role": "parent",
+      "is_parent": true,
+      "model": "gpt-6-luna",
+      "requests": 109,
+      "identical_duplicate_records_ignored": 0,
+      "usage": {
+        "input_tokens": 5327357,
+        "cached_input_tokens": 5247104,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 20532,
+        "reasoning_output_tokens": 8258,
+        "total_tokens": 5347889
+      },
+      "validated_against_final_thread_usage": true
+    },
+    {
+      "role": "final_export",
+      "is_parent": false,
+      "model": "gpt-6-luna",
+      "requests": 15,
+      "identical_duplicate_records_ignored": 0,
+      "usage": {
+        "input_tokens": 753193,
+        "cached_input_tokens": 687104,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 15720,
+        "reasoning_output_tokens": 10155,
+        "total_tokens": 768913
+      },
+      "validated_against_final_thread_usage": true
+    },
+    {
+      "role": "genesis_diagnostics",
+      "is_parent": false,
+      "model": "gpt-6-luna",
+      "requests": 139,
+      "identical_duplicate_records_ignored": 0,
+      "usage": {
+        "input_tokens": 11534452,
+        "cached_input_tokens": 11316480,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 76678,
+        "reasoning_output_tokens": 52742,
+        "total_tokens": 11611130
+      },
+      "validated_against_final_thread_usage": true
+    },
+    {
+      "role": "image_cleanup",
+      "is_parent": false,
+      "model": "gpt-6-luna",
+      "requests": 27,
+      "identical_duplicate_records_ignored": 0,
+      "usage": {
+        "input_tokens": 1221419,
+        "cached_input_tokens": 1157120,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 21664,
+        "reasoning_output_tokens": 12432,
+        "total_tokens": 1243083
+      },
+      "validated_against_final_thread_usage": true
+    },
+    {
+      "role": "material_inference",
+      "is_parent": false,
+      "model": "gpt-6-luna",
+      "requests": 30,
+      "identical_duplicate_records_ignored": 0,
+      "usage": {
+        "input_tokens": 1315703,
+        "cached_input_tokens": 1253120,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 18031,
+        "reasoning_output_tokens": 9404,
+        "total_tokens": 1333734
+      },
+      "validated_against_final_thread_usage": true
+    },
+    {
+      "role": "mesh_processing",
+      "is_parent": false,
+      "model": "gpt-6-luna",
+      "requests": 25,
+      "identical_duplicate_records_ignored": 0,
+      "usage": {
+        "input_tokens": 1325271,
+        "cached_input_tokens": 1244800,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 19000,
+        "reasoning_output_tokens": 9817,
+        "total_tokens": 1344271
+      },
+      "validated_against_final_thread_usage": true
+    },
+    {
+      "role": "omnipart",
+      "is_parent": false,
+      "model": "gpt-6-luna",
+      "requests": 29,
+      "identical_duplicate_records_ignored": 0,
+      "usage": {
+        "input_tokens": 1040788,
+        "cached_input_tokens": 967424,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 8467,
+        "reasoning_output_tokens": 4426,
+        "total_tokens": 1049255
+      },
+      "validated_against_final_thread_usage": true
+    },
+    {
+      "role": "post_mesh_texture",
+      "is_parent": false,
+      "model": "gpt-6-luna",
+      "requests": 18,
+      "identical_duplicate_records_ignored": 0,
+      "usage": {
+        "input_tokens": 904330,
+        "cached_input_tokens": 847232,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 9509,
+        "reasoning_output_tokens": 5811,
+        "total_tokens": 913839
+      },
+      "validated_against_final_thread_usage": true
+    },
+    {
+      "role": "segmentation",
+      "is_parent": false,
+      "model": "gpt-6-luna",
+      "requests": 24,
+      "identical_duplicate_records_ignored": 0,
+      "usage": {
+        "input_tokens": 1047529,
+        "cached_input_tokens": 996864,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 12694,
+        "reasoning_output_tokens": 7286,
+        "total_tokens": 1060223
+      },
+      "validated_against_final_thread_usage": true
+    }
+  ],
+  "billing_note": "Observed model usage, not a billing invoice or subscription-quota conversion."
+}
