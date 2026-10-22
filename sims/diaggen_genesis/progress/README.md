@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-22T17:17:42+08:00（Asia/Taipei）
+更新：2026-10-22T17:18:30+08:00（Asia/Taipei）
 
 共 9 件：等待 2、執行中 3、完成 2、失敗 2、取消 0。
 
@@ -31,7 +31,7 @@ Run：`genesis_baseball_cap_20261022_fresh3`；執行中。
 
 | 階段 | 狀態 |
 |---|---|
-| 圖片清理 | pending |
+| 圖片清理 | failed |
 | SAM3 分割 | pending |
 | OmniPart 幾何生成 | pending |
 | 材料推估 | pending |
