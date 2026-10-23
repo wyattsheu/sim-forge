@@ -1,0 +1,22 @@
+{
+  "schema_version": "diaggen-incident-report-v1",
+  "incident_id": "20261023_151003_22972054021a",
+  "observed_at": "2026-10-23T15:15:36+08:00",
+  "job_id": "dragon",
+  "run_id": "genesis_dragon_20261023_coarse_connector6",
+  "classification": "pipeline_runtime",
+  "outcome": "needs_attention",
+  "reason": "The monitor and scheduled timers are healthy. The image-cleanup agent exhausted its two native attempts without producing a candidate: attempt 1's imagegen response was not retained as a file, and attempt 2 used an invalid source path. No candidate validation or cleanup registration exists. The guarded same-run resume correctly rejects pending cleanup because it requires two existing bounded candidates.",
+  "native_assessment": "The native state remains seeded with no successful stage prefix or diagnostic terminal. This is not a Genesis business halt, revision-budget exhaustion, or unaccepted export.",
+  "actual_change": "Recorded this sanitized incident report and a private evidence summary. No pipeline or native source was changed; no queue metadata or native state was rewritten.",
+  "checks": [
+    "diaggen-genesis-monitor.timer active; monitor tick reported success",
+    "diaggen-genesis-repair.timer active; repair worker owns the current HOLD",
+    "No live dragon runner or run-associated child process was found",
+    "Read-only replay of the resume guard rejected the run: Pending cleanup recovery requires two existing bounded candidates",
+    "The official image-cleanup skill already requires saving both bounded candidates and validating the paired image and description",
+    "Current full runtime readiness certificate verified: 78 checks passed"
+  ],
+  "requeued_jobs": [],
+  "follow_up": "Keep the failed run and both exhausted attempt records. Do not retry until a reproducible, tested fix exists for retaining built-in imagegen output and selecting the source from the initialized state paths."
+}
