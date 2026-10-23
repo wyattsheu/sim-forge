@@ -175,7 +175,7 @@ git merge upstream/diaggen-collaboration
 
 ## Wyatt 的權限設定
 
-2026-10-23 查核時，`wyattsheu/sim-forge` 是 **public、個人帳號持有**，預設分支 `main`；既有 `main`／`diaggen-genesis-progress` 未啟用 branch protection，未設 ruleset。本次準備指南、協作分支與 CODEOWNERS，**沒有替你邀請帳號、變更可見度或啟用保護規則**。
+2026-10-23 查核時，`wyattsheu/sim-forge` 是 **public、個人帳號持有**，預設分支 `main`；collaborator 清單只有 owner，沒有額外寫入協作者。既有 `main`／`diaggen-genesis-progress` 未啟用 branch protection，未設 ruleset。本次準備指南、協作分支與 CODEOWNERS，**沒有替你邀請帳號、變更可見度或啟用保護規則**。
 
 ### 先用 fork 模式
 
