@@ -2,10 +2,10 @@
   "schema_version": "diaggen-public-batch-progress-v1",
   "pipeline": "DiagGen",
   "simulator": "Genesis",
-  "phase": "waiting_gpu",
+  "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-23T19:16:14+08:00",
+  "updated_at": "2026-10-23T21:03:47+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -13,8 +13,8 @@
     "max_parallel_jobs": 4
   },
   "counts": {
-    "queued": 2,
-    "running": 0,
+    "queued": 1,
+    "running": 1,
     "success": 7,
     "failed": 0,
     "cancelled": 0,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-23T19:16:14+08:00",
+      "updated_at": "2026-10-23T21:03:47+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -222,7 +222,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T16:01:05.614594+00:00",
-      "updated_at": "2026-10-23T19:16:14+08:00",
+      "updated_at": "2026-10-23T21:03:47+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -411,7 +411,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T18:33:27.681672+00:00",
-      "updated_at": "2026-10-23T19:16:14+08:00",
+      "updated_at": "2026-10-23T21:03:47+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -600,7 +600,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-23T19:16:15+08:00",
+      "updated_at": "2026-10-23T21:03:47+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -789,7 +789,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-23T19:16:15+08:00",
+      "updated_at": "2026-10-23T21:03:47+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -978,7 +978,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-23T19:16:15+08:00",
+      "updated_at": "2026-10-23T21:03:47+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1161,13 +1161,13 @@
       "pipeline": "DiagGen",
       "simulator": "Genesis",
       "run_id": "genesis_dragon_20261023_saverfix174003",
-      "phase": "waiting_gpu",
+      "phase": "running",
       "pipeline_status": "seeded",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-23T09:55:55.862888+00:00",
-      "updated_at": "2026-10-23T19:16:15+08:00",
+      "updated_at": "2026-10-23T21:03:47+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1326,8 +1326,8 @@
         }
       ],
       "id": "dragon",
-      "status": "queued",
-      "attempts": 9,
+      "status": "running",
+      "attempts": 10,
       "minimum_free_mib": 24576
     },
     {
@@ -1341,7 +1341,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-23T19:16:15+08:00",
+      "updated_at": "2026-10-23T21:03:47+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1459,7 +1459,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-23T19:16:15+08:00",
+      "updated_at": "2026-10-23T21:03:47+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -2189,7 +2189,7 @@
     "enabled": true,
     "interval_seconds": 60,
     "max_resumes_per_run": 2,
-    "updated_at": "2026-10-23T19:16:03+08:00",
+    "updated_at": "2026-10-23T21:03:03+08:00",
     "jobs": [
       {
         "id": "baseball_cap",
@@ -2248,5 +2248,5 @@
     "classification": "pipeline_runtime",
     "outcome": "repaired_and_requeued"
   },
-  "signature": "70e8144f66188f4ed490b662efa358f9eeb62b523d27bebb8b47b0086f9dfbad"
+  "signature": "8c09cd8ccb5c9ffb4849a35ccf6e80b36da6171802fd687ff4d6d9482025fd2b"
 }
