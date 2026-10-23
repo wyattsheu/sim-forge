@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-23T18:03:17+08:00",
+  "updated_at": "2026-10-23T18:04:04+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-23T18:03:17+08:00",
+      "updated_at": "2026-10-23T18:04:04+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -222,7 +222,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T16:01:05.614594+00:00",
-      "updated_at": "2026-10-23T18:03:17+08:00",
+      "updated_at": "2026-10-23T18:04:04+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -411,7 +411,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T18:33:27.681672+00:00",
-      "updated_at": "2026-10-23T18:03:17+08:00",
+      "updated_at": "2026-10-23T18:04:04+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -600,7 +600,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-23T18:03:17+08:00",
+      "updated_at": "2026-10-23T18:04:04+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -789,7 +789,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-23T18:03:17+08:00",
+      "updated_at": "2026-10-23T18:04:04+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -978,7 +978,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-23T18:03:17+08:00",
+      "updated_at": "2026-10-23T18:04:04+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1167,7 +1167,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-23T09:55:55.862888+00:00",
-      "updated_at": "2026-10-23T18:03:17+08:00",
+      "updated_at": "2026-10-23T18:04:04+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1179,11 +1179,11 @@
         {
           "name": "image_cleanup",
           "label": "圖片清理",
-          "status": "failed",
-          "ledger_status": "failed",
-          "ok": false,
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
           "started_at": "2026-10-23T10:03:06.936156+00:00",
-          "finished_at": "2026-10-23T10:03:06.945453+00:00"
+          "finished_at": "2026-10-23T10:03:52.240196+00:00"
         },
         {
           "name": "sam3_omnipart_2d_segmentation",
@@ -1268,7 +1268,13 @@
         },
         "meaning": "observation_only_not_retry_authorization"
       },
-      "media": [],
+      "media": [
+        {
+          "path": "media/dragon_cleaned_image.png",
+          "bytes": 1229243,
+          "sha256": "86f88ba82b5f0e7a1fa84f99ba343f0eb41e30c02ee1e0ba3a1e162af8f9bf74"
+        }
+      ],
       "id": "dragon",
       "status": "running",
       "attempts": 9,
@@ -1285,7 +1291,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-23T18:03:17+08:00",
+      "updated_at": "2026-10-23T18:04:04+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1403,7 +1409,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-23T18:03:17+08:00",
+      "updated_at": "2026-10-23T18:04:04+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -2004,6 +2010,11 @@
       "sha256": "bc5711867789a1a269005f55817e491e014e4fb7c268a592ae752fbf7b23fcee"
     },
     {
+      "path": "media/dragon_cleaned_image.png",
+      "bytes": 1229243,
+      "sha256": "86f88ba82b5f0e7a1fa84f99ba343f0eb41e30c02ee1e0ba3a1e162af8f9bf74"
+    },
+    {
       "path": "media/curling_iron_cleaned_image.png",
       "bytes": 1248008,
       "sha256": "b90f604fe533cb7ea1e9cbfc8fda0759705a9ae129c708e258f244cec325a02a"
@@ -2078,7 +2089,7 @@
     "enabled": true,
     "interval_seconds": 60,
     "max_resumes_per_run": 2,
-    "updated_at": "2026-10-23T18:03:03+08:00",
+    "updated_at": "2026-10-23T18:04:03+08:00",
     "jobs": [
       {
         "id": "baseball_cap",
@@ -2137,5 +2148,5 @@
     "classification": "pipeline_runtime",
     "outcome": "repaired_and_requeued"
   },
-  "signature": "60c66ace1af1025b4b18cbe16c0639c0765c29bd00bae430adbbd31b0cc64c57"
+  "signature": "e91fea4d8d4506f383942809b75c1b5181c2ae4283f2bdff36c8beb1fc3b96de"
 }
