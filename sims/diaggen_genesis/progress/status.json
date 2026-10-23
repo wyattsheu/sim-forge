@@ -5,7 +5,7 @@
   "phase": "waiting_gpu",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-23T17:37:08+08:00",
+  "updated_at": "2026-10-23T17:40:12+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-23T17:37:08+08:00",
+      "updated_at": "2026-10-23T17:40:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -222,7 +222,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T16:01:05.614594+00:00",
-      "updated_at": "2026-10-23T17:37:08+08:00",
+      "updated_at": "2026-10-23T17:40:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -411,7 +411,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T18:33:27.681672+00:00",
-      "updated_at": "2026-10-23T17:37:08+08:00",
+      "updated_at": "2026-10-23T17:40:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -600,7 +600,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-23T17:37:08+08:00",
+      "updated_at": "2026-10-23T17:40:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -789,7 +789,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-23T17:37:08+08:00",
+      "updated_at": "2026-10-23T17:40:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -978,7 +978,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-23T17:37:08+08:00",
+      "updated_at": "2026-10-23T17:40:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1167,7 +1167,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-23T09:29:22.770844+00:00",
-      "updated_at": "2026-10-23T17:37:08+08:00",
+      "updated_at": "2026-10-23T17:40:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1285,7 +1285,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-23T17:37:08+08:00",
+      "updated_at": "2026-10-23T17:40:12+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1403,7 +1403,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-23T17:37:08+08:00",
+      "updated_at": "2026-10-23T17:40:12+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -2078,7 +2078,7 @@
     "enabled": true,
     "interval_seconds": 60,
     "max_resumes_per_run": 2,
-    "updated_at": "2026-10-23T17:37:03+08:00",
+    "updated_at": "2026-10-23T17:40:03+08:00",
     "jobs": [
       {
         "id": "baseball_cap",
@@ -2113,7 +2113,7 @@
       {
         "id": "dragon",
         "run_id": "genesis_dragon_20261023_imagecapture6",
-        "outcome": "resume_ineligible"
+        "outcome": "hold"
       },
       {
         "id": "capybara_plush_toy",
@@ -2129,13 +2129,13 @@
   },
   "repair": {
     "enabled": true,
-    "updated_at": "2026-10-23T17:22:17+08:00",
-    "id": "20261023_171510_ce58a8a99a1f",
+    "updated_at": "2026-10-23T17:40:03+08:00",
+    "id": "20261023_174003_612ff18b7463",
     "read_only_audit": false,
-    "status": "finished",
-    "incident": "monitor_stale",
-    "classification": "scheduler",
-    "outcome": "recovered"
+    "status": "running",
+    "incident": "resume_ineligible",
+    "classification": "unknown",
+    "outcome": "needs_attention"
   },
-  "signature": "0187c8b6e98c5e2eef45ca15f40542357bbe86b9e30eeb416979654d4e3bc55c"
+  "signature": "81b3a40003800e0c20239c500921e1b4ed08bfeeb5116fe9daa59b96ae8992b9"
 }
