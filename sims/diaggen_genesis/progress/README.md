@@ -1,10 +1,10 @@
 # DiagGen / Genesis 批次執行進度
 
-狀態：**等待空閒 GPU**  
+狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-23T14:51:47+08:00（Asia/Taipei）
+更新：2026-10-23T14:52:04+08:00（Asia/Taipei）
 
-共 9 件：等待 1、執行中 0、完成匯出 7、失敗 1、取消 0。
+共 9 件：等待 0、執行中 1、完成匯出 7、失敗 1、取消 0。
 
 已完成匯出中：Genesis accept 7 件；仍需修正 0 件。
 
@@ -25,7 +25,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | usb_hub | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
 | sloth | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
 | sauce_keeper | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
-| dragon | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
+| dragon | running | seeded | revision_0000 | 24576 MiB | 0/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
 | capybara_plush_toy | failed | seeded | revision_0000 | 49152 MiB | 2/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
 | curling_iron | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
 
@@ -39,8 +39,8 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | usb_hub | completed |
 | sloth | completed |
 | sauce_keeper | completed |
-| dragon | queued |
-| capybara_plush_toy | running |
+| dragon | running |
+| capybara_plush_toy | stage_failed |
 | curling_iron | completed |
 
 故障診斷工作：finished；分類 native_business_halt；結果 needs_attention。
@@ -331,7 +331,7 @@ Genesis 診斷 episode 數：2；結果：accept。
 
 ## dragon
 
-Run：`genesis_dragon_20261023_coarse_connector6`；等待空閒 GPU。
+Run：`genesis_dragon_20261023_coarse_connector6`；執行中。
 
 | 階段 | 狀態 |
 |---|---|
