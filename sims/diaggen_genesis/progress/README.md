@@ -2,7 +2,7 @@
 
 狀態：**等待空閒 GPU**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-23T17:14:53+08:00（Asia/Taipei）
+更新：2026-10-23T17:15:11+08:00（Asia/Taipei）
 
 共 9 件：等待 2、執行中 0、完成匯出 7、失敗 0、取消 0。
 
@@ -39,9 +39,11 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | usb_hub | completed |
 | sloth | completed |
 | sauce_keeper | completed |
+| dragon | queued |
+| capybara_plush_toy | queued |
 | curling_iron | completed |
 
-故障診斷工作：finished；分類 pipeline_runtime；結果 needs_attention。
+故障診斷工作：running；分類 unknown；結果 needs_attention。
 
 每五分鐘檢查新故障，符合條件時才啟動 Codex 查因、修正及驗證；同一故障最多兩次，正常時不額外呼叫模型。
 

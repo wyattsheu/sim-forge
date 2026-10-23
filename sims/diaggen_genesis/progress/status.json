@@ -5,7 +5,7 @@
   "phase": "waiting_gpu",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-23T17:14:53+08:00",
+  "updated_at": "2026-10-23T17:15:11+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-23T17:14:53+08:00",
+      "updated_at": "2026-10-23T17:15:11+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -222,7 +222,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T16:01:05.614594+00:00",
-      "updated_at": "2026-10-23T17:14:53+08:00",
+      "updated_at": "2026-10-23T17:15:11+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -411,7 +411,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T18:33:27.681672+00:00",
-      "updated_at": "2026-10-23T17:14:53+08:00",
+      "updated_at": "2026-10-23T17:15:11+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -600,7 +600,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-23T17:14:53+08:00",
+      "updated_at": "2026-10-23T17:15:11+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -789,7 +789,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-23T17:14:53+08:00",
+      "updated_at": "2026-10-23T17:15:11+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -978,7 +978,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-23T17:14:53+08:00",
+      "updated_at": "2026-10-23T17:15:11+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1167,7 +1167,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-23T17:14:53+08:00",
+      "updated_at": "2026-10-23T17:15:11+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1285,7 +1285,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-23T17:14:53+08:00",
+      "updated_at": "2026-10-23T17:15:11+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1403,7 +1403,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-23T17:14:53+08:00",
+      "updated_at": "2026-10-23T17:15:11+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -2078,7 +2078,7 @@
     "enabled": true,
     "interval_seconds": 60,
     "max_resumes_per_run": 2,
-    "updated_at": "2026-10-23T17:07:03+08:00",
+    "updated_at": "2026-10-23T17:15:10+08:00",
     "jobs": [
       {
         "id": "baseball_cap",
@@ -2111,6 +2111,16 @@
         "outcome": "completed"
       },
       {
+        "id": "dragon",
+        "run_id": "genesis_dragon_20261023_imagecapture6",
+        "outcome": "queued"
+      },
+      {
+        "id": "capybara_plush_toy",
+        "run_id": "genesis_capybara_plush_toy_20261023_two_material6",
+        "outcome": "queued"
+      },
+      {
         "id": "curling_iron",
         "run_id": "genesis_curling_iron_20261021_exr_retry1",
         "outcome": "completed"
@@ -2119,13 +2129,13 @@
   },
   "repair": {
     "enabled": true,
-    "updated_at": "2026-10-23T15:42:24+08:00",
-    "id": "20261023_153003_43010e35a0c2",
+    "updated_at": "2026-10-23T17:15:10+08:00",
+    "id": "20261023_171510_ce58a8a99a1f",
     "read_only_audit": false,
-    "status": "finished",
-    "incident": "resume_ineligible",
-    "classification": "pipeline_runtime",
+    "status": "running",
+    "incident": "monitor_stale",
+    "classification": "unknown",
     "outcome": "needs_attention"
   },
-  "signature": "af5a9e9b28496d68956a472174de6480afd2c94b1a5bba8470274aa46a5277e3"
+  "signature": "c2375f04da563b1810b0d5cc0d076a3ce8a3c005fad55676b108b689ba7b2bf5"
 }
