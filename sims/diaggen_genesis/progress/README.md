@@ -1,10 +1,10 @@
 # DiagGen / Genesis 批次執行進度
 
-狀態：**執行失敗**  
+狀態：**等待空閒 GPU**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-23T15:43:18+08:00（Asia/Taipei）
+更新：2026-10-23T17:14:53+08:00（Asia/Taipei）
 
-共 9 件：等待 0、執行中 0、完成匯出 7、失敗 2、取消 0。
+共 9 件：等待 2、執行中 0、完成匯出 7、失敗 0、取消 0。
 
 已完成匯出中：Genesis accept 7 件；仍需修正 0 件。
 
@@ -25,8 +25,8 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | usb_hub | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
 | sloth | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
 | sauce_keeper | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
-| dragon | failed | seeded | revision_0000 | 24576 MiB | 0/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
-| capybara_plush_toy | failed | seeded | revision_0000 | 49152 MiB | 2/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
+| dragon | queued | not_initialized | 尚未初始化 | 24576 MiB | 0/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
+| capybara_plush_toy | queued | not_initialized | 尚未初始化 | 49152 MiB | 0/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
 | curling_iron | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
 
 伺服器自動監看：啟用；每 60 秒檢查，原 run 最多自動續跑 2 次。
@@ -39,8 +39,6 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | usb_hub | completed |
 | sloth | completed |
 | sauce_keeper | completed |
-| dragon | resume_ineligible |
-| capybara_plush_toy | stage_failed |
 | curling_iron | completed |
 
 故障診斷工作：finished；分類 pipeline_runtime；結果 needs_attention。
@@ -331,7 +329,7 @@ Genesis 診斷 episode 數：2；結果：accept。
 
 ## dragon
 
-Run：`genesis_dragon_20261023_coarse_connector6`；執行失敗。
+Run：`genesis_dragon_20261023_imagecapture6`；等待空閒 GPU。
 
 | 階段 | 狀態 |
 |---|---|
@@ -350,13 +348,13 @@ Genesis 診斷 episode 數：0；結果：尚未判定。
 
 ## capybara_plush_toy
 
-Run：`genesis_capybara_plush_toy_20261023_native_coarse6`；執行失敗。
+Run：`genesis_capybara_plush_toy_20261023_two_material6`；等待空閒 GPU。
 
 | 階段 | 狀態 |
 |---|---|
-| 圖片清理 | success |
-| SAM3 分割 | success |
-| OmniPart 幾何生成 | failed |
+| 圖片清理 | pending |
+| SAM3 分割 | pending |
+| OmniPart 幾何生成 | pending |
 | 材料推估 | pending |
 | 材料參數配置 | pending |
 | 體積網格處理 | pending |
@@ -365,16 +363,6 @@ Run：`genesis_capybara_plush_toy_20261023_native_coarse6`；執行失敗。
 | 最終匯出 | pending |
 
 Genesis 診斷 episode 數：0；結果：尚未判定。
-
-![capybara_plush_toy_cleaned_image](media/capybara_plush_toy_cleaned_image.png)
-
-![capybara_plush_toy_processed_white_bg_png](media/capybara_plush_toy_processed_white_bg_png.png)
-
-![capybara_plush_toy_processed_rgba](media/capybara_plush_toy_processed_rgba.png)
-
-![capybara_plush_toy_ordered_mask_vis](media/capybara_plush_toy_ordered_mask_vis.png)
-
-![capybara_plush_toy_segmentation_overlay](media/capybara_plush_toy_segmentation_overlay.png)
 
 
 ## curling_iron

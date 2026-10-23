@@ -2,10 +2,10 @@
   "schema_version": "diaggen-public-batch-progress-v1",
   "pipeline": "DiagGen",
   "simulator": "Genesis",
-  "phase": "failed",
+  "phase": "waiting_gpu",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-23T15:43:18+08:00",
+  "updated_at": "2026-10-23T17:14:53+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -13,10 +13,10 @@
     "max_parallel_jobs": 4
   },
   "counts": {
-    "queued": 0,
+    "queued": 2,
     "running": 0,
     "success": 7,
-    "failed": 2,
+    "failed": 0,
     "cancelled": 0,
     "unknown": 0,
     "total": 9
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-23T15:43:18+08:00",
+      "updated_at": "2026-10-23T17:14:53+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -222,7 +222,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T16:01:05.614594+00:00",
-      "updated_at": "2026-10-23T15:43:18+08:00",
+      "updated_at": "2026-10-23T17:14:53+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -411,7 +411,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T18:33:27.681672+00:00",
-      "updated_at": "2026-10-23T15:43:18+08:00",
+      "updated_at": "2026-10-23T17:14:53+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -600,7 +600,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-23T15:43:18+08:00",
+      "updated_at": "2026-10-23T17:14:53+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -789,7 +789,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-23T15:43:18+08:00",
+      "updated_at": "2026-10-23T17:14:53+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -978,7 +978,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-23T15:43:18+08:00",
+      "updated_at": "2026-10-23T17:14:53+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1160,16 +1160,16 @@
       "schema_version": "diaggen-public-progress-v1",
       "pipeline": "DiagGen",
       "simulator": "Genesis",
-      "run_id": "genesis_dragon_20261023_coarse_connector6",
-      "phase": "failed",
-      "pipeline_status": "seeded",
+      "run_id": "genesis_dragon_20261023_imagecapture6",
+      "phase": "waiting_gpu",
+      "pipeline_status": "not_initialized",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
-      "active_revision": "revision_0000",
-      "created_at": "2026-10-23T06:51:56.577489+00:00",
-      "updated_at": "2026-10-23T15:43:18+08:00",
+      "active_revision": null,
+      "created_at": null,
+      "updated_at": "2026-10-23T17:14:53+08:00",
       "diagnostics": {
-        "enabled": true,
+        "enabled": null,
         "episode_count": 0,
         "terminal_status": "not_available",
         "recommendation": "not_available",
@@ -1270,7 +1270,7 @@
       },
       "media": [],
       "id": "dragon",
-      "status": "failed",
+      "status": "queued",
       "attempts": 7,
       "minimum_free_mib": 24576
     },
@@ -1278,16 +1278,16 @@
       "schema_version": "diaggen-public-progress-v1",
       "pipeline": "DiagGen",
       "simulator": "Genesis",
-      "run_id": "genesis_capybara_plush_toy_20261023_native_coarse6",
-      "phase": "failed",
-      "pipeline_status": "seeded",
+      "run_id": "genesis_capybara_plush_toy_20261023_two_material6",
+      "phase": "waiting_gpu",
+      "pipeline_status": "not_initialized",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
-      "active_revision": "revision_0000",
-      "created_at": "2026-10-22T17:03:25.448128+00:00",
-      "updated_at": "2026-10-23T15:43:18+08:00",
+      "active_revision": null,
+      "created_at": null,
+      "updated_at": "2026-10-23T17:14:53+08:00",
       "diagnostics": {
-        "enabled": true,
+        "enabled": null,
         "episode_count": 0,
         "terminal_status": "not_available",
         "recommendation": "not_available",
@@ -1297,29 +1297,29 @@
         {
           "name": "image_cleanup",
           "label": "圖片清理",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T17:09:07.573247+00:00",
-          "finished_at": "2026-10-22T17:09:07.596300+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "sam3_omnipart_2d_segmentation",
           "label": "SAM3 分割",
-          "status": "success",
-          "ledger_status": "success",
-          "ok": true,
-          "started_at": "2026-10-22T17:11:17.608152+00:00",
-          "finished_at": "2026-10-22T17:11:37.309367+00:00"
+          "status": "pending",
+          "ledger_status": "pending",
+          "ok": false,
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "omnipart_generate_parts",
           "label": "OmniPart 幾何生成",
-          "status": "failed",
-          "ledger_status": "failed",
+          "status": "pending",
+          "ledger_status": "pending",
           "ok": false,
-          "started_at": "2026-10-23T06:47:00.294599+00:00",
-          "finished_at": "2026-10-23T06:49:17.126984+00:00"
+          "started_at": null,
+          "finished_at": null
         },
         {
           "name": "hag4r_gpt_staged_material_inference",
@@ -1386,35 +1386,9 @@
         },
         "meaning": "observation_only_not_retry_authorization"
       },
-      "media": [
-        {
-          "path": "media/capybara_plush_toy_cleaned_image.png",
-          "bytes": 2378340,
-          "sha256": "86bdd72de60babf6291167c820f60bad462707c54554478ba8041626ee90c016"
-        },
-        {
-          "path": "media/capybara_plush_toy_processed_white_bg_png.png",
-          "bytes": 320273,
-          "sha256": "abcb78f45a340afb68d3af15b5949fe698870a98e7ee2df017696f3d92adbf02"
-        },
-        {
-          "path": "media/capybara_plush_toy_processed_rgba.png",
-          "bytes": 373880,
-          "sha256": "930ea9cc0efd2fa3548bcb00c1268d60cdfcba26375f35987a7cc345408eead2"
-        },
-        {
-          "path": "media/capybara_plush_toy_ordered_mask_vis.png",
-          "bytes": 2347,
-          "sha256": "5a63d95be6021ca616760dea25f9fec59c9745e38c7e8b195216935c59ab6d78"
-        },
-        {
-          "path": "media/capybara_plush_toy_segmentation_overlay.png",
-          "bytes": 279531,
-          "sha256": "1f504581cc21a51c5547b75708d447d07fb10081f029c9a3c6bd41325a16b3ec"
-        }
-      ],
+      "media": [],
       "id": "capybara_plush_toy",
-      "status": "failed",
+      "status": "queued",
       "attempts": 5,
       "minimum_free_mib": 49152
     },
@@ -1429,7 +1403,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-23T15:43:18+08:00",
+      "updated_at": "2026-10-23T17:14:53+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -2030,31 +2004,6 @@
       "sha256": "bc5711867789a1a269005f55817e491e014e4fb7c268a592ae752fbf7b23fcee"
     },
     {
-      "path": "media/capybara_plush_toy_cleaned_image.png",
-      "bytes": 2378340,
-      "sha256": "86bdd72de60babf6291167c820f60bad462707c54554478ba8041626ee90c016"
-    },
-    {
-      "path": "media/capybara_plush_toy_processed_white_bg_png.png",
-      "bytes": 320273,
-      "sha256": "abcb78f45a340afb68d3af15b5949fe698870a98e7ee2df017696f3d92adbf02"
-    },
-    {
-      "path": "media/capybara_plush_toy_processed_rgba.png",
-      "bytes": 373880,
-      "sha256": "930ea9cc0efd2fa3548bcb00c1268d60cdfcba26375f35987a7cc345408eead2"
-    },
-    {
-      "path": "media/capybara_plush_toy_ordered_mask_vis.png",
-      "bytes": 2347,
-      "sha256": "5a63d95be6021ca616760dea25f9fec59c9745e38c7e8b195216935c59ab6d78"
-    },
-    {
-      "path": "media/capybara_plush_toy_segmentation_overlay.png",
-      "bytes": 279531,
-      "sha256": "1f504581cc21a51c5547b75708d447d07fb10081f029c9a3c6bd41325a16b3ec"
-    },
-    {
       "path": "media/curling_iron_cleaned_image.png",
       "bytes": 1248008,
       "sha256": "b90f604fe533cb7ea1e9cbfc8fda0759705a9ae129c708e258f244cec325a02a"
@@ -2129,7 +2078,7 @@
     "enabled": true,
     "interval_seconds": 60,
     "max_resumes_per_run": 2,
-    "updated_at": "2026-10-23T15:43:03+08:00",
+    "updated_at": "2026-10-23T17:07:03+08:00",
     "jobs": [
       {
         "id": "baseball_cap",
@@ -2162,16 +2111,6 @@
         "outcome": "completed"
       },
       {
-        "id": "dragon",
-        "run_id": "genesis_dragon_20261023_coarse_connector6",
-        "outcome": "resume_ineligible"
-      },
-      {
-        "id": "capybara_plush_toy",
-        "run_id": "genesis_capybara_plush_toy_20261023_native_coarse6",
-        "outcome": "stage_failed"
-      },
-      {
         "id": "curling_iron",
         "run_id": "genesis_curling_iron_20261021_exr_retry1",
         "outcome": "completed"
@@ -2188,5 +2127,5 @@
     "classification": "pipeline_runtime",
     "outcome": "needs_attention"
   },
-  "signature": "a0e0420706c246aa7ee8aa81cff4f8294fcae3504fdd1ad0ff93f763a9d5f2a6"
+  "signature": "af5a9e9b28496d68956a472174de6480afd2c94b1a5bba8470274aa46a5277e3"
 }
