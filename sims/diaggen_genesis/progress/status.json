@@ -5,7 +5,7 @@
   "phase": "failed",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-23T23:35:08+08:00",
+  "updated_at": "2026-10-23T23:40:13+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-23T23:35:08+08:00",
+      "updated_at": "2026-10-23T23:40:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -222,7 +222,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T16:01:05.614594+00:00",
-      "updated_at": "2026-10-23T23:35:08+08:00",
+      "updated_at": "2026-10-23T23:40:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -411,7 +411,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T18:33:27.681672+00:00",
-      "updated_at": "2026-10-23T23:35:08+08:00",
+      "updated_at": "2026-10-23T23:40:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -600,7 +600,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-23T23:35:08+08:00",
+      "updated_at": "2026-10-23T23:40:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -789,7 +789,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-23T23:35:08+08:00",
+      "updated_at": "2026-10-23T23:40:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -978,7 +978,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-23T23:35:08+08:00",
+      "updated_at": "2026-10-23T23:40:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1167,7 +1167,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-23T09:55:55.862888+00:00",
-      "updated_at": "2026-10-23T23:35:08+08:00",
+      "updated_at": "2026-10-23T23:40:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1341,7 +1341,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-23T15:20:08.867017+00:00",
-      "updated_at": "2026-10-23T23:35:08+08:00",
+      "updated_at": "2026-10-23T23:40:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1485,7 +1485,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-23T23:35:08+08:00",
+      "updated_at": "2026-10-23T23:40:13+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -2240,7 +2240,7 @@
     "enabled": true,
     "interval_seconds": 60,
     "max_resumes_per_run": 2,
-    "updated_at": "2026-10-23T23:35:03+08:00",
+    "updated_at": "2026-10-23T23:40:03+08:00",
     "jobs": [
       {
         "id": "baseball_cap",
@@ -2291,13 +2291,13 @@
   },
   "repair": {
     "enabled": true,
-    "updated_at": "2026-10-23T21:23:07+08:00",
-    "id": "20261023_211503_ffd80d326b21",
+    "updated_at": "2026-10-23T23:40:03+08:00",
+    "id": "20261023_234003_e01514f2e5bc",
     "read_only_audit": false,
-    "status": "finished",
-    "incident": "new_native_halt",
-    "classification": "native_business_halt",
+    "status": "running",
+    "incident": "stage_failed",
+    "classification": "unknown",
     "outcome": "needs_attention"
   },
-  "signature": "e24ff0abca7bbb48313ed7828bde82f797e9ec1dcbcbb5847eee495cf28f6934"
+  "signature": "be686affd863a0e2bd648d524eb4561fd0aa07d2e6d31d9499362e4801afd92e"
 }
