@@ -5,7 +5,7 @@
   "phase": "waiting_gpu",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-23T17:40:12+08:00",
+  "updated_at": "2026-10-23T17:52:05+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -13,10 +13,10 @@
     "max_parallel_jobs": 4
   },
   "counts": {
-    "queued": 1,
+    "queued": 2,
     "running": 0,
     "success": 7,
-    "failed": 1,
+    "failed": 0,
     "cancelled": 0,
     "unknown": 0,
     "total": 9
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-23T17:40:12+08:00",
+      "updated_at": "2026-10-23T17:52:05+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -222,7 +222,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T16:01:05.614594+00:00",
-      "updated_at": "2026-10-23T17:40:12+08:00",
+      "updated_at": "2026-10-23T17:52:05+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -411,7 +411,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T18:33:27.681672+00:00",
-      "updated_at": "2026-10-23T17:40:12+08:00",
+      "updated_at": "2026-10-23T17:52:05+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -600,7 +600,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-23T17:40:12+08:00",
+      "updated_at": "2026-10-23T17:52:05+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -789,7 +789,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-23T17:40:12+08:00",
+      "updated_at": "2026-10-23T17:52:05+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -978,7 +978,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-23T17:40:12+08:00",
+      "updated_at": "2026-10-23T17:52:05+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1160,16 +1160,16 @@
       "schema_version": "diaggen-public-progress-v1",
       "pipeline": "DiagGen",
       "simulator": "Genesis",
-      "run_id": "genesis_dragon_20261023_imagecapture6",
-      "phase": "failed",
-      "pipeline_status": "seeded",
+      "run_id": "genesis_dragon_20261023_saverfix174003",
+      "phase": "waiting_gpu",
+      "pipeline_status": "not_initialized",
       "generation_and_diagnostics_model": "gpt-6-luna",
       "reasoning_effort": "max",
-      "active_revision": "revision_0000",
-      "created_at": "2026-10-23T09:29:22.770844+00:00",
-      "updated_at": "2026-10-23T17:40:12+08:00",
+      "active_revision": null,
+      "created_at": null,
+      "updated_at": "2026-10-23T17:52:05+08:00",
       "diagnostics": {
-        "enabled": true,
+        "enabled": null,
         "episode_count": 0,
         "terminal_status": "not_available",
         "recommendation": "not_available",
@@ -1270,7 +1270,7 @@
       },
       "media": [],
       "id": "dragon",
-      "status": "failed",
+      "status": "queued",
       "attempts": 8,
       "minimum_free_mib": 24576
     },
@@ -1285,7 +1285,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-23T17:40:12+08:00",
+      "updated_at": "2026-10-23T17:52:05+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1403,7 +1403,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-23T17:40:12+08:00",
+      "updated_at": "2026-10-23T17:52:05+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -2078,7 +2078,7 @@
     "enabled": true,
     "interval_seconds": 60,
     "max_resumes_per_run": 2,
-    "updated_at": "2026-10-23T17:40:03+08:00",
+    "updated_at": "2026-10-23T17:52:01+08:00",
     "jobs": [
       {
         "id": "baseball_cap",
@@ -2112,8 +2112,8 @@
       },
       {
         "id": "dragon",
-        "run_id": "genesis_dragon_20261023_imagecapture6",
-        "outcome": "hold"
+        "run_id": "genesis_dragon_20261023_saverfix174003",
+        "outcome": "queued"
       },
       {
         "id": "capybara_plush_toy",
@@ -2137,5 +2137,5 @@
     "classification": "unknown",
     "outcome": "needs_attention"
   },
-  "signature": "81b3a40003800e0c20239c500921e1b4ed08bfeeb5116fe9daa59b96ae8992b9"
+  "signature": "fa3aa4af4f7a4f439719873d6e3da2c546329a1078ecdd2c68e8dfbe843c8323"
 }
