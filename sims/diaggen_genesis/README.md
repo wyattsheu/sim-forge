@@ -2,6 +2,8 @@
 
 [最新進度](progress/) · [卡住原因與改善驗證](analysis/STALL_AUDIT_20261022.md) · [執行環境預檢](preflight/latest.json) · [官方圖片總覽](demo_inputs_preview.jpg) · [圖片來源紀錄](demo_image_sources.json) · [排程清單](batch_plan.json)
 
+**共同開發與資產測試：** [完整協作指南](collaboration/README.md) 提供固定版本七件已驗收資產的下載、SHA256 核對與 CPU 檢查，以及學妹 fork／分支／PR、owner review 和分支保護步驟。資產位於 GitHub Release，clone 後執行一次 `python sims/diaggen_genesis/collaboration/asset_tools.py fetch`；生成權重與伺服器 Conda 環境不隨 Git 分發。
+
 使用 DiagGen 內附的 **Genesis 1.2.0**，開啟 Genesis 診斷，排程 9 張圖片的完整生成流程。
 
 **10/23 最新重試：** 料理夾已完整 strict accept／匯出，總計 **6／9 件完成**。球鞋與龍的新六版本實驗已重新排隊等待顯存：球鞋保留既有上游網格，以官方 semantic group 檢查有物理意義的鞋底／橡膠邊條組件；龍從原圖重跑較粗的原生概念分割，保留所有硬體與細連接。球鞋舊探測的原生離線重算支持分組假說，但不代表新探測或完整診斷已通過。龍的互扣金屬環可能需要多物體／接觸表示，這項原生重試不會偷偷補橋、移除硬體或改變單體連通規則。435 項 CPU／回歸通過，未改 native source／正式環境。見 [重試證據與限制](analysis/native_retry_20261023.json) 及 [即時進度](progress/)。

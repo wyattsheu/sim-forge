@@ -1,0 +1,4 @@
+assets/
+results/
+.venv/
+__pycache__/

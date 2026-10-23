@@ -1,0 +1,637 @@
+{
+  "schema_version": "diaggen-shared-assets-v1",
+  "created_at": "2026-10-23T04:09:56.915166+00:00",
+  "simulator": "Genesis 1.2.0",
+  "release": {
+    "tag": "diaggen-test-assets-20261023-v1",
+    "filename": "diaggen-accepted-assets-20261023-v1.zip",
+    "url": "https://github.com/wyattsheu/sim-forge/releases/download/diaggen-test-assets-20261023-v1/diaggen-accepted-assets-20261023-v1.zip",
+    "sha256": "a127b280f2820875a7d7a195515ad19ba76be40ee84c78d5bc2c92028f0a4ac4",
+    "size_bytes": 18257993
+  },
+  "scope": "Seven immutable native strict-accepted exports for viewing and independent test development. Physical parameters remain inferred and are not real-world measurements.",
+  "portability": "Use the packaged relative paths. Absolute paths inside original native provenance JSON are historical references and do not need to exist locally.",
+  "excluded": [
+    "pretrained weights",
+    "Conda environments",
+    "raw logs",
+    "live diagnostic ownership",
+    "unaccepted exports",
+    "dragon",
+    "capybara_plush_toy"
+  ],
+  "assets": [
+    {
+      "id": "baseball_cap",
+      "label_zh": "棒球帽",
+      "run_id": "genesis_baseball_cap_20261022_fresh3",
+      "accepted_revision": "revision_0000",
+      "strict_genesis_accept": true,
+      "physics_summary": {
+        "tet_count": 22287,
+        "point_count": 6405,
+        "material_labels": [
+          0,
+          1,
+          2
+        ],
+        "face_connected_components": 1
+      },
+      "source": {
+        "source_type": "video_frame_crop",
+        "source_url": "https://diaggen.github.io/static/videos/gallery.mp4"
+      },
+      "files": {
+        "final_mesh.mesh": {
+          "sha256": "b8e184f825daabf8f1f48799b306b841a54c0b2c2361336ed6f0457e85d18a56",
+          "size_bytes": 901662
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "69efd636897c2db6e97945a8189b6e75c46668b15c98028a4ddf26cca9f4c529",
+          "size_bytes": 715464
+        },
+        "inferred_params.json": {
+          "sha256": "fafdc32b0fbc314cfbb634b516d5d400af31833ad5aa2d6de19566c5963fbbc4",
+          "size_bytes": 10941
+        },
+        "metric_mesh_scaling.json": {
+          "sha256": "9ea920f97bba5829714c9fcd08af7b953960873632fc4e754f28b462ca13c593",
+          "size_bytes": 1643
+        },
+        "volume_topology.json": {
+          "sha256": "bd4245fcf10f0e244a7991c2a4e85d7abef94cd708a82a04ae09060ebcc25ba6",
+          "size_bytes": 27336
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "0ad0d8755185762e685fc1e12870ef3932b958f95e731663910f7f047efc28af",
+          "size_bytes": 537680
+        },
+        "appearance/albedo.png": {
+          "sha256": "e3728aec6ebffc143124dacf7b14f2ebdc8a30f23cb49eab9834fc902a6e925f",
+          "size_bytes": 275994
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "0b3db8deb2d9b8c335f17b86982ee44490aabc7b05b0bb7c4ea32272e5d8eeb4",
+          "size_bytes": 232023
+        },
+        "appearance/qa/rest_pose_render.png": {
+          "sha256": "53f4c2bffe67045fe04f19c99633e94813e80051aad93f3f02a62cd9ec0038c1",
+          "size_bytes": 45713
+        },
+        "final_export_manifest.json": {
+          "sha256": "10857d0c10e1754460d2166c5d7dc1b35ff033051b755431cb27f01e48a22f6d",
+          "size_bytes": 42170
+        },
+        "appearance/visual_manifest.json": {
+          "sha256": "43321d8670b40fdfac80bd56d2586f001632b5366a3487a81bd918696b228957",
+          "size_bytes": 6947
+        },
+        "appearance/post_mesh_texture_request.json": {
+          "sha256": "3d5444c8ae70779cdb183d3c3ca6aba25e37f37927b26ee57516b46ae8ba06dc",
+          "size_bytes": 1197
+        },
+        "appearance/qa/report.json": {
+          "sha256": "97db19afdb020afae21f36f3d604bff8ac4104653f2b1e6eefbdbd6c18e80342",
+          "size_bytes": 2584
+        },
+        "appearance/qa/observed_coverage.png": {
+          "sha256": "5b457ae7bb969c8f6f081ef3263aa558006571af2474ebd6a05909f8ba566974",
+          "size_bytes": 34624
+        },
+        "appearance/qa/confidence.png": {
+          "sha256": "e25bd456e7533490d554b69d885e246466f79a6d93a36363ef028c265fde2f1b",
+          "size_bytes": 475679
+        },
+        "appearance/qa/fill_provenance.png": {
+          "sha256": "41cebae68ea329da399454c291a9bb692baed9c22da65ebed04c23cd16ca1964",
+          "size_bytes": 73557
+        }
+      }
+    },
+    {
+      "id": "kitchen_tongs",
+      "label_zh": "料理夾",
+      "run_id": "genesis_kitchen_tongs_20261022_native6",
+      "accepted_revision": "revision_0000",
+      "strict_genesis_accept": true,
+      "physics_summary": {
+        "tet_count": 8171,
+        "point_count": 2320,
+        "material_labels": [
+          0,
+          1
+        ],
+        "face_connected_components": 1
+      },
+      "source": {
+        "source_type": "video_frame_crop",
+        "source_url": "https://diaggen.github.io/static/videos/gallery.mp4"
+      },
+      "files": {
+        "final_mesh.mesh": {
+          "sha256": "6758074cbfe9842048cceee7709c570d097a0bce979bc1b79fcb9a88dd4d585a",
+          "size_bytes": 322343
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "e6a35784ec0784330dc92739665d1b95ee250fab01f799592ca17a5a4fb79f45",
+          "size_bytes": 263688
+        },
+        "inferred_params.json": {
+          "sha256": "eee4019627654105716a7b16f11af1f9e60ab07023a34319c0f09b991e59f892",
+          "size_bytes": 7862
+        },
+        "metric_mesh_scaling.json": {
+          "sha256": "b37ff98bfb0cad2d9b51c51d28bb39e84d59f3615afde0caa5bf7692785ba91c",
+          "size_bytes": 1719
+        },
+        "volume_topology.json": {
+          "sha256": "11375504b5c8042ed0224f24192fc49968adb4d0cd3b2857817a5851017cf483",
+          "size_bytes": 14788
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "b1744ec2ffb40198a7e3ef3060bba75eba999c00fdb4497683957ab1d05f9fdb",
+          "size_bytes": 777456
+        },
+        "appearance/albedo.png": {
+          "sha256": "8c07a28e8340ab88fc0b31dcd55a767747299c98fc79611a9c582902cdb45bb9",
+          "size_bytes": 688884
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "e72a9caba5f576ff545eccc276c138a8afbdf9d9cb7b992ad8a20eb126f3a654",
+          "size_bytes": 75941
+        },
+        "appearance/qa/rest_pose_render.png": {
+          "sha256": "24c3961e41590ed2f259363544a76b75b6f1903af53fdb5cc7008b949cf3abc2",
+          "size_bytes": 70339
+        },
+        "final_export_manifest.json": {
+          "sha256": "c80093f9ba777de53654be7e901678789a5d65dc3815717ae3557e34c18ff76f",
+          "size_bytes": 28907
+        },
+        "appearance/visual_manifest.json": {
+          "sha256": "c92c1ef2b5966ce3e3ac36206fb332dce28bb02a1f09feae691c68d8d9d3994b",
+          "size_bytes": 6520
+        },
+        "appearance/post_mesh_texture_request.json": {
+          "sha256": "72e7c56354ea1c4b24664fa977f779d14a31f6204f7fb962546bd0f27b5a3fb8",
+          "size_bytes": 1227
+        },
+        "appearance/qa/report.json": {
+          "sha256": "2c36f6f059efb2a7f411c933a4aa84c1854638273f1bce3c4f08e22fff90d80d",
+          "size_bytes": 2137
+        },
+        "appearance/qa/observed_coverage.png": {
+          "sha256": "aae0c05d44864ef1407a801c964d3d13fa23a6eec0580fdcc6b36e098a48c3d0",
+          "size_bytes": 45479
+        },
+        "appearance/qa/confidence.png": {
+          "sha256": "b90e0392cb2542fd99a22abf5b39225eab72c404c07ab06aba078a38d58c73c3",
+          "size_bytes": 553057
+        },
+        "appearance/qa/fill_provenance.png": {
+          "sha256": "f64c99a0a5a5f96cfffc7551dd6cfd6765601d8302657f810751b53e2a6c5a3f",
+          "size_bytes": 72194
+        }
+      }
+    },
+    {
+      "id": "sneaker",
+      "label_zh": "球鞋",
+      "run_id": "genesis_sneaker_20261023_sole_group6",
+      "accepted_revision": "revision_0000",
+      "strict_genesis_accept": true,
+      "physics_summary": {
+        "tet_count": 57786,
+        "point_count": 16627,
+        "material_labels": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "face_connected_components": 1
+      },
+      "source": {
+        "source_type": "video_frame_crop",
+        "source_url": "https://diaggen.github.io/static/videos/gallery.mp4"
+      },
+      "files": {
+        "final_mesh.mesh": {
+          "sha256": "31cdc936b03b96ba200acd50219dcd2b70fe64b22897d847861482aa419b3717",
+          "size_bytes": 2445911
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "9152b1eafadd002ba5742d9ea3fd8360ed1be953f7396c13558d5d25d433dbc5",
+          "size_bytes": 1851624
+        },
+        "inferred_params.json": {
+          "sha256": "e61a3f48bc8033ceea246836c82e6914bb79033c750f640fc546716f14996ebd",
+          "size_bytes": 15020
+        },
+        "metric_mesh_scaling.json": {
+          "sha256": "2f9bc0bf4a80f34ec21b030ce9053280782ee65dae8afc8c227183005431054b",
+          "size_bytes": 1626
+        },
+        "volume_topology.json": {
+          "sha256": "859f794ab5de72da8207320c23cf25807d1982bf325b1987ddcaf94eb13dfb25",
+          "size_bytes": 41379
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "d533044c4f335e769893f9e8ffa96192fe16bda48449b5d097ea7e5feaa8b378",
+          "size_bytes": 1228824
+        },
+        "appearance/albedo.png": {
+          "sha256": "fbc8833a062405412888117e7e8264bbab5e02cf812f08e23392609226854417",
+          "size_bytes": 541527
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "8fae02e491239f303d6c0ed67ab0b9dd76c6bc4a419fcb29789a5795800f0389",
+          "size_bytes": 638448
+        },
+        "appearance/qa/rest_pose_render.png": {
+          "sha256": "bb12ead8b6f3c0e97dbb915fddad81f7be3ed12f6855b9be70ed4a074fcf2148",
+          "size_bytes": 137631
+        },
+        "final_export_manifest.json": {
+          "sha256": "51713b7c5bc7c52e8191ff95c55bf16e75ef383796d6a7b78c60eb7d8b89f8a3",
+          "size_bytes": 57279
+        },
+        "appearance/visual_manifest.json": {
+          "sha256": "3a3ca27e35338ff54d413d4e657ce864a322fc1e2d1a6f741af8644ad8c43355",
+          "size_bytes": 8271
+        },
+        "appearance/post_mesh_texture_request.json": {
+          "sha256": "c11f3b728c21857a75a3c673140b118c7dfec4c428b72e33950ba607c308992b",
+          "size_bytes": 1185
+        },
+        "appearance/qa/report.json": {
+          "sha256": "722e974d3a82523500dec001af9a6fb59ec3000d2f6386b38db4707267d0ef17",
+          "size_bytes": 3906
+        },
+        "appearance/qa/observed_coverage.png": {
+          "sha256": "7035c2ce217c7f1acf2728495663bfcaf6bd17d4afb912a5484bd54b3cbca34e",
+          "size_bytes": 41429
+        },
+        "appearance/qa/confidence.png": {
+          "sha256": "1311640c865a59109f26a927494db9fa00db258f72fbad0fd334e0a30065a806",
+          "size_bytes": 370136
+        },
+        "appearance/qa/fill_provenance.png": {
+          "sha256": "5d58198b524fe19d2919e1b5efc262baf6035c2ed8dee7ecbbae8477e8ee5dfa",
+          "size_bytes": 113038
+        }
+      }
+    },
+    {
+      "id": "usb_hub",
+      "label_zh": "USB Hub",
+      "run_id": "genesis_usb_hub_20261022_clean_diagnostics3",
+      "accepted_revision": "revision_0000",
+      "strict_genesis_accept": true,
+      "physics_summary": {
+        "tet_count": 5174,
+        "point_count": 1417,
+        "material_labels": [
+          0,
+          1,
+          2
+        ],
+        "face_connected_components": 1
+      },
+      "source": {
+        "source_type": "video_frame_crop",
+        "source_url": "https://diaggen.github.io/static/videos/gallery.mp4"
+      },
+      "files": {
+        "final_mesh.mesh": {
+          "sha256": "d65a01830fb337f03f0675ddd19a14ceeba068286ea8b0667c7db0d2063f2f99",
+          "size_bytes": 193226
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "2b4b8e0c1212623e179ac08c4bf3202b6ffc2827875d4235a7eb8632b9740db8",
+          "size_bytes": 167848
+        },
+        "inferred_params.json": {
+          "sha256": "a40206390d52ed6acfd72e1cb0f96de5e0d5b041a17bd8b6c1160945f4918dbf",
+          "size_bytes": 10866
+        },
+        "metric_mesh_scaling.json": {
+          "sha256": "17c53809e14063a736fed4f8243631774953ce22f970c4f74e8ee26b017f6335",
+          "size_bytes": 1680
+        },
+        "volume_topology.json": {
+          "sha256": "f7ea27e2af8ee80a6ab6d7965cf4e9c279b0cf345d54b644eb65a55fc7e69ce2",
+          "size_bytes": 18137
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "0f0e75b267106c917c2293724f426ecaae32821bebf512faf998da99a12fb6ce",
+          "size_bytes": 557896
+        },
+        "appearance/albedo.png": {
+          "sha256": "9e08b7e1260521f0df02335b57f9ccfaa034a56ed1e701de0b02d88f3b980d8a",
+          "size_bytes": 509383
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "ad09d009b21e5f1f1d35392e396d90a8c6ad35ef4c13c2fd85d43b53166c1d03",
+          "size_bytes": 41510
+        },
+        "appearance/qa/rest_pose_render.png": {
+          "sha256": "ee7539eda1c72745aef7e5f3227c1bbf27d97ae2259d85df9ce145bc4ee8ba6f",
+          "size_bytes": 38267
+        },
+        "final_export_manifest.json": {
+          "sha256": "1208d5283efec6e872a1d0d8d608001ee1fdf44786e7eb0e292e049b271346e7",
+          "size_bytes": 32648
+        },
+        "appearance/visual_manifest.json": {
+          "sha256": "cb779f3124c5af38ba53760d9454fb3fdd533ab6e2467075d3230f4647fb67a5",
+          "size_bytes": 6999
+        },
+        "appearance/post_mesh_texture_request.json": {
+          "sha256": "4e67b53f7b03a8ede7e5f52d29dabbf77c016997f032ac372f093e9753a3365d",
+          "size_bytes": 1265
+        },
+        "appearance/qa/report.json": {
+          "sha256": "cfd260924cf56847973fb08def23dfd2ca3968a4461a7172a7ae25c2adfa9304",
+          "size_bytes": 2582
+        },
+        "appearance/qa/observed_coverage.png": {
+          "sha256": "874f0a24b6011ad27b9273e02f4b6f22b464da42ef1c4d6187f41354895a99c5",
+          "size_bytes": 25892
+        },
+        "appearance/qa/confidence.png": {
+          "sha256": "c55147b4f9d1e15d91eda5ab03a03253118e74fa6f2280abdc929828a2ff5069",
+          "size_bytes": 415617
+        },
+        "appearance/qa/fill_provenance.png": {
+          "sha256": "033ed862848f989d962cc8bb754dd91cc9d71b82095d066d293274e333b1259b",
+          "size_bytes": 41014
+        }
+      }
+    },
+    {
+      "id": "sloth",
+      "label_zh": "樹懶玩偶",
+      "run_id": "genesis_sloth_20261022_clean_diagnostics3",
+      "accepted_revision": "revision_0000",
+      "strict_genesis_accept": true,
+      "physics_summary": {
+        "tet_count": 21133,
+        "point_count": 4912,
+        "material_labels": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "face_connected_components": 1
+      },
+      "source": {
+        "source_type": "video_frame_crop",
+        "source_url": "https://diaggen.github.io/static/videos/gallery.mp4"
+      },
+      "files": {
+        "final_mesh.mesh": {
+          "sha256": "99f9c0a6facc4310a01dbc21fc7b5082a9ea320650759a0ebddea1b313c1ab3e",
+          "size_bytes": 768559
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "4b506f181da16a7ea41054f51e57bc331982fedc6f7cd481ee0133705f935a8c",
+          "size_bytes": 678664
+        },
+        "inferred_params.json": {
+          "sha256": "14153224e50bd9ecf5768d06d24e20a5a3bbb12350fa1b1b78451351efcceb25",
+          "size_bytes": 14413
+        },
+        "metric_mesh_scaling.json": {
+          "sha256": "86b015f6c53017b4894fcd8cb01ce141683a0baf804732bbece759663f0372d4",
+          "size_bytes": 1623
+        },
+        "volume_topology.json": {
+          "sha256": "48337b09e6f652b19adf406a3d214e90b62b3b92b8563f8573638acbc15818d4",
+          "size_bytes": 29095
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "53c980e3be122b093629fce07e4384c99259ed9705eba9e359fed4a1a42b0d83",
+          "size_bytes": 766956
+        },
+        "appearance/albedo.png": {
+          "sha256": "f416645bbdfb12da98727fc0809702241f70fe2c4ec5117f4737a16939906620",
+          "size_bytes": 636338
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "697ac833212b497cd367c95d294999087400d9179c0153c073b49ff38d088d0f",
+          "size_bytes": 111924
+        },
+        "appearance/qa/rest_pose_render.png": {
+          "sha256": "d73059d4885300805115338dea7720026b5d83d387fbada325634e6db8e1c8fb",
+          "size_bytes": 89819
+        },
+        "final_export_manifest.json": {
+          "sha256": "1797e34939dad888ccd05b456fdf617dbe2cc1dad53cbbb997d05a6cbaa46f46",
+          "size_bytes": 44241
+        },
+        "appearance/visual_manifest.json": {
+          "sha256": "7654da9f4520f6b8d12f10df73965efb46d9e7aa1d3856811a9db37c5b3ca112",
+          "size_bytes": 7833
+        },
+        "appearance/post_mesh_texture_request.json": {
+          "sha256": "71a8f65c40c5c19d4a5ae2467a5ea1ccfd55f37471f07ee3ff2bb38389990719",
+          "size_bytes": 1223
+        },
+        "appearance/qa/report.json": {
+          "sha256": "6e6ed2749cef077319983ccaf190595bdf8662321988e441cecfcfc27a500452",
+          "size_bytes": 3451
+        },
+        "appearance/qa/observed_coverage.png": {
+          "sha256": "67a7366f79cb0a9d6205afd9b454a30cea80f40df6b6dedbcb51ade2529686af",
+          "size_bytes": 40248
+        },
+        "appearance/qa/confidence.png": {
+          "sha256": "1722205b72260185a9b6a8e52f00a0165e2c6b60f18f4548287e4f7a224b89dc",
+          "size_bytes": 674477
+        },
+        "appearance/qa/fill_provenance.png": {
+          "sha256": "ac6b06c3484380e0621aff0f918c60fa15b6763dd10de48d57e961f496bf374e",
+          "size_bytes": 77448
+        }
+      }
+    },
+    {
+      "id": "sauce_keeper",
+      "label_zh": "醬料盒",
+      "run_id": "genesis_sauce_keeper_20261022_clean_diagnostics2",
+      "accepted_revision": "revision_0000",
+      "strict_genesis_accept": true,
+      "physics_summary": {
+        "tet_count": 58382,
+        "point_count": 12288,
+        "material_labels": [
+          0,
+          1,
+          2
+        ],
+        "face_connected_components": 1
+      },
+      "source": {
+        "source_type": "video_frame_crop",
+        "source_url": "https://diaggen.github.io/static/videos/gallery.mp4"
+      },
+      "files": {
+        "final_mesh.mesh": {
+          "sha256": "f35779523d0673492ddcf9b162cd46c913131acdb0a589400b80117cb68167d8",
+          "size_bytes": 2131265
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "9f975976c0fe2316c46c0489d2101491be923d45cc16df7ba5448ed3ff6355d0",
+          "size_bytes": 1870504
+        },
+        "inferred_params.json": {
+          "sha256": "6d3f5ff206b703e2c212a6afd40202e8bd93ee8fde49bbb5e7a972892733be95",
+          "size_bytes": 10945
+        },
+        "metric_mesh_scaling.json": {
+          "sha256": "4dd13d850aad5c39056d616a8a28941634703674a82fba532bd358ca0f309667",
+          "size_bytes": 1668
+        },
+        "volume_topology.json": {
+          "sha256": "3391074a07d4183a335d2c665f5d5a2779c271c62eb05626bb12f3feb6eff198",
+          "size_bytes": 21558
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "fa78a628a18f52b497599ab21e902d1b7ee2abddf132611de05ac8cf83de03c7",
+          "size_bytes": 934876
+        },
+        "appearance/albedo.png": {
+          "sha256": "bdaedfc2672cae54ff791756192f3e871edcdcb02b38e8d80c9b26f2e1827bc1",
+          "size_bytes": 714542
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "bc97540941f20aa29853eb71f88a58f126c067ed21a105b6eabae528f70ab20a",
+          "size_bytes": 191469
+        },
+        "appearance/qa/rest_pose_render.png": {
+          "sha256": "164289e679c97a405de6ce15cdf2d0a36e874ad4a19ada1a3fc9a7914cb730be",
+          "size_bytes": 93110
+        },
+        "final_export_manifest.json": {
+          "sha256": "01ca0b6866148d2ba8e594318f6efe60efff62fcc2399df398a1bacf234c429f",
+          "size_bytes": 36526
+        },
+        "appearance/visual_manifest.json": {
+          "sha256": "02439061de3f865965b3142af90dc7714760be03f74d44c42356e2f8089efa00",
+          "size_bytes": 7026
+        },
+        "appearance/post_mesh_texture_request.json": {
+          "sha256": "c2265106c923c76fa079a7708cf65ddec7f05eafc90312f71cc103fdb3a05683",
+          "size_bytes": 1286
+        },
+        "appearance/qa/report.json": {
+          "sha256": "dfd2c9a3f1385131b390c629c9e7a37ab42d80f2ab63bd255697a5dab6f7217e",
+          "size_bytes": 2584
+        },
+        "appearance/qa/observed_coverage.png": {
+          "sha256": "d1b91802ac1c78b4213ebbe5b5494e1df86580b0bcbf79797fd27e53bac5d491",
+          "size_bytes": 43004
+        },
+        "appearance/qa/confidence.png": {
+          "sha256": "3479f33eb18e638baa151d94fc7d75857a43f7f5f269b404f97f9fc8a9e1cf4f",
+          "size_bytes": 332149
+        },
+        "appearance/qa/fill_provenance.png": {
+          "sha256": "61493344ef1ed13962efee2a72d081324104133e123abaac10d3063e04ac4417",
+          "size_bytes": 79150
+        }
+      }
+    },
+    {
+      "id": "curling_iron",
+      "label_zh": "電捲棒",
+      "run_id": "genesis_curling_iron_20261021_exr_retry1",
+      "accepted_revision": "revision_0000",
+      "strict_genesis_accept": true,
+      "physics_summary": {
+        "tet_count": 4171,
+        "point_count": 1178,
+        "material_labels": [
+          0,
+          1
+        ],
+        "face_connected_components": 1
+      },
+      "source": {
+        "source_type": "video_frame_crop",
+        "source_url": "https://diaggen.github.io/static/videos/gallery.mp4"
+      },
+      "files": {
+        "final_mesh.mesh": {
+          "sha256": "ef78bc3e9d38c213e0e4a7e97d7686d3749b9bb1d6876cf8b1af6e9d22e09ab0",
+          "size_bytes": 154780
+        },
+        "heterogeneous_params.npz": {
+          "sha256": "afd70628d12f974026962b98665b42c6c82fd7b1951e20cc5ec6e8d19106778b",
+          "size_bytes": 135688
+        },
+        "inferred_params.json": {
+          "sha256": "f86e0398c5ae40a2b8fa0fd887c833307371924a4481c7f3d127c5be3f1533b4",
+          "size_bytes": 7365
+        },
+        "metric_mesh_scaling.json": {
+          "sha256": "e3e196e92dde4b8f89826a44162f1de447eb45a545994b62690fe2492460a46b",
+          "size_bytes": 1650
+        },
+        "volume_topology.json": {
+          "sha256": "286124c245c95cea170f77c15b1490f9245a6fee972e260e48396c2292b696aa",
+          "size_bytes": 15268
+        },
+        "appearance/visual_mesh.glb": {
+          "sha256": "c933b88979d036a7b4e3b124d5158fcc8fb462e448bb572bde8c041d93f19bbe",
+          "size_bytes": 789916
+        },
+        "appearance/albedo.png": {
+          "sha256": "b6658c6775065aef814823fa42deadb6dacf685dc84ad01c7b8833b99aef5300",
+          "size_bytes": 744236
+        },
+        "appearance/visual_to_physics.npz": {
+          "sha256": "2f67a9732b9651ba4217f9ea935fbc1121c76f58eb585c62170700d3f426737e",
+          "size_bytes": 38160
+        },
+        "appearance/qa/rest_pose_render.png": {
+          "sha256": "9fe0c1602e693421d1c3a3cb0b267443c7fdf554dd669b2f832619343dd36253",
+          "size_bytes": 85352
+        },
+        "final_export_manifest.json": {
+          "sha256": "7f7a760ce647091a91dc7e4246f48f2913dbc62775d1d22a8cc4bd9c294aefc6",
+          "size_bytes": 29410
+        },
+        "appearance/visual_manifest.json": {
+          "sha256": "705df90b8dd3020c6ad1e679589a44d9c49a770581e5e13ed5769d7fe4e0c0ad",
+          "size_bytes": 6525
+        },
+        "appearance/post_mesh_texture_request.json": {
+          "sha256": "6057702028877237f349785aef6a01e15126e825c1480e7eb240daa626805ce8",
+          "size_bytes": 1233
+        },
+        "appearance/qa/report.json": {
+          "sha256": "738363abf1afbe7f50e066c0503ddabe07ed2ab81fe41c3061b2b55c5042e8ef",
+          "size_bytes": 2140
+        },
+        "appearance/qa/observed_coverage.png": {
+          "sha256": "f59ff1a9ab01cae3a9e1c1dad7c476683fec556a87a3c4427c52756fd1e8cc3c",
+          "size_bytes": 46179
+        },
+        "appearance/qa/confidence.png": {
+          "sha256": "3e4ced302b0e96875309e80c6a2d9b9af9291a0eda84ba45ffa5523527f76baf",
+          "size_bytes": 611867
+        },
+        "appearance/qa/fill_provenance.png": {
+          "sha256": "e0ef70519247fbee8218fd6d54c7765e3105bd0b6c8198120e245f6a2deae935",
+          "size_bytes": 76822
+        }
+      }
+    }
+  ]
+}
