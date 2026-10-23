@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-23T18:44:02+08:00（Asia/Taipei）
+更新：2026-10-23T18:51:53+08:00（Asia/Taipei）
 
 共 9 件：等待 1、執行中 1、完成匯出 7、失敗 0、取消 0。
 
@@ -25,7 +25,7 @@ GPU 可用記憶體門檻：24576 MiB；最多同時 4 件；排程每 15 秒檢
 | usb_hub | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
 | sloth | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
 | sauce_keeper | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
-| dragon | running | seeded | revision_0000 | 24576 MiB | 2/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
+| dragon | running | seeded | revision_0000 | 24576 MiB | 3/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
 | capybara_plush_toy | queued | not_initialized | 尚未初始化 | 49152 MiB | 0/9 | 尚未判定 | 未偵測到上述異常（非成功保證） |
 | curling_iron | success | success | revision_0000 | 24576 MiB | 9/9 | accept | 未偵測到上述異常（非成功保證） |
 
@@ -337,7 +337,7 @@ Run：`genesis_dragon_20261023_saverfix174003`；執行中。
 |---|---|
 | 圖片清理 | success |
 | SAM3 分割 | success |
-| OmniPart 幾何生成 | running |
+| OmniPart 幾何生成 | success |
 | 材料推估 | pending |
 | 材料參數配置 | pending |
 | 體積網格處理 | pending |
@@ -356,6 +356,18 @@ Genesis 診斷 episode 數：0；結果：尚未判定。
 ![dragon_ordered_mask_vis](media/dragon_ordered_mask_vis.png)
 
 ![dragon_segmentation_overlay](media/dragon_segmentation_overlay.png)
+
+![dragon_omnipart_top](media/dragon_omnipart_top.png)
+
+![dragon_omnipart_bottom](media/dragon_omnipart_bottom.png)
+
+![dragon_omnipart_front](media/dragon_omnipart_front.png)
+
+![dragon_omnipart_back](media/dragon_omnipart_back.png)
+
+![dragon_omnipart_left](media/dragon_omnipart_left.png)
+
+![dragon_omnipart_right](media/dragon_omnipart_right.png)
 
 
 ## capybara_plush_toy

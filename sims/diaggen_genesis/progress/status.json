@@ -5,7 +5,7 @@
   "phase": "running",
   "generation_and_diagnostics_model": "gpt-6-luna",
   "reasoning_effort": "max",
-  "updated_at": "2026-10-23T18:44:02+08:00",
+  "updated_at": "2026-10-23T18:51:53+08:00",
   "policy": {
     "minimum_free_mib": 24576,
     "allow_compute_sharing": true,
@@ -33,7 +33,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:14:41.206237+00:00",
-      "updated_at": "2026-10-23T18:44:02+08:00",
+      "updated_at": "2026-10-23T18:51:53+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -222,7 +222,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T16:01:05.614594+00:00",
-      "updated_at": "2026-10-23T18:44:02+08:00",
+      "updated_at": "2026-10-23T18:51:53+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -411,7 +411,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T18:33:27.681672+00:00",
-      "updated_at": "2026-10-23T18:44:02+08:00",
+      "updated_at": "2026-10-23T18:51:53+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -600,7 +600,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:26:08.097149+00:00",
-      "updated_at": "2026-10-23T18:44:02+08:00",
+      "updated_at": "2026-10-23T18:51:53+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -789,7 +789,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T08:19:02.686398+00:00",
-      "updated_at": "2026-10-23T18:44:02+08:00",
+      "updated_at": "2026-10-23T18:51:53+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -978,7 +978,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-22T09:50:43.953012+00:00",
-      "updated_at": "2026-10-23T18:44:02+08:00",
+      "updated_at": "2026-10-23T18:51:53+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -1167,7 +1167,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-23T09:55:55.862888+00:00",
-      "updated_at": "2026-10-23T18:44:02+08:00",
+      "updated_at": "2026-10-23T18:51:53+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 0,
@@ -1197,11 +1197,11 @@
         {
           "name": "omnipart_generate_parts",
           "label": "OmniPart 幾何生成",
-          "status": "running",
-          "ledger_status": "pending",
-          "ok": false,
+          "status": "success",
+          "ledger_status": "success",
+          "ok": true,
           "started_at": "2026-10-23T10:43:50.753209+00:00",
-          "finished_at": null
+          "finished_at": "2026-10-23T10:51:50.495823+00:00"
         },
         {
           "name": "hag4r_gpt_staged_material_inference",
@@ -1293,6 +1293,36 @@
           "path": "media/dragon_segmentation_overlay.png",
           "bytes": 63331,
           "sha256": "60162ee804640d5c5ef45ee9955c1f6813ea95bd92c38d9ecf5e967b127ecd6a"
+        },
+        {
+          "path": "media/dragon_omnipart_top.png",
+          "bytes": 8920,
+          "sha256": "78cd2eade8b23677fd7e4d09baae007bbf2468246004f99efff13d013ca8631f"
+        },
+        {
+          "path": "media/dragon_omnipart_bottom.png",
+          "bytes": 7808,
+          "sha256": "5696b3b20ac38934ecdfbd7bf3a7569c100b51eba6d36a908f9c242a02f6d537"
+        },
+        {
+          "path": "media/dragon_omnipart_front.png",
+          "bytes": 10385,
+          "sha256": "205719485eec765e7235a3950e68dc98a9d52a7938d9d1373053d6a000de4022"
+        },
+        {
+          "path": "media/dragon_omnipart_back.png",
+          "bytes": 9037,
+          "sha256": "eb6140875f43d687505ab1def36e30a48d40621bb63e941f8694a32b41fa432f"
+        },
+        {
+          "path": "media/dragon_omnipart_left.png",
+          "bytes": 10156,
+          "sha256": "24c8838165d4538305ff92f40ae8be1c7de7a72bdf76836d07fcbc82af250f46"
+        },
+        {
+          "path": "media/dragon_omnipart_right.png",
+          "bytes": 9873,
+          "sha256": "35cf8bb6d3e3fa8ea32b6284f2dd6168bdc236ea10aa827b1f8d304d1b5d747f"
         }
       ],
       "id": "dragon",
@@ -1311,7 +1341,7 @@
       "reasoning_effort": "max",
       "active_revision": null,
       "created_at": null,
-      "updated_at": "2026-10-23T18:44:02+08:00",
+      "updated_at": "2026-10-23T18:51:53+08:00",
       "diagnostics": {
         "enabled": null,
         "episode_count": 0,
@@ -1429,7 +1459,7 @@
       "reasoning_effort": "max",
       "active_revision": "revision_0000",
       "created_at": "2026-10-21T06:55:22.787810+00:00",
-      "updated_at": "2026-10-23T18:44:02+08:00",
+      "updated_at": "2026-10-23T18:51:53+08:00",
       "diagnostics": {
         "enabled": true,
         "episode_count": 2,
@@ -2055,6 +2085,36 @@
       "sha256": "60162ee804640d5c5ef45ee9955c1f6813ea95bd92c38d9ecf5e967b127ecd6a"
     },
     {
+      "path": "media/dragon_omnipart_top.png",
+      "bytes": 8920,
+      "sha256": "78cd2eade8b23677fd7e4d09baae007bbf2468246004f99efff13d013ca8631f"
+    },
+    {
+      "path": "media/dragon_omnipart_bottom.png",
+      "bytes": 7808,
+      "sha256": "5696b3b20ac38934ecdfbd7bf3a7569c100b51eba6d36a908f9c242a02f6d537"
+    },
+    {
+      "path": "media/dragon_omnipart_front.png",
+      "bytes": 10385,
+      "sha256": "205719485eec765e7235a3950e68dc98a9d52a7938d9d1373053d6a000de4022"
+    },
+    {
+      "path": "media/dragon_omnipart_back.png",
+      "bytes": 9037,
+      "sha256": "eb6140875f43d687505ab1def36e30a48d40621bb63e941f8694a32b41fa432f"
+    },
+    {
+      "path": "media/dragon_omnipart_left.png",
+      "bytes": 10156,
+      "sha256": "24c8838165d4538305ff92f40ae8be1c7de7a72bdf76836d07fcbc82af250f46"
+    },
+    {
+      "path": "media/dragon_omnipart_right.png",
+      "bytes": 9873,
+      "sha256": "35cf8bb6d3e3fa8ea32b6284f2dd6168bdc236ea10aa827b1f8d304d1b5d747f"
+    },
+    {
       "path": "media/curling_iron_cleaned_image.png",
       "bytes": 1248008,
       "sha256": "b90f604fe533cb7ea1e9cbfc8fda0759705a9ae129c708e258f244cec325a02a"
@@ -2129,7 +2189,7 @@
     "enabled": true,
     "interval_seconds": 60,
     "max_resumes_per_run": 2,
-    "updated_at": "2026-10-23T18:43:03+08:00",
+    "updated_at": "2026-10-23T18:51:03+08:00",
     "jobs": [
       {
         "id": "baseball_cap",
@@ -2188,5 +2248,5 @@
     "classification": "pipeline_runtime",
     "outcome": "repaired_and_requeued"
   },
-  "signature": "c8a1950d1222092c764666028aeca6f8316b348708100136e1ce337562781a5c"
+  "signature": "71eedc2d30ff274aaf4e1de9b017a2b7e0f5576ba9fbcc2df7c1843fa6fa0434"
 }
