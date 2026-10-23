@@ -2,7 +2,7 @@
 
 狀態：**執行中**  
 模型：`gpt-6-luna`，reasoning `max`  
-更新：2026-10-23T14:47:10+08:00（Asia/Taipei）
+更新：2026-10-23T14:49:29+08:00（Asia/Taipei）
 
 共 9 件：等待 1、執行中 1、完成匯出 7、失敗 0、取消 0。
 
@@ -356,7 +356,7 @@ Run：`genesis_capybara_plush_toy_20261023_native_coarse6`；執行中。
 |---|---|
 | 圖片清理 | success |
 | SAM3 分割 | success |
-| OmniPart 幾何生成 | running |
+| OmniPart 幾何生成 | failed |
 | 材料推估 | pending |
 | 材料參數配置 | pending |
 | 體積網格處理 | pending |
