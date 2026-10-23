@@ -1,0 +1,18 @@
+{
+  "schema_version": "diaggen-incident-report-v1",
+  "incident_id": "20261023_171510_ce58a8a99a1f",
+  "observed_at": "2026-10-23T17:18:03+08:00",
+  "classification": "scheduler",
+  "outcome": "recovered",
+  "reason": "The existing per-minute monitor and five-minute repair user timers were stopped at 17:07:14 and restarted at 17:15:10. The systemd journal confirms the timer stop/start events, and the monitor log has no ticks during that interval. This caused the monitor-stale incident; no monitor runtime failure or native pipeline halt was observed.",
+  "actual_change": "Re-enabled and started both existing user timers, then ran one monitor service tick. No source, runtime configuration, native state, or queue record was changed.",
+  "checks": [
+    "Systemd journal confirms both timers stopped at 17:07:14 and restarted at 17:15:10.",
+    "Both timers are enabled and active; the monitor timer has a recurring calendar event.",
+    "The monitor refreshed at 2026-10-23T17:18:03+08:00 with enabled=true, queue_stopped=false, and watcher=running.",
+    "The existing runtime readiness certificate verified successfully with 74 checks.",
+    "Two queue entries were already queued and zero were running; this incident did not requeue a job."
+  ],
+  "requeued_jobs": [],
+  "follow_up": "The existing queue watcher remains active. The request-owned HOLD is kept until repair_control.finish verifies readiness and releases that exact gate."
+}
