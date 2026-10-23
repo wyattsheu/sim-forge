@@ -6,9 +6,9 @@
 
 使用 DiagGen 內附的 **Genesis 1.2.0**，開啟 Genesis 診斷，排程 9 張圖片的完整生成流程。
 
-**10/23 最新結果：** 球鞋於 03:03 完成 strict accept 與匯出，總計 **7／9 件完成**。本輪沿用原生快照，兩個實際探測的選取比例為 0.6314 與 0.6536，完成完整診斷與獨立匯出驗收；沒有降低接受門檻。龍的新六版本原圖實驗仍等待顯存，水豚完成清理／分割後等待 OmniPart 的顯存門檻。原生互扣金屬環的單體表示限制及既有失敗紀錄保留。見 [重試證據與限制](analysis/native_retry_20261023.json) 及 [即時進度](progress/)。
+**10/23 最新結果：** 已完成 **7／9 件 strict accept 與匯出**，包含球鞋。龍與水豚的上一輪均失敗：龍停在圖片回傳保存／錯誤路徑，水豚的六區域 OmniPart 解碼仍觸發 spconv int32 限制。已修正外部圖片 bytes 保存方式，並對水豚完成新的原生兩類材質概念隔離測試；兩件已用新 run 排回既有 GPU queue。441 項 CPU 回歸全通過，74 項啟動檢查有效；未修改原生模型、解析度、精度或接受條件，尚未宣稱兩件完成。見 [重啟與測試證據](analysis/restart_two_20261023.json) 及 [即時進度](progress/)。
 
-**10/23 水豚實驗：** 依原生 SAM3 同材質合併指引，隔離實驗已取得身體／口鼻／綠色背包三份真實遮罩，保留後處理的第四個 fallback 區域；新 raw-image 工作使用官方 `--user_hints` 與六版本設定，已完成清理／分割，等待其綁定 GPU 有足夠顯存再進 OmniPart。尚未證明完整解碼成功。見 [語義實驗與限制](analysis/capybara_native_concepts_20261023.json) 及 [後端權重稽核](analysis/incident_20261022_235219_ff1b8ecd0a10.md)。
+**10/23 水豚實驗：** 新一輪採原生 skill 允許的同材質／僅顏色不同區域合併：絨毛本體含深色口鼻、綠色背包與帶子。對上一輪清理圖使用未修改的 SAM3 與後處理，取得五個區域（四個證據區域、一個原生 fallback），三概念版本則仍為六區域。此為新輸入實驗，沒有手動合併遮罩、刪除部件或降低模型品質，仍需正式完整解碼及 Genesis 驗證。新 run 為 `genesis_capybara_plush_toy_20261023_two_material6`，保留 48 GiB 顯存門檻及全部舊失敗。
 
 **繼續修復：** 使用者授權優先沿用原 Repo 功能，龍、料理夾與球鞋以通過原生預檢的 full-image snapshot 另開實驗，使用官方 `--sim-diagnostics-max-runs 6`，由原階段 agents 接續診斷／修正；舊預算、失敗／未通過匯出紀錄保留。430 項 CPU／回歸測試通過，含實際 shell 傳遞官方參數的隔離引擎測試。此為重新派工，不代表已通過物理驗收；新工作以 [progress](progress/) 為準。詳見 [接續驗證](analysis/native_continuation_20261022.json) 與 [排程政策](analysis/AUTOMATION.md)。
 

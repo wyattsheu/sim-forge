@@ -253,6 +253,24 @@ a guard path. Wait on the bound GPU when memory is insufficient; never switch GP
 output quality. The guard is an observation, not a memory reservation or OOM guarantee.
 For fresh image cleanup, stop after a passing Attempt 1; do not generate Attempt 2 after it
 passes. For a resume with successful cleanup, skip all imagegen and cleanup registration.
+The exact frozen raw image is $FROZEN_INPUT. Pass this absolute path verbatim to the cleanup
+child; never rebuild it from the outer workspace or omit tools/diaggen. Read the two exact
+candidate destinations from state.paths.image_cleanup_attempt_1_path and
+state.paths.image_cleanup_attempt_2_path. Inspect the source before built-in imagegen.
+For built-in imagegen, retain the complete result in functions.exec store immediately.
+Never print, stringify, truncate, or return its base64 payload to the model. When the result
+is a PNG data URL/image content block, persist it before emitting only small metadata:
+load $WORKSPACE/tools/diaggen_support/save_imagegen_result.js using tools.exec_command
+with cat and max_output_tokens 6000, store its complete response.output as saverSource,
+then in the same functions.exec call that receives imagegen use
+store('cleanupImageResult', result); const save = eval(load('saverSource'));
+text(await save(result, '$RUN_ROOT', exactCandidatePathFromState, '$PYTHON'));
+This is deterministic byte persistence of the actual built-in result, not image generation,
+image editing, or semantic validation. If persistence fails, retain the result and error;
+never treat a truncated text preview as a saved image or consume a new generation attempt
+just to save the same result. If imagegen instead returns an actual local file, preserve
+its exact PNG bytes at the native candidate path. The owning cleanup child still performs
+all original visual validation and the native two-attempt/registration rules.
 $MODE_CONTEXT
 Read $DIAGGEN_JOB_QUEUE_DIR/experiment_hints.txt when nonempty. These are user-authorized
 experiment observations for this new run; pass relevant context to the owning pending-stage

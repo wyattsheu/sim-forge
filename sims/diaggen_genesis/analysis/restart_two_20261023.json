@@ -1,0 +1,59 @@
+{
+  "schema_version": "diaggen-native-restart-review-v1",
+  "checked_at": "2026-10-23T17:16:05+08:00",
+  "completed_assets": 7,
+  "planned_assets": 9,
+  "dragon": {
+    "previous_run": "genesis_dragon_20261023_coarse_connector6",
+    "failure": "Built-in PNG result was truncated instead of persisted; second attempt used a mistyped source path. No candidate was registered.",
+    "change": "Preserve complete built-in image result in functions.exec store; deterministic chunked byte persistence to the exact native candidate paths, PNG validation and atomic non-overwrite; pass exact frozen source path.",
+    "new_run": "genesis_dragon_20261023_imagecapture6",
+    "status": "queued"
+  },
+  "capybara": {
+    "previous_run": "genesis_capybara_plush_toy_20261023_native_coarse6",
+    "failure": "Native spconv int32 GEMM byte-offset assertion at 5975552 active features; six processed input regions.",
+    "input_study": {
+      "three_concepts_processed_parts": 6,
+      "two_material_concepts": "capybara stuffed toy; green backpack",
+      "two_concepts_processed_parts": 5,
+      "evidence_regions": 4,
+      "native_foreground_fill_regions": 1,
+      "source_state_unchanged": true
+    },
+    "change": "New independent raw-image experiment applies the native same-material/texture-only grouping rule to stuffed-plush surfaces including the dark muzzle, while retaining the green accessory and straps. The owning stage must inspect and validate new inputs.",
+    "new_run": "genesis_capybara_plush_toy_20261023_two_material6",
+    "status": "queued",
+    "full_size_decode_proven": false
+  },
+  "unchanged": [
+    "Original native models and pretrained weights",
+    "Native resolution and precision",
+    "SPCONV_ALGO=native",
+    "Bundled Genesis 1.2.0",
+    "GPT-6 Luna Max",
+    "Original diagnostics and acceptance gates",
+    "Six-version native setting",
+    "Prior native ledgers, failures, generation limits and output archives"
+  ],
+  "checks": {
+    "image_byte_transport_tests": 6,
+    "full_cpu_tests": 441,
+    "cpu_fail": 0,
+    "cpu_error": 0,
+    "cpu_skip": 0,
+    "runtime_certificate_required_checks": 74,
+    "hardware_evidence_reused_only_after_exact_fingerprint_comparison": true
+  },
+  "limitations": [
+    "Five processed masks do not prove full-size decoding will pass.",
+    "Native acceptance is not real-world material calibration.",
+    "New jobs remain subject to available GPU memory: dragon 24 GiB and capybara 48 GiB."
+  ],
+  "upstream_review": [
+    "https://github.com/diaggen/diaggen",
+    "https://github.com/HKU-MMLab/OmniPart",
+    "https://github.com/HKU-MMLab/OmniPart/blob/main/app.py",
+    "https://github.com/traveller59/spconv/blob/master/docs/PERFORMANCE_GUIDE.md"
+  ]
+}
