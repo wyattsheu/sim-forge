@@ -1,6 +1,6 @@
 {
   "schema_version": "diaggen-full-runtime-preflight-v1",
-  "checked_at": "2026-10-23T17:13:06+08:00",
+  "checked_at": "2026-10-23T17:49:49+08:00",
   "overall_status": "pass",
   "simulator": "Genesis",
   "checks": [
@@ -289,19 +289,21 @@
       "status": "pass"
     },
     {
+      "name": "cpu/namespace_unittest_suite",
+      "status": "pass",
       "detail": {
         "error": 0,
         "expected_fail": 0,
         "fail": 0,
-        "pass": 435,
-        "run": 435,
+        "pass": 437,
+        "run": 437,
         "skip": 0,
         "unexpected_success": 0
-      },
-      "name": "cpu/namespace_unittest_suite",
-      "status": "pass"
+      }
     },
     {
+      "name": "cpu/preflight_negative_controls",
+      "status": "pass",
       "detail": {
         "error": 0,
         "expected_fail": 0,
@@ -310,13 +312,12 @@
         "run": 6,
         "skip": 0,
         "unexpected_success": 0
-      },
-      "name": "cpu/preflight_negative_controls",
-      "status": "pass"
+      }
     },
     {
       "name": "cpu/source_and_test_inventory_unchanged",
-      "status": "pass"
+      "status": "pass",
+      "detail": null
     }
   ],
   "optional_checks": [
@@ -334,7 +335,7 @@
   "components": [
     {
       "name": "host",
-      "report": "/mnt/HDD4/wyattsheu/ITRI/sim-forge/tools/diaggen/outputs/preflight/restart_two_20261023/host/report.json",
+      "report": "/mnt/HDD4/wyattsheu/ITRI/sim-forge/tools/diaggen/outputs/preflight/20261023_dragon_imagegen_persist_20261023_174003_612ff18b7463/runtime/host/report.json",
       "checks": [
         {
           "name": "host/nine_input_decode_hash_dimensions",
@@ -424,7 +425,7 @@
     },
     {
       "name": "mesh",
-      "report": "/mnt/HDD4/wyattsheu/ITRI/sim-forge/tools/diaggen/outputs/preflight/restart_two_20261023/mesh/report.json",
+      "report": "/mnt/HDD4/wyattsheu/ITRI/sim-forge/tools/diaggen/outputs/preflight/20261023_dragon_imagegen_persist_20261023_174003_612ff18b7463/runtime/mesh/report.json",
       "checks": [
         {
           "name": "mesh/mesh_runtime_dependencies",
@@ -478,7 +479,7 @@
     },
     {
       "name": "omnipart",
-      "report": "/mnt/HDD4/wyattsheu/ITRI/sim-forge/tools/diaggen/outputs/preflight/restart_two_20261023/omnipart/report.json",
+      "report": "/mnt/HDD4/wyattsheu/ITRI/sim-forge/tools/diaggen/outputs/preflight/20261023_dragon_imagegen_persist_20261023_174003_612ff18b7463/runtime/omnipart/report.json",
       "checks": [
         {
           "name": "omnipart/dependency_imports",
@@ -536,7 +537,7 @@
     },
     {
       "name": "genesis",
-      "report": "/mnt/HDD4/wyattsheu/ITRI/sim-forge/tools/diaggen/outputs/preflight/restart_two_20261023/genesis/report.json",
+      "report": "/mnt/HDD4/wyattsheu/ITRI/sim-forge/tools/diaggen/outputs/preflight/20261023_dragon_imagegen_persist_20261023_174003_612ff18b7463/runtime/genesis/report.json",
       "checks": [
         {
           "name": "genesis/import_genesis",
@@ -650,30 +651,29 @@
     "GPU availability is checked separately and does not reserve memory"
   ],
   "cpu_collection": {
-    "report": "/mnt/HDD4/wyattsheu/ITRI/sim-forge/tools/diaggen/outputs/preflight/restart_two_20261023/orchestration/report.json",
+    "report": "/mnt/HDD4/wyattsheu/ITRI/sim-forge/tools/diaggen/outputs/preflight/20261023_dragon_imagegen_persist_20261023_174003_612ff18b7463/orchestration_retry1/report.json",
     "counts": {
       "error": 0,
       "expected_fail": 0,
       "fail": 0,
-      "pass": 441,
-      "run": 441,
+      "pass": 443,
+      "run": 443,
       "skip": 0,
       "unexpected_success": 0
-    }
+    },
+    "test_log_sha256": "d0cb27dae68ee656350144a6f176820f21bfae314a470a61350eb0d549edc8b8",
+    "source_inventory_sha256": "c0ea504e84b4a84d87381292c3ed7ba014e72008f60eb357a2445f191ffc2507"
   },
   "hardware_evidence_reuse": {
     "native_sources_unchanged": true,
     "inputs_environments_binaries_unchanged": true,
     "changed_sources": [
-      "sims/diaggen_genesis/queue/run_one.sh",
-      "tools/diaggen_support/queue_verified_diagnostics.json",
-      "tools/diaggen_support/queue_verified_diagnostics.patch",
       "tools/diaggen_support/save_imagegen_result.js"
     ],
     "prior_certificate": {
-      "checks_passed": 74,
-      "path": "/mnt/HDD4/wyattsheu/ITRI/sim-forge/tools/diaggen/outputs/preflight/20261023_153003_43010e35a0c2/summary.json",
-      "sha256": "6fa3e912732c48cb7f12de37e1f2d51cb2b6ea6dc80ab18290053ad5ac9ed73f"
+      "path": "/mnt/HDD4/wyattsheu/ITRI/sim-forge/tools/diaggen/outputs/preflight/20261023_dragon_imagegen_persist_20261023_174003_612ff18b7463/previous_runtime_preflight_certificate.json",
+      "sha256": "0700a41b4ea33ed52b8366207f691756235948f85c4987fb4a59d559dc809d1a",
+      "checks_passed": 74
     }
   }
 }

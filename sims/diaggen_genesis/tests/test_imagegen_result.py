@@ -31,22 +31,66 @@ class ImagegenPersistenceTests(unittest.TestCase):
         self.node = shutil.which('node')
         self.assertIsNotNone(self.node, 'Node is required to test the actual functions.exec helper')
 
-    def invoke(self, payload, *, target=None):
+    def invoke(self, payload, *, target=None, simulate_bwrap=False,
+               reject_review=False, default_error=None):
+        if isinstance(payload, dict):
+            marker = payload.get('image_url', '')
+            if not marker and payload.get('content'):
+                marker = payload['content'][0].get('data', '')
+        else:
+            marker = ''
         request = {'result': payload, 'root': str(self.root),
                    'target': str(target or self.target), 'python': sys.executable,
-                   'helper': str(HELPER)}
+                   'helper': str(HELPER), 'simulate_bwrap': simulate_bwrap,
+                   'reject_review': reject_review, 'default_error': default_error,
+                   'payload_marker': marker[:256]}
         script = """
 const fs = require('node:fs');
 const cp = require('node:child_process');
+const crypto = require('node:crypto');
 const req = JSON.parse(fs.readFileSync(0, 'utf8'));
-global.tools = {exec_command: async ({cmd}) => {
-  const r = cp.spawnSync('/bin/bash', ['-c', cmd], {encoding:'utf8',maxBuffer:1024*1024});
-  return {exit_code:r.status,output:(r.stdout||'')+(r.stderr||'')};
-}};
+const sessions = new Map();
+const calls = [];
+let nextSession = 1;
+global.tools = {
+  exec_command: async (opts) => {
+    const elevated = opts.sandbox_permissions === 'require_escalated';
+    calls.push({elevated, command_sha256:crypto.createHash('sha256').update(opts.cmd).digest('hex'),
+      command_length:opts.cmd.length, command_contains_payload:opts.cmd.includes(req.payload_marker)});
+    if (req.simulate_bwrap && calls.length === 1 && !elevated)
+      return {exit_code:1,output:'bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted'};
+    if (elevated && req.reject_review) return {isError:true,output:'automatic review rejected'};
+    if (!elevated && req.default_error) return {exit_code:1,output:req.default_error};
+    const child = cp.spawn('/bin/bash',['-c',opts.cmd],{stdio:['pipe','pipe','pipe']});
+    const id = nextSession++;
+    const state = {child,output:'',done:false,exit_code:null};
+    state.closed = new Promise(resolve => child.on('close',(code) => {
+      state.done = true; state.exit_code = code; resolve();
+    }));
+    child.stdout.on('data',chunk => state.output += chunk.toString());
+    child.stderr.on('data',chunk => state.output += chunk.toString());
+    child.stdin.on('error',() => {});
+    sessions.set(id,state);
+    return await new Promise((resolve,reject) => {
+      child.once('spawn',() => resolve({session_id:id,output:''}));
+      child.once('error',reject);
+    });
+  },
+  write_stdin: async ({session_id,chars='',yield_time_ms=250}) => {
+    const state = sessions.get(session_id);
+    if (!state) return {exit_code:1,output:'stdin session missing'};
+    if (chars) await new Promise((resolve,reject) =>
+      state.child.stdin.write(chars,error => error ? reject(error) : resolve()));
+    await Promise.race([state.closed,new Promise(resolve => setTimeout(resolve,Math.max(10,yield_time_ms)))]);
+    const output = state.output; state.output = '';
+    if (state.done) { sessions.delete(session_id); return {exit_code:state.exit_code,output}; }
+    return {session_id,output};
+  }
+};
 (async () => {
   const save = eval(fs.readFileSync(req.helper,'utf8'));
-  try { console.log(JSON.stringify(await save(req.result,req.root,req.target,req.python))); }
-  catch (e) { console.error(e.message); process.exitCode=1; }
+  try { console.log(JSON.stringify({saved:await save(req.result,req.root,req.target,req.python),calls})); }
+  catch (e) { console.error(JSON.stringify({error:e.message,calls})); process.exitCode=1; }
 })();
 """
         return subprocess.run([self.node, '-e', script], input=json.dumps(request),
@@ -67,12 +111,38 @@ global.tools = {exec_command: async ({cmd}) => {
     def test_large_png_is_complete_and_byte_identical(self):
         data = self.png((600, 600))
         self.assertGreater(len(data), 128 * 1024)
-        result = self.invoke(self.result(data))
+        result = self.invoke(self.result(data), simulate_bwrap=True)
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(self.target.read_bytes(), data)
-        self.assertEqual(json.loads(result.stdout)['sha256'], hashlib.sha256(data).hexdigest())
-        self.assertLess(len(result.stdout), 500)
+        response = json.loads(result.stdout)
+        self.assertEqual(response['saved']['sha256'], hashlib.sha256(data).hexdigest())
+        self.assertEqual(response['saved']['bytes'], len(data))
+        self.assertEqual(len(response['calls']), 2)
+        self.assertEqual([call['elevated'] for call in response['calls']], [False, True])
+        self.assertEqual(response['calls'][0]['command_sha256'], response['calls'][1]['command_sha256'])
+        self.assertTrue(all(not call['command_contains_payload'] for call in response['calls']))
+        self.assertLess(max(call['command_length'] for call in response['calls']), 8192)
+        self.assertLess(len(result.stdout), 1000)
         self.assertFalse((ROOT / 'SHOULD_NOT_EXIST').exists())
+
+    def test_review_rejection_does_not_retry_or_write_any_bytes(self):
+        data = self.png()
+        result = self.invoke(self.result(data), simulate_bwrap=True, reject_review=True)
+        self.assertNotEqual(result.returncode, 0)
+        response = json.loads(result.stderr)
+        self.assertEqual(len(response['calls']), 2)
+        self.assertEqual([call['elevated'] for call in response['calls']], [False, True])
+        self.assertEqual(response['calls'][0]['command_sha256'], response['calls'][1]['command_sha256'])
+        self.assertFalse(self.target.exists())
+        self.assertFalse(self.target.with_name(self.target.name + '.imagegen.part').exists())
+
+    def test_non_bwrap_failure_is_not_escalated_or_retried(self):
+        result = self.invoke(self.result(self.png()), default_error='python writer unavailable')
+        self.assertNotEqual(result.returncode, 0)
+        response = json.loads(result.stderr)
+        self.assertEqual(len(response['calls']), 1)
+        self.assertFalse(response['calls'][0]['elevated'])
+        self.assertFalse(self.target.exists())
 
     def test_mcp_image_block_is_saved(self):
         data = self.png()
