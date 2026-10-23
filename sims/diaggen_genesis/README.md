@@ -2,11 +2,11 @@
 
 [最新進度](progress/) · [卡住原因與改善驗證](analysis/STALL_AUDIT_20261022.md) · [執行環境預檢](preflight/latest.json) · [官方圖片總覽](demo_inputs_preview.jpg) · [圖片來源紀錄](demo_image_sources.json) · [排程清單](batch_plan.json)
 
-**共同開發與資產測試：** [完整協作指南](collaboration/README.md) 提供固定版本七件已驗收資產的下載、SHA256 核對與 CPU 檢查，以及學妹 fork／分支／PR、owner review 和分支保護步驟。資產位於 GitHub Release，clone 後執行一次 `python sims/diaggen_genesis/collaboration/asset_tools.py fetch`；生成權重與伺服器 Conda 環境不隨 Git 分發。
+**已驗收資產：** [固定版本下載包](https://github.com/wyattsheu/sim-forge/releases/tag/diaggen-test-assets-20261023-v1) 包含七件資產的外觀、四面體網格與材質參數。執行 `python sims/diaggen_genesis/collaboration/asset_tools.py fetch` 下載並核對 SHA256；`verify` 檢查檔案，`inspect` 執行 CPU 資料檢查。生成權重與模擬器環境需另備。
 
 使用 DiagGen 內附的 **Genesis 1.2.0**，開啟 Genesis 診斷，排程 9 張圖片的完整生成流程。
 
-**10/23 最新重試：** 料理夾已完整 strict accept／匯出，總計 **6／9 件完成**。球鞋與龍的新六版本實驗已重新排隊等待顯存：球鞋保留既有上游網格，以官方 semantic group 檢查有物理意義的鞋底／橡膠邊條組件；龍從原圖重跑較粗的原生概念分割，保留所有硬體與細連接。球鞋舊探測的原生離線重算支持分組假說，但不代表新探測或完整診斷已通過。龍的互扣金屬環可能需要多物體／接觸表示，這項原生重試不會偷偷補橋、移除硬體或改變單體連通規則。435 項 CPU／回歸通過，未改 native source／正式環境。見 [重試證據與限制](analysis/native_retry_20261023.json) 及 [即時進度](progress/)。
+**10/23 最新結果：** 球鞋於 03:03 完成 strict accept 與匯出，總計 **7／9 件完成**。本輪沿用原生快照，兩個實際探測的選取比例為 0.6314 與 0.6536，完成完整診斷與獨立匯出驗收；沒有降低接受門檻。龍的新六版本原圖實驗仍等待顯存，水豚完成清理／分割後等待 OmniPart 的顯存門檻。原生互扣金屬環的單體表示限制及既有失敗紀錄保留。見 [重試證據與限制](analysis/native_retry_20261023.json) 及 [即時進度](progress/)。
 
 **10/23 水豚實驗：** 依原生 SAM3 同材質合併指引，隔離實驗已取得身體／口鼻／綠色背包三份真實遮罩，保留後處理的第四個 fallback 區域；新 raw-image 工作使用官方 `--user_hints` 與六版本設定，已完成清理／分割，等待其綁定 GPU 有足夠顯存再進 OmniPart。尚未證明完整解碼成功。見 [語義實驗與限制](analysis/capybara_native_concepts_20261023.json) 及 [後端權重稽核](analysis/incident_20261022_235219_ff1b8ecd0a10.md)。
 

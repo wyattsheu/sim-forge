@@ -1,3 +1,0 @@
-# Reviews for protected collaboration branches belong to the repository owner.
-# Enforce this through Require review from Code Owners on each target branch.
-* @wyattsheu
